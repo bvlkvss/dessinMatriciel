@@ -1,0 +1,16 @@
+.container {
+    height: 100%;
+    display: flex;
+}
+
+.drawing-container {
+    overflow: auto;
+    flex: 1 1 auto;
+}
+
+.drawing {
+    display: grid;
+    width: min-content;
+    outline: none;
+}
+  

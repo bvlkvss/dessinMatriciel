@@ -1,0 +1,16 @@
+<div class="container">
+    <h1 class="header-item">Bienvenue au cours {{ title }}</h1>
+
+    <div id="server-message">
+        <p>Petit message du serveur : {{ message | async }}</p>
+        <button class="button" (click)="getMessagesFromServer()">Récuper un message du serveur</button>
+        <button class="button" (click)="sendTimeToServer()">Envoyer un message au serveur</button>
+    </div>
+
+    <button class="button" routerLink="/editor">Ouvir Éditeur</button>
+
+    <div class="footer-item">
+        <h4 class="team-name">Équipe Poly</h4>
+        <p>Coequipier #1, Coequipier #2, Coequipier #3, Coequipier #4, Coequipier #5, Coequipier #6</p>
+    </div>
+</div>
