@@ -5,5 +5,8 @@
         "source.organizeImports": true,
         "source.fixAll.tslint": true
     },
-    "html.format.indentInnerHtml": true
+    "html.format.indentInnerHtml": true,
+    "[typescript]": {
+        "editor.defaultFormatter": "vscode.typescript-language-features"
+    }
 }
