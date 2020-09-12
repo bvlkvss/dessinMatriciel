@@ -17,7 +17,7 @@ export enum MouseButton {
   providedIn: 'root'
 })
 export class RectangleService extends Tool {
-  
+
 
   constructor(drawingService: DrawingService) {
     super(drawingService);
@@ -30,12 +30,12 @@ export class RectangleService extends Tool {
     }
   }
 
-  
+
   onMouseUp(event: MouseEvent): void {
-    if(this.mouseDown){ 
-    const mousePosition = this.getPositionFromMouse(event);
-    
-    this.fillRectangle(this.drawingService.baseCtx,this.mouseDownCoord,mousePosition);
+    if (this.mouseDown) {
+      const mousePosition = this.getPositionFromMouse(event);
+
+      this.fillRectangle(this.drawingService.baseCtx, this.mouseDownCoord, mousePosition);
 
     }
     this.mouseDown = false;
@@ -47,31 +47,24 @@ export class RectangleService extends Tool {
 
       // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
       this.drawingService.clearCanvas(this.drawingService.previewCtx);
-      this.fillRectangle(this.drawingService.previewCtx,this.mouseDownCoord,mousePosition);
+      this.fillRectangle(this.drawingService.previewCtx, this.mouseDownCoord, mousePosition);
     }
   }
 
 
-  private fillRectangle(ctx: CanvasRenderingContext2D,startPos:Vec2, currentPos:Vec2) : void {
+  private fillRectangle(ctx: CanvasRenderingContext2D, startPos: Vec2, currentPos: Vec2): void {
 
-      ctx.beginPath();
-      let width=currentPos.x-startPos.x;
-      let height=currentPos.y-startPos.y;
-      ctx.rect(startPos.x,startPos.y,width,height);
-      ctx.fillStyle = "green";
-      ctx.strokeStyle="red";
-      ctx.fill();
-      ctx.stroke();
-  }
-
-
-  private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
     ctx.beginPath();
-    for (const point of path) {
-      ctx.lineTo(point.x, point.y);
-    }
+    let width = currentPos.x - startPos.x;
+    let height = currentPos.y - startPos.y;
+    ctx.rect(startPos.x, startPos.y, width, height);
+    ctx.fillStyle = "green";
+    ctx.strokeStyle = "red";
+    ctx.fill();
     ctx.stroke();
   }
+
+
 
 
 }
