@@ -13,14 +13,30 @@ export enum MouseButton {
   Forward = 4,
 }
 
+export enum keyboardKey {
+
+
+
+}
+
+
+
 @Injectable({
   providedIn: 'root'
 })
 export class RectangleService extends Tool {
 
-
+  toSquare: boolean = false;
   constructor(drawingService: DrawingService) {
     super(drawingService);
+  }
+
+
+  onShiftKeyDown(event: KeyboardEvent): void {
+
+    if (event.shiftKey) {
+      this.toSquare = true;
+    }
   }
 
   onMouseDown(event: MouseEvent): void {
@@ -35,7 +51,7 @@ export class RectangleService extends Tool {
     if (this.mouseDown) {
       const mousePosition = this.getPositionFromMouse(event);
 
-      this.fillRectangle(this.drawingService.baseCtx, this.mouseDownCoord, mousePosition);
+      this.fillRectangle(this.drawingService.baseCtx, this.mouseDownCoord, mousePosition, this.toSquare);
 
     }
     this.mouseDown = false;
@@ -47,16 +63,35 @@ export class RectangleService extends Tool {
 
       // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
       this.drawingService.clearCanvas(this.drawingService.previewCtx);
-      this.fillRectangle(this.drawingService.previewCtx, this.mouseDownCoord, mousePosition);
+      this.fillRectangle(this.drawingService.previewCtx, this.mouseDownCoord, mousePosition, this.toSquare);
     }
   }
 
+  onShiftKeyUp(event: KeyboardEvent): void {
+    if (!event.shiftKey) {
 
-  private fillRectangle(ctx: CanvasRenderingContext2D, startPos: Vec2, currentPos: Vec2): void {
+      this.toSquare = false;
+    }
+
+  }
+
+  private fillRectangle(ctx: CanvasRenderingContext2D, startPos: Vec2, currentPos: Vec2, toSquare: boolean): void {
 
     ctx.beginPath();
     let width = currentPos.x - startPos.x;
     let height = currentPos.y - startPos.y;
+    if (toSquare) {
+
+      if (width > height) {
+
+        height = width;
+
+      }
+      else {
+        width = height;
+      }
+    }
+
     ctx.rect(startPos.x, startPos.y, width, height);
     ctx.fillStyle = "green";
     ctx.strokeStyle = "red";

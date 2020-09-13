@@ -12,9 +12,12 @@ export abstract class Tool {
     onMouseDown(event: MouseEvent): void {}
 
     onMouseUp(event: MouseEvent): void {}
+    
+    onShiftKeyDown(event: KeyboardEvent): void {}
 
     onMouseMove(event: MouseEvent): void {}
 
+    onShiftKeyUp(event: KeyboardEvent): void {}
     getPositionFromMouse(event: MouseEvent): Vec2 {
         return { x: event.offsetX, y: event.offsetY };
     }

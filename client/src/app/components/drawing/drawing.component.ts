@@ -29,7 +29,7 @@ export class DrawingComponent implements AfterViewInit {
     currentTool: Tool;
     constructor(private drawingService: DrawingService, pencilService: PencilService, rectangleService: RectangleService) {
         this.tools = [pencilService,rectangleService];
-        this.currentTool = this.tools[1];
+        this.currentTool = this.tools[0];
     }
 
     ngAfterViewInit(): void {
@@ -54,6 +54,26 @@ export class DrawingComponent implements AfterViewInit {
     onMouseUp(event: MouseEvent): void {
         this.currentTool.onMouseUp(event);
     }
+
+    @HostListener('keydown',['$event'])
+    KeyDown(event: KeyboardEvent): void {
+
+        if (event.key==='1'){
+            this.currentTool=this.tools[1];
+        }
+        this.currentTool.onShiftKeyDown(event);
+    }
+
+    @HostListener('keyup',['$event'])
+    KeyUp(event: KeyboardEvent): void {
+
+        this.currentTool.onShiftKeyUp(event);
+    }
+
+   
+
+
+
 
     get width(): number {
         return this.canvasSize.x;
