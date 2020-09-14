@@ -3,7 +3,6 @@ import { Tool } from '@app/classes/tool';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { PencilService } from '@app/services/tools/pencil/pencil-service';
 import { DrawingComponent } from './drawing.component';
-import { RectangleService } from '@app/services/tools/rectangle/rectangle.service';
 
 
 
