@@ -28,7 +28,7 @@ export class DrawingComponent implements AfterViewInit {
     private tools: Tool[];
     currentTool: Tool;
     constructor(private drawingService: DrawingService, pencilService: PencilService, rectangleService: RectangleService) {
-        this.tools = [pencilService,rectangleService];
+        this.tools = [pencilService, rectangleService];
         this.currentTool = this.tools[0];
     }
 
@@ -50,27 +50,36 @@ export class DrawingComponent implements AfterViewInit {
         this.currentTool.onMouseDown(event);
     }
 
-    @HostListener('mouseup', ['$event'])
+    @HostListener('mouseout', ['$event'])
+    onMouseOut(event: MouseEvent): void {
+        this.currentTool.onMouseOut(event);
+    }
+    @HostListener('mouseenter', ['$event'])
+    onMouseEnter(event: MouseEvent): void {
+        this.currentTool.onMouseEnter(event);
+    }
+
+    @HostListener('document:mouseup', ['$event'])
     onMouseUp(event: MouseEvent): void {
         this.currentTool.onMouseUp(event);
     }
 
-    @HostListener('keydown',['$event'])
+    @HostListener('document:keydown', ['$event'])
     KeyDown(event: KeyboardEvent): void {
 
-        if (event.key==='1'){
-            this.currentTool=this.tools[1];
+        if (event.key === '1') {
+            this.currentTool = this.tools[1];
         }
         this.currentTool.onShiftKeyDown(event);
     }
 
-    @HostListener('keyup',['$event'])
+    @HostListener('document:keyup', ['$event'])
     KeyUp(event: KeyboardEvent): void {
 
         this.currentTool.onShiftKeyUp(event);
     }
 
-   
+
 
 
 

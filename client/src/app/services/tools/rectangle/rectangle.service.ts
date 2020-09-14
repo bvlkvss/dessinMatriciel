@@ -27,6 +27,7 @@ export enum keyboardKey {
 export class RectangleService extends Tool {
 
   toSquare: boolean = false;
+  isOut: boolean = false;
   constructor(drawingService: DrawingService) {
     super(drawingService);
   }
@@ -47,13 +48,26 @@ export class RectangleService extends Tool {
   }
 
 
+  onMouseOut(event: MouseEvent): void {
+    this.isOut = true;
+    this.mouseOutCoord = this.getPositionFromMouse(event);
+
+  }
+  onMouseEnter(event: MouseEvent): void {
+    this.isOut = false;
+
+  }
   onMouseUp(event: MouseEvent): void {
     if (this.mouseDown) {
-      const mousePosition = this.getPositionFromMouse(event);
+      let mousePosition = this.getPositionFromMouse(event);
+      if (this.isOut)
+        mousePosition = this.mouseOutCoord;
 
       this.fillRectangle(this.drawingService.baseCtx, this.mouseDownCoord, mousePosition, this.toSquare);
 
     }
+    this.drawingService.clearCanvas(this.drawingService.previewCtx);
+
     this.mouseDown = false;
   }
 
