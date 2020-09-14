@@ -96,7 +96,7 @@ describe('RectangleService', () => {
         expect(fillRectangleSpy).not.toHaveBeenCalled();
     });
 
-
+    //it(' onMouseOut should not call fillRectangle ')
 
 
 

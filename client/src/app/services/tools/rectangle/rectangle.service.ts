@@ -33,13 +33,7 @@ export class RectangleService extends Tool {
   }
 
 
-  onShiftKeyDown(event: KeyboardEvent): void {
-
-    if (event.shiftKey) {
-      this.toSquare = true;
-    }
-  }
-
+  
   onMouseDown(event: MouseEvent): void {
     this.mouseDown = event.button === MouseButton.Left;
     if (this.mouseDown) {
@@ -47,16 +41,15 @@ export class RectangleService extends Tool {
     }
   }
 
-
   onMouseOut(event: MouseEvent): void {
     this.isOut = true;
     this.mouseOutCoord = this.getPositionFromMouse(event);
-
   }
+
   onMouseEnter(event: MouseEvent): void {
     this.isOut = false;
-
   }
+
   onMouseUp(event: MouseEvent): void {
     if (this.mouseDown) {
       let mousePosition = this.getPositionFromMouse(event);
@@ -87,6 +80,13 @@ export class RectangleService extends Tool {
       this.toSquare = false;
     }
 
+  }
+
+  onShiftKeyDown(event: KeyboardEvent): void {
+    if (event.shiftKey) {
+
+      this.toSquare = true;
+    }
   }
 
   private fillRectangle(ctx: CanvasRenderingContext2D, startPos: Vec2, currentPos: Vec2, toSquare: boolean): void {
