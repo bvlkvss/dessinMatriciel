@@ -94,6 +94,19 @@ describe('PencilService', () => {
         expect(drawServiceSpy.clearCanvas).not.toHaveBeenCalled();
         expect(drawLineSpy).not.toHaveBeenCalled();
     });
+    
+    it('should draw a pixel if mouse is pressed and not moved', ()=>{
+        service.mouseDownCoord = {x: 0, y:0};
+        service.mouseDown = true;
+        service.onMouseUp(mouseEvent);
+        expect(drawLineSpy).toHaveBeenCalled();
+    });
+
+    it('setPencilThickness should set pencil thickness to correct value', ()=>{
+        service.setPencilThickness(3);
+        let thickness = service.getPencilThickness();
+        expect(thickness).toEqual(3);
+    });
 
     // Exemple de test d'intégration qui est quand même utile
     it(' should change the pixel of the canvas ', () => {
@@ -111,3 +124,7 @@ describe('PencilService', () => {
         expect(imageData.data[3]).not.toEqual(0); // A
     });
 });
+
+
+
+
