@@ -28,6 +28,7 @@ export class RectangleService extends Tool {
 
   toSquare: boolean = false;
   isOut: boolean = false;
+  currentPos:Vec2;
   constructor(drawingService: DrawingService) {
     super(drawingService);
   }
@@ -56,7 +57,7 @@ export class RectangleService extends Tool {
       if (this.isOut)
         mousePosition = this.mouseOutCoord;
 
-      this.fillRectangle(this.drawingService.baseCtx, this.mouseDownCoord, mousePosition, this.toSquare);
+      this.filledRectangle(this.drawingService.baseCtx, this.mouseDownCoord, mousePosition, this.toSquare);
 
     }
     this.drawingService.clearCanvas(this.drawingService.previewCtx);
@@ -66,11 +67,11 @@ export class RectangleService extends Tool {
 
   onMouseMove(event: MouseEvent): void {
     if (this.mouseDown) {
-      const mousePosition = this.getPositionFromMouse(event);
+      this.currentPos = this.getPositionFromMouse(event);
 
       // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
       this.drawingService.clearCanvas(this.drawingService.previewCtx);
-      this.fillRectangle(this.drawingService.previewCtx, this.mouseDownCoord, mousePosition, this.toSquare);
+      this.filledRectangle(this.drawingService.previewCtx, this.mouseDownCoord, this.currentPos, this.toSquare);
     }
   }
 
@@ -78,6 +79,13 @@ export class RectangleService extends Tool {
     if (!event.shiftKey) {
 
       this.toSquare = false;
+      this.drawingService.clearCanvas(this.drawingService.previewCtx);
+      this.filledRectangle(this.drawingService.previewCtx, this.mouseDownCoord, this.currentPos, this.toSquare);
+      if(!this.mouseDown){
+        //if shift key is still down while mouse is up, the shift event clears the preview
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
+      }
+
     }
 
   }
@@ -86,24 +94,32 @@ export class RectangleService extends Tool {
     if (event.shiftKey) {
 
       this.toSquare = true;
+      this.drawingService.clearCanvas(this.drawingService.previewCtx);
+      this.filledRectangle(this.drawingService.previewCtx, this.mouseDownCoord, this.currentPos, this.toSquare);
     }
   }
 
-  private fillRectangle(ctx: CanvasRenderingContext2D, startPos: Vec2, currentPos: Vec2, toSquare: boolean): void {
+  private filledRectangle(ctx: CanvasRenderingContext2D, startPos: Vec2, currentPos: Vec2, toSquare: boolean): void {
 
     ctx.beginPath();
     let width = currentPos.x - startPos.x;
     let height = currentPos.y - startPos.y;
+    console.log("height before is",height);
+    console.log("width before is", width);
     if (toSquare) {
 
-      if (width > height) {
 
-        height = width;
+      if (Math.abs(width)>Math.abs(height)) {
+      console.log("height after is",height);
+      console.log("width after is", width);
+        height = width*Math.sign(height)*Math.sign(width);
 
       }
       else {
-        width = height;
+        width = height*Math.sign(width)*Math.sign(height);
       }
+    console.log("height after change is",height);
+    console.log("width after change is", width);
     }
 
     ctx.rect(startPos.x, startPos.y, width, height);
