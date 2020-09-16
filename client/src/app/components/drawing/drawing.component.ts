@@ -5,7 +5,6 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { PencilService } from '@app/services/tools/pencil/pencil-service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle.service';
 
-
 // TODO : Avoir un fichier séparé pour les constantes ?
 export const DEFAULT_WIDTH = 1000;
 export const DEFAULT_HEIGHT = 800;
@@ -66,23 +65,16 @@ export class DrawingComponent implements AfterViewInit {
 
     @HostListener('document:keydown', ['$event'])
     KeyDown(event: KeyboardEvent): void {
-
         if (event.key === '1') {
             this.currentTool = this.tools[1];
         }
-        this.currentTool.onShiftKeyDown(event);
+        this.currentTool.onKeyDown(event);
     }
 
     @HostListener('document:keyup', ['$event'])
     KeyUp(event: KeyboardEvent): void {
-
-        this.currentTool.onShiftKeyUp(event);
+        this.currentTool.onKeyUp(event);
     }
-
-
-
-
-
 
     get width(): number {
         return this.canvasSize.x;

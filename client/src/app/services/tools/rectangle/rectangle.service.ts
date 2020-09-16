@@ -26,6 +26,7 @@ export class RectangleService extends Tool {
     isOut: boolean = false;
     currentPos: Vec2;
     rectangleStyle: RectangleStyle;
+    outlineWidth: number;
     constructor(drawingService: DrawingService) {
         super(drawingService);
         this.rectangleStyle = 1;
@@ -69,19 +70,19 @@ export class RectangleService extends Tool {
         }
     }
 
-    onShiftKeyUp(event: KeyboardEvent): void {
+    onKeyUp(event: KeyboardEvent): void {
         if (!event.shiftKey && this.mouseDown) {
             this.toSquare = false;
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.drawRectangle(this.drawingService.previewCtx, this.mouseDownCoord, this.currentPos, this.toSquare);
             if (!this.mouseDown) {
-                //if shift key is still down while mouse is up, the shift event clears the preview
+                // if shift key is still down while mouse is up, the shift event clears the preview
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
             }
         }
     }
 
-    onShiftKeyDown(event: KeyboardEvent): void {
+    onKeyDown(event: KeyboardEvent): void {
         if (event.shiftKey && this.mouseDown) {
             this.toSquare = true;
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
@@ -93,12 +94,8 @@ export class RectangleService extends Tool {
         ctx.beginPath();
         let width = currentPos.x - startPos.x;
         let height = currentPos.y - startPos.y;
-        console.log('height before is', height);
-        console.log('width before is', width);
         if (toSquare) {
             if (Math.abs(width) > Math.abs(height)) {
-                console.log('height after is', height);
-                console.log('width after is', width);
                 height = width * Math.sign(height) * Math.sign(width);
             } else {
                 width = height * Math.sign(width) * Math.sign(height);
@@ -106,9 +103,9 @@ export class RectangleService extends Tool {
         }
         ctx.fillStyle = 'green';
         ctx.strokeStyle = 'red';
+        ctx.lineWidth = this.outlineWidth;
         ctx.rect(startPos.x, startPos.y, width, height);
 
-        console.log('rectangle style:', this.rectangleStyle);
         switch (this.rectangleStyle) {
             case 0:
                 ctx.stroke();

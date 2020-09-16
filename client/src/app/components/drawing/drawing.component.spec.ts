@@ -4,9 +4,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { PencilService } from '@app/services/tools/pencil/pencil-service';
 import { DrawingComponent } from './drawing.component';
 
-
-
-class ToolStub extends Tool { }
+class ToolStub extends Tool {}
 
 // TODO : Déplacer dans un fichier accessible à tous
 const DEFAULT_WIDTH = 1000;
@@ -79,20 +77,17 @@ describe('DrawingComponent', () => {
 
     it(" should call the tool's Keyboard up when receiving a Keyboard up event", () => {
         const event = {} as KeyboardEvent;
-        const KeyboardEventSpy = spyOn(toolStub, 'onShiftKeyUp').and.callThrough();
+        const keyboardEventSpy = spyOn(toolStub, 'onShiftKeyUp').and.callThrough();
         component.KeyUp(event);
-        expect(KeyboardEventSpy).toHaveBeenCalled();
-        expect(KeyboardEventSpy).toHaveBeenCalledWith(event);
+        expect(keyboardEventSpy).toHaveBeenCalled();
+        expect(keyboardEventSpy).toHaveBeenCalledWith(event);
     });
 
     it(" should call the tool's Keyboard down when receiving a Keyboard down event", () => {
         const event = {} as KeyboardEvent;
-        const KeyboardEventSpy = spyOn(toolStub, 'onShiftKeyDown').and.callThrough();
+        const keyboardEventSpy = spyOn(toolStub, 'onShiftKeyDown').and.callThrough();
         component.KeyDown(event);
-        expect(KeyboardEventSpy).toHaveBeenCalled();
-        expect(KeyboardEventSpy).toHaveBeenCalledWith(event);
+        expect(keyboardEventSpy).toHaveBeenCalled();
+        expect(keyboardEventSpy).toHaveBeenCalledWith(event);
     });
-
-
-
 });

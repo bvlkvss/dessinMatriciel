@@ -96,13 +96,8 @@ describe('RectangleService', () => {
         expect(fillRectangleSpy).not.toHaveBeenCalled();
     });
 
-    //it(' onMouseOut should not call fillRectangle ')
+    // it(' onMouseOut should not call fillRectangle ')
 
-
-
-
-
-    
     /*
     // Exemple de test d'intégration qui est quand même utile
     it(' should change the pixel of the canvas ', () => {
