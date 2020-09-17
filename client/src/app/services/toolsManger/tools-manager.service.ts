@@ -11,8 +11,8 @@ export class ToolsManagerService {
     private tools: Tool[];
     currentTool: Tool;
 
-    constructor(pencilService: PencilService, brushService: BrushService, rectangleService:RectangleService) {
-        this.tools = [pencilService, brushService,rectangleService];
+    constructor(pencilService: PencilService, brushService: BrushService, rectangleService: RectangleService) {
+        this.tools = [pencilService, brushService, rectangleService];
         this.currentTool = this.tools[0];
     }
     setTools(index: number): void {

@@ -24,7 +24,6 @@ export class DrawingComponent implements AfterViewInit {
     // TODO : Avoir un service dédié pour gérer tous les outils ? Ceci peut devenir lourd avec le temps
     constructor(private drawingService: DrawingService, private tools: ToolsManagerService) {}
 
-
     ngAfterViewInit(): void {
         this.baseCtx = this.baseCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.previewCtx = this.previewCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
@@ -57,7 +56,6 @@ export class DrawingComponent implements AfterViewInit {
         this.tools.currentTool.onMouseOut(event);
     }
 
-
     @HostListener('document:keyup', ['$event'])
     KeyUp(event: KeyboardEvent): void {
         this.tools.currentTool.onKeyUp(event);
@@ -66,27 +64,25 @@ export class DrawingComponent implements AfterViewInit {
     @HostListener('document:keydown', ['$event'])
     onKeyDown(event: KeyboardEvent): void {
         switch (event.key) {
-            case "1":
+            case '1':
                 this.tools.setTools(2);
-                console.log("key 1 pressed");
+                console.log('key 1 pressed');
                 break;
-            case "w":
+            case 'w':
                 this.tools.setTools(1);
                 console.log('brush');
                 this.tools.setRGB(0, 0, 0); // pour tester setRGB bleu,initialement coleur noir !!
                 break;
-            case "c":
+            case 'c':
                 this.tools.setTools(0);
                 console.log('pencil');
                 this.tools.setRGB(0, 0, 0);
                 break;
-                
+
             default:
                 this.tools.currentTool.onKeyDown(event);
                 break;
         }
-        
-
     }
 
     get width(): number {

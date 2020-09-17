@@ -23,8 +23,8 @@ describe('DrawingComponent', () => {
         drawingStub = new DrawingService();
         pencilStub = new PencilService(drawingStub);
         brushStub = new BrushService(drawingStub);
-        rectangleStub= new RectangleService(drawingStub);
-        toolManagerStub = new ToolsManagerService(pencilStub, brushStub,rectangleStub);
+        rectangleStub = new RectangleService(drawingStub);
+        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub);
 
         TestBed.configureTestingModule({
             declarations: [DrawingComponent],
