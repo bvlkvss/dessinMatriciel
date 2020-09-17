@@ -94,17 +94,20 @@ describe('PencilService', () => {
         expect(drawServiceSpy.clearCanvas).not.toHaveBeenCalled();
         expect(drawLineSpy).not.toHaveBeenCalled();
     });
-    
-    it('should draw a pixel if mouse is pressed and not moved', ()=>{
-        service.mouseDownCoord = {x: 0, y:0};
+
+    it('should draw a pixel if mouse is pressed and not moved', () => {
+        service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = true;
         service.onMouseUp(mouseEvent);
         expect(drawLineSpy).toHaveBeenCalled();
     });
 
-    it('setPencilThickness should set pencil thickness to correct value', ()=>{
+    it('setPencilThickness should set pencil thickness to correct value', () => {
+        // tslint:disable-next-line:no-magic-numbers
         service.setPencilThickness(3);
+        // tslint:disable-next-line:prefer-const
         let thickness = service.getPencilThickness();
+        // tslint:disable-next-line:no-magic-numbers
         expect(thickness).toEqual(3);
     });
 
@@ -124,7 +127,3 @@ describe('PencilService', () => {
         expect(imageData.data[3]).not.toEqual(0); // A
     });
 });
-
-
-
-

@@ -1,4 +1,4 @@
-import { Injectable} from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -63,17 +63,17 @@ export class PencilService extends Tool {
         }
     }
 
-    setPencilThickness(thickness:number){
+    setPencilThickness(thickness: number): void {
         this.pencilThickness = thickness;
     }
 
-    getPencilThickness(): number{
+    getPencilThickness(): number {
         return this.pencilThickness;
     }
 
     private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.lineWidth = this.pencilThickness;
-        ctx.lineCap = "round";
+        ctx.lineCap = 'round';
         ctx.beginPath();
         ctx.lineWidth = 1;
         ctx.lineCap = 'round';
@@ -82,11 +82,9 @@ export class PencilService extends Tool {
             ctx.lineTo(point.x, point.y);
         }
         ctx.stroke();
-        
     }
 
     private clearPath(): void {
         this.pathData = [];
     }
-
 }
