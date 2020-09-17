@@ -77,7 +77,7 @@ describe('DrawingComponent', () => {
 
     it(" should call the tool's Keyboard up when receiving a Keyboard up event", () => {
         const event = {} as KeyboardEvent;
-        const keyboardEventSpy = spyOn(toolStub, 'onShiftKeyUp').and.callThrough();
+        const keyboardEventSpy = spyOn(toolStub, 'onKeyUp').and.callThrough();
         component.KeyUp(event);
         expect(keyboardEventSpy).toHaveBeenCalled();
         expect(keyboardEventSpy).toHaveBeenCalledWith(event);
@@ -85,7 +85,7 @@ describe('DrawingComponent', () => {
 
     it(" should call the tool's Keyboard down when receiving a Keyboard down event", () => {
         const event = {} as KeyboardEvent;
-        const keyboardEventSpy = spyOn(toolStub, 'onShiftKeyDown').and.callThrough();
+        const keyboardEventSpy = spyOn(toolStub, 'onKeyDown').and.callThrough();
         component.KeyDown(event);
         expect(keyboardEventSpy).toHaveBeenCalled();
         expect(keyboardEventSpy).toHaveBeenCalledWith(event);
