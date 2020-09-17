@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { EditorComponent } from './components/editor/editor.component';
-import { UserGuideComponent } from './components/user-guide/user-guide.component';
-import { MainPageComponent } from './components/main-page/main-page.component';
+import { EditorComponent } from '@app/components/editor/editor.component';
+import { MainPageComponent } from '@app/components/main-page/main-page.component';
+import { UserGuideComponent } from '@app/components/user-guide/user-guide.component';
 
 const routes: Routes = [
     { path: '', redirectTo: '/home', pathMatch: 'full' },
