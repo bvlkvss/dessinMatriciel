@@ -1,8 +1,7 @@
 import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
-import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { PencilService } from '@app/services/tools/pencil-service';
+import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
 
 // TODO : Avoir un fichier séparé pour les constantes ?
 export const DEFAULT_WIDTH = 1000;
@@ -23,12 +22,9 @@ export class DrawingComponent implements AfterViewInit {
     private canvasSize: Vec2 = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
 
     // TODO : Avoir un service dédié pour gérer tous les outils ? Ceci peut devenir lourd avec le temps
-    private tools: Tool[];
-    currentTool: Tool;
-    constructor(private drawingService: DrawingService, pencilService: PencilService) {
-        this.tools = [pencilService];
-        this.currentTool = this.tools[0];
-    }
+    // private tools: Tool[];
+    // currentTool: Tool;
+    constructor(private drawingService: DrawingService, private tools: ToolsManagerService) {}
 
     ngAfterViewInit(): void {
         this.baseCtx = this.baseCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
@@ -40,19 +36,41 @@ export class DrawingComponent implements AfterViewInit {
 
     @HostListener('mousemove', ['$event'])
     onMouseMove(event: MouseEvent): void {
-        this.currentTool.onMouseMove(event);
+        this.tools.currentTool.onMouseMove(event);
     }
 
     @HostListener('mousedown', ['$event'])
     onMouseDown(event: MouseEvent): void {
-        this.currentTool.onMouseDown(event);
+        this.tools.currentTool.onMouseDown(event);
     }
-
-    @HostListener('mouseup', ['$event'])
+    @HostListener('mouseenter', ['$event'])
+    onMouseEnter(event: MouseEvent): void {
+        this.tools.currentTool.onMouseEnter(event);
+    }
+    @HostListener('document:mouseup', ['$event'])
     onMouseUp(event: MouseEvent): void {
-        this.currentTool.onMouseUp(event);
+        this.tools.currentTool.onMouseUp(event);
+    }
+    @HostListener('mouseout', ['$event'])
+    onMouseOut(event: MouseEvent): void {
+        this.tools.currentTool.onMouseOut(event);
     }
 
+    @HostListener('document:keydown', ['$event'])
+    onKeyDown(event: KeyboardEvent): void {
+        switch (event.key) {
+            case 'w':
+                this.tools.setTools(1);
+                console.log('brush');
+                this.tools.setRGB(0, 0, 0); // pour tester setRGB bleu,initialement coleur noir !!
+                break;
+            case 's':
+                this.tools.setTools(0);
+                console.log('pencil');
+                this.tools.setRGB(0, 0, 0);
+                break;
+        }
+    }
     get width(): number {
         return this.canvasSize.x;
     }

@@ -11,7 +11,6 @@ export enum MouseButton {
     Back = 3,
     Forward = 4,
 }
-
 // Ceci est une implémentation de base de l'outil Crayon pour aider à débuter le projet
 // L'implémentation ici ne couvre pas tous les critères d'accepetation du projet
 // Vous êtes encouragés de modifier et compléter le code.
@@ -36,11 +35,17 @@ export class PencilService extends Tool {
             this.pathData.push(this.mouseDownCoord);
         }
     }
+    onMouseOut(event: MouseEvent): void {
+        if (this.mouseDown) this.drawLine(this.drawingService.baseCtx, this.pathData);
+        this.clearPath();
+    }
+    onMouseEnter(event: MouseEvent): void {
+        // this.drawLine(this.drawingService.baseCtx, this.pathData);
+        this.clearPath();
+    }
 
     onMouseUp(event: MouseEvent): void {
         if (this.mouseDown) {
-            const mousePosition = this.getPositionFromMouse(event);
-            this.pathData.push(mousePosition);
             this.drawLine(this.drawingService.baseCtx, this.pathData);
         }
         this.mouseDown = false;
@@ -51,7 +56,6 @@ export class PencilService extends Tool {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
-
             // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.drawLine(this.drawingService.previewCtx, this.pathData);
@@ -60,6 +64,9 @@ export class PencilService extends Tool {
 
     private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.beginPath();
+        ctx.lineWidth = 1;
+        ctx.lineCap = 'round';
+        ctx.strokeStyle = 'rgb(' + this.primaryColor.red + ',' + this.primaryColor.green + ',' + this.primaryColor.blue + ')';
         for (const point of path) {
             ctx.lineTo(point.x, point.y);
         }
