@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { RectangleService } from '@app/services/tools/rectangle/rectangle.service';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
 
 // TODO : Avoir un fichier séparé pour les constantes ?
@@ -22,9 +23,8 @@ export class DrawingComponent implements AfterViewInit {
     private canvasSize: Vec2 = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
 
     // TODO : Avoir un service dédié pour gérer tous les outils ? Ceci peut devenir lourd avec le temps
-    // private tools: Tool[];
-    // currentTool: Tool;
     constructor(private drawingService: DrawingService, private tools: ToolsManagerService) {}
+
 
     ngAfterViewInit(): void {
         this.baseCtx = this.baseCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
@@ -43,10 +43,12 @@ export class DrawingComponent implements AfterViewInit {
     onMouseDown(event: MouseEvent): void {
         this.tools.currentTool.onMouseDown(event);
     }
+
     @HostListener('mouseenter', ['$event'])
     onMouseEnter(event: MouseEvent): void {
         this.tools.currentTool.onMouseEnter(event);
     }
+
     @HostListener('document:mouseup', ['$event'])
     onMouseUp(event: MouseEvent): void {
         this.tools.currentTool.onMouseUp(event);
@@ -56,9 +58,17 @@ export class DrawingComponent implements AfterViewInit {
         this.tools.currentTool.onMouseOut(event);
     }
 
+
+    @HostListener('document:keyup', ['$event'])
+    KeyUp(event: KeyboardEvent): void {
+        this.currentTool.onKeyUp(event);
+    }
+
     @HostListener('document:keydown', ['$event'])
     onKeyDown(event: KeyboardEvent): void {
         switch (event.key) {
+            case '1':
+                this.tools.setTools(2);
             case 'w':
                 this.tools.setTools(1);
                 console.log('brush');
@@ -69,8 +79,15 @@ export class DrawingComponent implements AfterViewInit {
                 console.log('pencil');
                 this.tools.setRGB(0, 0, 0);
                 break;
+                
+            default:
+                this.tools.currentTool.onKeyDown(event);
+                break;
         }
+        
+
     }
+
     get width(): number {
         return this.canvasSize.x;
     }
