@@ -1,7 +1,6 @@
 import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { RectangleService } from '@app/services/tools/rectangle/rectangle.service';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
 
 // TODO : Avoir un fichier séparé pour les constantes ?
@@ -61,20 +60,22 @@ export class DrawingComponent implements AfterViewInit {
 
     @HostListener('document:keyup', ['$event'])
     KeyUp(event: KeyboardEvent): void {
-        this.currentTool.onKeyUp(event);
+        this.tools.currentTool.onKeyUp(event);
     }
 
     @HostListener('document:keydown', ['$event'])
     onKeyDown(event: KeyboardEvent): void {
         switch (event.key) {
-            case '1':
+            case "1":
                 this.tools.setTools(2);
-            case 'w':
+                console.log("key 1 pressed");
+                break;
+            case "w":
                 this.tools.setTools(1);
                 console.log('brush');
                 this.tools.setRGB(0, 0, 0); // pour tester setRGB bleu,initialement coleur noir !!
                 break;
-            case 's':
+            case "c":
                 this.tools.setTools(0);
                 console.log('pencil');
                 this.tools.setRGB(0, 0, 0);

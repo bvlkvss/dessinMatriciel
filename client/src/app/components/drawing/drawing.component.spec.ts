@@ -2,7 +2,8 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DrawingComponent } from '@app/components/drawing/drawing.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { BrushService } from '@app/services/tools/brush.service';
-import { PencilService } from '@app/services/tools/pencil-service';
+import { PencilService } from '@app/services/tools/pencil/pencil-service';
+import { RectangleService } from '@app/services/tools/rectangle/rectangle.service';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
 
 // TODO : Déplacer dans un fichier accessible à tous
@@ -16,12 +17,14 @@ describe('DrawingComponent', () => {
     let pencilStub: PencilService;
     let brushStub: BrushService;
     let drawingStub: DrawingService;
+    let rectangleStub: RectangleService;
 
     beforeEach(async(() => {
         drawingStub = new DrawingService();
         pencilStub = new PencilService(drawingStub);
         brushStub = new BrushService(drawingStub);
-        toolManagerStub = new ToolsManagerService(pencilStub, brushStub);
+        rectangleStub= new RectangleService(drawingStub);
+        toolManagerStub = new ToolsManagerService(pencilStub, brushStub,rectangleStub);
 
         TestBed.configureTestingModule({
             declarations: [DrawingComponent],

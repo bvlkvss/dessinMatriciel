@@ -12,7 +12,7 @@ describe('RectangleService', () => {
 
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
-    let fillRectangleSpy: jasmine.Spy<any>;
+    let drawRectangleSpy: jasmine.Spy<any>;
 
     beforeEach(() => {
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
@@ -23,7 +23,7 @@ describe('RectangleService', () => {
             providers: [{ provide: DrawingService, useValue: drawServiceSpy }],
         });
         service = TestBed.inject(RectangleService);
-        fillRectangleSpy = spyOn<any>(service, 'fillRectangle').and.callThrough();
+        drawRectangleSpy = spyOn<any>(service, 'drawRectangle').and.callThrough();
 
         // Configuration du spy du service
         // tslint:disable:no-string-literal
@@ -62,41 +62,41 @@ describe('RectangleService', () => {
         expect(service.mouseDown).toEqual(false);
     });
 
-    it(' onMouseUp should call fillRectangleSpy if mouse was already down', () => {
+    it(' onMouseUp should call drawRectangleSpy if mouse was already down', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = true;
 
         service.onMouseUp(mouseEvent);
-        expect(fillRectangleSpy).toHaveBeenCalled();
+        expect(drawRectangleSpy).toHaveBeenCalled();
     });
 
-    it(' onMouseUp should not call fillRectangle if mouse was not already down', () => {
+    it(' onMouseUp should not call drawRectangle if mouse was not already down', () => {
         service.mouseDown = false;
         service.mouseDownCoord = { x: 0, y: 0 };
 
         service.onMouseUp(mouseEvent);
-        expect(fillRectangleSpy).not.toHaveBeenCalled();
+        expect(drawRectangleSpy).not.toHaveBeenCalled();
     });
 
-    it(' onMouseMove should call fillRectangle if mouse was already down', () => {
+    it(' onMouseMove should call drawRectangle if mouse was already down', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = true;
 
         service.onMouseMove(mouseEvent);
         expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
-        expect(fillRectangleSpy).toHaveBeenCalled();
+        expect(drawRectangleSpy).toHaveBeenCalled();
     });
 
-    it(' onMouseMove should not call fillRectangle if mouse was not already down', () => {
+    it(' onMouseMove should not call drawRectangle if mouse was not already down', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = false;
 
         service.onMouseMove(mouseEvent);
         expect(drawServiceSpy.clearCanvas).not.toHaveBeenCalled();
-        expect(fillRectangleSpy).not.toHaveBeenCalled();
+        expect(drawRectangleSpy).not.toHaveBeenCalled();
     });
 
-    // it(' onMouseOut should not call fillRectangle ')
+    // it(' onMouseOut should not call drawRectangle ')
 
     /*
     // Exemple de test d'intégration qui est quand même utile

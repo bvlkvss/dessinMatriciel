@@ -72,6 +72,7 @@ describe('BrushService', () => {
         service.mouseDown = true;
         service.isOut = false;
         service.onMouseUp(mouseEvent);
+        delay(10);
         expect(drawLineSpy).toHaveBeenCalled();
     });
     it(' onMouseOut should not call drawLine just before the mouse exits the the canvas', () => {
@@ -79,6 +80,7 @@ describe('BrushService', () => {
         service.mouseDown = true;
         service.isOut = true;
         service.onMouseOut(mouseEvent);
+        delay(5);
         expect(drawLineSpy).toHaveBeenCalled();
     });
     it(' onMouseOut should change isOut value to true', () => {
@@ -91,6 +93,7 @@ describe('BrushService', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
 
         service.onMouseUp(mouseEvent);
+        delay(5);
         expect(drawLineSpy).not.toHaveBeenCalled();
     });
     it(' onMouseUp should not call drawLine if mouse was not in the canvas', () => {
@@ -98,6 +101,7 @@ describe('BrushService', () => {
         service.mouseDown = true;
         service.mouseDownCoord = { x: 0, y: 0 };
         service.onMouseUp(mouseEvent);
+        delay(5);
         expect(drawLineSpy).not.toHaveBeenCalled();
     });
 
@@ -116,6 +120,7 @@ describe('BrushService', () => {
         service.mouseDown = false;
         service.isOut = false;
         service.onMouseMove(mouseEvent);
+        delay(5);
         expect(drawServiceSpy.clearCanvas).not.toHaveBeenCalled();
         expect(drawLineSpy).not.toHaveBeenCalled();
     });
@@ -125,6 +130,7 @@ describe('BrushService', () => {
         service.mouseDown = true;
 
         service.onMouseMove(mouseEvent);
+        delay(5);
         expect(drawServiceSpy.clearCanvas).not.toHaveBeenCalled();
         expect(drawLineSpy).not.toHaveBeenCalled();
     });
@@ -133,6 +139,7 @@ describe('BrushService', () => {
         service.mouseDown = false;
         service.mouseDownCoord = { x: 20, y: 20 };
         service.onMouseUp(mouseEvent);
+        delay(5);
         expect(changeColorSpy).not.toHaveBeenCalled();
     });
     it(' should  call changeColor after drawing ', () => {
@@ -140,6 +147,7 @@ describe('BrushService', () => {
         service.mouseDownCoord = { x: 20, y: 20 };
         service.onMouseDown(mouseEvent);
         service.onMouseMove(mouseEvent);
+        delay(5);
         expect(changeColorSpy).toHaveBeenCalled();
     });
 
