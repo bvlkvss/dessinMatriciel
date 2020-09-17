@@ -7,12 +7,15 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 export abstract class Tool {
     mouseDownCoord: Vec2;
     mouseDown: boolean = false;
+
+    mouseOutCoord: Vec2;
     currentPos: Vec2;
     isOut: boolean = false;
     width: number;
     height: number;
     primaryColor: Color = { red: 0, green: 0, blue: 0 }; // by default black
     secondaryColor: Color = { red: 0, green: 0, blue: 0 }; //  by default black
+
     constructor(protected drawingService: DrawingService) {}
 
     setMouseDown(bool: boolean): void {
@@ -23,12 +26,17 @@ export abstract class Tool {
     onMouseDown(event: MouseEvent): void {}
 
     onMouseUp(event: MouseEvent): void {}
+    onMouseOut(event: MouseEvent): void {}
+    onMouseEnter(event: MouseEvent): void {}
+
+    onKeyDown(event: KeyboardEvent): void {}
 
     onMouseMove(event: MouseEvent): void {}
     onMouseEnter(event: MouseEvent): void {}
 
     onMouseOut(event: MouseEvent): void {}
 
+    onKeyUp(event: KeyboardEvent): void {}
     getPositionFromMouse(event: MouseEvent): Vec2 {
         return { x: event.offsetX, y: event.offsetY };
     }
