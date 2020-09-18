@@ -13,10 +13,10 @@ export enum MouseButton {
     Forward = 4,
 }
 const BYTE_SIZE = 4;
-const IMAGE_SIZE_DIVIDER = 3;
-const MOUSE_POSITION_OFFSET_DIVIDER = 6;
-const IMAGES_PER_POINT = 4;
-// const DEFAULT_BRUSH_SIZE = 20;
+const IMAGE_SIZE_DIVIDER = 2;
+//const MOUSE_POSITION_OFFSET_DIVIDER = 6;
+const IMAGES_PER_POINT = 8;
+const DEFAULT_BRUSH_SIZE = 20;
 
 // TODO : Déplacer ça dans un fichier séparé accessible par tous
 
@@ -33,7 +33,9 @@ export class BrushService extends Tool {
     constructor(drawingService: DrawingService) {
         super(drawingService);
         this.image = new Image();
-        this.image.src = '../../../assets/b4.png';
+        this.image.src = '../../../assets/b2.svg';
+        this.image.width = DEFAULT_BRUSH_SIZE;
+        this.image.height = DEFAULT_BRUSH_SIZE;
     }
 
     onMouseDown(event: MouseEvent): void {
@@ -73,12 +75,9 @@ export class BrushService extends Tool {
         const angle = this.angleBetween2Points(this.mouseDownCoord, this.currentPos);
         let i = 0;
         do {
-            const x = this.mouseDownCoord.x + Math.sin(angle) * i - this.image.width / MOUSE_POSITION_OFFSET_DIVIDER;
-            const y = this.mouseDownCoord.y + Math.cos(angle) * i - this.image.height / MOUSE_POSITION_OFFSET_DIVIDER;
-            ctx.drawImage(this.image, x, y, this.image.width / IMAGE_SIZE_DIVIDER, this.image.height / IMAGE_SIZE_DIVIDER);
-            const data = ctx.getImageData(x, y, this.image.width, this.image.height);
-            this.changeColor(data, this.primaryColor);
-            ctx.putImageData(data, x, y);
+            const x = this.mouseDownCoord.x + Math.sin(angle) * i - this.image.width / IMAGE_SIZE_DIVIDER;
+            const y = this.mouseDownCoord.y + Math.cos(angle) * i - this.image.height / IMAGE_SIZE_DIVIDER;
+            ctx.drawImage(this.image, x, y, this.image.width, this.image.height);
             i += IMAGES_PER_POINT;
         } while (i < dist);
         this.mouseDownCoord = this.currentPos;

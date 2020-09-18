@@ -163,7 +163,7 @@ describe('BrushService', () => {
         expect(baseCtxStub.getImageData(0, 0, image.width, image.height)).toBeDefined();
         //  expect(baseCtxStub.getImageData(20, 20, image.width, image.height)).toBeDefined();
     });*/
-    it(' it should changeColor of the image after drawing   ', () => {
+    /*it(' it should changeColor of the image after drawing   ', () => {
         // this will check that nothing was drawn on canvas at (0,0), after that it'll check on right coordinates which are (20,20)
         const image: HTMLImageElement = service.getImage();
         service.mouseDown = false;
@@ -176,5 +176,5 @@ describe('BrushService', () => {
         expect(imageData.data[0]).toEqual(255); // red
         expect(imageData.data[1]).toEqual(0); // green
         expect(imageData.data[2]).toEqual(30); // blue
-    });
+    });*/
 });
