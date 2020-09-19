@@ -1,7 +1,6 @@
 import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { RectangleService } from '@app/services/tools/rectangle/rectangle.service';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
 
 // TODO : Avoir un fichier séparé pour les constantes ?
