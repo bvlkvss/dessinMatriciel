@@ -25,9 +25,7 @@ export class ToolsManagerService {
     getTools(): Tool[] {
         return this.tools;
     }
-    setRGB(r: number, g: number, b: number): void {
-        this.currentTool.primaryColor.red = r;
-        this.currentTool.primaryColor.green = g;
-        this.currentTool.primaryColor.blue = b;
+    setColor(color: string): void {
+        this.currentTool.primaryColor = color;
     }
 }

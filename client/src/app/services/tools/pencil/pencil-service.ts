@@ -27,6 +27,9 @@ export class PencilService extends Tool {
         this.clearPath();
     }
 
+    /*setColor(color: string): void {
+        this.primaryColor = color;
+    }*/
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseDown) {
@@ -75,7 +78,7 @@ export class PencilService extends Tool {
         ctx.lineWidth = this.pencilThickness;
         ctx.lineCap = 'round';
         ctx.beginPath();
-        ctx.strokeStyle = 'rgb(' + this.primaryColor.red + ',' + this.primaryColor.green + ',' + this.primaryColor.blue + ')';
+        ctx.strokeStyle = this.primaryColor;
         for (const point of path) {
             ctx.lineTo(point.x, point.y);
         }

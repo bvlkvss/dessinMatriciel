@@ -67,17 +67,12 @@ export class DrawingComponent implements AfterViewInit {
         switch (event.key) {
             case '1':
                 this.tools.setTools(2);
-                console.log('key 1 pressed');
                 break;
             case 'w':
-                this.tools.setTools(1);
-                console.log('brush');
-                this.tools.setRGB(0, 0, 0); // pour tester setRGB bleu,initialement coleur noir !!
+                this.tools.setTools(1); // pour tester setRGB bleu,initialement coleur noir !!
                 break;
             case 'c':
                 this.tools.setTools(0);
-                console.log('pencil');
-                this.tools.setRGB(0, 0, 0);
                 break;
 
             default:
