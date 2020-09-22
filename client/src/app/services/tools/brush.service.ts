@@ -90,9 +90,7 @@ export class BrushService extends Tool {
         }
         this.isOut = true;
     }
-    setColor(color: Color): void {
-        this.primaryColor = color;
-    }
+
     changeColor(imagedata: ImageData, color: Color): void {
         for (let j = 0; j < imagedata.data.length; j += BYTE_SIZE) {
             imagedata.data[j] = color.red; // Invert Red

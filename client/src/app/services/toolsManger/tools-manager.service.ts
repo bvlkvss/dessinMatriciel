@@ -25,6 +25,8 @@ export class ToolsManagerService {
     getTools(): Tool[] {
         return this.tools;
     }
+    setOpacity(opacity: string): void { }
+
     setColor(color: string): void {
         this.currentTool.primaryColor = color;
     }

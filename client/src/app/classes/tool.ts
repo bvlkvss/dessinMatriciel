@@ -22,7 +22,6 @@ export abstract class Tool {
         this.mouseDown = bool;
     }
 
-    setColor(color: sting): void { }
     onMouseDown(event: MouseEvent): void { }
 
     onMouseUp(event: MouseEvent): void { }

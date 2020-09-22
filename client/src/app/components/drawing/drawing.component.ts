@@ -67,6 +67,7 @@ export class DrawingComponent implements AfterViewInit {
         switch (event.key) {
             case '1':
                 this.tools.setTools(2);
+                // this.tools.setColor(this.)
                 break;
             case 'w':
                 this.tools.setTools(1); // pour tester setRGB bleu,initialement coleur noir !!
