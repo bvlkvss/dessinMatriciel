@@ -9,6 +9,7 @@ import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.ser
 export class ColorPickerComponent implements OnInit {
     hue: string;
     color: string;
+    lastColors: string[] = new Array<string>();
     constructor(private tools: ToolsManagerService) {
         this.color = "rgb(0,0,0)";
     }
@@ -41,6 +42,21 @@ export class ColorPickerComponent implements OnInit {
         this.tools.setColor(input.value);
 
     }
+    addColor(color: string): void {
+        if (!this.lastColors.find(element => element === color)) {
+            if (this.lastColors.length < 10) {
+                this.lastColors.push(color);
+            }
+            else {
+                let tmp = this.lastColors;
+                tmp.reverse();
+                tmp.pop();
+                tmp.reverse();
+                this.lastColors = tmp;
+                this.lastColors.push(color)
 
+            }
+        }
+    }
 
 }

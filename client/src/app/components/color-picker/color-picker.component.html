@@ -1,9 +1,12 @@
+<div *ngFor="let i of lastColors" class="color-container">
+    <button class="lastColors" [ngStyle]="{ 'background-color': i }"></button>
+</div>
 <div class="input-wrapper">
     <div class="color-div" [ngStyle]="{ 'background-color': color || 'white' }"></div>
     <input class="text" [value]="color" (change)="setColorFromInput()" />
 </div>
 <div class="color-wrapper">
-    <app-color-palette [hue]="hue" (color)="color = $event" (color)="setColor()"></app-color-palette>
+    <app-color-palette [hue]="hue" (color)="color = $event" (color)="addColor($event)" (color)="setColor()"></app-color-palette>
     <app-color-slider (color)="hue = $event" (color)="setColor()"></app-color-slider>
 </div>
 <div class="opacityContainer"><input (change)="setOpacity()" id="opacityValue" type="number" min="0" max="100" value="100" /> %</div>
