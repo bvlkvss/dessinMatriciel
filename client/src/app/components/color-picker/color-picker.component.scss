@@ -3,21 +3,20 @@
     padding: 10px;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     height: 400px;
-    width: 235px;
-    background-color: beige;
+    width: 250px;
+    background-color: rgb(48, 46, 64);
 }
 .color-wrapper {
     display: flex;
     height: auto;
     width: auto;
-    background-color: burlywood;
 }
 
 .input-wrapper {
     margin-top: 16px;
     display: flex;
     border-radius: 1px;
-    border: 1px solid rgb(220, 220, 220);
+    outline: none;
     padding: 8px;
     height: 32px;
     justify-content: center;
@@ -31,8 +30,12 @@
 }
 
 .text {
-    flex: 1;
-    width: 20px;
-    font-family: 'Helvetica';
-    line-height: 32px;
+    outline: none;
+    margin: none;
+    color: white;
+    font-size: 18px;
+    border: rgb(48, 46, 64);
+    background-color: rgb(48, 46, 64);
+    font-family: courier, monospace;
+    line-height: 24px;
 }
