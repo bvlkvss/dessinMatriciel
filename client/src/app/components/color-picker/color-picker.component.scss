@@ -1,14 +1,16 @@
 :host {
     display: block;
-    width: 316px;
-    padding: 16px;
+    padding: 10px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    height: 400px;
+    width: 235px;
+    background-color: beige;
 }
 .color-wrapper {
     display: flex;
-    height: 250px;
-}
-.container {
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    height: auto;
+    width: auto;
+    background-color: burlywood;
 }
 
 .input-wrapper {
@@ -30,7 +32,7 @@
 
 .text {
     flex: 1;
-    width: min-content;
+    width: 20px;
     font-family: 'Helvetica';
     line-height: 32px;
 }

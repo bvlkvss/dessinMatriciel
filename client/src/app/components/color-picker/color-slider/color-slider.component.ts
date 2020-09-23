@@ -66,7 +66,7 @@ export class ColorSliderComponent implements AfterViewInit {
 
     getColorAtPosition(x: number, y: number): string {
         const imageData = this.ctx.getImageData(x, y, 1, 1).data;
-        return 'rgba(' + imageData[0] + ',' + imageData[1] + ',' + imageData[2] + ',1)';
+        return 'rgb(' + imageData[0] + ',' + imageData[1] + ',' + imageData[2] + ')';
     }
 
     onMouseDown(event: MouseEvent): void {

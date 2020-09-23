@@ -10,7 +10,7 @@ export class ColorPickerComponent implements OnInit {
     hue: string;
     color: string;
     constructor(private tools: ToolsManagerService) {
-        this.color = "rgba(0,0,0,1)";
+        this.color = "rgb(0,0,0)";
     }
 
 
@@ -34,6 +34,12 @@ export class ColorPickerComponent implements OnInit {
     setColor(): void {
 
         this.tools.setColor(this.color);
+    }
+    setColorFromInput(): void {
+        let input = document.querySelector(".text") as HTMLInputElement;
+        this.color = input.value;
+        this.tools.setColor(input.value);
+
     }
 
 
