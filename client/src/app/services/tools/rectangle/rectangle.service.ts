@@ -100,7 +100,6 @@ export class RectangleService extends Tool {
             } else {
                 width = height * Math.sign(width) * Math.sign(height);
             }
-            
         }
         ctx.fillStyle = 'green';
         ctx.strokeStyle = 'red';
