@@ -107,15 +107,8 @@ export class EllipseService extends Tool {
       } else {
         width = height * Math.sign(width) * Math.sign(height);
       }
-      //previewCtx.canvas.width
-
-      console.log("width: ",width);
-      console.log("mousedown coord:", this.mouseDownCoord.x);
-    
-
-      
+         
       if ((width + this.mouseDownCoord.x > previewCtx.canvas.width) && width>0) {
-        console.log("in");
         width = previewCtx.canvas.width - this.mouseDownCoord.x;
         height=width*Math.sign(height)*Math.sign(width);
         
@@ -173,7 +166,6 @@ export class EllipseService extends Tool {
       baseCtx.ellipse(centerx, centery, radiusX, radiusY, 0, 0, 2 * Math.PI);
       baseCtx.stroke();
       baseCtx.fill();
-      console.log("not a preview");
       baseCtx.closePath();
     }
 
@@ -181,8 +173,7 @@ export class EllipseService extends Tool {
     previewCtx.lineWidth = 1;
     previewCtx.strokeStyle = 'grey';
     previewCtx.setLineDash([5, 15]);
-    console.log("width at draw", width);
-    console.log("height at draw is", height);
+
     previewCtx.rect(startPos.x, startPos.y, width, height);
     previewCtx.stroke();
     previewCtx.closePath();
