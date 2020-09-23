@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DrawingComponent } from '@app/components/drawing/drawing.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { BrushService } from '@app/services/tools/brush.service';
+import { BrushService } from '@app/services/tools/brush/brush.service';
 import { EraserService } from '@app/services/tools/eraser/eraser-service';
 import { EllipseService } from '@app/services/tools/ellipse/ellipse.service';
 import { PencilService } from '@app/services/tools/pencil/pencil-service';

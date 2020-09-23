@@ -1,9 +1,11 @@
 import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
+import { Color } from '@app/classes/color';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { delay } from 'rxjs/operators';
 import { BrushService } from './brush.service';
+
 // tslint:disable:no-magic-numbers
 // tslint:disable:no-any
 describe('BrushService', () => {
@@ -39,6 +41,7 @@ describe('BrushService', () => {
         service = TestBed.inject(BrushService);
         drawLineSpy = spyOn<any>(service, 'drawLine').and.callThrough();
         changeColorSpy = spyOn<any>(service, 'changeColor').and.callThrough();
+
         // tslint:disable:no-string-literal
         service['drawingService'].baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
         service['drawingService'].previewCtx = previewCtxStub;
@@ -50,20 +53,24 @@ describe('BrushService', () => {
     it(' mouseDown should set mouseDownCoord to correct position', () => {
         const expectedResult: Vec2 = { x: mouseEvent.offsetX, y: mouseEvent.offsetY };
         service.onMouseDown(mouseEvent);
+        delay(100);
         expect(service.mouseDownCoord).toEqual(expectedResult);
     });
 
     it(' mouseDown should set mouseDown property to true on left click', () => {
         service.onMouseDown(mouseEvent);
+        delay(100);
         expect(service.mouseDown).toEqual(true);
     });
     it(' mouseDown should set isOut property to false when the cursor exits the canvas field', () => {
         service.onMouseDown(mouseEvent);
+        delay(100);
         expect(service.isOut).toEqual(false);
     });
 
     it(' mouseDown should set mouseDown property to false on right click', () => {
         service.onMouseDown(mouseRClickEvent);
+        delay(10);
         expect(service.mouseDown).toEqual(false);
     });
 
@@ -93,7 +100,7 @@ describe('BrushService', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
 
         service.onMouseUp(mouseEvent);
-        delay(5);
+        delay(10);
         expect(drawLineSpy).not.toHaveBeenCalled();
     });
     it(' onMouseUp should not call drawLine if mouse was not in the canvas', () => {
@@ -135,46 +142,28 @@ describe('BrushService', () => {
         expect(drawLineSpy).not.toHaveBeenCalled();
     });
 
-    it(' should not call changeColor after drawing ', () => {
-        service.mouseDown = false;
-        service.mouseDownCoord = { x: 20, y: 20 };
-        service.onMouseUp(mouseEvent);
-        delay(5);
-        expect(changeColorSpy).not.toHaveBeenCalled();
-    });
-    it(' should  call changeColor after drawing ', () => {
-        service.mouseDown = false;
-        service.mouseDownCoord = { x: 20, y: 20 };
-        service.onMouseDown(mouseEvent);
-        service.onMouseMove(mouseEvent);
-        delay(5);
-        expect(changeColorSpy).toHaveBeenCalled();
+    it(' setColor should set the color attribute to the given color', () => {
+        const testColor: Color = { red: 255, green: 0, blue: 0 };
+        service.setColor(testColor);
+        expect(service.getColor()).toBe(testColor);
     });
 
-    /* it('it should draw a point after clicking and releasing   ', () => {
-        // this will check that nothing was drawn on canvas at (0,0), after that it'll check on right coordinates which are (20,20)
-        const image: HTMLImageElement = service.getImage();
-        service.mouseDown = false;
-        service.mouseDownCoord = { x: 20, y: 20 };
-        service.currentPos = { x: 20, y: 20 };
+    it('changeColor should change pixels to the given Color', () => {
+        mouseEvent = { offsetX: 0, offsetY: 0, button: 1 } as MouseEvent;
         service.onMouseDown(mouseEvent);
+        mouseEvent = { offsetX: 0, offsetY: 0, button: 1 } as MouseEvent;
         service.onMouseUp(mouseEvent);
-        expect(drawLineSpy).toHaveBeenCalled();
-        expect(baseCtxStub.getImageData(0, 0, image.width, image.height)).toBeDefined();
-        //  expect(baseCtxStub.getImageData(20, 20, image.width, image.height)).toBeDefined();
-    });*/
-    /*it(' it should changeColor of the image after drawing   ', () => {
-        // this will check that nothing was drawn on canvas at (0,0), after that it'll check on right coordinates which are (20,20)
-        const image: HTMLImageElement = service.getImage();
-        service.mouseDown = false;
-        service.setColor({ red: 255, green: 0, blue: 30 });
-        service.mouseDownCoord = { x: 20, y: 20 };
-        service.onMouseDown(mouseEvent);
-        service.onMouseUp(mouseEvent);
+        service.setColor({ red: 255, green: 0, blue: 0 });
+        const imageData: ImageData = baseCtxStub.getImageData(0, 0, 1, 1);
+        service.changeColor(imageData);
+        expect(imageData.data[0]).toEqual(255); // R
+        expect(imageData.data[1]).toEqual(0); // G
+        expect(imageData.data[2]).toEqual(0); // B
+    });
+
+    it('makeBaseImage should call changeColor', () => {
+        service.makeBaseImage();
+        delay(100);
         expect(changeColorSpy).toHaveBeenCalled();
-        const imageData = baseCtxStub.getImageData(20, 20, image.width, image.height);
-        expect(imageData.data[0]).toEqual(255); // red
-        expect(imageData.data[1]).toEqual(0); // green
-        expect(imageData.data[2]).toEqual(30); // blue
-    });*/
+    });
 });

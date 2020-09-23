@@ -13,10 +13,9 @@ export enum MouseButton {
     Forward = 4,
 }
 const BYTE_SIZE = 4;
-const IMAGE_SIZE_DIVIDER = 2;
-// const MOUSE_POSITION_OFFSET_DIVIDER = 6;
-const IMAGES_PER_POINT = 8;
-const DEFAULT_BRUSH_SIZE = 20;
+const IMAGE_SIZE_DIVIDER = 3;
+const MOUSE_POSITION_OFFSET_DIVIDER = 6;
+const IMAGES_PER_POINT = 4;
 
 // TODO : Déplacer ça dans un fichier séparé accessible par tous
 
@@ -30,12 +29,11 @@ const DEFAULT_BRUSH_SIZE = 20;
 })
 export class BrushService extends Tool {
     private image: HTMLImageElement;
+    private color: Color = this.primaryColor;
     constructor(drawingService: DrawingService) {
         super(drawingService);
         this.image = new Image();
-        this.image.src = '../../../assets/b2.svg';
-        this.image.width = DEFAULT_BRUSH_SIZE;
-        this.image.height = DEFAULT_BRUSH_SIZE;
+        this.image.src = '../../../assets/b4.png';
     }
 
     onMouseDown(event: MouseEvent): void {
@@ -71,16 +69,19 @@ export class BrushService extends Tool {
         }
     }
     private drawLine(ctx: CanvasRenderingContext2D): void {
+        ctx.beginPath();
         const dist = this.distanceBetween2Points(this.mouseDownCoord, this.currentPos);
         const angle = this.angleBetween2Points(this.mouseDownCoord, this.currentPos);
         let i = 0;
+        const image = this.makeBaseImage();
         do {
-            const x = this.mouseDownCoord.x + Math.sin(angle) * i - this.image.width / IMAGE_SIZE_DIVIDER;
-            const y = this.mouseDownCoord.y + Math.cos(angle) * i - this.image.height / IMAGE_SIZE_DIVIDER;
-            ctx.drawImage(this.image, x, y, this.image.width, this.image.height);
+            const x = this.mouseDownCoord.x + Math.sin(angle) * i - this.image.width / MOUSE_POSITION_OFFSET_DIVIDER;
+            const y = this.mouseDownCoord.y + Math.cos(angle) * i - this.image.height / MOUSE_POSITION_OFFSET_DIVIDER;
+            ctx.drawImage(image, x, y, image.width, image.height);
             i += IMAGES_PER_POINT;
         } while (i < dist);
         this.mouseDownCoord = this.currentPos;
+        ctx.closePath();
     }
 
     onMouseOut(event: MouseEvent): void {
@@ -91,13 +92,36 @@ export class BrushService extends Tool {
         this.isOut = true;
     }
 
-    changeColor(imagedata: ImageData, color: Color): void {
-        for (let j = 0; j < imagedata.data.length; j += BYTE_SIZE) {
-            imagedata.data[j] = color.red; // Invert Red
-            imagedata.data[j + 1] = color.green; // Invert Green
-            imagedata.data[j + 2] = color.blue; // Invert Blue
+    setColor(color: Color): void {
+        this.color = color;
+    }
+
+    getColor(): Color {
+        return this.color;
+    }
+
+    changeColor(imageData: ImageData): void {
+        for (let j = 0; j < imageData.data.length; j += BYTE_SIZE) {
+            imageData.data[j] = this.color.red; // Invert Red
+            imageData.data[j + 1] = this.color.green; // Invert Green
+            imageData.data[j + 2] = this.color.blue; // Invert Blue
         }
     }
+
+    makeBaseImage(): HTMLCanvasElement {
+        const tempCanvas = document.createElement('canvas');
+        tempCanvas.width = this.image.width / IMAGE_SIZE_DIVIDER;
+        tempCanvas.height = this.image.height / IMAGE_SIZE_DIVIDER;
+        const tempCtx = tempCanvas.getContext('2d');
+        if (tempCtx) {
+            tempCtx.drawImage(this.image, 0, 0, this.image.width / IMAGE_SIZE_DIVIDER, this.image.height / IMAGE_SIZE_DIVIDER);
+            const data = tempCtx.getImageData(0, 0, this.image.width, this.image.height);
+            this.changeColor(data);
+            tempCtx.putImageData(data, 0, 0);
+        }
+        return tempCanvas;
+    }
+
     private angleBetween2Points(point1: Vec2, point2: Vec2): number {
         return Math.atan2(point2.x - point1.x, point2.y - point1.y);
     }
