@@ -62,7 +62,7 @@ export class DrawingComponent implements AfterViewInit {
         this.tools.currentTool.onKeyUp(event);
     }
 
-    @HostListener('document:keydown', ['$event'])
+    @HostListener('keydown', ['$event'])
     onKeyDown(event: KeyboardEvent): void {
         switch (event.key) {
             case '1':

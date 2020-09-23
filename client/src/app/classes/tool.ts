@@ -13,6 +13,7 @@ export abstract class Tool {
     isOut: boolean = false;
     width: number;
     height: number;
+    opacity: number;
     primaryColor: string; // by default black
     secondaryColor: Color = { red: 0, green: 0, blue: 0 }; //  by default black
 

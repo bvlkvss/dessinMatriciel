@@ -1,10 +1,9 @@
-<div class="container">
-    <div class="color-wrapper">
-        <app-color-palette [hue]="hue" (color)="color = $event"></app-color-palette>
-        <app-color-slider (color)="hue = $event" style="margin-left: 16px"></app-color-slider>
-    </div>
-    <div (DOMSubtreeModified)="setColor()" class="input-wrapper">
-        <span class="text">{{ color }}</span>
-        <div class="color-div" [ngStyle]="{ 'background-color': color || 'white' }"></div>
-    </div>
+<div class="color-wrapper">
+    <app-color-palette [hue]="hue" (color)="color = $event" (color)="setColor()"></app-color-palette>
+    <app-color-slider (color)="hue = $event" (color)="setColor()" style="margin-left: 16px"></app-color-slider>
 </div>
+<div class="input-wrapper">
+    <div class="color-div" [ngStyle]="{ 'background-color': color || 'white' }"></div>
+    <input class="text" />{{ color }}
+</div>
+<div class="opacityContainer"><input (change)="setOpacity()" id="opacityValue" type="number" min="0" max="100" value="100" /> %</div>
