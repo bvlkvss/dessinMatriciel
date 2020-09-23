@@ -3,7 +3,6 @@ import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 
-
 export enum MouseButton {
   Left = 0,
   Middle = 1,
@@ -18,16 +17,16 @@ export enum RectangleStyle {
   Filled = 2,
 }
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
-
 export class EllipseService extends Tool {
   toSquare: boolean = false;
   isOut: boolean = false;
   currentPos: Vec2;
+  outlineWidth: number;
   constructor(drawingService: DrawingService) {
     super(drawingService);
-
+    this.outlineWidth = 30;
   }
 
   onMouseDown(event: MouseEvent): void {
@@ -51,7 +50,7 @@ export class EllipseService extends Tool {
       let mousePosition = this.getPositionFromMouse(event);
       if (this.isOut) mousePosition = this.mouseOutCoord;
 
-      this.drawRectangle(this.drawingService.previewCtx, this.drawingService.baseCtx, this.mouseDownCoord, mousePosition, this.toSquare);
+      this.drawEllipse(this.drawingService.previewCtx, this.drawingService.baseCtx, this.mouseDownCoord, mousePosition, this.toSquare, false);
     }
     this.drawingService.clearCanvas(this.drawingService.previewCtx);
 
@@ -64,8 +63,7 @@ export class EllipseService extends Tool {
 
       // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
       this.drawingService.clearCanvas(this.drawingService.previewCtx);
-      this.drawRectangle(this.drawingService.previewCtx, this.drawingService.previewCtx, this.mouseDownCoord, this.currentPos, this.toSquare);
-
+      this.drawEllipse(this.drawingService.previewCtx, this.drawingService.previewCtx, this.mouseDownCoord, this.currentPos, this.toSquare);
     }
   }
 
@@ -73,7 +71,7 @@ export class EllipseService extends Tool {
     if (!event.shiftKey && this.mouseDown) {
       this.toSquare = false;
       this.drawingService.clearCanvas(this.drawingService.previewCtx);
-      this.drawRectangle(this.drawingService.previewCtx, this.drawingService.previewCtx, this.mouseDownCoord, this.currentPos, this.toSquare);
+      this.drawEllipse(this.drawingService.previewCtx, this.drawingService.previewCtx, this.mouseDownCoord, this.currentPos, this.toSquare);
       if (!this.mouseDown) {
         // if shift key is still down while mouse is up, the shift event clears the preview
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
@@ -85,59 +83,109 @@ export class EllipseService extends Tool {
     if (event.shiftKey && this.mouseDown) {
       this.toSquare = true;
       this.drawingService.clearCanvas(this.drawingService.previewCtx);
-      this.drawRectangle(this.drawingService.previewCtx, this.drawingService.previewCtx, this.mouseDownCoord, this.currentPos, this.toSquare);
+      this.drawEllipse(this.drawingService.previewCtx, this.drawingService.previewCtx, this.mouseDownCoord, this.currentPos, this.toSquare);
     }
   }
 
-  private drawRectangle(previewCtx: CanvasRenderingContext2D, baseCtx: CanvasRenderingContext2D, startPos: Vec2, currentPos: Vec2, toSquare: boolean): void {
+  private drawEllipse(
+    previewCtx: CanvasRenderingContext2D,
+    baseCtx: CanvasRenderingContext2D,
+    startPos: Vec2,
+    currentPos: Vec2,
+    toSquare: boolean,
+    preview: boolean = true
+  ): void {
     previewCtx.beginPath();
     baseCtx.beginPath();
     let width = currentPos.x - startPos.x;
     let height = currentPos.y - startPos.y;
+
+    if(width!=0 && height !=0){
     if (toSquare) {
       if (Math.abs(width) > Math.abs(height)) {
         height = width * Math.sign(height) * Math.sign(width);
       } else {
         width = height * Math.sign(width) * Math.sign(height);
       }
+      //previewCtx.canvas.width
+
+      console.log("width: ",width);
+      console.log("mousedown coord:", this.mouseDownCoord.x);
+    
+
+      
+      if ((width + this.mouseDownCoord.x > previewCtx.canvas.width) && width>0) {
+        console.log("in");
+        width = previewCtx.canvas.width - this.mouseDownCoord.x;
+        height=width*Math.sign(height)*Math.sign(width);
+        
+        
+      }
+      
+      if ((height + this.mouseDownCoord.y > previewCtx.canvas.height) &&height>0) {
+        height = previewCtx.canvas.height - this.mouseDownCoord.y;
+        width=height* Math.sign(width)*Math.sign(height);
+      }
+      
+      if(Math.abs(width)>startPos.x && width<0){
+
+        width=-startPos.x;
+        height=width*Math.sign(height)*Math.sign(width);
+      }
+      if(Math.abs(height)>startPos.x && height<0){
+
+        height=-startPos.y;
+        width=height*Math.sign(width)*Math.sign(height);
+      }
+    
     }
+
+
+
+    let centerx = this.mouseDownCoord.x + width / 2;
+
+    let centery = this.mouseDownCoord.y + height / 2;
+
+
+    let radiusX = Math.abs(Math.abs(width / 2) - this.outlineWidth / 2);
+    let radiusY = Math.abs(Math.abs(height / 2) - this.outlineWidth / 2);
+
+    previewCtx.setLineDash([0, 0])
     previewCtx.strokeStyle = 'red';
+    previewCtx.lineWidth = this.outlineWidth;
 
 
-    //previewCtx.stroke();
-    this.drawEllipse(previewCtx, width / 2, height / 2);
-    previewCtx.stroke();
-    previewCtx.fill();
+
+
+
+
+    if (preview) {
+      previewCtx.beginPath();
+      previewCtx.ellipse(centerx, centery, radiusX, radiusY, 0, 0, 2 * Math.PI);
+      previewCtx.stroke();
+      previewCtx.fill();
+      previewCtx.closePath();
+    }
+    else {
+      baseCtx.lineWidth = this.outlineWidth;
+      baseCtx.strokeStyle = 'red';
+      baseCtx.beginPath();
+      baseCtx.ellipse(centerx, centery, radiusX, radiusY, 0, 0, 2 * Math.PI);
+      baseCtx.stroke();
+      baseCtx.fill();
+      console.log("not a preview");
+      baseCtx.closePath();
+    }
+
+    previewCtx.beginPath();
+    previewCtx.lineWidth = 1;
+    previewCtx.strokeStyle = 'grey';
+    previewCtx.setLineDash([5, 15]);
+    console.log("width at draw", width);
+    console.log("height at draw is", height);
     previewCtx.rect(startPos.x, startPos.y, width, height);
     previewCtx.stroke();
-
+    previewCtx.closePath();
   }
-
-  private drawEllipse(ctx: CanvasRenderingContext2D, radiusX: number, radiusY: number) {
-
-
-
-    let centerx = 0;
-    let centery = 0;
-
-
-      centerx = this.mouseDownCoord.x + radiusX;
-
-    
-
-    
-
-
-      centery = this.mouseDownCoord.y + radiusY;
-    
-   
-
-
-    console.log("center x is:",centerx);
-    console.log("center y is:",centery);
-    ctx.ellipse(centerx, centery, Math.abs(radiusX), Math.abs(radiusY), 0, 0, 2 * Math.PI);
-
   }
-
-
 }

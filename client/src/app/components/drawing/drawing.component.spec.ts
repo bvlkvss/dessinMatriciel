@@ -2,6 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DrawingComponent } from '@app/components/drawing/drawing.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { BrushService } from '@app/services/tools/brush.service';
+import { EllipseService } from '@app/services/tools/ellipse/ellipse.service';
 import { PencilService } from '@app/services/tools/pencil/pencil-service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle.service';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
@@ -18,13 +19,15 @@ describe('DrawingComponent', () => {
     let brushStub: BrushService;
     let drawingStub: DrawingService;
     let rectangleStub: RectangleService;
+    let ellipseStub: EllipseService;
 
     beforeEach(async(() => {
         drawingStub = new DrawingService();
         pencilStub = new PencilService(drawingStub);
         brushStub = new BrushService(drawingStub);
         rectangleStub = new RectangleService(drawingStub);
-        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub);
+        ellipseStub=new EllipseService(drawingStub);
+        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub,ellipseStub);
 
         TestBed.configureTestingModule({
             declarations: [DrawingComponent],
