@@ -21,8 +21,7 @@ export class DrawingComponent implements AfterViewInit {
     private previewCtx: CanvasRenderingContext2D;
     private canvasSize: Vec2 = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
     // TODO : Avoir un service dédié pour gérer tous les outils ? Ceci peut devenir lourd avec le temps
-    constructor(private drawingService: DrawingService, private tools: ToolsManagerService) { }
-
+    constructor(private drawingService: DrawingService, private tools: ToolsManagerService) {}
 
     ngAfterViewInit(): void {
         this.baseCtx = this.baseCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
@@ -67,29 +66,34 @@ export class DrawingComponent implements AfterViewInit {
             case '1':
                 this.tools.setTools(2);
                 // this.tools.setColor(this.)
+
                 break;
             case 'w':
                 this.tools.setTools(1); // pour tester setRGB bleu,initialement coleur noir !!
+
                 break;
             case 'c':
                 this.tools.setTools(0);
-                this.previewCtx.canvas.style.cursor = "crosshair";
-                this.tools.setColor("#000000");
+                this.previewCtx.canvas.style.cursor = 'crosshair';
+                this.tools.setColor('#000000');
+
+                break;
             case 'e':
                 // tslint:disable-next-line:no-magic-numbers
                 this.tools.setTools(3);
                 this.previewCtx.canvas.style.cursor = "url('whiteSquare.png'), auto";
                 console.log('eraser');
                 // tslint:disable-next-line:no-magic-numbers
-                this.tools.setColor("#ffffff");
+                this.tools.setColor('#ffffff');
+
             case '2':
                 this.tools.setTools(4);
+
                 break;
             default:
                 this.tools.currentTool.onKeyDown(event);
                 break;
         }
-
     }
 
     get width(): number {
