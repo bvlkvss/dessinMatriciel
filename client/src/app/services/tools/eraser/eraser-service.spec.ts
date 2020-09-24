@@ -2,17 +2,17 @@ import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { RectangleService } from './rectangle.service';
+import { EraserService } from './eraser-service';
 
 // tslint:disable:no-any
-describe('RectangleService', () => {
-    let service: RectangleService;
+describe('EraserService', () => {
+    let service: EraserService;
     let mouseEvent: MouseEvent;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
 
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
-    let fillRectangleSpy: jasmine.Spy<any>;
+    let clearLineSpy: jasmine.Spy<any>;
 
     beforeEach(() => {
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
@@ -22,8 +22,8 @@ describe('RectangleService', () => {
         TestBed.configureTestingModule({
             providers: [{ provide: DrawingService, useValue: drawServiceSpy }],
         });
-        service = TestBed.inject(RectangleService);
-        fillRectangleSpy = spyOn<any>(service, 'fillRectangle').and.callThrough();
+        service = TestBed.inject(EraserService);
+        clearLineSpy = spyOn<any>(service, 'clearLine').and.callThrough();
 
         // Configuration du spy du service
         // tslint:disable:no-string-literal
@@ -62,48 +62,69 @@ describe('RectangleService', () => {
         expect(service.mouseDown).toEqual(false);
     });
 
-    it(' onMouseUp should call fillRectangleSpy if mouse was already down', () => {
+    it(' onMouseUp should call clearLine if mouse was already down', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = true;
 
         service.onMouseUp(mouseEvent);
-        expect(fillRectangleSpy).toHaveBeenCalled();
+        expect(clearLineSpy).toHaveBeenCalled();
     });
 
-    it(' onMouseUp should not call fillRectangle if mouse was not already down', () => {
+    it(' onMouseUp should not call clearLine if mouse was not already down', () => {
         service.mouseDown = false;
         service.mouseDownCoord = { x: 0, y: 0 };
 
         service.onMouseUp(mouseEvent);
-        expect(fillRectangleSpy).not.toHaveBeenCalled();
+        expect(clearLineSpy).not.toHaveBeenCalled();
     });
 
-    it(' onMouseMove should call fillRectangle if mouse was already down', () => {
+    it(' onMouseMove should call clearLine if mouse was already down', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = true;
-
         service.onMouseMove(mouseEvent);
         expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
-        expect(fillRectangleSpy).toHaveBeenCalled();
+        expect(clearLineSpy).toHaveBeenCalled();
     });
 
-    it(' onMouseMove should not call fillRectangle if mouse was not already down', () => {
+    it(' onMouseMove should not call clearLine if mouse was not already down', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = false;
 
         service.onMouseMove(mouseEvent);
         expect(drawServiceSpy.clearCanvas).not.toHaveBeenCalled();
-        expect(fillRectangleSpy).not.toHaveBeenCalled();
+        expect(clearLineSpy).not.toHaveBeenCalled();
     });
 
-    // it(' onMouseOut should not call fillRectangle ')
+    it('should erase a pixel if mouse is pressed and not moved', () => {
+        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDown = true;
+        service.onMouseUp(mouseEvent);
+        expect(clearLineSpy).toHaveBeenCalled();
+    });
 
-    /*
+    it('setEraserThickness should set eraser thickness to correct value', () => {
+        // tslint:disable-next-line:no-magic-numbers
+        service.setEraserThickness(6);
+        // tslint:disable-next-line:prefer-const
+        let thickness = service.getEraserThickness();
+        // tslint:disable-next-line:no-magic-numbers
+        expect(thickness).toEqual(6);
+    });
+
+    it('setEraserThickness should not set eraser thickness to value less than 5', () => {
+        // tslint:disable-next-line:no-magic-numbers
+        service.setEraserThickness(3);
+        // tslint:disable-next-line:prefer-const
+        let thickness = service.getEraserThickness();
+        // tslint:disable-next-line:no-magic-numbers
+        expect(thickness).not.toEqual(3);
+    });
+
     // Exemple de test d'intégration qui est quand même utile
     it(' should change the pixel of the canvas ', () => {
-        mouseEvent = { offsetX: 0, offsetY: 0, button: 0 } as MouseEvent;
+        mouseEvent = { offsetX: 0, offsetY: 0, button: 1 } as MouseEvent;
         service.onMouseDown(mouseEvent);
-        mouseEvent = { offsetX: 1, offsetY: 0, button: 0 } as MouseEvent;
+        mouseEvent = { offsetX: 1, offsetY: 0, button: 1 } as MouseEvent;
         service.onMouseUp(mouseEvent);
 
         // Premier pixel seulement
@@ -111,8 +132,5 @@ describe('RectangleService', () => {
         expect(imageData.data[0]).toEqual(0); // R
         expect(imageData.data[1]).toEqual(0); // G
         expect(imageData.data[2]).toEqual(0); // B
-        // tslint:disable-next-line:no-magic-numbers
-        expect(imageData.data[3]).not.toEqual(0); // A
     });
-    */
 });

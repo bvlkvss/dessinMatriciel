@@ -100,6 +100,24 @@ export class RectangleService extends Tool {
             } else {
                 width = height * Math.sign(width) * Math.sign(height);
             }
+            if (width + this.mouseDownCoord.x > ctx.canvas.width && width > 0) {
+                width = ctx.canvas.width - this.mouseDownCoord.x;
+                height = width * Math.sign(height) * Math.sign(width);
+            }
+
+            if (height + this.mouseDownCoord.y > ctx.canvas.height && height > 0) {
+                height = ctx.canvas.height - this.mouseDownCoord.y;
+                width = height * Math.sign(width) * Math.sign(height);
+            }
+
+            if (Math.abs(width) > startPos.x && width < 0) {
+                width = -startPos.x;
+                height = width * Math.sign(height) * Math.sign(width);
+            }
+            if (Math.abs(height) > startPos.y && height < 0) {
+                height = -startPos.y;
+                width = height * Math.sign(width) * Math.sign(height);
+            }
         }
         ctx.fillStyle = this.primaryColor;
         ctx.strokeStyle = 'red';
