@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-
+// tslint:disable:no-magic-numbers
 export enum MouseButton {
     Left = 0,
     Middle = 1,
@@ -90,15 +90,8 @@ export class EllipseService extends Tool {
         }
     }
 
-    private drawEllipse(
-        ctx: CanvasRenderingContext2D,
-        startPos: Vec2,
-        currentPos: Vec2,
-        toSquare: boolean,
-        preview: boolean = true,
-    ): void {
-
-
+    // tslint:disable:cyclomatic-complexity
+    private drawEllipse(ctx: CanvasRenderingContext2D, startPos: Vec2, currentPos: Vec2, toSquare: boolean, preview: boolean = true): void {
         let width = currentPos.x - startPos.x;
         let height = currentPos.y - startPos.y;
 
@@ -121,12 +114,12 @@ export class EllipseService extends Tool {
                 }
 
                 if (Math.abs(width) > startPos.x && width < 0) {
-                    console.log("in");
+                    console.log('in');
                     width = -startPos.x;
                     height = width * Math.sign(height) * Math.sign(width);
                 }
                 if (Math.abs(height) > startPos.y && height < 0) {
-                    console.log("in");
+                    console.log('in');
                     height = -startPos.y;
                     width = height * Math.sign(width) * Math.sign(height);
                 }
@@ -138,8 +131,6 @@ export class EllipseService extends Tool {
 
             const radiusX = Math.abs(Math.abs(width / 2) - this.outlineWidth / 2);
             const radiusY = Math.abs(Math.abs(height / 2) - this.outlineWidth / 2);
-
-
 
             ctx.beginPath();
             ctx.setLineDash([0, 0]);
@@ -162,8 +153,6 @@ export class EllipseService extends Tool {
             }
             ctx.closePath();
 
-            // tslint:disable-next-line:no-magic-numbers
-
             if (preview) {
                 ctx.beginPath();
                 ctx.setLineDash([5, 15]);
@@ -172,7 +161,6 @@ export class EllipseService extends Tool {
                 ctx.rect(startPos.x, startPos.y, width, height);
                 ctx.stroke();
                 ctx.closePath();
-
             }
         }
     }

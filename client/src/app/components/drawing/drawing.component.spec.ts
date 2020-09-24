@@ -2,8 +2,8 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DrawingComponent } from '@app/components/drawing/drawing.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { BrushService } from '@app/services/tools/brush/brush.service';
-import { EraserService } from '@app/services/tools/eraser/eraser-service';
 import { EllipseService } from '@app/services/tools/ellipse/ellipse.service';
+import { EraserService } from '@app/services/tools/eraser/eraser-service';
 import { PencilService } from '@app/services/tools/pencil/pencil-service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle.service';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
@@ -21,8 +21,8 @@ describe('DrawingComponent', () => {
     let drawingStub: DrawingService;
     let rectangleStub: RectangleService;
     let eraserStub: EraserService;
+    /*tslint:disable-next-line:prefer-const*/
     let ellipseStub: EllipseService;
-
 
     beforeEach(async(() => {
         drawingStub = new DrawingService();
@@ -31,8 +31,7 @@ describe('DrawingComponent', () => {
         rectangleStub = new RectangleService(drawingStub);
 
         eraserStub = new EraserService(drawingStub);
-        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub,ellipseStub);
-
+        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub);
 
         TestBed.configureTestingModule({
             declarations: [DrawingComponent],

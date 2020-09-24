@@ -1,5 +1,4 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, HostListener, Output, ViewChild } from '@angular/core';
-
 @Component({
     selector: 'app-color-slider',
     templateUrl: './color-slider.component.html',
@@ -15,17 +14,15 @@ export class ColorSliderComponent implements AfterViewInit {
     private ctx: CanvasRenderingContext2D;
     private mousedown: boolean = false;
     private selectedHeight: number;
-
-    constructor() { }
-
-    // ngOnInit(): void {}
+    /*tslint:disable-next-line:no-empty*/
+    constructor() {}
 
     draw(): void {
         const width = this.canvas.nativeElement.width;
         const height = this.canvas.nativeElement.height;
         this.ctx.clearRect(0, 0, width, height);
-
         const gradient = this.ctx.createLinearGradient(0, 0, 0, height);
+        /*tslint:disable:no-magic-numbers*/
         gradient.addColorStop(0, 'rgba(255, 0, 0, 1)');
         gradient.addColorStop(0.17, 'rgba(255, 255, 0, 1)');
         gradient.addColorStop(0.34, 'rgba(0, 255, 0, 1)');
@@ -71,7 +68,7 @@ export class ColorSliderComponent implements AfterViewInit {
     rgbToHex(rgb: number): string {
         let hex = Number(rgb).toString(16);
         if (hex.length < 2) {
-            hex = "0" + hex;
+            hex = '0' + hex;
         }
         return hex;
     }

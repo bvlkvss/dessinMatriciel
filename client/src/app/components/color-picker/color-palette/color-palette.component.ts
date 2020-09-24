@@ -1,5 +1,8 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, HostListener, Input, OnChanges, Output, SimpleChanges, ViewChild } from '@angular/core';
 
+const STARTING_ARC_RADIUS = 10;
+const STARTING_LINE_WIDTH = 5;
+
 @Component({
     selector: 'app-color-palette',
     templateUrl: './color-palette.component.html',
@@ -51,8 +54,8 @@ export class ColorPaletteComponent implements AfterViewInit, OnChanges {
             this.ctx.strokeStyle = 'white';
             this.ctx.fillStyle = 'white';
             this.ctx.beginPath();
-            this.ctx.arc(this.selectedPosition.x, this.selectedPosition.y, 10, 0, 2 * Math.PI);
-            this.ctx.lineWidth = 5;
+            this.ctx.arc(this.selectedPosition.x, this.selectedPosition.y, STARTING_ARC_RADIUS, 0, 2 * Math.PI);
+            this.ctx.lineWidth = STARTING_LINE_WIDTH;
             this.ctx.stroke();
         }
     }
@@ -100,7 +103,7 @@ export class ColorPaletteComponent implements AfterViewInit, OnChanges {
     rgbToHex(rgb: number): string {
         let hex = Number(rgb).toString(16);
         if (hex.length < 2) {
-            hex = "0" + hex;
+            hex = '0' + hex;
         }
         return hex;
     }

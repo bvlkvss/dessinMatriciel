@@ -32,7 +32,7 @@ export class BrushService extends Tool {
     private color: Color = { red: 0, green: 0, blue: 0 };
     constructor(drawingService: DrawingService) {
         super(drawingService);
-        this.primaryColor = "0000000";
+        this.primaryColor = '0000000';
         this.image = new Image();
         this.image.src = '../../../assets/b2.png';
     }
@@ -93,14 +93,11 @@ export class BrushService extends Tool {
         this.isOut = true;
     }
 
-
-
     getColor(): Color {
         return this.color;
     }
 
     changeColor(imageData: ImageData): void {
-
         const newColor = this.hexToColor(this.primaryColor);
         this.color = newColor;
 

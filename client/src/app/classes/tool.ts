@@ -17,34 +17,33 @@ export abstract class Tool {
     primaryColor: string; // by default black
     secondaryColor: Color = { red: 0, green: 0, blue: 0 }; //  by default black
 
-    constructor(protected drawingService: DrawingService) { }
+    constructor(protected drawingService: DrawingService) {}
 
     setMouseDown(bool: boolean): void {
         this.mouseDown = bool;
     }
 
-    onMouseDown(event: MouseEvent): void { }
+    onMouseDown(event: MouseEvent): void {}
 
-    onMouseUp(event: MouseEvent): void { }
-    onMouseOut(event: MouseEvent): void { }
-    onMouseEnter(event: MouseEvent): void { }
+    onMouseUp(event: MouseEvent): void {}
+    onMouseOut(event: MouseEvent): void {}
+    onMouseEnter(event: MouseEvent): void {}
 
-    onKeyDown(event: KeyboardEvent): void { }
+    onKeyDown(event: KeyboardEvent): void {}
 
-    onMouseMove(event: MouseEvent): void { }
+    onMouseMove(event: MouseEvent): void {}
 
-    onKeyUp(event: KeyboardEvent): void { }
+    onKeyUp(event: KeyboardEvent): void {}
     getPositionFromMouse(event: MouseEvent): Vec2 {
         return { x: event.offsetX, y: event.offsetY };
     }
 
     hexToColor(hex: string): Color {
+        // tslint:disable:no-magic-numbers
         console.log(hex);
-        console.log("red slice", hex.slice(1, 3));
-        console.log("green slice", hex.slice(3, 5));
-        console.log("blue slice", hex.slice(5, 7));
-
-
+        console.log('red slice', hex.slice(1, 3));
+        console.log('green slice', hex.slice(3, 5));
+        console.log('blue slice', hex.slice(5, 7));
 
         const redNum = parseInt(hex.slice(1, 3), 16);
         const greenNum = parseInt(hex.slice(3, 5), 16);

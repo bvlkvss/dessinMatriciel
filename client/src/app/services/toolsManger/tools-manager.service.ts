@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { BrushService } from '@app/services/tools/brush/brush.service';
-import { EraserService } from '@app/services/tools/eraser/eraser-service';
 import { EllipseService } from '@app/services/tools/ellipse/ellipse.service';
+import { EraserService } from '@app/services/tools/eraser/eraser-service';
 import { PencilService } from '@app/services/tools/pencil/pencil-service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle.service';
 
+const OPACITY_DIVIDER = 100.0;
 @Injectable({
     providedIn: 'root',
 })
@@ -13,11 +14,15 @@ export class ToolsManagerService {
     private tools: Tool[];
     currentTool: Tool;
 
-
-    constructor(pencilService: PencilService, brushService: BrushService, rectangleService: RectangleService, eraserService: EraserService,ellipseService: EllipseService) {
-        this.tools = [pencilService, brushService, rectangleService, eraserService,ellipseService];
+    constructor(
+        pencilService: PencilService,
+        brushService: BrushService,
+        rectangleService: RectangleService,
+        eraserService: EraserService,
+        ellipseService: EllipseService,
+    ) {
+        this.tools = [pencilService, brushService, rectangleService, eraserService, ellipseService];
         this.currentTool = this.tools[0];
-
     }
     setTools(index: number): void {
         this.currentTool = this.tools[index];
@@ -30,14 +35,12 @@ export class ToolsManagerService {
         return this.tools;
     }
     setOpacity(opacity: number): void {
-
-        this.currentTool.opacity = opacity / 100.0;
+        this.currentTool.opacity = opacity / OPACITY_DIVIDER;
     }
 
     setColor(color: string): void {
-        this.tools.forEach(element => {
+        this.tools.forEach((element) => {
             element.primaryColor = color;
         });
-
     }
 }

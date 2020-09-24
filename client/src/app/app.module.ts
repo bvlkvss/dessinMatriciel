@@ -16,4 +16,4 @@ import { UserGuideComponent } from './components/user-guide/user-guide.component
     providers: [],
     bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}
