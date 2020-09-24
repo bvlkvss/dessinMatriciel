@@ -86,7 +86,7 @@ export class DrawingComponent implements AfterViewInit {
                 this.tools.setColor("#ffffff");
 
             case '2':
-                this.tools.setTools(3);
+                this.tools.setTools(4);
             default:
                 this.tools.currentTool.onKeyDown(event);
                 break;

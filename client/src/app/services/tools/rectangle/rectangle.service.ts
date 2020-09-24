@@ -29,7 +29,7 @@ export class RectangleService extends Tool {
     outlineWidth: number;
     constructor(drawingService: DrawingService) {
         super(drawingService);
-        this.rectangleStyle = 1;
+        this.rectangleStyle = 0;
     }
 
     onMouseDown(event: MouseEvent): void {
@@ -119,6 +119,9 @@ export class RectangleService extends Tool {
                 width = height * Math.sign(width) * Math.sign(height);
             }
         }
+        ctx.beginPath();
+        ctx.setLineDash([0, 0]);
+
         ctx.fillStyle = this.primaryColor;
         ctx.strokeStyle = 'red';
         ctx.lineWidth = this.outlineWidth;
@@ -136,5 +139,7 @@ export class RectangleService extends Tool {
                 ctx.fill();
                 break;
         }
+
+        ctx.closePath();
     }
 }
