@@ -3,6 +3,7 @@ import { DrawingComponent } from '@app/components/drawing/drawing.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { BrushService } from '@app/services/tools/brush.service';
 import { EraserService } from '@app/services/tools/eraser/eraser-service';
+import { EllipseService } from '@app/services/tools/ellipse/ellipse.service';
 import { PencilService } from '@app/services/tools/pencil/pencil-service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle.service';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
@@ -20,14 +21,18 @@ describe('DrawingComponent', () => {
     let drawingStub: DrawingService;
     let rectangleStub: RectangleService;
     let eraserStub: EraserService;
+    let ellipseStub: EllipseService;
+
 
     beforeEach(async(() => {
         drawingStub = new DrawingService();
         pencilStub = new PencilService(drawingStub);
         brushStub = new BrushService(drawingStub);
         rectangleStub = new RectangleService(drawingStub);
+
         eraserStub = new EraserService(drawingStub);
-        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub);
+        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub,ellipseStub);
+
 
         TestBed.configureTestingModule({
             declarations: [DrawingComponent],

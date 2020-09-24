@@ -14,7 +14,7 @@ export enum MouseButton {
 }
 const BYTE_SIZE = 4;
 const IMAGE_SIZE_DIVIDER = 2;
-//const MOUSE_POSITION_OFFSET_DIVIDER = 6;
+// const MOUSE_POSITION_OFFSET_DIVIDER = 6;
 const IMAGES_PER_POINT = 8;
 const DEFAULT_BRUSH_SIZE = 20;
 

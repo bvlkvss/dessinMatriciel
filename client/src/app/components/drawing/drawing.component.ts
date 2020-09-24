@@ -1,7 +1,6 @@
 import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { RectangleService } from '@app/services/tools/rectangle/rectangle.service';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
 
 // TODO : Avoir un fichier séparé pour les constantes ?
@@ -22,8 +21,7 @@ export class DrawingComponent implements AfterViewInit {
     private previewCtx: CanvasRenderingContext2D;
     private canvasSize: Vec2 = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
     // TODO : Avoir un service dédié pour gérer tous les outils ? Ceci peut devenir lourd avec le temps
-    constructor(private drawingService: DrawingService, private tools: ToolsManagerService) {}
-
+    constructor(private drawingService: DrawingService, private tools: ToolsManagerService) { }
 
     ngAfterViewInit(): void {
         this.baseCtx = this.baseCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
@@ -90,12 +88,13 @@ export class DrawingComponent implements AfterViewInit {
                 console.log('eraser');
                 // tslint:disable-next-line:no-magic-numbers
                 this.tools.setRGB(255, 255, 255);
+
+            case '2':
+                this.tools.setTools(3);
             default:
                 this.tools.currentTool.onKeyDown(event);
                 break;
         }
-        
-
     }
 
     get width(): number {
