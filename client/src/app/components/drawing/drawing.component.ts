@@ -23,6 +23,7 @@ export class DrawingComponent implements AfterViewInit {
     // TODO : Avoir un service dédié pour gérer tous les outils ? Ceci peut devenir lourd avec le temps
     constructor(private drawingService: DrawingService, private tools: ToolsManagerService) { }
 
+
     ngAfterViewInit(): void {
         this.baseCtx = this.baseCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.previewCtx = this.previewCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
@@ -60,26 +61,21 @@ export class DrawingComponent implements AfterViewInit {
         this.tools.currentTool.onKeyUp(event);
     }
 
-    @HostListener('document:keydown', ['$event'])
+    @HostListener('keydown', ['$event'])
     onKeyDown(event: KeyboardEvent): void {
         switch (event.key) {
             case '1':
                 this.tools.setTools(2);
-                this.previewCtx.canvas.style.cursor = 'crosshair';
-                console.log('key 1 pressed');
+                // this.tools.setColor(this.)
                 break;
             case 'w':
-                this.tools.setTools(1);
-                this.previewCtx.canvas.style.cursor = 'crosshair';
-                console.log('brush');
-                this.tools.setRGB(0, 0, 0); // pour tester setRGB bleu,initialement coleur noir !!
+                this.tools.setTools(1); // pour tester setRGB bleu,initialement coleur noir !!
                 break;
             case 'c':
                 this.tools.setTools(0);
-                this.previewCtx.canvas.style.cursor = 'crosshair';
-                console.log('pencil');
-                this.tools.setRGB(0, 0, 0);
-                break;
+                this.previewCtx.canvas.style.cursor = "crosshair";
+                this.tools.setColor("#000000");
+
 
             case 'e':
                 // tslint:disable-next-line:no-magic-numbers
@@ -87,7 +83,7 @@ export class DrawingComponent implements AfterViewInit {
                 this.previewCtx.canvas.style.cursor = "url('whiteSquare.png'), auto";
                 console.log('eraser');
                 // tslint:disable-next-line:no-magic-numbers
-                this.tools.setRGB(255, 255, 255);
+                this.tools.setColor("#ffffff");
 
             case '2':
                 this.tools.setTools(3);
@@ -95,6 +91,7 @@ export class DrawingComponent implements AfterViewInit {
                 this.tools.currentTool.onKeyDown(event);
                 break;
         }
+
     }
 
     get width(): number {

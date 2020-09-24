@@ -29,9 +29,15 @@ export class ToolsManagerService {
     getTools(): Tool[] {
         return this.tools;
     }
-    setRGB(r: number, g: number, b: number): void {
-        this.currentTool.primaryColor.red = r;
-        this.currentTool.primaryColor.green = g;
-        this.currentTool.primaryColor.blue = b;
+    setOpacity(opacity: number): void {
+
+        this.currentTool.opacity = opacity / 100.0;
+    }
+
+    setColor(color: string): void {
+        this.tools.forEach(element => {
+            element.primaryColor = color;
+        });
+
     }
 }

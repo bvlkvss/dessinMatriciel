@@ -119,7 +119,7 @@ export class RectangleService extends Tool {
                 width = height * Math.sign(width) * Math.sign(height);
             }
         }
-        ctx.fillStyle = 'green';
+        ctx.fillStyle = this.primaryColor;
         ctx.strokeStyle = 'red';
         ctx.lineWidth = this.outlineWidth;
         ctx.rect(startPos.x, startPos.y, width, height);

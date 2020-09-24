@@ -24,9 +24,13 @@ export class PencilService extends Tool {
 
     constructor(drawingService: DrawingService) {
         super(drawingService);
+        this.opacity = 1;
         this.clearPath();
     }
 
+    /*setColor(color: string): void {
+        this.primaryColor = color;
+    }*/
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseDown) {
@@ -47,7 +51,10 @@ export class PencilService extends Tool {
 
     onMouseUp(event: MouseEvent): void {
         if (this.mouseDown) {
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+
             this.drawLine(this.drawingService.baseCtx, this.pathData);
+
         }
         this.mouseDown = false;
         this.clearPath();
@@ -57,8 +64,9 @@ export class PencilService extends Tool {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
-            // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
+
+            // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
             this.drawLine(this.drawingService.previewCtx, this.pathData);
         }
     }
@@ -75,7 +83,8 @@ export class PencilService extends Tool {
         ctx.lineWidth = this.pencilThickness;
         ctx.lineCap = 'round';
         ctx.beginPath();
-        ctx.strokeStyle = 'rgb(' + this.primaryColor.red + ',' + this.primaryColor.green + ',' + this.primaryColor.blue + ')';
+        ctx.globalAlpha = this.opacity;
+        ctx.strokeStyle = this.primaryColor;
         for (const point of path) {
             ctx.lineTo(point.x, point.y);
         }

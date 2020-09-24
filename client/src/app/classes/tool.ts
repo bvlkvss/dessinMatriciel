@@ -13,27 +13,27 @@ export abstract class Tool {
     isOut: boolean = false;
     width: number;
     height: number;
-    primaryColor: Color = { red: 0, green: 0, blue: 0 }; // by default black
+    opacity: number;
+    primaryColor: string; // by default black
     secondaryColor: Color = { red: 0, green: 0, blue: 0 }; //  by default black
 
-    constructor(protected drawingService: DrawingService) {}
+    constructor(protected drawingService: DrawingService) { }
 
     setMouseDown(bool: boolean): void {
         this.mouseDown = bool;
     }
 
-    setColor(color: Color): void {}
-    onMouseDown(event: MouseEvent): void {}
+    onMouseDown(event: MouseEvent): void { }
 
-    onMouseUp(event: MouseEvent): void {}
-    onMouseOut(event: MouseEvent): void {}
-    onMouseEnter(event: MouseEvent): void {}
+    onMouseUp(event: MouseEvent): void { }
+    onMouseOut(event: MouseEvent): void { }
+    onMouseEnter(event: MouseEvent): void { }
 
-    onKeyDown(event: KeyboardEvent): void {}
+    onKeyDown(event: KeyboardEvent): void { }
 
-    onMouseMove(event: MouseEvent): void {}
+    onMouseMove(event: MouseEvent): void { }
 
-    onKeyUp(event: KeyboardEvent): void {}
+    onKeyUp(event: KeyboardEvent): void { }
     getPositionFromMouse(event: MouseEvent): Vec2 {
         return { x: event.offsetX, y: event.offsetY };
     }
