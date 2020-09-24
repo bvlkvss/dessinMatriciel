@@ -75,8 +75,6 @@ export class DrawingComponent implements AfterViewInit {
                 this.tools.setTools(0);
                 this.previewCtx.canvas.style.cursor = "crosshair";
                 this.tools.setColor("#000000");
-
-
             case 'e':
                 // tslint:disable-next-line:no-magic-numbers
                 this.tools.setTools(3);
@@ -84,9 +82,9 @@ export class DrawingComponent implements AfterViewInit {
                 console.log('eraser');
                 // tslint:disable-next-line:no-magic-numbers
                 this.tools.setColor("#ffffff");
-
             case '2':
                 this.tools.setTools(4);
+                break;
             default:
                 this.tools.currentTool.onKeyDown(event);
                 break;
