@@ -27,7 +27,7 @@ export class EllipseService extends Tool {
     ellipseStyle: number;
     constructor(drawingService: DrawingService) {
         super(drawingService);
-        this.outlineWidth = 0;
+        this.outlineWidth = 1;
         this.ellipseStyle=0;
     }
 
@@ -57,6 +57,7 @@ export class EllipseService extends Tool {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
 
         this.mouseDown = false;
+        this.toSquare = false;
     }
 
     onMouseMove(event: MouseEvent): void {
@@ -135,15 +136,15 @@ export class EllipseService extends Tool {
 
             const centery = this.mouseDownCoord.y + height / 2;
 
-            const radiusX = Math.abs(Math.abs(width / 2) - this.outlineWidth / 2);
-            const radiusY = Math.abs(Math.abs(height / 2) - this.outlineWidth / 2);
+            const radiusX = Math.abs(Math.abs(width / 2) - this.outlineWidth/2 );
+            const radiusY = Math.abs(Math.abs(height / 2) - this.outlineWidth/2 );
 
             
 
-            ctx.setLineDash([0, 0]);
-            ctx.lineWidth = 0;
-            ctx.strokeStyle = 'red';
             ctx.beginPath();
+            ctx.setLineDash([0, 0]);
+            ctx.lineWidth = 5;
+            ctx.strokeStyle = 'green';
             ctx.ellipse(centerx, centery, radiusX, radiusY, 0, 0, 2 * Math.PI);
  
             switch (this.ellipseStyle) {
@@ -163,9 +164,9 @@ export class EllipseService extends Tool {
             // tslint:disable-next-line:no-magic-numbers
             
             if(preview){
+            ctx.beginPath();    
             ctx.setLineDash([5, 15]);
-            ctx.beginPath();
-            ctx.lineWidth = 0;
+            ctx.lineWidth = 1;   
             ctx.strokeStyle = 'grey';
             ctx.rect(startPos.x, startPos.y, width, height);
             ctx.stroke();

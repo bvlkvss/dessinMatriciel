@@ -58,6 +58,7 @@ export class RectangleService extends Tool {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
 
         this.mouseDown = false;
+        this.toSquare = false;
     }
 
     onMouseMove(event: MouseEvent): void {
