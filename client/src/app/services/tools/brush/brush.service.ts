@@ -29,9 +29,10 @@ const IMAGES_PER_POINT = 4;
 })
 export class BrushService extends Tool {
     private image: HTMLImageElement;
-    private color: Color =  {red:0, green:0, blue:0};
+    private color: Color = { red: 0, green: 0, blue: 0 };
     constructor(drawingService: DrawingService) {
         super(drawingService);
+        this.primaryColor = "ffffff";
         this.image = new Image();
         this.image.src = '../../../assets/b4.png';
     }
@@ -92,16 +93,17 @@ export class BrushService extends Tool {
         this.isOut = true;
     }
 
-    setColor(color: string): void {
-        const newColor = this.hexToColor(color);
-        this.color = newColor;
-    }
+
 
     getColor(): Color {
         return this.color;
     }
 
     changeColor(imageData: ImageData): void {
+
+        const newColor = this.hexToColor(this.primaryColor);
+        this.color = newColor;
+
         for (let j = 0; j < imageData.data.length; j += BYTE_SIZE) {
             imageData.data[j] = this.color.red; // Invert Red
             imageData.data[j + 1] = this.color.green; // Invert Green
