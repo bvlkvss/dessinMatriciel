@@ -3,8 +3,10 @@ import { Tool } from '@app/classes/tool';
 import { BrushService } from '@app/services/tools/brush/brush.service';
 import { EllipseService } from '@app/services/tools/ellipse/ellipse.service';
 import { EraserService } from '@app/services/tools/eraser/eraser-service';
+import { LineService } from '@app/services/tools/line/line.service';
 import { PencilService } from '@app/services/tools/pencil/pencil-service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle.service';
+
 
 const OPACITY_DIVIDER = 100.0;
 @Injectable({
@@ -20,9 +22,10 @@ export class ToolsManagerService {
         rectangleService: RectangleService,
         eraserService: EraserService,
         ellipseService: EllipseService,
+        lineService: LineService,
     ) {
-        this.tools = [pencilService, brushService, rectangleService, eraserService, ellipseService];
-        this.currentTool = this.tools[0];
+        this.tools = [pencilService, brushService, rectangleService, eraserService, ellipseService, lineService];
+        this.currentTool = this.tools[5];
     }
     setTools(index: number): void {
         this.currentTool = this.tools[index];

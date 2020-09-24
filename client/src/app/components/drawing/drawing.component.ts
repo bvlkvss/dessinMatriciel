@@ -21,7 +21,7 @@ export class DrawingComponent implements AfterViewInit {
     private previewCtx: CanvasRenderingContext2D;
     private canvasSize: Vec2 = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
     // TODO : Avoir un service dédié pour gérer tous les outils ? Ceci peut devenir lourd avec le temps
-    constructor(private drawingService: DrawingService, private tools: ToolsManagerService) {}
+    constructor(private drawingService: DrawingService, private tools: ToolsManagerService) { }
 
     ngAfterViewInit(): void {
         this.baseCtx = this.baseCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
@@ -44,6 +44,11 @@ export class DrawingComponent implements AfterViewInit {
     @HostListener('mouseenter', ['$event'])
     onMouseEnter(event: MouseEvent): void {
         this.tools.currentTool.onMouseEnter(event);
+    }
+    @HostListener('dblclick', ['$event'])
+    onDblClick(event: MouseEvent): void {
+        console.log("ok");
+        this.tools.currentTool.onDblClick(event);
     }
 
     @HostListener('document:mouseup', ['$event'])
