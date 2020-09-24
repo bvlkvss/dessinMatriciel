@@ -119,10 +119,12 @@ export class EllipseService extends Tool {
                 }
 
                 if (Math.abs(width) > startPos.x && width < 0) {
+                    console.log("in");
                     width = -startPos.x;
                     height = width * Math.sign(height) * Math.sign(width);
                 }
-                if (Math.abs(height) > startPos.x && height < 0) {
+                if (Math.abs(height) > startPos.y && height < 0) {
+                    console.log("in");
                     height = -startPos.y;
                     width = height * Math.sign(width) * Math.sign(height);
                 }
@@ -156,7 +158,7 @@ export class EllipseService extends Tool {
             }
 
             previewCtx.beginPath();
-            previewCtx.lineWidth = 1;
+            previewCtx.lineWidth = 15;
             previewCtx.strokeStyle = 'grey';
             // tslint:disable-next-line:no-magic-numbers
             previewCtx.setLineDash([5, 15]);
