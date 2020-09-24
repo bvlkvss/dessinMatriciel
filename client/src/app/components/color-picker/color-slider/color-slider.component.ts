@@ -66,9 +66,15 @@ export class ColorSliderComponent implements AfterViewInit {
 
     getColorAtPosition(x: number, y: number): string {
         const imageData = this.ctx.getImageData(x, y, 1, 1).data;
-        return 'rgb(' + imageData[0] + ',' + imageData[1] + ',' + imageData[2] + ')';
+        return '#' + this.rgbToHex(imageData[0]) + '' + this.rgbToHex(imageData[1]) + '' + this.rgbToHex(imageData[2]);
     }
-
+    rgbToHex(rgb: number): string {
+        let hex = Number(rgb).toString(16);
+        if (hex.length < 2) {
+            hex = "0" + hex;
+        }
+        return hex;
+    }
     onMouseDown(event: MouseEvent): void {
         this.mousedown = true;
         this.selectedHeight = event.offsetY;

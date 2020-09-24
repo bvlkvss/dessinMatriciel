@@ -1,9 +1,9 @@
 <div *ngFor="let i of lastColors" class="color-container">
-    <button class="lastColors" [ngStyle]="{ 'background-color': i }"></button>
+    <button (click)="color = i" (click)="setColor()" class="lastColors" [ngStyle]="{ 'background-color': i }"></button>
 </div>
 <div class="input-wrapper">
     <div class="color-div" [ngStyle]="{ 'background-color': color || 'white' }"></div>
-    <input class="text" [value]="color" (change)="setColorFromInput()" />
+    <input class="text" maxlength="6" [value]="color" (change)="setColorFromInput()" />
 </div>
 <div class="color-wrapper">
     <app-color-palette [hue]="hue" (color)="color = $event" (color)="addColor($event)" (color)="setColor()"></app-color-palette>

@@ -19,11 +19,20 @@
     outline: none;
     height: 20px;
     width: 20px;
-    border-top: none;
-    border-right: none;
-    border-bottom: none;
-
+    border-top: 0px;
+    border-right: 0px;
+    border-bottom: 0px;
     border-width: 0.2px;
+}
+.lastColors:focus {
+    transform: rotate3d(0, 0, 1, 135deg) scale(1.25);
+    transition: border-radius 0.5s ease-out 0s, transform 0.5s ease-out 0s, fake 0ms ease 0s;
+    transform: rotate3d(0, 0, 1, 135deg) scale(1.25);
+    transform-origin: 50% 50%;
+    height: 23px;
+    width: 23px;
+    border-radius: 50%;
+    border: 2.5px solid black; /* Green */
 }
 .input-wrapper {
     margin-top: 16px;
