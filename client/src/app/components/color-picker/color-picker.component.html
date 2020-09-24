@@ -10,3 +10,11 @@
     <app-color-slider (color)="hue = $event" (color)="setColor()"></app-color-slider>
 </div>
 <div class="opacityContainer"><input (change)="setOpacity()" id="opacityValue" type="number" min="0" max="100" value="100" /> %</div>
+<div>
+    <input class="slider" type="range" (change)="setOpacity()" id="Opacity1" name="Opacity1" min="0" max="100" />
+    <label for="volume">Opacity 1</label>
+</div>
+<div>
+    <input class="slider" type="range" (change)="setOpacity()" id="Opacity2" name="Opacity2" min="0" max="100" />
+    <label for="volume">Opacity 2</label>
+</div>

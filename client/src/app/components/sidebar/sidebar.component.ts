@@ -11,15 +11,20 @@ import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.ser
 
 export class SidebarComponent {
 
-    constructor(private tools: ToolsManagerService){}
-  
-    
-    changeTools(id : number){
+    constructor(private tools: ToolsManagerService) { }
+
+    displayPalette(): void {
+        console.log(document.parentElement);
+
+
+
+    }
+    changeTools(id: number): void {
         this.tools.setTools(id);
         //id.setFocus();
-        
+
     }
 
-      
+
 }
 

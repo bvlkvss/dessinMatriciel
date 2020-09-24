@@ -28,7 +28,7 @@ export class EllipseService extends Tool {
     constructor(drawingService: DrawingService) {
         super(drawingService);
         this.outlineWidth = 1;
-        this.ellipseStyle=0;
+        this.ellipseStyle = 1;
     }
 
     onMouseDown(event: MouseEvent): void {
@@ -86,7 +86,7 @@ export class EllipseService extends Tool {
         if (event.shiftKey && this.mouseDown) {
             this.toSquare = true;
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.drawEllipse(this.drawingService.previewCtx,this.mouseDownCoord, this.currentPos, this.toSquare);
+            this.drawEllipse(this.drawingService.previewCtx, this.mouseDownCoord, this.currentPos, this.toSquare);
         }
     }
 
@@ -98,7 +98,7 @@ export class EllipseService extends Tool {
         preview: boolean = true,
     ): void {
 
-        
+
         let width = currentPos.x - startPos.x;
         let height = currentPos.y - startPos.y;
 
@@ -136,17 +136,18 @@ export class EllipseService extends Tool {
 
             const centery = this.mouseDownCoord.y + height / 2;
 
-            const radiusX = Math.abs(Math.abs(width / 2) - this.outlineWidth/2 );
-            const radiusY = Math.abs(Math.abs(height / 2) - this.outlineWidth/2 );
+            const radiusX = Math.abs(Math.abs(width / 2) - this.outlineWidth / 2);
+            const radiusY = Math.abs(Math.abs(height / 2) - this.outlineWidth / 2);
 
-            
+
 
             ctx.beginPath();
             ctx.setLineDash([0, 0]);
             ctx.lineWidth = 5;
+            ctx.fillStyle = this.primaryColor;
             ctx.strokeStyle = 'green';
             ctx.ellipse(centerx, centery, radiusX, radiusY, 0, 0, 2 * Math.PI);
- 
+
             switch (this.ellipseStyle) {
                 case 0:
                     ctx.stroke();
@@ -162,17 +163,17 @@ export class EllipseService extends Tool {
             ctx.closePath();
 
             // tslint:disable-next-line:no-magic-numbers
-            
-            if(preview){
-            ctx.beginPath();    
-            ctx.setLineDash([5, 15]);
-            ctx.lineWidth = 1;   
-            ctx.strokeStyle = 'grey';
-            ctx.rect(startPos.x, startPos.y, width, height);
-            ctx.stroke();
-            ctx.closePath();
 
+            if (preview) {
+                ctx.beginPath();
+                ctx.setLineDash([5, 15]);
+                ctx.lineWidth = 1;
+                ctx.strokeStyle = 'grey';
+                ctx.rect(startPos.x, startPos.y, width, height);
+                ctx.stroke();
+                ctx.closePath();
+
+            }
         }
     }
-}
 }

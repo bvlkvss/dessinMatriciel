@@ -1,40 +1,37 @@
 <!DOCTYPE html>
 <html>
-<head>
-<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <head>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+    </head>
+    <body>
+        <div class="container2">
+            <div class="icon-bar">
+                <a id="0" class="tooltip active" (click)="changeTools(0)">
+                    <i class="material-icons">edit</i>
+                    <span class="slidingtxt"> Pencil (1)</span>
+                </a>
 
-</head>
-<body>
-
-    
-<div class="container2">
-    
-    <div class="icon-bar">
-        <a id="0" class="tooltip active" (click)="changeTools(0)" > 
-            <i class="material-icons">edit</i> 
-            <span class="slidingtxt"> Pencil (1)</span>
-        </a>
-
-
-        <a class="tooltip" (click)="changeTools(1)"> 
-            <i class="material-icons">brush</i>
-            <span class="slidingtxt"> Brush (w)</span>
-
-        </a> 
-        <a class="tooltip" (click)="changeTools(2)"> <i class="material-icons">dashboard</i>
-                <span class="slidingtxt"> Rectangle (w)</span>
-        </a> 
-        <a class="tooltip" (click)="changeTools(3)"> <i class="material-icons">remove_circle</i>
-            <span class="slidingtxt"> Rectangle (w)</span>
-        </a> 
-        <a class="tooltip" (click)="changeTools(4)"> <i class="material-icons">circle</i>
-            <span class="slidingtxt"> Ellipse (X)</span>
-        </a> 
-    </div>
-    
-</div>
-
-
-
-</body>
+                <a class="tooltip" (click)="changeTools(1)">
+                    <i class="material-icons">brush</i>
+                    <span class="slidingtxt"> Brush (w)</span>
+                </a>
+                <a class="tooltip" (click)="changeTools(2)">
+                    <i class="material-icons">dashboard</i>
+                    <span class="slidingtxt"> Rectangle (w)</span>
+                </a>
+                <a class="tooltip" (click)="changeTools(3)">
+                    <i class="material-icons">remove_circle</i>
+                    <span class="slidingtxt"> Eraser (w)</span>
+                </a>
+                <a class="tooltip" (click)="changeTools(4)">
+                    <i class="material-icons">circle</i>
+                    <span class="slidingtxt"> Ellipse (X)</span>
+                </a>
+                <a class="tooltip" (click)="displayPalette()">
+                    <i class="material-icons">palette</i>
+                    <span class="slidingtxt"> Palette (X)</span>
+                </a>
+            </div>
+        </div>
+    </body>
 </html>
