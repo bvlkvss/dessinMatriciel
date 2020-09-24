@@ -37,4 +37,12 @@ export abstract class Tool {
     getPositionFromMouse(event: MouseEvent): Vec2 {
         return { x: event.offsetX, y: event.offsetY };
     }
+    
+    protected hexToColor(hex:string): Color{
+        const redNum = parseInt(hex.slice(0,1));
+        const greenNum = parseInt(hex.slice(2,3));
+        const blueNum = parseInt(hex.slice(4,5));
+        const color:Color = {red:redNum, green: greenNum, blue:blueNum};
+        return color;
+    }
 }

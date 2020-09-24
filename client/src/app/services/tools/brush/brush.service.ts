@@ -29,7 +29,7 @@ const IMAGES_PER_POINT = 4;
 })
 export class BrushService extends Tool {
     private image: HTMLImageElement;
-    private color: Color = this.primaryColor;
+    private color: Color =  {red:0, green:0, blue:0};
     constructor(drawingService: DrawingService) {
         super(drawingService);
         this.image = new Image();
@@ -92,8 +92,9 @@ export class BrushService extends Tool {
         this.isOut = true;
     }
 
-    setColor(color: Color): void {
-        this.color = color;
+    setColor(color: string): void {
+        const newColor = this.hexToColor(color);
+        this.color = newColor;
     }
 
     getColor(): Color {
