@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { BrushService } from '@app/services/tools/brush.service';
+import { EraserService } from '@app/services/tools/eraser/eraser-service';
 import { PencilService } from '@app/services/tools/pencil/pencil-service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle.service';
 
@@ -11,8 +12,8 @@ export class ToolsManagerService {
     private tools: Tool[];
     currentTool: Tool;
 
-    constructor(pencilService: PencilService, brushService: BrushService, rectangleService: RectangleService) {
-        this.tools = [pencilService, brushService, rectangleService];
+    constructor(pencilService: PencilService, brushService: BrushService, rectangleService: RectangleService, eraserService: EraserService) {
+        this.tools = [pencilService, brushService, rectangleService, eraserService];
         this.currentTool = this.tools[0];
     }
     setTools(index: number): void {
