@@ -1,10 +1,40 @@
-<div class="container">
-    <p>Barre latérale pour vos outils!</p>
-    <p>
-        Ceci est une implémentation de base de l'outil Crayon pour aider à débuter le projet <br />
-        L'implémentation ici ne couvre pas tous les critères d'acceptation du projet<br />
-        Vous êtes encouragés de modifier et compléter le code.<br />
-        N'oubliez pas de regarder les tests dans les fichiers spec.ts aussi!
-    </p>
-    <app-color-picker></app-color-picker>
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+</head>
+<body>
+
+    
+<div class="container2">
+    
+    <div class="icon-bar">
+        <a id="0" class="tooltip active" (click)="changeTools(0)" > 
+            <i class="material-icons">edit</i> 
+            <span class="slidingtxt"> Pencil (1)</span>
+        </a>
+
+
+        <a class="tooltip" (click)="changeTools(1)"> 
+            <i class="material-icons">brush</i>
+            <span class="slidingtxt"> Brush (w)</span>
+
+        </a> 
+        <a class="tooltip" (click)="changeTools(2)"> <i class="material-icons">dashboard</i>
+                <span class="slidingtxt"> Rectangle (w)</span>
+        </a> 
+        <a class="tooltip" (click)="changeTools(3)"> <i class="material-icons">remove_circle</i>
+            <span class="slidingtxt"> Rectangle (w)</span>
+        </a> 
+        <a class="tooltip" (click)="changeTools(4)"> <i class="material-icons">circle</i>
+            <span class="slidingtxt"> Ellipse (X)</span>
+        </a> 
+    </div>
+    
 </div>
+
+
+
+</body>
+</html>
