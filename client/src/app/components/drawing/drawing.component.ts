@@ -85,6 +85,7 @@ export class DrawingComponent implements AfterViewInit {
                 console.log('eraser');
                 // tslint:disable-next-line:no-magic-numbers
                 this.tools.setColor('#ffffff');
+                break;
 
             case '2':
                 this.tools.setTools(4);
