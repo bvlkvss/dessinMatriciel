@@ -2,6 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DrawingComponent } from '@app/components/drawing/drawing.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { BrushService } from '@app/services/tools/brush.service';
+import { EraserService } from '@app/services/tools/eraser/eraser-service';
 import { PencilService } from '@app/services/tools/pencil/pencil-service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle.service';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
@@ -18,13 +19,15 @@ describe('DrawingComponent', () => {
     let brushStub: BrushService;
     let drawingStub: DrawingService;
     let rectangleStub: RectangleService;
+    let eraserStub: EraserService;
 
     beforeEach(async(() => {
         drawingStub = new DrawingService();
         pencilStub = new PencilService(drawingStub);
         brushStub = new BrushService(drawingStub);
         rectangleStub = new RectangleService(drawingStub);
-        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub);
+        eraserStub = new EraserService(drawingStub);
+        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub);
 
         TestBed.configureTestingModule({
             declarations: [DrawingComponent],
@@ -81,11 +84,36 @@ describe('DrawingComponent', () => {
         expect(mouseEventSpy).toHaveBeenCalledWith(event);
     });
 
-    it('on keyK pressed current tool should change to brush ', () => {
+    it('on key w pressed current tool should change to brush ', () => {
         const event = new KeyboardEvent('document:keydown', {
             key: 'w',
         });
         component.onKeyDown(event);
         expect(toolManagerStub.currentTool).toEqual(toolManagerStub.getTools()[1]);
+    });
+
+    it('on key e pressed current tool should change to eraser ', () => {
+        const event = new KeyboardEvent('document:keydown', {
+            key: 'e',
+        });
+        component.onKeyDown(event);
+        // tslint:disable-next-line:no-magic-numbers
+        expect(toolManagerStub.currentTool).toEqual(toolManagerStub.getTools()[3]);
+    });
+
+    it('on key c pressed current tool should change to pencil ', () => {
+        const event = new KeyboardEvent('document:keydown', {
+            key: 'c',
+        });
+        component.onKeyDown(event);
+        expect(toolManagerStub.currentTool).toEqual(toolManagerStub.getTools()[0]);
+    });
+
+    it('on key 1 pressed current tool should change to rectangle ', () => {
+        const event = new KeyboardEvent('document:keydown', {
+            key: '1',
+        });
+        component.onKeyDown(event);
+        expect(toolManagerStub.currentTool).toEqual(toolManagerStub.getTools()[2]);
     });
 });
