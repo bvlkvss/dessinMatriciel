@@ -54,11 +54,11 @@ export class LineService extends Tool {
     this.pathData.pop();
 
     if (this.distanceBetween2Points(this.pathData[this.pathData.length - 1], this.pathData[this.pathData.length - 2]) <= 20) {
-      console.log("Ok");
-      this.pathData.pop();
+      this.pathData[this.pathData.length - 2]=this.pathData[this.pathData.length - 1];
       this.pathData.pop();
 
     }
+    this.drawingService.clearCanvas(this.drawingService.previewCtx);
     this.drawLines(this.drawingService.baseCtx);
     this.mouseDown = false;
 
