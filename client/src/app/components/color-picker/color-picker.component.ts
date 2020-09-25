@@ -9,6 +9,7 @@ import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.ser
 export class ColorPickerComponent implements OnInit {
     hue: string;
     color: string;
+    inputColor: string;
     opacity: string;
 
     lastColors: string[] = new Array<string>();
@@ -35,7 +36,6 @@ export class ColorPickerComponent implements OnInit {
     }
     setColorFromInput(): void {
         const input = document.querySelector('.text') as HTMLInputElement;
-        this.color = input.value;
         this.tools.setColor('#' + input.value);
     }
     addColor(color: string): void {

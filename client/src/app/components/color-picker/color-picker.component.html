@@ -3,7 +3,7 @@
 </div>
 <div class="input-wrapper">
     <div class="color-div" [ngStyle]="{ 'background-color': color || 'white' }"></div>
-    <input class="text" maxlength="7" [value]="color" (change)="setColorFromInput()" />
+    <input class="text" maxlength="6" [value]="color.slice(1, 7)" (change)="setColorFromInput()" />
 </div>
 <div class="color-wrapper">
     <app-color-palette [hue]="hue" (color)="color = $event" (color)="addColor($event)" (color)="setColor()"></app-color-palette>
