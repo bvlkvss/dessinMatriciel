@@ -40,6 +40,9 @@ export class ToolsManagerService {
     setOpacity(opacity: number): void {
         this.currentTool.opacity = opacity / OPACITY_DIVIDER;
     }
+    setLineWidth(lineWidth: number): void {
+        this.currentTool.lineWidth = lineWidth;
+    }
 
     setColor(color: string): void {
         this.tools.forEach((element) => {

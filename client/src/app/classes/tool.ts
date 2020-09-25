@@ -9,6 +9,7 @@ export abstract class Tool {
     mouseDown: boolean = false;
 
     mouseOutCoord: Vec2;
+    lineWidth: number;
     currentPos: Vec2;
     isOut: boolean = false;
     width: number;
@@ -23,7 +24,7 @@ export abstract class Tool {
         this.mouseDown = bool;
     }
 
-    onClick(event: MouseEvent)  : void { }
+    onClick(event: MouseEvent): void { }
     onMouseDown(event: MouseEvent): void { }
     onDblClick(event: MouseEvent): void { }
     onMouseUp(event: MouseEvent): void { }

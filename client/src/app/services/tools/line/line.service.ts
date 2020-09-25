@@ -18,6 +18,7 @@ export enum MouseButton {
 export class LineService extends Tool {
   mouseDownSecond: boolean = false;
   keyOnEscape: boolean = false;
+  onMouseDoubleClick: boolean = false;
   withPoint: boolean = true;
   private pathData: Vec2[];
   constructor(drawingService: DrawingService) {
@@ -37,6 +38,7 @@ export class LineService extends Tool {
 
 
   onClick(event: MouseEvent): void {
+    this.onMouseDoubleClick = false;
     this.mouseDown = event.button === MouseButton.Left;
     if (this.mouseDown) {
       this.keyOnEscape = false;
@@ -52,9 +54,10 @@ export class LineService extends Tool {
   onDblClick(event: MouseEvent): void {
     // because click is triggred twice when calling doubleClick
     this.pathData.pop();
+    this.onMouseDoubleClick = true;
 
     if (this.distanceBetween2Points(this.pathData[this.pathData.length - 1], this.pathData[this.pathData.length - 2]) <= 20) {
-      this.pathData[this.pathData.length - 2]=this.pathData[this.pathData.length - 1];
+      this.pathData[this.pathData.length - 2] = this.pathData[this.pathData.length - 1];
       this.pathData.pop();
 
     }
@@ -114,6 +117,8 @@ export class LineService extends Tool {
     for (let i = 0; i < this.pathData.length - 1; i++) {
       this.drawLine(ctx, this.pathData[i], this.pathData[i + 1]);
       if (this.withPoint) {
+        if (i === this.pathData.length - 2 && this.onMouseDoubleClick)
+          continue;
         ctx.beginPath();
         ctx.arc(this.pathData[i + 1].x, this.pathData[i + 1].y, 2, 0, 2 * Math.PI);
         ctx.fill();
@@ -121,6 +126,9 @@ export class LineService extends Tool {
       }
     }
 
+  }
+  private setJunction(): void {
+    
   }
   private distanceBetween2Points(point1: Vec2, point2: Vec2): number {
     return Math.sqrt(Math.pow(point2.x - point1.x, 2) + Math.pow(point2.y - point1.y, 2));

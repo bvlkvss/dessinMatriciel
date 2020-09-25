@@ -23,11 +23,10 @@ export class EllipseService extends Tool {
     toSquare: boolean = false;
     isOut: boolean = false;
     currentPos: Vec2;
-    outlineWidth: number;
     ellipseStyle: number;
     constructor(drawingService: DrawingService) {
         super(drawingService);
-        this.outlineWidth = 1;
+        this.lineWidth = 1;
         this.ellipseStyle = 1;
     }
 
@@ -129,8 +128,8 @@ export class EllipseService extends Tool {
 
             const centery = this.mouseDownCoord.y + height / 2;
 
-            const radiusX = Math.abs(Math.abs(width / 2) - this.outlineWidth / 2);
-            const radiusY = Math.abs(Math.abs(height / 2) - this.outlineWidth / 2);
+            const radiusX = Math.abs(Math.abs(width / 2) - this.lineWidth / 2);
+            const radiusY = Math.abs(Math.abs(height / 2) - this.lineWidth / 2);
 
             ctx.beginPath();
             ctx.setLineDash([0, 0]);
