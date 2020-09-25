@@ -121,11 +121,11 @@ export class BrushService extends Tool {
         }
         return tempCanvas;
     }
-
-    private angleBetween2Points(point1: Vec2, point2: Vec2): number {
-        return Math.atan2(point2.x - point1.x, point2.y - point1.y);
-    }
     private distanceBetween2Points(point1: Vec2, point2: Vec2): number {
         return Math.sqrt(Math.pow(point2.x - point1.x, 2) + Math.pow(point2.y - point1.y, 2));
     }
+    private angleBetween2Points(point1: Vec2, point2: Vec2): number {
+        return Math.atan2(point2.x - point1.x, point2.y - point1.y);
+    }
+
 }
