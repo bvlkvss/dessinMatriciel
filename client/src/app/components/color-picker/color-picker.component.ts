@@ -37,7 +37,7 @@ export class ColorPickerComponent implements OnInit {
     setColorFromInput(): void {
         const input = document.querySelector('.text') as HTMLInputElement;
         this.color = '#' + input.value;
-        this.tools.setColor('#' + input.value);
+        this.tools.setColor('#' + input.value + this.opacity);
     }
     addColor(color: string): void {
         if (!this.lastColors.find((element) => element === color)) {
