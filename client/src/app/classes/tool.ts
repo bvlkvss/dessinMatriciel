@@ -15,7 +15,7 @@ export abstract class Tool {
     height: number;
     opacity: number;
     primaryColor: string; // by default black
-    secondaryColor: Color = { red: 0, green: 0, blue: 0 }; //  by default black
+    secondaryColor: Color = { red: 0, green: 0, blue: 0, opacity: 255 }; //  by default black
 
     constructor(protected drawingService: DrawingService) {}
 
@@ -23,17 +23,17 @@ export abstract class Tool {
         this.mouseDown = bool;
     }
 
-    onMouseDown(event: MouseEvent): void {}
+    onMouseDown(event: MouseEvent): void { }
 
-    onMouseUp(event: MouseEvent): void {}
-    onMouseOut(event: MouseEvent): void {}
-    onMouseEnter(event: MouseEvent): void {}
+    onMouseUp(event: MouseEvent): void { }
+    onMouseOut(event: MouseEvent): void { }
+    onMouseEnter(event: MouseEvent): void { }
 
-    onKeyDown(event: KeyboardEvent): void {}
+    onKeyDown(event: KeyboardEvent): void { }
 
-    onMouseMove(event: MouseEvent): void {}
+    onMouseMove(event: MouseEvent): void { }
 
-    onKeyUp(event: KeyboardEvent): void {}
+    onKeyUp(event: KeyboardEvent): void { }
     getPositionFromMouse(event: MouseEvent): Vec2 {
         return { x: event.offsetX, y: event.offsetY };
     }
@@ -48,8 +48,10 @@ export abstract class Tool {
         const redNum = parseInt(hex.slice(1, 3), 16);
         const greenNum = parseInt(hex.slice(3, 5), 16);
         const blueNum = parseInt(hex.slice(5, 7), 16);
+        const opacityNum = parseInt(hex.slice(7, 9), 16);
+        console.log(opacityNum);
 
-        const color: Color = { red: redNum, green: greenNum, blue: blueNum };
+        const color: Color = { red: redNum, green: greenNum, blue: blueNum, opacity: opacityNum };
         console.log(color);
         return color;
     }

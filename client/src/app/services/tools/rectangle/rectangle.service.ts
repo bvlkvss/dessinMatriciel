@@ -140,7 +140,7 @@ export class RectangleService extends Tool {
                 ctx.fill();
                 break;
         }
-
+        
         ctx.closePath();
     }
 }

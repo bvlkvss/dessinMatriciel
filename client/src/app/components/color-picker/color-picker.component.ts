@@ -9,24 +9,29 @@ import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.ser
 export class ColorPickerComponent implements OnInit {
     hue: string;
     color: string;
+    opacity: string;
+
     lastColors: string[] = new Array<string>();
     constructor(private tools: ToolsManagerService) {
-        this.color = '000000';
+        this.opacity = 'ff';
+        this.color = '#000000';
     }
     // tslint:disable-next-line:no-empty
-    ngOnInit(): void {}
+    ngOnInit(): void {
+        this.setColor();
+    }
 
     setOpacity(): void {
         const input = document.querySelector('#opacityValue') as HTMLInputElement;
-        console.log(input);
         if (input.valueAsNumber >= 100) input.value = '100';
         else if (input.valueAsNumber <= 0) input.value = '0';
         else if (input.value === '') input.value = '100';
-
-        this.tools.setOpacity(input.valueAsNumber);
+        const integerValue = Math.round((input.valueAsNumber * 255) / 100);
+        this.opacity = integerValue.toString(16);
+        this.setColor(); // to udpate the 8 digits hex
     }
     setColor(): void {
-        this.tools.setColor(this.color);
+        this.tools.setColor(this.color + this.opacity);
     }
     setColorFromInput(): void {
         const input = document.querySelector('.text') as HTMLInputElement;
