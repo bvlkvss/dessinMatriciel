@@ -23,6 +23,7 @@ export abstract class Tool {
         this.mouseDown = bool;
     }
 
+    onClick(event: MouseEvent)  : void { }
     onMouseDown(event: MouseEvent): void { }
     onDblClick(event: MouseEvent): void { }
     onMouseUp(event: MouseEvent): void { }
