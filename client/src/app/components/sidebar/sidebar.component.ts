@@ -1,4 +1,5 @@
 import { Component, ElementRef } from '@angular/core';
+import {UserGuideComponent} from '@app/components/user-guide/user-guide.component';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
 
 @Component({
@@ -34,5 +35,9 @@ export class SidebarComponent {
 
     changeTools(id: number): void {
         this.tools.setTools(id);
+    }
+
+    openUserGuide(): void {
+        UserGuideComponent.displayUserGuide();
     }
 }
