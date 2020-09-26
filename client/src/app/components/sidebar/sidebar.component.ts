@@ -7,18 +7,32 @@ import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.ser
     styleUrls: ['./sidebar.component.scss'],
 })
 export class SidebarComponent {
-    constructor(private tools: ToolsManagerService, private elRef: ElementRef) {}
+    constructor(private tools: ToolsManagerService, private elRef: ElementRef) { }
+
+    isopen : boolean = false;
 
     displayPalette(): void {
-        console.log(this.elRef.nativeElement.parentElement.children[1]);
-        if (this.elRef.nativeElement.parentElement.children[1].style.display === 'block') {
+        if (this.elRef.nativeElement.parentElement.children[1].style.display === 'inline-block') {
             this.elRef.nativeElement.parentElement.children[1].style.display = 'none';
         } else {
-            this.elRef.nativeElement.parentElement.children[1].style.display = 'block';
+            this.elRef.nativeElement.parentElement.children[1].style.display = 'inline-block';
+        }
+        this.isopen = !this.isopen;
+        if(this.isopen){
+            this.togglecanvas("canvas-open", "canvas-close")
+        } else {
+            this.togglecanvas("canvas-close", "canvas-open")
         }
     }
+
+    togglecanvas(classname:string , oldclassname:string):void{
+        document.querySelectorAll("#canvas-container canvas").forEach(item=>{
+            item.classList.remove ( oldclassname);
+            item.setAttribute("class", classname);
+        })
+    }
+
     changeTools(id: number): void {
         this.tools.setTools(id);
-        // id.setFocus();
     }
 }

@@ -1,10 +1,10 @@
 :host {
     display: none;
-    position: relative;
-    left: 26.45px;
+    position: fixed;
+    left: 50px;
+    top: 0;
     padding: 10px;
-    border-radius: 2%;
-    height: 450px;
+    height: 100%;
     width: 250px;
     background-color: rgb(93, 95, 110);
 }
@@ -16,6 +16,7 @@
 
 .color-container {
     display: inline-block;
+    
 }
 .lastColors {
     outline: none;

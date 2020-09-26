@@ -1,12 +1,24 @@
+#background{
+    width: 100%;
+    height: 100%;
+    top: 0;
+    z-index: -4;
+    position: absolute;
+    background-color: #2D2E37;
+}
 .container {
     height: 100%;
     display: flex;
+    position: absolute;
+    z-index: -1;
+
 }
 
 .drawing-container {
     overflow: auto;
     flex: 1 1 auto;
     z-index: -1;
+    left: 100px;
 }
 
 .drawing {
