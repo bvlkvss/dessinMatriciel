@@ -27,6 +27,9 @@
     text-align: center;
     border: 5px;
     background-color: white;
+    top: 50%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
 }
 
 .button {
