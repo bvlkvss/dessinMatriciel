@@ -7,14 +7,14 @@ import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.ser
     styleUrls: ['./sidebar.component.scss'],
 })
 export class SidebarComponent {
-    constructor(private tools: ToolsManagerService, private elRef: ElementRef) {}
+    constructor(private tools: ToolsManagerService, private elRef: ElementRef) { }
 
     displayPalette(): void {
         console.log(this.elRef.nativeElement.parentElement.children[1]);
-        if (this.elRef.nativeElement.parentElement.children[1].style.display === 'block') {
+        if (this.elRef.nativeElement.parentElement.children[1].style.display === 'inline-block') {
             this.elRef.nativeElement.parentElement.children[1].style.display = 'none';
         } else {
-            this.elRef.nativeElement.parentElement.children[1].style.display = 'block';
+            this.elRef.nativeElement.parentElement.children[1].style.display = 'inline-block';
         }
     }
     changeTools(id: number): void {
