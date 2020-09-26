@@ -9,23 +9,29 @@ import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.ser
 export class SidebarComponent {
     constructor(private tools: ToolsManagerService, private elRef: ElementRef) { }
 
-    isopen : boolean = false;
+    paletteIsActive : boolean = false;
 
     displayPalette(): void {
+        
         if (this.elRef.nativeElement.parentElement.children[1].style.display === 'inline-block') {
             this.elRef.nativeElement.parentElement.children[1].style.display = 'none';
         } else {
             this.elRef.nativeElement.parentElement.children[1].style.display = 'inline-block';
         }
-        this.isopen = !this.isopen;
-        if(this.isopen){
+        this.paletteIsActive = !this.paletteIsActive;
+        if(this.paletteIsActive){
             this.togglecanvas("canvas-open", "canvas-close")
         } else {
             this.togglecanvas("canvas-close", "canvas-open")
         }
+
+
+
     }
 
+
     togglecanvas(classname:string , oldclassname:string):void{
+
         document.querySelectorAll("#canvas-container canvas").forEach(item=>{
             item.classList.remove ( oldclassname);
             item.setAttribute("class", classname);
