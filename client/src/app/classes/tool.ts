@@ -47,10 +47,8 @@ export abstract class Tool {
         const greenNum = parseInt(hex.slice(3, 5), 16);
         const blueNum = parseInt(hex.slice(5, 7), 16);
         const opacityNum = parseInt(hex.slice(7, 9), 16);
-        console.log(opacityNum);
 
         const color: Color = { red: redNum, green: greenNum, blue: blueNum, opacity: opacityNum };
-        console.log(color);
         return color;
     }
 }
