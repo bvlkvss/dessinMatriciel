@@ -26,7 +26,6 @@ export class RectangleService extends Tool {
     isOut: boolean = false;
     currentPos: Vec2;
     rectangleStyle: RectangleStyle;
-    outlineWidth: number;
     constructor(drawingService: DrawingService) {
         super(drawingService);
         this.rectangleStyle = 0;
@@ -125,7 +124,7 @@ export class RectangleService extends Tool {
 
         ctx.fillStyle = this.primaryColor;
         ctx.strokeStyle = 'red';
-        ctx.lineWidth = this.outlineWidth;
+        ctx.lineWidth = this.lineWidth;
         ctx.rect(startPos.x, startPos.y, width, height);
 
         switch (this.rectangleStyle) {

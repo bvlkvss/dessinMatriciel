@@ -9,6 +9,7 @@ export abstract class Tool {
     mouseDown: boolean = false;
 
     mouseOutCoord: Vec2;
+    lineWidth: number;
     currentPos: Vec2;
     isOut: boolean = false;
     width: number;
@@ -17,14 +18,15 @@ export abstract class Tool {
     primaryColor: string; // by default black
     secondaryColor: Color = { red: 0, green: 0, blue: 0, opacity: 255 }; //  by default black
 
-    constructor(protected drawingService: DrawingService) {}
+    constructor(protected drawingService: DrawingService) { }
 
     setMouseDown(bool: boolean): void {
         this.mouseDown = bool;
     }
 
+    onClick(event: MouseEvent): void { }
     onMouseDown(event: MouseEvent): void { }
-
+    onDblClick(event: MouseEvent): void { }
     onMouseUp(event: MouseEvent): void { }
     onMouseOut(event: MouseEvent): void { }
     onMouseEnter(event: MouseEvent): void { }
@@ -40,10 +42,6 @@ export abstract class Tool {
 
     hexToColor(hex: string): Color {
         // tslint:disable:no-magic-numbers
-        console.log(hex);
-        console.log('red slice', hex.slice(1, 3));
-        console.log('green slice', hex.slice(3, 5));
-        console.log('blue slice', hex.slice(5, 7));
 
         const redNum = parseInt(hex.slice(1, 3), 16);
         const greenNum = parseInt(hex.slice(3, 5), 16);
