@@ -76,8 +76,6 @@ export class DrawingComponent implements AfterViewInit {
         switch (event.key) {
             case '1':
                 this.tools.setTools(2);
-                // this.tools.setColor(this.)
-
                 break;
             case 'w':
                 this.tools.setTools(1); // pour tester setRGB bleu,initialement coleur noir !!
@@ -86,8 +84,6 @@ export class DrawingComponent implements AfterViewInit {
             case 'c':
                 this.tools.setTools(0);
                 this.previewCtx.canvas.style.cursor = 'crosshair';
-                this.tools.setColor('#000000');
-
                 break;
             case 'e':
                 // tslint:disable-next-line:no-magic-numbers
@@ -101,7 +97,6 @@ export class DrawingComponent implements AfterViewInit {
             case '2':
                 // tslint:disable-next-line:no-magic-numbers
                 this.tools.setTools(4);
-
                 break;
             default:
                 this.tools.currentTool.onKeyDown(event);

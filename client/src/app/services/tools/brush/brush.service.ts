@@ -29,8 +29,7 @@ const IMAGES_PER_POINT = 6;
 })
 export class BrushService extends Tool {
     private image: HTMLImageElement;
-
-    private color: Color = { red: 0, green: 0, blue: 0 };
+    private color: Color = { red: 0, green: 0, blue: 0, opacity: 255 };
     constructor(drawingService: DrawingService) {
         super(drawingService);
         this.primaryColor = '0000000';
@@ -85,6 +84,7 @@ export class BrushService extends Tool {
         do {
             const x = this.mouseDownCoord.x + Math.sin(angle) * i - this.image.width / MOUSE_POSITION_OFFSET_DIVIDER;
             const y = this.mouseDownCoord.y + Math.cos(angle) * i - this.image.height / MOUSE_POSITION_OFFSET_DIVIDER;
+            ctx.globalAlpha = this.color.opacity / 255;
             ctx.drawImage(image, x, y, image.width, image.height);
             i += IMAGES_PER_POINT;
         } while (i < dist);
@@ -111,6 +111,7 @@ export class BrushService extends Tool {
             imageData.data[j] = this.color.red; // Invert Red
             imageData.data[j + 1] = this.color.green; // Invert Green
             imageData.data[j + 2] = this.color.blue; // Invert Blue
+            //imageData.data[j + 3] = this.color.opacity;//working but it transfrom texture to square
         }
     }
 
