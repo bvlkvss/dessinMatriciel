@@ -42,6 +42,11 @@ export class BrushService extends Tool {
      
          }*/
 
+    /* private changeTexture(id: number): void {
+ 
+         this.image.src = '../../../assets/b' + id + '.png';
+ 
+     }*/
     onMouseDown(event: MouseEvent): void {
         this.isOut = false;
         this.mouseDown = event.button === MouseButton.Left;
@@ -75,6 +80,7 @@ export class BrushService extends Tool {
         }
     }
     private drawLine(ctx: CanvasRenderingContext2D): void {
+
         ctx.beginPath();
         const dist = this.distanceBetween2Points(this.mouseDownCoord, this.currentPos);
         const angle = this.angleBetween2Points(this.mouseDownCoord, this.currentPos);
@@ -104,8 +110,7 @@ export class BrushService extends Tool {
     }
 
     changeColor(imageData: ImageData): void {
-        const newColor = this.hexToColor(this.primaryColor);
-        this.color = newColor;
+        this.color = this.hexToColor(this.primaryColor);;
 
         for (let j = 0; j < imageData.data.length; j += BYTE_SIZE) {
             imageData.data[j] = this.color.red; // Invert Red
@@ -128,11 +133,11 @@ export class BrushService extends Tool {
         }
         return tempCanvas;
     }
-
-    private angleBetween2Points(point1: Vec2, point2: Vec2): number {
-        return Math.atan2(point2.x - point1.x, point2.y - point1.y);
-    }
     private distanceBetween2Points(point1: Vec2, point2: Vec2): number {
         return Math.sqrt(Math.pow(point2.x - point1.x, 2) + Math.pow(point2.y - point1.y, 2));
     }
+    private angleBetween2Points(point1: Vec2, point2: Vec2): number {
+        return Math.atan2(point2.x - point1.x, point2.y - point1.y);
+    }
+
 }
