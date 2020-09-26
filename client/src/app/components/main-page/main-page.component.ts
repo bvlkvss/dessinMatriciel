@@ -3,6 +3,7 @@ import { IndexService } from '@app/services/index/index.service';
 import { Message } from '@common/communication/message';
 import { BehaviorSubject } from 'rxjs';
 import { map } from 'rxjs/operators';
+import {UserGuideComponent} from '@app/components/user-guide/user-guide.component'
 
 @Component({
     selector: 'app-main-page',
@@ -34,5 +35,9 @@ export class MainPageComponent {
                 }),
             )
             .subscribe(this.message);
+    }
+
+    openUserGuide():void {
+        UserGuideComponent.displayUserGuide();
     }
 }
