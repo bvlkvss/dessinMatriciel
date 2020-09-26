@@ -20,6 +20,9 @@ export class DrawingComponent implements AfterViewInit {
     private baseCtx: CanvasRenderingContext2D;
     private previewCtx: CanvasRenderingContext2D;
     private canvasSize: Vec2 = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
+    private currentResizer: string;
+    private resizing: boolean = false;
+    private resizedWidth: number;
     // TODO : Avoir un service dédié pour gérer tous les outils ? Ceci peut devenir lourd avec le temps
     constructor(private drawingService: DrawingService, private tools: ToolsManagerService) { }
 
@@ -31,14 +34,53 @@ export class DrawingComponent implements AfterViewInit {
         this.drawingService.canvas = this.baseCanvas.nativeElement;
     }
 
+    initResizing(event: MouseEvent): void {
+        const target = event.target as HTMLDivElement;
+        event.preventDefault();
+        this.currentResizer = target.className;
+        this.resizing = true;
+        console.log(this.currentResizer);
+    }
+
+    @HostListener('window:mousemove', ['$event'])
+    resize(event: MouseEvent): void {
+        if (this.resizing) {
+            console.log('mousemoveResize');
+            console.log(this.currentResizer);
+            if (this.currentResizer === 'resizer right') {
+                const t = document.getElementById('canvas-container') as HTMLDivElement;
+                let targ = event.target as HTMLDivElement;
+                console.log(t.style.width);
+                t.style.width = event.pageX - targ.getBoundingClientRect().left + 'px';
+                this.resizedWidth = event.pageX - targ.getBoundingClientRect().left;
+                console.log('passed');
+            } else {
+                console.log('Not passed');
+            }
+        }
+    }
+    @HostListener('window:mouseup', ['$event'])
+    stopResize(event: MouseEvent): void {
+        if (this.resizing) {
+            this.resizing = false;
+            this.baseCanvas.nativeElement.width = this.resizedWidth;
+            this.previewCanvas.nativeElement.width = this.resizedWidth;
+            console.log('Resizing stopped');
+        }
+    }
+
     @HostListener('mousemove', ['$event'])
     onMouseMove(event: MouseEvent): void {
-        this.tools.currentTool.onMouseMove(event);
+        if (!this.resizing) {
+            this.tools.currentTool.onMouseMove(event);
+        }
     }
 
     @HostListener('mousedown', ['$event'])
     onMouseDown(event: MouseEvent): void {
-        this.tools.currentTool.onMouseDown(event);
+        if (!this.resizing) {
+            this.tools.currentTool.onMouseDown(event);
+        }
     }
 
     @HostListener('mouseenter', ['$event'])
@@ -48,7 +90,9 @@ export class DrawingComponent implements AfterViewInit {
 
     @HostListener('document:mouseup', ['$event'])
     onMouseUp(event: MouseEvent): void {
-        this.tools.currentTool.onMouseUp(event);
+        if (!this.resizing) {
+            this.tools.currentTool.onMouseUp(event);
+        }
     }
     @HostListener('mouseout', ['$event'])
     onMouseOut(event: MouseEvent): void {
