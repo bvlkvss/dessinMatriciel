@@ -21,13 +21,9 @@ export class SidebarComponent {
         console.log(document.getElementsByTagName("canvas"));
         
         if(this.isopen){
-            //document.getElementsByTagName("canvas")[2].setAttribute("class", "canvas-open");
-            //document.getElementsByTagName("canvas")[3].setAttribute("class", "canvas-open");
             this.togglecanvas("canvas-open", "canvas-close")
         } else {
             this.togglecanvas("canvas-close", "canvas-open")
-            //document.getElementsByTagName("canvas")[2].setAttribute("class", "canvas-close");
-            //document.getElementsByTagName("canvas")[3].setAttribute("class", "canvas-close");
         }
 
     }
