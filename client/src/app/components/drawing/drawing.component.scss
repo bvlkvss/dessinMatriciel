@@ -1,17 +1,24 @@
 canvas {
     cursor: crosshair;
-    border: 2px solid #000000;
+    border-right: 2px solid #000000;
+    border-bottom: 2px solid #000000;
     position: fixed;
-    left: 100px;
     top: 0;
 }
+
+.canvas-close{
+    left: 50px;
+}
+
+.canvas-open {
+    left: 320px;
+}
+
 
 #canvas {
     z-index: 0;
     background-color: white;
 }
-
-
 
 #drawCanvas {
     z-index: 1;

@@ -1,11 +1,3 @@
-.color-palette:hover {
-    cursor: pointer;
-}
-
-.color-palette {
-    border: gray;
-    border-style: double;
-}
 :host {
     width: 200px;
     height: 200px;
@@ -13,4 +5,13 @@
     margin-top: 7px;
     margin-left: 7px;
     border-width: 2px;
+}
+
+.color-palette:hover {
+    cursor: pointer;
+}
+
+.color-palette {
+    border: gray;
+    border-style: double;
 }
