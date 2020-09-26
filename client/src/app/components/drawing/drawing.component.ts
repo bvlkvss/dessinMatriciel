@@ -49,7 +49,7 @@ export class DrawingComponent implements AfterViewInit {
             console.log(this.currentResizer);
             if (this.currentResizer === 'resizer right') {
                 const t = document.getElementById('canvas-container') as HTMLDivElement;
-                let targ = event.target as HTMLDivElement;
+                const targ = event.target as HTMLDivElement;
                 console.log(t.style.width);
                 t.style.width = event.pageX - targ.getBoundingClientRect().left + 'px';
                 this.resizedWidth = event.pageX - targ.getBoundingClientRect().left;
@@ -63,8 +63,8 @@ export class DrawingComponent implements AfterViewInit {
     stopResize(event: MouseEvent): void {
         if (this.resizing) {
             this.resizing = false;
-            this.baseCanvas.nativeElement.width = this.resizedWidth;
-            this.previewCanvas.nativeElement.width = this.resizedWidth;
+            this.baseCanvas.nativeElement.width = this.resizedWidth - 5;
+            this.previewCanvas.nativeElement.width = this.resizedWidth - 5;
             console.log('Resizing stopped');
         }
     }
