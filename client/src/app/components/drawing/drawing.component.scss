@@ -4,19 +4,17 @@ canvas {
     border-bottom: 2px solid #000000;
     position: fixed;
     top: 0;
+    left: 50px;
+    transition: all 0.3s ease;
 }
 
 .canvas-open {
     transition: all 0.3s ease;
-    -webkit-transform: translateX(295px);
-    transform: translate(295px);
+    -webkit-transform: translateX(269px);
+    transform: translateX(269px);
 }
 
-.canvas-close {
-    transition: all 0.3s ease;
-    -webkit-transform: translateX(-295px);
-    transform: translate(-295px);
-}
+
 
 #canvas {
     z-index: 0;
