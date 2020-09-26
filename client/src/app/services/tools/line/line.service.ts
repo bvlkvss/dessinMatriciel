@@ -16,11 +16,10 @@ export enum MouseButton {
   providedIn: 'root',
 })
 export class LineService extends Tool {
-  mouseDownSecond: boolean = false;
   keyOnEscape: boolean = false;
   private allignementPoint: Vec2;
-  onMouseDoubleClick: boolean = false;
-  withPoint: boolean = true;
+  isDoubleClicked: boolean = false;
+  withJunction: boolean = true;
   private diameter: number = 2;
   private pathData: Vec2[];
   toAllign: boolean = false;
@@ -34,29 +33,33 @@ export class LineService extends Tool {
   onMouseEnter(event: MouseEvent): void { }
 
   onClick(event: MouseEvent): void {
-    this.onMouseDoubleClick = false;
+
+    this.isDoubleClicked = false;
     this.mouseDown = event.button === MouseButton.Left;
     if (this.mouseDown && !this.toAllign) {
       this.keyOnEscape = false;
-      this.mouseDownSecond = true;
       this.mouseDownCoord = this.getPositionFromMouse(event);
       this.pathData.push(this.mouseDownCoord);
     }
   }
   onDblClick(event: MouseEvent): void {
-    // because click is triggred twice when calling doubleClick
-    //this.pathData.pop();
-    this.onMouseDoubleClick = true;
+    //  click is triggred twice when calling doubleClick so, it push twice the last point
+    let lastPoint = this.pathData.pop() as Vec2;
+    this.isDoubleClicked = true;
 
-    if (this.distanceBetween2Points(this.pathData[this.pathData.length - 1], this.pathData[this.pathData.length - 2]) <= 20) {
-      this.pathData[this.pathData.length - 2] = this.pathData[this.pathData.length - 1];
-      // this.pathData.pop();
+    // check if the distance  between the new point and last one is less than 20  
+    if (this.distanceBetween2Points(lastPoint, this.pathData[this.pathData.length - 2]) <= 20) {
+      console.log(this.distanceBetween2Points(lastPoint, this.pathData[this.pathData.length - 2]));
+      this.pathData[this.pathData.length - 2] = lastPoint;
+
     }
+    // if distance is more than 20, we need to push back the last point
+    else
+      this.pathData.push(lastPoint);
     this.drawingService.clearCanvas(this.drawingService.previewCtx);
     if (this.toAllign) {
       this.toAllign = false;
       this.pathData.push(this.allignementPoint);
-      console.log(this.allignementPoint);
     }
     this.drawLines(this.drawingService.baseCtx);
     this.mouseDown = false;
@@ -66,7 +69,6 @@ export class LineService extends Tool {
 
   onMouseMove(event: MouseEvent): void {
     if (this.mouseDown) {
-      console.log('move');
       this.currentPos = this.getPositionFromMouse(event);
       this.drawingService.clearCanvas(this.drawingService.previewCtx);
       // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
@@ -85,46 +87,52 @@ export class LineService extends Tool {
       this.clearPath();
     } else if (event.key === 'Backspace') {
       if (this.pathData.length > 1) this.pathData.pop();
-    } else if (event.shiftKey && !this.onMouseDoubleClick) {
+
+    }
+    else if (event.shiftKey && !this.isDoubleClicked) {
       this.toAllign = true;
       this.drawingService.clearCanvas(this.drawingService.previewCtx);
       this.drawLines(this.drawingService.previewCtx);
       this.allignementPoint = this.findNewPointForAngle(this.pathData[this.pathData.length - 1], this.currentPos);
-      console.log(this.allignementPoint);
       this.drawLine(this.drawingService.previewCtx, this.pathData[this.pathData.length - 1], this.allignementPoint);
     }
   }
 
   onKeyUp(event: KeyboardEvent): void {
-    if (!event.shiftKey && !this.onMouseDoubleClick) {
+    if (!event.shiftKey && !this.isDoubleClicked) {
       this.toAllign = false;
-
       this.drawingService.clearCanvas(this.drawingService.previewCtx);
       this.drawLines(this.drawingService.previewCtx);
       this.drawLine(this.drawingService.previewCtx, this.pathData[this.pathData.length - 1], this.currentPos);
     }
   }
   private drawLine(ctx: CanvasRenderingContext2D, startPoint: Vec2, endPoint: Vec2): void {
-    ctx.lineCap = 'round';
-    ctx.beginPath();
-    ctx.moveTo(startPoint.x, startPoint.y);
-    ctx.lineTo(endPoint.x, endPoint.y);
-    ctx.stroke();
+    if (startPoint && endPoint) {
+      ctx.fillStyle = this.primaryColor;
+      ctx.beginPath();
+      ctx.moveTo(startPoint.x, startPoint.y);
+      ctx.lineTo(endPoint.x, endPoint.y);
+      ctx.stroke();
+    }
   }
 
   private drawLines(ctx: CanvasRenderingContext2D): void {
     for (let i = 0; i < this.pathData.length - 1; i++) {
       this.drawLine(ctx, this.pathData[i], this.pathData[i + 1]);
-      if (this.withPoint) {
-        if (i === this.pathData.length - 2 && this.onMouseDoubleClick) continue;
-        ctx.beginPath();
-        ctx.arc(this.pathData[i + 1].x, this.pathData[i + 1].y, this.diameter, 0, 2 * Math.PI);
-        ctx.fill();
-        ctx.closePath();
+      if (this.withJunction) {
+        if (i === (this.pathData.length - 3) && this.isDoubleClicked) break;
+        this.drawJunction(ctx, this.pathData[i + 1]);
       }
     }
   }
 
+  private drawJunction(ctx: CanvasRenderingContext2D, centerPoint: Vec2) {
+
+    ctx.beginPath();
+    ctx.arc(centerPoint.x, centerPoint.y, this.diameter, 0, 2 * Math.PI);
+    ctx.fill();
+    ctx.closePath();
+  }
   private findNewPointForAngle(beginPoint: Vec2, endPoint: Vec2): Vec2 {
     let currentAngle: number = this.angleBetween2Points(beginPoint, endPoint);
     let distance: number = this.distanceBetween2Points(beginPoint, endPoint);
@@ -134,7 +142,7 @@ export class LineService extends Tool {
     return { x: beginPoint.x + xDistance, y: beginPoint.y - yDistance };
   }
   /* private setJunction(): void {
-   this.withPoint = !this.withPoint;
+   this.withJunction = !this.withJunction;
  }*/
   /* private setDiameter(diameter:number): void {
  this.diameter = diameter;

@@ -29,6 +29,7 @@ const IMAGES_PER_POINT = 6;
 })
 export class BrushService extends Tool {
     private image: HTMLImageElement;
+
     private color: Color = { red: 0, green: 0, blue: 0 };
     constructor(drawingService: DrawingService) {
         super(drawingService);
@@ -37,6 +38,11 @@ export class BrushService extends Tool {
         this.image.src = '../../../assets/b2.png';
     }
 
+    /* private changeTexture(id: number): void {
+ 
+         this.image.src = '../../../assets/b' + id + '.png';
+ 
+     }*/
     onMouseDown(event: MouseEvent): void {
         this.isOut = false;
         this.mouseDown = event.button === MouseButton.Left;
@@ -70,6 +76,7 @@ export class BrushService extends Tool {
         }
     }
     private drawLine(ctx: CanvasRenderingContext2D): void {
+
         ctx.beginPath();
         const dist = this.distanceBetween2Points(this.mouseDownCoord, this.currentPos);
         const angle = this.angleBetween2Points(this.mouseDownCoord, this.currentPos);
@@ -98,8 +105,7 @@ export class BrushService extends Tool {
     }
 
     changeColor(imageData: ImageData): void {
-        const newColor = this.hexToColor(this.primaryColor);
-        this.color = newColor;
+        this.color = this.hexToColor(this.primaryColor);;
 
         for (let j = 0; j < imageData.data.length; j += BYTE_SIZE) {
             imageData.data[j] = this.color.red; // Invert Red
