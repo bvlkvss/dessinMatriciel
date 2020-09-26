@@ -18,14 +18,11 @@ export class SidebarComponent {
             this.elRef.nativeElement.parentElement.children[1].style.display = 'inline-block';
         }
         this.isopen = !this.isopen;
-        console.log(document.getElementsByTagName("canvas"));
-        
         if(this.isopen){
             this.togglecanvas("canvas-open", "canvas-close")
         } else {
             this.togglecanvas("canvas-close", "canvas-open")
         }
-
     }
 
     togglecanvas(classname:string , oldclassname:string):void{
