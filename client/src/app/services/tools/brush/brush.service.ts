@@ -36,12 +36,13 @@ export class BrushService extends Tool {
         this.image = new Image();
         this.image.src = '../../../assets/b2.png';
     }
+    /* private setTexture(id: number): void {
+     
+             this.image.src = '../../../assets/b' + id + '.png';
+     
+         }*/
 
-    /* private changeTexture(id: number): void {
- 
-         this.image.src = '../../../assets/b' + id + '.png';
- 
-     }*/
+
     onMouseDown(event: MouseEvent): void {
         this.isOut = false;
         this.mouseDown = event.button === MouseButton.Left;

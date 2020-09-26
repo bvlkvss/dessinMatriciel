@@ -1,7 +1,6 @@
 :host {
-    display: none;
     position: fixed;
-    left: 50px;
+    left: -300px;
     top: 0;
     padding: 10px;
     height: 100%;
@@ -9,7 +8,29 @@
     background-color: rgb(93, 95, 110);
 }
 
+.colorpicker-open{
+    transition: all 0.3s ease;
+    visibility: initial;
+    -webkit-transform: translateX(349px);
+    transform: translate(349px);
+}
+.colorpicker-close{
+    transition: all 0.3s ease;
+    visibility: initial;
+    -webkit-transform: translateX(-349px);
+    transform: translate(-349px);
+}
 
+#colorpicker-container{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgb(93, 95, 110);
+    opacity: 0.5;
+
+}
 
 .color-wrapper {
     display: flex;

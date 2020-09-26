@@ -1,4 +1,5 @@
-import { Component, ElementRef } from '@angular/core';
+import { Component /*, ElementRef*/ } from '@angular/core';
+import {UserGuideComponent} from '@app/components/user-guide/user-guide.component';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
 
 @Component({
@@ -7,25 +8,30 @@ import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.ser
     styleUrls: ['./sidebar.component.scss'],
 })
 export class SidebarComponent {
-    constructor(private tools: ToolsManagerService, private elRef: ElementRef) { }
+    constructor(private tools: ToolsManagerService /*, private elRef: ElementRef*/) { }
 
     paletteIsActive : boolean = false;
 
     displayPalette(): void {
-        
-        if (this.elRef.nativeElement.parentElement.children[1].style.display === 'inline-block') {
-            this.elRef.nativeElement.parentElement.children[1].style.display = 'none';
-        } else {
-            this.elRef.nativeElement.parentElement.children[1].style.display = 'inline-block';
-        }
+
+        console.log(document.querySelectorAll("app-color-picker"));
+       
         this.paletteIsActive = !this.paletteIsActive;
         if(this.paletteIsActive){
             this.togglecanvas("canvas-open", "canvas-close")
+            this.togglecolorpicker( "colorpicker-open", "colorpicker-close")
         } else {
             this.togglecanvas("canvas-close", "canvas-open")
+            this.togglecolorpicker( "colorpicker-close", "colorpicker-open")
         }
+    }
 
+    togglecolorpicker(classname:string , oldclassname:string):void{
 
+        document.querySelectorAll("#colorpicker-container").forEach(item=>{
+            item.classList.remove ( oldclassname);
+            item.setAttribute("class", classname);
+        });
 
     }
 
@@ -40,5 +46,9 @@ export class SidebarComponent {
 
     changeTools(id: number): void {
         this.tools.setTools(id);
+    }
+
+    openUserGuide(): void {
+        UserGuideComponent.displayUserGuide();
     }
 }
