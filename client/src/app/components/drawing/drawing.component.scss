@@ -2,16 +2,25 @@ canvas {
     cursor: crosshair;
     border-right: 2px solid #000000;
     border-bottom: 2px solid #000000;
-    position: fixed;
+    position: absolute;
     top: 0;
+    left: 0;
+    transition: all 0.3s ease;
 }
 
-.canvas-close{
+#canvas-container {
+    position: fixed;
+    top: 0;
     left: 50px;
+    width: 1000px;
+    height: 800px;
+    transition: all 0.3s ease;
 }
 
 .canvas-open {
-    left: 320px;
+    transition: all 0.3s ease;
+    -webkit-transform: translateX(269px);
+    transform: translateX(269px);
 }
 
 #canvas {
@@ -21,8 +30,4 @@ canvas {
 
 #drawCanvas {
     z-index: 1;
-}
-
-#canvas-container {
-    position: relative;
 }
