@@ -1,5 +1,5 @@
 import { Component /*, ElementRef*/ } from '@angular/core';
-import {UserGuideComponent} from '@app/components/user-guide/user-guide.component';
+import { UserGuideComponent } from '@app/components/user-guide/user-guide.component';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
 
 @Component({
@@ -10,9 +10,10 @@ import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.ser
 export class SidebarComponent {
     constructor(private tools: ToolsManagerService /*, private elRef: ElementRef*/) { }
 
-    paletteIsActive : boolean = false;
+    paletteIsActive: boolean = false;
 
     displayPalette(): void {
+        console.log(document.querySelectorAll('app-color-picker'));
 
 
         this.paletteIsActive = !this.paletteIsActive;
@@ -25,10 +26,9 @@ export class SidebarComponent {
         }
     }
 
-    togglecolorpicker(classname:string):void{
-
-        document.querySelectorAll("#colorpicker-container").forEach(item=>{
-            item.setAttribute("class", classname);
+    togglecolorpicker(classname: string): void {
+        document.querySelectorAll('#colorpicker-container').forEach((item) => {
+            item.setAttribute('class', classname);
         });
         console.log(document.querySelectorAll("app-color-picker"));
 
