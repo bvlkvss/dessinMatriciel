@@ -6,7 +6,7 @@
     position: fixed;
     left: 0px;
     top: 0;
-    background-color: #04092a;
+    background-color: rgb(63,65,76);;
 }
 
 .sidebar-container {
@@ -24,8 +24,8 @@
 
 .icon-bar {
     width: 50px;
-    background-color: #04092a;
-}
+    background-color: rgb(63,65,76);;
+    
 
 .icon-bar a {
     display: block;
@@ -71,4 +71,8 @@
         -webkit-transform: translateX(55px);
         transform: translate(55px);
     }
-}
+  }
+
+
+  
+
