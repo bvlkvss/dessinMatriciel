@@ -1,32 +1,14 @@
 :host {
+    display: none;
     position: fixed;
-    left: -300px;
+    left: 50px;
     top: 0;
     padding: 10px;
     height: 100%;
     width: 250px;
-    background-color: rgb(93, 95, 110);
-    transition: all 0.3s ease;
+    background-color: #070f3a;
 }
-
-.colorpicker-open{
-    transition: all 0.3s ease;
-    visibility: initial;
-    -webkit-transform: translateX(349px);
-    transform: translateX(349px);
-}
-
-
-#colorpicker-container{
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgb(93, 95, 110);
-    transition: all 0.3s ease;
-}
-
+// 050d38
 .color-wrapper {
     display: flex;
     height: auto;
