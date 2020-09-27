@@ -25,7 +25,7 @@ export class ToolsManagerService {
         lineService: LineService,
     ) {
         this.tools = [pencilService, brushService, rectangleService, eraserService, ellipseService, lineService];
-        this.currentTool = this.tools[5];
+        this.currentTool = this.tools[0];
     }
     setTools(index: number): void {
         this.currentTool = this.tools[index];

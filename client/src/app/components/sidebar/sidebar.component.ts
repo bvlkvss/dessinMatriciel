@@ -1,5 +1,5 @@
-import { Component, ElementRef } from '@angular/core';
-import {UserGuideComponent} from '@app/components/user-guide/user-guide.component';
+import { Component /*, ElementRef*/ } from '@angular/core';
+import { UserGuideComponent } from '@app/components/user-guide/user-guide.component';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
 
 @Component({
@@ -8,29 +8,47 @@ import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.ser
     styleUrls: ['./sidebar.component.scss'],
 })
 export class SidebarComponent {
-    constructor(private tools: ToolsManagerService, private elRef: ElementRef) { }
+    constructor(private tools: ToolsManagerService /*, private elRef: ElementRef*/) { }
 
-    isopen : boolean = false;
+    paletteIsActive: boolean = false;
 
     displayPalette(): void {
-        if (this.elRef.nativeElement.parentElement.children[1].style.display === 'inline-block') {
-            this.elRef.nativeElement.parentElement.children[1].style.display = 'none';
+        console.log(document.querySelectorAll('app-color-picker'));
+
+
+        this.paletteIsActive = !this.paletteIsActive;
+        if(this.paletteIsActive){
+            this.togglecanvas("drawing-container-open")
+            this.togglecolorpicker( "colorpicker-open")
         } else {
-            this.elRef.nativeElement.parentElement.children[1].style.display = 'inline-block';
-        }
-        this.isopen = !this.isopen;
-        if(this.isopen){
-            this.togglecanvas("canvas-open", "canvas-close")
-        } else {
-            this.togglecanvas("canvas-close", "canvas-open")
+            this.togglecanvas("drawing-container")
+            this.togglecolorpicker( "colorpicker-close")
         }
     }
 
-    togglecanvas(classname:string , oldclassname:string):void{
+    togglecolorpicker(classname: string): void {
+        document.querySelectorAll('#colorpicker-container').forEach((item) => {
+            item.setAttribute('class', classname);
+        });
+        console.log(document.querySelectorAll("app-color-picker"));
+
+
+    }
+
+    
+    togglecanvas(classname:string):void{
+
+        document.getElementById("drawing-div")?.setAttribute("class" , classname);
+
+
+        //document.getElementById("canvas-container")?.setAttribute("class" , "canvas-open");
+
+
+        /*
         document.querySelectorAll("#canvas-container canvas").forEach(item=>{
-            item.classList.remove ( oldclassname);
             item.setAttribute("class", classname);
         })
+        */
     }
 
     changeTools(id: number): void {
