@@ -18,28 +18,29 @@ export class SidebarComponent {
        
         this.paletteIsActive = !this.paletteIsActive;
         if(this.paletteIsActive){
-            this.togglecanvas("canvas-open", "canvas-close")
-            this.togglecolorpicker( "colorpicker-open", "colorpicker-close")
+            this.togglecanvas("canvas-open")
+            this.togglecolorpicker( "colorpicker-open")
         } else {
-            this.togglecanvas("canvas-close", "canvas-open")
-            this.togglecolorpicker( "colorpicker-close", "colorpicker-open")
+            this.togglecanvas("canvas-close")
+            this.togglecolorpicker( "colorpicker-close")
         }
     }
 
-    togglecolorpicker(classname:string , oldclassname:string):void{
+    togglecolorpicker(classname:string):void{
 
         document.querySelectorAll("#colorpicker-container").forEach(item=>{
-            item.classList.remove ( oldclassname);
             item.setAttribute("class", classname);
         });
 
     }
 
+    
 
-    togglecanvas(classname:string , oldclassname:string):void{
+    togglecanvas(classname:string):void{
+
+        //document.getElementById("canvas-container")?.setAttribute("class" , "canvas-open");
 
         document.querySelectorAll("#canvas-container canvas").forEach(item=>{
-            item.classList.remove ( oldclassname);
             item.setAttribute("class", classname);
         })
     }
