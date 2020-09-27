@@ -8,21 +8,18 @@ import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.ser
     styleUrls: ['./sidebar.component.scss'],
 })
 export class SidebarComponent {
-    constructor(private tools: ToolsManagerService /*, private elRef: ElementRef*/) { }
+    constructor(private tools: ToolsManagerService /*, private elRef: ElementRef*/) {}
 
     paletteIsActive: boolean = false;
 
     displayPalette(): void {
-        console.log(document.querySelectorAll('app-color-picker'));
-
-
         this.paletteIsActive = !this.paletteIsActive;
-        if(this.paletteIsActive){
-            this.togglecanvas("drawing-container-open")
-            this.togglecolorpicker( "colorpicker-open")
+        if (this.paletteIsActive) {
+            this.togglecanvas('drawing-container-open');
+            this.togglecolorpicker('colorpicker-open');
         } else {
-            this.togglecanvas("drawing-container")
-            this.togglecolorpicker( "colorpicker-close")
+            this.togglecanvas('drawing-container');
+            this.togglecolorpicker('colorpicker-close');
         }
     }
 
@@ -30,28 +27,15 @@ export class SidebarComponent {
         document.querySelectorAll('#colorpicker-container').forEach((item) => {
             item.setAttribute('class', classname);
         });
-        console.log(document.querySelectorAll("app-color-picker"));
-
-
+        //console.log(document.querySelectorAll('app-color-picker'));
     }
 
-    
-    togglecanvas(classname:string):void{
-
-        document.getElementById("drawing-div")?.setAttribute("class" , classname);
-
-
-        //document.getElementById("canvas-container")?.setAttribute("class" , "canvas-open");
-
-
-        /*
-        document.querySelectorAll("#canvas-container canvas").forEach(item=>{
-            item.setAttribute("class", classname);
-        })
-        */
+    togglecanvas(classname: string): void {
+        document.getElementById('drawing-div')?.setAttribute('class', classname);
     }
 
-    changeTools(id: number): void {
+    changeTools(id:number): void {
+        console.log(id);
         this.tools.setTools(id);
     }
 

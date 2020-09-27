@@ -8,17 +8,16 @@
 <body>
     <div class="container2">
         <div class="icon-bar">
-            <a (click)="changeTools(0)">
+            <a id="0" class="active" (click)="changeTools($event)">
                 <i class="material-icons">edit</i>
                 <span class="slidingtxt"> Pencil (1)</span>
             </a>
-
             <a (click)="changeTools(1)">
                 <i class="material-icons">brush</i>
                 <span class="slidingtxt"> Brush (w)</span>
             </a>
             <a (click)="changeTools(2)">
-                <i class="material-icons">dashboard</i>
+                <i class="material-icons">crop_16_9</i>
                 <span class="slidingtxt"> Rectangle (w)</span>
             </a>
             <a (click)="changeTools(3)">
@@ -33,9 +32,24 @@
                 <i class="material-icons">palette</i>
                 <span class="slidingtxt"> Palette (X)</span>
             </a>
+        </div>
+        
+        <div class="color-bar">
+
+            <a class="color-box1">
+
+            </a>
+            <a class="change">
+                <i class="material-icons change">cached</i>
+            </a>
+            <a  class="color-box2">
+            </a>
+
+        </div>
+
+        <div class="icon-bar2">
             <a (click)="openUserGuide()">
                 <i class="material-icons">help_center</i>
-                <span class="slidingtxt"> Guide utilisateur (X)</span>
             </a>
         </div>
     </div>
