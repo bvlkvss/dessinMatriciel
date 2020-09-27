@@ -6,19 +6,29 @@
     position: absolute;
     background-color: #2D2E37;
 }
+
 .container {
     height: 100%;
     display: flex;
     position: absolute;
     z-index: -1;
-
 }
 
 .drawing-container {
+    position: relative;
     overflow: auto;
     flex: 1 1 auto;
-    z-index: -1;
-    left: 100px;
+    left: 25px;
+    transition: all 0.3s ease;
+    
+}
+
+.drawing-container-open{
+    position: relative;
+    overflow: auto;
+    flex: 1 1 auto;
+    transition: all 0.3s ease;
+    left: 295px;
 }
 
 .drawing {
