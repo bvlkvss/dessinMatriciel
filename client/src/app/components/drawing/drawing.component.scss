@@ -12,12 +12,12 @@ canvas {
 #canvas-container{
     position: fixed;
     top: 0;
-    left: 26px;
+    left: 50px;
     width: 1000px;
     height: 800px;
     transition: all 0.3s ease;    
-}
-*/
+}*/
+
 
 .canvas-open {
     transition: all 0.3s ease;
@@ -36,6 +36,4 @@ canvas {
     z-index: 1;
 }
 
-#canvas-container {
-    position: relative;
-}
+
