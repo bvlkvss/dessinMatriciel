@@ -35,7 +35,6 @@
 
 .color-container {
     display: inline-block;
-    
 }
 .lastColors {
     outline: none;
@@ -78,8 +77,8 @@
     margin: none;
     color: white;
     font-size: 18px;
-    border: rgb(63, 65, 76);
-    background-color: rgb(63, 65, 76);
+    border: #0d1546;
+    background-color: #070f3a;
     font-family: monospace;
 }
 .slider {
@@ -96,11 +95,11 @@
 
 .slider::-webkit-slider-thumb {
     -webkit-appearance: none;
-    appearance: none;
+
     width: 15px;
     height: 15px;
     border-radius: 50%;
-    background: #63c4eb;
+    background: white;
     cursor: pointer;
 }
 
