@@ -79,6 +79,8 @@ export class DrawingComponent implements AfterViewInit {
         this.drawingService.previewCtx.restore();
         if (this.keyBindings.has(event.key))
             this.tools.currentTool = this.keyBindings.get(event.key) as Tool;
+        else
+            this.tools.currentTool.onKeyDown(event);
 
         /* switch (event.key) {
              case '1':
