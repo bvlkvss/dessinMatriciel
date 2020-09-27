@@ -35,7 +35,6 @@ export class SidebarComponent {
     }
 
     
-
     togglecanvas(classname:string):void{
 
         //document.getElementById("canvas-container")?.setAttribute("class" , "canvas-open");

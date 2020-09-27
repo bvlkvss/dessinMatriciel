@@ -34,7 +34,7 @@ export class BrushService extends Tool {
         super(drawingService);
         this.primaryColor = '0000000';
         this.image = new Image();
-        this.image.src = '../../../assets/b8.png';
+        this.image.src = '../../../assets/b4.png';
     }
     /* private setTexture(id: number): void {
      
@@ -63,6 +63,7 @@ export class BrushService extends Tool {
         this.mouseDown = false;
     }
     onMouseEnter(event: MouseEvent): void {
+        
         if (this.mouseDown) {
             this.mouseDownCoord = this.getPositionFromMouse(event);
         }
