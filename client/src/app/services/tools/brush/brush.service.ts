@@ -15,7 +15,7 @@ export enum MouseButton {
 const BYTE_SIZE = 4;
 const IMAGE_SIZE_DIVIDER = 3;
 const MOUSE_POSITION_OFFSET_DIVIDER = 6;
-const IMAGES_PER_POINT = 6;
+const IMAGES_PER_POINT = 4;
 
 // TODO : Déplacer ça dans un fichier séparé accessible par tous
 
@@ -34,7 +34,7 @@ export class BrushService extends Tool {
         super(drawingService);
         this.primaryColor = '0000000';
         this.image = new Image();
-        this.image.src = '../../../assets/b8.png';
+        this.image.src = '../../../assets/b4.png';
     }
     /* private setTexture(id: number): void {
      
@@ -118,6 +118,8 @@ export class BrushService extends Tool {
 
     makeBaseImage(): HTMLCanvasElement {
         const tempCanvas = document.createElement('canvas');
+        this.image.height = 250;
+        this.image.width = 250;
         tempCanvas.width = this.image.width / IMAGE_SIZE_DIVIDER;
         tempCanvas.height = this.image.height / IMAGE_SIZE_DIVIDER;
         const tempCtx = tempCanvas.getContext('2d');
