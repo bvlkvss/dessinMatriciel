@@ -6,7 +6,7 @@
     position: fixed;
     left: 0px;
     top: 0;
-    background-color: rgb(63,65,76);;
+    background-color: rgb(63,65,76);
 }
 
 .sidebar-container {
@@ -30,16 +30,53 @@
 
 .icon-bar2 {
     position: relative;
-    top: 400px;
+    top: 300px;
     width: 50px;
     background-color: rgb(63,65,76);
+}
+
+.color-bar{
+    position: relative;
+    top: 100px;
+    width: 50px;
+    background-color: rgb(63,65,76);
+
+}
+
+.color-bar a{
+    display: block;
+    position: relative;
+    text-align: center;
+    height: 28px;
+    top: 10px;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.color-box1{
+    background-color: salmon;
+    border: slategray 1px solid;
+    border-radius: 10px;
+}
+.color-box2{
+    background-color: skyblue;
+    border: slategray 1px solid;
+    border-radius: 10px;
+}
+
+.change{
+    transform:  rotateZ(-20deg);
+}
+
+.change:hover{
+    transition: all 0.3s;
+    transform:  rotateZ(-90deg) scale(1.1);
 }
 
 .icon-bar2 a{
     display: block;
     position: relative;
     text-align: center;
-    transition: all 0.3s ease;
     top: 10px;
     padding: 10px;
     cursor: pointer;

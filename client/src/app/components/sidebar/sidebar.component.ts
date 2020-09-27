@@ -39,8 +39,6 @@ export class SidebarComponent {
         this.tools.setTools(id);
     }
 
-    
-
     openUserGuide(): void {
         UserGuideComponent.displayUserGuide();
     }
