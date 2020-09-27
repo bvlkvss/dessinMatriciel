@@ -1,0 +1,16 @@
+<div id="attribute">
+    <div id="lineWidthcontainer" *ngIf="checkIfContainAttribute('lineWidth')">
+        <p id="header" for="volume">Line Width</p>
+        <input class="textInput" for="sliderSize" type="text" (change)="setLineWidth()" value="1px " maxlength="5" min="1" max="100" />
+        <input name="sliderSize" id="sliderSize" class="size-slider" type="range" (change)="setLineWidth()" value="1" min="1" max="100" />
+    </div>
+    <div id="lineWidthcontainer" *ngIf="checkIfContainAttribute('lineWidth')">
+        <p id="header" for="volume">Line opacity</p>
+        <input class="textInput" type="text" (change)="setLineWidth()" value="1px" maxlength="5" min="1" max="100" />
+        <input class="size-slider" type="range" (change)="setLineWidth()" value="1" min="1" max="100" />
+    </div>
+
+    <div *ngIf="checkIfContainAttribute('texture')">
+        <p>yesss</p>
+    </div>
+</div>

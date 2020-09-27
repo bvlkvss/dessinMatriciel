@@ -1,44 +1,42 @@
 <!DOCTYPE html>
 <html>
+    <head>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+    </head>
 
-<head>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
-</head>
+    <body>
+        <div class="container2">
+            <div class="icon-bar">
+                <a (click)="changeTools(0)" (click)="displayPalette()">
+                    <i class="material-icons">edit</i>
+                    <span class="slidingtxt"> Pencil (1)</span>
+                </a>
 
-<body>
-    <div class="container2">
-        <div class="icon-bar">
-            <a (click)="changeTools(0)">
-                <i class="material-icons">edit</i>
-                <span class="slidingtxt"> Pencil (1)</span>
-            </a>
-
-            <a (click)="changeTools(1)">
-                <i class="material-icons">brush</i>
-                <span class="slidingtxt"> Brush (w)</span>
-            </a>
-            <a (click)="changeTools(2)">
-                <i class="material-icons">dashboard</i>
-                <span class="slidingtxt"> Rectangle (w)</span>
-            </a>
-            <a (click)="changeTools(3)">
-                <i class="material-icons">remove_circle</i>
-                <span class="slidingtxt"> Eraser (w)</span>
-            </a>
-            <a (click)="changeTools(4)">
-                <i class="material-icons">circle</i>
-                <span class="slidingtxt"> Ellipse (X)</span>
-            </a>
-            <a (click)="displayPalette()">
-                <i class="material-icons">palette</i>
-                <span class="slidingtxt"> Palette (X)</span>
-            </a>
-            <a (click)="openUserGuide()">
-                <i class="material-icons">help_center</i>
-                <span class="slidingtxt"> Guide utilisateur (X)</span>
-            </a>
+                <a (click)="changeTools(1)" (click)="displayPalette()">
+                    <i class="material-icons">brush</i>
+                    <span class="slidingtxt"> Brush (w)</span>
+                </a>
+                <a (click)="changeTools(2)" (click)="displayPalette()">
+                    <i class="material-icons">dashboard</i>
+                    <span class="slidingtxt"> Rectangle (w)</span>
+                </a>
+                <a (click)="changeTools(3)" (click)="displayPalette()">
+                    <i class="material-icons">remove_circle</i>
+                    <span class="slidingtxt"> Eraser (w)</span>
+                </a>
+                <a (click)="changeTools(4)" (click)="displayPalette()">
+                    <i class="material-icons">circle</i>
+                    <span class="slidingtxt"> Ellipse (X)</span>
+                </a>
+                <a (click)="displayPalette()">
+                    <i class="material-icons">palette</i>
+                    <span class="slidingtxt"> Palette (X)</span>
+                </a>
+                <a (click)="openUserGuide()" (click)="displayPalette()">
+                    <i class="material-icons">help_center</i>
+                    <span class="slidingtxt"> Guide utilisateur (X)</span>
+                </a>
+            </div>
         </div>
-    </div>
-</body>
-
+    </body>
 </html>

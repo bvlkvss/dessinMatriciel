@@ -1,0 +1,72 @@
+#attribute {
+    height: 100%;
+    box-shadow: black;
+    background-color: #081144;
+    position: relative;
+    -webkit-box-shadow: inset 5px 5px 25px -20px rgba(0, 0, 0, 0.64);
+    -moz-box-shadow: inset 5px 5px 25px -20px rgba(0, 0, 0, 0.64);
+    box-shadow: inset 5px 5px 25px -20px rgba(0, 0, 0, 0.64);
+}
+.size-slider {
+    -webkit-appearance: none;
+    width: 80%;
+    height: 7px;
+    position: relative;
+    left: -35px;
+    bottom: 6px;
+    border-radius: 5px;
+    background: #d3d3d3;
+    outline: none;
+    opacity: 0.7;
+    -webkit-transition: 0.2s;
+    transition: opacity 0.2s;
+}
+
+.size-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background: white;
+    cursor: pointer;
+}
+
+.textInput {
+    position: relative;
+    width: 40px;
+    bottom: 40px;
+    left: 75%;
+    font-size: 14px;
+    color: whitesmoke;
+    background-color: #081144;
+    border: none;
+}
+#lineWidthcontainer {
+    padding: 5px;
+    position: relative;
+    -webkit-box-shadow: inset 0px 64px 59px -71px rgba(255, 255, 255, 0.1);
+    -moz-box-shadow: inset 0px 64px 59px -71px rgba(255, 255, 255, 0.1);
+    box-shadow: inset 0px 64px 59px -71px rgba(255, 255, 255, 0.1);
+    height: 60px;
+}
+#header {
+    position: relative;
+    color: white;
+    bottom: 20px;
+    width: auto;
+    font-size: 19px;
+    font-family: Hack, monospace;
+    height: 0px;
+    left: 6%;
+}
+#colorContainer {
+    position: relative;
+    top: 0;
+    height: 50px;
+}
+.color-div {
+    border-radius: 50%;
+    position: relative;
+    top: 25px;
+}

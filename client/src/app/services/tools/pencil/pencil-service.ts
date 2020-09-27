@@ -24,6 +24,8 @@ export class PencilService extends Tool {
 
     constructor(drawingService: DrawingService) {
         super(drawingService);
+        this.toolAttributes = ["lineWidth"];
+
         this.clearPath();
     }
 
@@ -80,7 +82,7 @@ export class PencilService extends Tool {
 
     private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.setLineDash([0, 0]);
-        ctx.lineWidth = this.pencilThickness;
+        ctx.lineWidth = this.lineWidth;
         ctx.lineCap = 'round';
         ctx.strokeStyle = this.primaryColor; 2
         ctx.beginPath();
