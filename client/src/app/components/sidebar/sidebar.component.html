@@ -8,7 +8,7 @@
 <body>
     <div class="container2">
         <div class="icon-bar">
-            <a (click)="changeTools(0)">
+            <a id="0" class="active" (click)="changeTools($event)">
                 <i class="material-icons">edit</i>
                 <span class="slidingtxt"> Pencil (X)</span>
             </a>
@@ -20,21 +20,23 @@
                 <i class="material-icons">dashboard</i>
                 <span class="slidingtxt"> Rectangle (1)</span>
             </a>
-            <a (click)="changeTools(4)">
-                <i class="material-icons">circle</i>
-                <span class="slidingtxt"> Ellipse (X)</span>
-            </a>
             <a (click)="changeTools(3)">
                 <i class="material-icons">remove_circle</i>
                 <span class="slidingtxt"> Eraser (x)</span>
+            </a>
+            <a (click)="changeTools(4)">
+                <i class="material-icons">circle</i>
+                <span class="slidingtxt"> Ellipse (X)</span>
             </a>
             <a (click)="displayPalette()">
                 <i class="material-icons">palette</i>
                 <span class="slidingtxt"> Palette (X)</span>
             </a>
+        </div>
+        
+        <div class="icon-bar2">
             <a (click)="openUserGuide()">
                 <i class="material-icons">help_center</i>
-                <span class="slidingtxt"> Guide utilisateur (X)</span>
             </a>
         </div>
     </div>

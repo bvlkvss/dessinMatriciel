@@ -24,7 +24,29 @@
 
 .icon-bar {
     width: 50px;
-    background-color: rgb(63,65,76);;
+    background-color: rgb(63,65,76);
+    padding-bottom: 10px;
+}
+
+.icon-bar2 {
+    position: relative;
+    top: 400px;
+    width: 50px;
+    background-color: rgb(63,65,76);
+}
+
+.icon-bar2 a{
+    display: block;
+    position: relative;
+    text-align: center;
+    transition: all 0.3s ease;
+    top: 10px;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.active{
+    background-color: #9fa1a3;
 }
 
 .icon-bar a {
@@ -35,10 +57,10 @@
     //padding: 16px;
     transition: all 0.3s ease;
     color: white;
-    cursor: pointer;
     top: 10px;
     padding: 10px;
-    background-color: #04092a;
+    color: rgb(63,65,76);
+    cursor: pointer;
 }
 
 .slidingtxt {
@@ -56,8 +78,7 @@
     color: white;
     cursor: pointer;
     padding: 10px;
-    background-color: #04092a;
-
+    background-color: rgb(63,65,76);
     z-index: -1;
 }
 
@@ -65,7 +86,7 @@
     //-webkit-transform: translateX(5px);
     //transform: translate(5px, -5px);
     background-color: #9fa1a3;
-    box-shadow: -1px 1px #6f7172, -2px 2px #6f7172, -3px 3px #6f7172;
+    //box-shadow: -1px 1px #6f7172, -2px 2px #6f7172, -3px 3px #6f7172;
     .slidingtxt {
         visibility: initial;
         -webkit-transform: translateX(55px);
