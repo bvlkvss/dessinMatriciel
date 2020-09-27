@@ -4,28 +4,14 @@ canvas {
     border-bottom: 2px solid #000000;
     position: fixed;
     top: 0;
-    left: 50px;
     transition: all 0.3s ease;
 }
 
-/*
 #canvas-container{
     position: fixed;
     top: 0;
-    left: 50px;
-    width: 1000px;
-    height: 800px;
     transition: all 0.3s ease;    
-}*/
-
-
-.canvas-open {
-    transition: all 0.3s ease;
-    -webkit-transform: translateX(269px);
-    transform: translateX(269px);
 }
-
-
 
 #canvas {
     z-index: 0;

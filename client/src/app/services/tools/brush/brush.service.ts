@@ -66,8 +66,10 @@ export class BrushService extends Tool {
         
         if (this.mouseDown) {
             this.mouseDownCoord = this.getPositionFromMouse(event);
+            console.log(this.mouseDownCoord.x);
         }
         this.isOut = false;
+
     }
     onMouseMove(event: MouseEvent): void {
         if (this.mouseDown && !this.isOut) {

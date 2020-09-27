@@ -14,14 +14,13 @@ export class SidebarComponent {
 
     displayPalette(): void {
 
-        console.log(document.querySelectorAll("app-color-picker"));
-       
+
         this.paletteIsActive = !this.paletteIsActive;
         if(this.paletteIsActive){
-            this.togglecanvas("canvas-open")
+            this.togglecanvas("drawing-container-open")
             this.togglecolorpicker( "colorpicker-open")
         } else {
-            this.togglecanvas("canvas-close")
+            this.togglecanvas("drawing-container")
             this.togglecolorpicker( "colorpicker-close")
         }
     }
@@ -31,17 +30,25 @@ export class SidebarComponent {
         document.querySelectorAll("#colorpicker-container").forEach(item=>{
             item.setAttribute("class", classname);
         });
+        console.log(document.querySelectorAll("app-color-picker"));
+
 
     }
 
     
     togglecanvas(classname:string):void{
 
+        document.getElementById("drawing-div")?.setAttribute("class" , classname);
+
+
         //document.getElementById("canvas-container")?.setAttribute("class" , "canvas-open");
 
+
+        /*
         document.querySelectorAll("#canvas-container canvas").forEach(item=>{
             item.setAttribute("class", classname);
         })
+        */
     }
 
     changeTools(id: number): void {
