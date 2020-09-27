@@ -34,7 +34,7 @@ export class BrushService extends Tool {
         super(drawingService);
         this.primaryColor = '0000000';
         this.image = new Image();
-        this.image.src = '../../../assets/b8.png';
+        this.image.src = '../../../assets/b2.png';
     }
     /* private setTexture(id: number): void {
      
