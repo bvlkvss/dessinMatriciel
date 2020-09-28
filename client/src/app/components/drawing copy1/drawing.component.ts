@@ -1,5 +1,4 @@
 import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
-import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
@@ -17,7 +16,7 @@ export class DrawingComponent implements AfterViewInit {
     @ViewChild('baseCanvas', { static: false }) baseCanvas: ElementRef<HTMLCanvasElement>;
     // On utilise ce canvas pour dessiner sans affecter le dessin final
     @ViewChild('previewCanvas', { static: false }) previewCanvas: ElementRef<HTMLCanvasElement>;
-    private keyBindings: Map<string, Tool> = new Map();
+
     private baseCtx: CanvasRenderingContext2D;
     private previewCtx: CanvasRenderingContext2D;
     private canvasSize: Vec2 = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
@@ -29,11 +28,6 @@ export class DrawingComponent implements AfterViewInit {
     constructor(private drawingService: DrawingService, private tools: ToolsManagerService) {}
 
     ngAfterViewInit(): void {
-        this.keyBindings
-            .set('c', this.tools.getTools()[0])
-            .set('w', this.tools.getTools()[1])
-            .set('e', this.tools.getTools()[3])
-            .set('2', this.tools.getTools()[4]);
         this.baseCtx = this.baseCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.previewCtx = this.previewCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.drawingService.baseCtx = this.baseCtx;
@@ -50,42 +44,24 @@ export class DrawingComponent implements AfterViewInit {
             console.log(this.currentResizer);
         }
     }
-
+    
     @HostListener('window:mousemove', ['$event'])
     resize(event: MouseEvent): void {
         const t = document.querySelector('#canvas-container') as HTMLDivElement;
         if (this.resizing && event.button === 0) {
             if (this.currentResizer === 'resizer right') {
-                if (event.pageX - t.getBoundingClientRect().left >= 250) {
-                    t.style.width = event.pageX - t.getBoundingClientRect().left + 'px';
-                    this.resizedWidth = event.pageX - t.getBoundingClientRect().left;
-                    console.log(this.currentResizer);
-                } else {
-                    t.style.width = '250px';
-                    this.resizedWidth = 250;
-                }
+                t.style.width = event.pageX - t.getBoundingClientRect().left + 'px';
+                this.resizedWidth = event.pageX - t.getBoundingClientRect().left;
+                console.log(this.currentResizer);
             } else if (this.currentResizer === 'resizer bottom') {
-                if (event.pageY - t.getBoundingClientRect().top >= 250) {
-                    t.style.height = event.pageY - t.getBoundingClientRect().top + 'px';
-                    this.resizedHeight = event.pageY - t.getBoundingClientRect().top;
-                    console.log(this.currentResizer);
-                } else {
-                    t.style.height = '250px';
-                    this.resizedHeight = 250;
-                    console.log(this.currentResizer);
-                }
+                t.style.height = event.pageY - t.getBoundingClientRect().top + 'px';
+                this.resizedHeight = event.pageY - t.getBoundingClientRect().top;
+                console.log(this.currentResizer);
             } else if (this.currentResizer === 'resizer bottom-right') {
-                if (event.pageX - t.getBoundingClientRect().left >= 250 && event.pageY - t.getBoundingClientRect().top >= 250) {
-                    t.style.width = event.pageX - t.getBoundingClientRect().left + 'px';
-                    this.resizedWidth = event.pageX - t.getBoundingClientRect().left;
-                    t.style.height = event.pageY - t.getBoundingClientRect().top + 'px';
-                    this.resizedHeight = event.pageY - t.getBoundingClientRect().top;
-                } else {
-                    t.style.width = '250px';
-                    this.resizedWidth = 250;
-                    t.style.height = '250px';
-                    this.resizedHeight = 250;
-                }
+                t.style.width = event.pageX - t.getBoundingClientRect().left + 'px';
+                this.resizedWidth = event.pageX - t.getBoundingClientRect().left;
+                t.style.height = event.pageY - t.getBoundingClientRect().top + 'px';
+                this.resizedHeight = event.pageY - t.getBoundingClientRect().top;
             }
         }
     }
@@ -108,6 +84,7 @@ export class DrawingComponent implements AfterViewInit {
             console.log('Resizing stopped');
         }
     }
+
     @HostListener('mousemove', ['$event'])
     onMouseMove(event: MouseEvent): void {
         if (!this.resizing) {
@@ -163,40 +140,40 @@ export class DrawingComponent implements AfterViewInit {
 
     @HostListener('keydown', ['$event'])
     onKeyDown(event: KeyboardEvent): void {
-        this.drawingService.baseCtx.restore();
-        this.drawingService.previewCtx.restore();
-        if (this.keyBindings.has(event.key)) this.tools.currentTool = this.keyBindings.get(event.key) as Tool;
-        else this.tools.currentTool.onKeyDown(event);
+        if (!this.resizing) {
+            this.drawingService.baseCtx.restore();
+            this.drawingService.previewCtx.restore();
 
-        /* switch (event.key) {
-             case '1':
-                 this.tools.setTools(2);
-                 break;
-             case 'w':
-                 this.tools.setTools(1); // pour tester setRGB bleu,initialement coleur noir !!
- 
-                 break;
-             case 'c':
-                 this.tools.setTools(0);
-                 this.previewCtx.canvas.style.cursor = 'crosshair';
-                 break;
-             case 'e':
-                 // tslint:disable-next-line:no-magic-numbers
-                 this.tools.setTools(3);
-                 this.previewCtx.canvas.style.cursor = "url('whiteSquare.png'), auto";
-                 console.log('eraser');
-                 // tslint:disable-next-line:no-magic-numbers
-                 this.tools.setColor('#ffffff');
-                 break;
- 
-             case '2':
-                 // tslint:disable-next-line:no-magic-numbers
-                 this.tools.setTools(4);
-                 break;
-             default:
-                 this.tools.currentTool.onKeyDown(event);
-                 break;
-         } */
+            switch (event.key) {
+                case '1':
+                    this.tools.setTools(2);
+                    break;
+                case 'w':
+                    this.tools.setTools(1); // pour tester setRGB bleu,initialement coleur noir !!
+
+                    break;
+                case 'c':
+                    this.tools.setTools(0);
+                    this.previewCtx.canvas.style.cursor = 'crosshair';
+                    break;
+                case 'e':
+                    // tslint:disable-next-line:no-magic-numbers
+                    this.tools.setTools(3);
+                    this.previewCtx.canvas.style.cursor = "url('whiteSquare.png'), auto";
+                    console.log('eraser');
+                    // tslint:disable-next-line:no-magic-numbers
+                    this.tools.setColor('#ffffff');
+                    break;
+
+                case '2':
+                    // tslint:disable-next-line:no-magic-numbers
+                    this.tools.setTools(4);
+                    break;
+                default:
+                    this.tools.currentTool.onKeyDown(event);
+                    break;
+            }
+        }
     }
 
     get width(): number {

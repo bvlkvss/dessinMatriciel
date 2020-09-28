@@ -18,6 +18,7 @@
     position: relative;
     overflow: auto;
     flex: 1 1 auto;
+    height: 800;
     left: 25px;
     transition: all 0.3s ease;
     
@@ -36,3 +37,4 @@
     width: min-content;
     outline: none;
 }
+
