@@ -8,7 +8,7 @@ import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.ser
     styleUrls: ['./sidebar.component.scss'],
 })
 export class SidebarComponent {
-    constructor(private tools: ToolsManagerService /*, private elRef: ElementRef*/) {}
+    constructor(private tools: ToolsManagerService /*, private elRef: ElementRef*/) { }
 
     attributeBarIsActive: boolean = false;
 
@@ -16,10 +16,10 @@ export class SidebarComponent {
 
         this.attributeBarIsActive = !this.attributeBarIsActive;
         if (this.attributeBarIsActive) {
-            this.togglecanvas('canvas-open');
+            this.togglecanvas('drawing-container-open');
             this.toggleAttributeBar('colorpicker-open');
         } else {
-            this.togglecanvas('canvas-close');
+            this.togglecanvas('drawing-container');
             this.toggleAttributeBar('colorpicker-close');
         }
     }
@@ -36,7 +36,7 @@ export class SidebarComponent {
         document.getElementById('drawing-div')?.setAttribute('class', classname);
     }
 
-    changeTools(id:number): void {
+    changeTools(id: number): void {
         console.log(id);
         this.tools.setTools(id);
     }

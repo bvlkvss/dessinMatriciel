@@ -11,10 +11,16 @@
     flex: 1 1 auto;
     left: 25px;
     transition: all 0.3s ease;
-    
 }
-
-.drawing-container-open{
+#background {
+    width: 100%;
+    height: 100%;
+    top: 0;
+    z-index: -4;
+    position: absolute;
+    background-color: #2d2e37;
+}
+.drawing-container-open {
     position: relative;
     overflow: auto;
     flex: 1 1 auto;
