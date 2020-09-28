@@ -3,6 +3,7 @@ import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
+import { ResizingService } from '../../services/resizing/resizing.service';
 
 // TODO : Avoir un fichier séparé pour les constantes ?
 export const DEFAULT_WIDTH = 1000;
@@ -21,12 +22,8 @@ export class DrawingComponent implements AfterViewInit {
     private baseCtx: CanvasRenderingContext2D;
     private previewCtx: CanvasRenderingContext2D;
     private canvasSize: Vec2 = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
-    private currentResizer: string;
-    private resizing: boolean = false;
-    private resizedWidth: number;
-    private resizedHeight: number;
     // TODO : Avoir un service dédié pour gérer tous les outils ? Ceci peut devenir lourd avec le temps
-    constructor(private drawingService: DrawingService, private tools: ToolsManagerService) {}
+    constructor(private drawingService: DrawingService, private tools: ToolsManagerService, private resizer: ResizingService) {}
 
     ngAfterViewInit(): void {
         this.keyBindings
@@ -42,121 +39,66 @@ export class DrawingComponent implements AfterViewInit {
     }
 
     initResizing(event: MouseEvent): void {
-        if (event.button === 0) {
-            const target = event.target as HTMLDivElement;
-            event.preventDefault();
-            this.currentResizer = target.className;
-            this.resizing = true;
-            console.log(this.currentResizer);
-        }
+        this.resizer.initResizing(event);
     }
 
     @HostListener('window:mousemove', ['$event'])
     resize(event: MouseEvent): void {
-        const t = document.querySelector('#canvas-container') as HTMLDivElement;
-        if (this.resizing && event.button === 0) {
-            if (this.currentResizer === 'resizer right') {
-                if (event.pageX - t.getBoundingClientRect().left >= 250) {
-                    t.style.width = event.pageX - t.getBoundingClientRect().left + 'px';
-                    this.resizedWidth = event.pageX - t.getBoundingClientRect().left;
-                    console.log(this.currentResizer);
-                } else {
-                    t.style.width = '250px';
-                    this.resizedWidth = 250;
-                }
-            } else if (this.currentResizer === 'resizer bottom') {
-                if (event.pageY - t.getBoundingClientRect().top >= 250) {
-                    t.style.height = event.pageY - t.getBoundingClientRect().top + 'px';
-                    this.resizedHeight = event.pageY - t.getBoundingClientRect().top;
-                    console.log(this.currentResizer);
-                } else {
-                    t.style.height = '250px';
-                    this.resizedHeight = 250;
-                    console.log(this.currentResizer);
-                }
-            } else if (this.currentResizer === 'resizer bottom-right') {
-                if (event.pageX - t.getBoundingClientRect().left >= 250 && event.pageY - t.getBoundingClientRect().top >= 250) {
-                    t.style.width = event.pageX - t.getBoundingClientRect().left + 'px';
-                    this.resizedWidth = event.pageX - t.getBoundingClientRect().left;
-                    t.style.height = event.pageY - t.getBoundingClientRect().top + 'px';
-                    this.resizedHeight = event.pageY - t.getBoundingClientRect().top;
-                } else {
-                    t.style.width = '250px';
-                    this.resizedWidth = 250;
-                    t.style.height = '250px';
-                    this.resizedHeight = 250;
-                }
-            }
-        }
+        this.resizer.resize(event);
     }
     @HostListener('window:mouseup', ['$event'])
     stopResize(event: MouseEvent): void {
-        if (this.resizing) {
-            if (this.currentResizer === 'resizer right') {
-                this.baseCanvas.nativeElement.width = this.resizedWidth;
-                this.previewCanvas.nativeElement.width = this.resizedWidth;
-            } else if (this.currentResizer === 'resizer bottom') {
-                this.baseCanvas.nativeElement.height = this.resizedHeight;
-                this.previewCanvas.nativeElement.height = this.resizedHeight;
-            } else if (this.currentResizer === 'resizer bottom-right') {
-                this.baseCanvas.nativeElement.width = this.resizedWidth;
-                this.previewCanvas.nativeElement.width = this.resizedWidth;
-                this.baseCanvas.nativeElement.height = this.resizedHeight;
-                this.previewCanvas.nativeElement.height = this.resizedHeight;
-            }
-            this.resizing = false;
-            console.log('Resizing stopped');
-        }
+        this.resizer.stopResize(event, this.baseCanvas.nativeElement, this.previewCanvas.nativeElement);
     }
     @HostListener('mousemove', ['$event'])
     onMouseMove(event: MouseEvent): void {
-        if (!this.resizing) {
+        if (!this.resizer.resizing) {
             this.tools.currentTool.onMouseMove(event);
         }
     }
 
     @HostListener('mousedown', ['$event'])
     onMouseDown(event: MouseEvent): void {
-        if (!this.resizing) {
+        if (!this.resizer.resizing) {
             this.tools.currentTool.onMouseDown(event);
         }
     }
 
     @HostListener('mouseenter', ['$event'])
     onMouseEnter(event: MouseEvent): void {
-        if (!this.resizing) {
+        if (!this.resizer.resizing) {
             this.tools.currentTool.onMouseEnter(event);
         }
     }
     @HostListener('dblclick', ['$event'])
     onDblClick(event: MouseEvent): void {
-        if (!this.resizing) {
+        if (!this.resizer.resizing) {
             this.tools.currentTool.onDblClick(event);
         }
     }
 
     @HostListener('click', ['$event'])
     onClick(event: MouseEvent): void {
-        if (!this.resizing) {
+        if (!this.resizer.resizing) {
             this.tools.currentTool.onClick(event);
         }
     }
     @HostListener('document:mouseup', ['$event'])
     onMouseUp(event: MouseEvent): void {
-        if (!this.resizing) {
+        if (!this.resizer.resizing) {
             this.tools.currentTool.onMouseUp(event);
         }
     }
     @HostListener('mouseout', ['$event'])
     onMouseOut(event: MouseEvent): void {
-        if (!this.resizing) {
+        if (!this.resizer.resizing) {
             this.tools.currentTool.onMouseOut(event);
         }
     }
 
     @HostListener('document:keyup', ['$event'])
     KeyUp(event: KeyboardEvent): void {
-        if (!this.resizing) {
+        if (!this.resizer.resizing) {
             this.tools.currentTool.onKeyUp(event);
         }
     }
