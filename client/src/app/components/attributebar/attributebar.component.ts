@@ -28,12 +28,18 @@ export class AttributebarComponent implements OnInit {
     let inputToUpdate = document.querySelector(".textInput") as HTMLInputElement;
     inputToUpdate.value = input.value + "px";
   }
-  toggleTextureList(): void {
+  toggleList(id: string): void {
     this.showContainer = !this.showContainer
-    let container = document.querySelector("#textureContainer") as HTMLElement;
-    let icon = document.querySelector("#icon") as HTMLElement;
+    let container = document.querySelector("#" + id) as HTMLElement;
+
+
+    let icon = container.previousSibling?.lastChild as HTMLElement;
     if (this.showContainer) {
-      container.style.display = "table-cell";
+      if (container.id === "currentImageContainer")
+        container.style.display = "table-cell";
+      else
+        container.style.display = "flex";
+
       icon.innerHTML = "expand_less";
     }
     else {
@@ -41,14 +47,35 @@ export class AttributebarComponent implements OnInit {
       icon.innerHTML = "expand_more";
 
     }
+
   }
   setTexture(id: number): void {
     let brush = this.tools.getTools()[1] as BrushService;
-
     brush.setTexture(id);
     let currentImage = document.querySelector("#currentImage") as HTMLImageElement;
     currentImage.src = '../../../assets/b' + id + '.svg';
   }
+  setShapeStyle(idStyle: number, isEllipse: boolean): void {
+    let currentStyle;
+    if (isEllipse)
+      currentStyle = document.querySelector("#currentEllipseStyle") as HTMLElement;
+    else
+      currentStyle = document.querySelector("#currentRectangleStyle") as HTMLElement;
+
+    let shapeStyle = document.querySelector("#style" + idStyle) as HTMLElement;
+    currentStyle.style.borderColor = window.getComputedStyle(shapeStyle).borderColor;
+    currentStyle.style.backgroundColor = window.getComputedStyle(shapeStyle).backgroundColor;
+    currentStyle.style.borderStyle = window.getComputedStyle(shapeStyle).borderStyle;
+    currentStyle.style.borderWidth = window.getComputedStyle(shapeStyle).borderWidth;
+    console.log(window.getComputedStyle(shapeStyle).borderStyle);
+    if (isEllipse)
+      this.tools.setEllipseStyle(idStyle);
+    else
+      this.tools.setRectangleStyle(idStyle);
+
+
+  }
+
   //<app-color-picker id="colorPicker" style="z-index: -1"></app-color-picker>
 
 }

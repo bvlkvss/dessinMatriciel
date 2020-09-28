@@ -20,7 +20,7 @@
         <div id="currentImageContainer">
             <img id="currentImage" src="../../../assets/b0.svg" />
             <p class="header" id="headerImage">Texture</p>
-            <i class="material-icons" (click)="toggleTextureList()" id="icon">expand_more</i>
+            <i class="material-icons" (click)="toggleList($event.target.parentElement.nextSibling.id)" id="icon">expand_more</i>
         </div>
         <div id="textureContainer">
             <img id="imageTexture" (click)="setTexture(0)" src="../../../assets/b0.svg" />
@@ -31,7 +31,7 @@
         </div>
     </div>
 
-    <div *ngIf="checkIfContainAttribute('strokeWidth')">
+    <div id="lineWidthcontainer" *ngIf="checkIfContainAttribute('strokeWidth')">
         <p id="header" for="volume">Stroke Width</p>
         <input
             class="textInput"
@@ -45,11 +45,28 @@
         <input class="size-slider" type="range" (change)="setLineWidth($event.target.value)" [value]="widthValue" min="1" max="100" />
     </div>
     <div *ngIf="checkIfContainAttribute('rectangleStyle')">
-        <div id="currentStyleContainer">
-            <p class="header" id="headerImage">Style</p>
-            <img id="currentStyle" src="../../../assets/s0.svg" />
-            <img id="currentStyle" src="../../../assets/s1.svg" />
-            <img id="currentStyle" src="../../../assets/b0.svg" />
+        <div id="currentImageContainer">
+            <p class="header" id="headerStyle">Style</p>
+            <div class="shapeStyle" id="currentRectangleStyle"></div>
+            <i (click)="toggleList($event.target.parentElement.nextSibling.id)" class="material-icons" id="icon">expand_more</i>
+        </div>
+        <div id="styleContainer">
+            <div (click)="setShapeStyle(2,false)" class="shapeStyle" id="style2"></div>
+            <div (click)="setShapeStyle(0,false)" class="shapeStyle" id="style0"></div>
+            <div (click)="setShapeStyle(1,false)" class="shapeStyle" id="style1"></div>
+        </div>
+    </div>
+
+    <div *ngIf="checkIfContainAttribute('ellipseStyle')">
+        <div id="currentImageContainer">
+            <p class="header" id="headerStyle">Style</p>
+            <div class="shapeStyle" id="currentEllipseStyle"></div>
+            <i (click)="toggleList($event.target.parentElement.nextSibling.id)" class="material-icons" id="icon">expand_more</i>
+        </div>
+        <div id="styleContainer">
+            <div (click)="setShapeStyle(2,true)" class="shapeStyle" style="border-radius: 50%" id="style2"></div>
+            <div (click)="setShapeStyle(0,true)" class="shapeStyle" style="border-radius: 50%" id="style0"></div>
+            <div (click)="setShapeStyle(1,true)" class="shapeStyle" style="border-radius: 50%" id="style1"></div>
         </div>
     </div>
 </div>

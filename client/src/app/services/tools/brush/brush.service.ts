@@ -34,7 +34,7 @@ export class BrushService extends Tool {
         super(drawingService);
         this.primaryColor = '0000000';
         this.image = new Image();
-        this.image.src = '../../../assets/b5.svg';
+        this.image.src = '../../../assets/b0.svg';
 
         this.toolAttributes = ["texture", "lineWidth"];
     }

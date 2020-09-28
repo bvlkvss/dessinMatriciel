@@ -14,8 +14,8 @@ export enum MouseButton {
 
 export enum RectangleStyle {
     Empty = 0,
-    Filled_contour = 1,
-    Filled = 2,
+    Filled = 1,
+    Filled_contour = 2,
 }
 
 @Injectable({
@@ -28,10 +28,14 @@ export class RectangleService extends Tool {
     rectangleStyle: RectangleStyle;
     constructor(drawingService: DrawingService) {
         super(drawingService);
-        this.toolAttributes = ["strokeWidth","rectangleStyle"];
+        this.toolAttributes = ["strokeWidth", "rectangleStyle"];
         this.rectangleStyle = 0;
     }
 
+    setStyle(id: number): void {
+        this.rectangleStyle = id;
+
+    }
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseDown) {
@@ -140,7 +144,7 @@ export class RectangleService extends Tool {
                 ctx.fill();
                 break;
         }
-        
+
         ctx.closePath();
     }
 }
