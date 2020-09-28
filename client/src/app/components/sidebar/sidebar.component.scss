@@ -47,7 +47,8 @@
     display: block;
     position: relative;
     text-align: center;
-    height: 28px;
+    vertical-align: middle;
+    height: 30px;
     padding: 10px;
     cursor: pointer;
 }
@@ -65,8 +66,7 @@
 
 .change{
     transition: all 0.3s;
-    transform:  rotateZ(-20deg);
-    transform:  rotateZ(90deg) scale(1);
+    left: -2px;
     vertical-align: middle;
 }
 
