@@ -1,13 +1,21 @@
 #attribute {
     height: 100%;
-    box-shadow: black;
+    width: 280px;
     background-color: #081144;
     position: relative;
     padding-top: 6px;
     -webkit-box-shadow: inset 5px 5px 25px -20px rgba(0, 0, 0, 0.64);
     -moz-box-shadow: inset 5px 5px 25px -20px rgba(0, 0, 0, 0.64);
     box-shadow: inset 5px 5px 25px -20px rgba(0, 0, 0, 0.64);
+    transition: all 0.6s ease;
 }
+.attribute-open {
+    display: none;
+    position: relative;
+    flex: 1 1 auto;
+    transition: all 0.6s ease;
+}
+
 .size-slider {
     -webkit-appearance: none;
     width: 80%;

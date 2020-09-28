@@ -14,18 +14,22 @@ export class SidebarComponent {
 
     displayPalette(): void {
 
+        let attribute = document.querySelector('#attribute') as HTMLElement;
         this.attributeBarIsActive = !this.attributeBarIsActive;
         if (this.attributeBarIsActive) {
             this.togglecanvas('drawing-container-open');
-            this.toggleAttributeBar('colorpicker-open');
+            this.toggleAttributeBar('attribute-open');
+            attribute.style.display = "block";
         } else {
             this.togglecanvas('drawing-container');
-            this.toggleAttributeBar('colorpicker-close');
+            this.toggleAttributeBar('attribute-close');
+            attribute.style.display = "block";
+
         }
     }
 
     toggleAttributeBar(classname: string): void {
-        document.querySelectorAll('#attributeBar').forEach((item) => {
+        document.querySelectorAll('#attribute').forEach((item) => {
             item.setAttribute('class', classname);
 
         });
