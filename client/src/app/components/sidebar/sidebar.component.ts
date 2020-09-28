@@ -8,7 +8,7 @@ import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.ser
     styleUrls: ['./sidebar.component.scss'],
 })
 export class SidebarComponent {
-    constructor(private tools: ToolsManagerService /*, private elRef: ElementRef*/) { }
+    constructor(private tools: ToolsManagerService /*, private elRef: ElementRef*/) {}
 
     attributeBarIsActive: boolean = false;
 
@@ -29,15 +29,15 @@ export class SidebarComponent {
             item.setAttribute('class', classname);
 
         });
+        //console.log(document.querySelectorAll('app-color-picker'));
     }
 
     togglecanvas(classname: string): void {
-        document.querySelectorAll('#canvas-container').forEach((item) => {
-            item.setAttribute('class', classname);
-        });
+        document.getElementById('drawing-div')?.setAttribute('class', classname);
     }
 
-    changeTools(id: number): void {
+    changeTools(id:number): void {
+        console.log(id);
         this.tools.setTools(id);
     }
 
