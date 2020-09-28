@@ -25,7 +25,7 @@ export class PencilService extends Tool {
     constructor(drawingService: DrawingService) {
         super(drawingService);
         this.toolAttributes = ["lineWidth"];
-
+        this.lineWidth = 1;
         this.clearPath();
     }
 
@@ -34,10 +34,8 @@ export class PencilService extends Tool {
     }*/
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButton.Left;
-        console.log(this.primaryColor);
         if (this.mouseDown) {
             this.clearPath();
-
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.pathData.push(this.mouseDownCoord);
         }

@@ -28,6 +28,7 @@ export class RectangleService extends Tool {
     rectangleStyle: RectangleStyle;
     constructor(drawingService: DrawingService) {
         super(drawingService);
+        this.toolAttributes = ["strokeWidth","rectangleStyle"];
         this.rectangleStyle = 0;
     }
 

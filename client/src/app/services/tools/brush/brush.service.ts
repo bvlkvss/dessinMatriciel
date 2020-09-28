@@ -15,7 +15,7 @@ export enum MouseButton {
 const BYTE_SIZE = 4;
 const IMAGE_SIZE_DIVIDER = 3;
 const MOUSE_POSITION_OFFSET_DIVIDER = 6;
-const IMAGES_PER_POINT = 4;
+const IMAGES_PER_POINT = 10;
 
 // TODO : Déplacer ça dans un fichier séparé accessible par tous
 
@@ -34,14 +34,15 @@ export class BrushService extends Tool {
         super(drawingService);
         this.primaryColor = '0000000';
         this.image = new Image();
-        this.image.src = '../../../assets/b4.png';
-        this.toolAttributes = ["texture"];
+        this.image.src = '../../../assets/b5.svg';
+
+        this.toolAttributes = ["texture", "lineWidth"];
     }
-    /* private setTexture(id: number): void {
-     
-             this.image.src = '../../../assets/b' + id + '.png';
-     
-         }*/
+    setTexture(id: number): void {
+
+        this.image.src = '../../../assets/b' + id + '.svg';
+
+    }
 
 
     onMouseDown(event: MouseEvent): void {
