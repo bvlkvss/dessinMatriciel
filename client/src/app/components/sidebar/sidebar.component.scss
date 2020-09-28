@@ -26,21 +26,21 @@
     width: 50px;
     background-color: rgb(63,65,76);
     padding-bottom: 10px;
+    border-bottom: solid 2px darkgray;
 }
 
 .icon-bar2 {
     position: relative;
-    top: 300px;
+    top: 200px;
     width: 50px;
     background-color: rgb(63,65,76);
 }
 
 .color-bar{
     position: relative;
-    top: 100px;
+    top: 15px;
     width: 50px;
     background-color: rgb(63,65,76);
-
 }
 
 .color-bar a{
@@ -48,7 +48,6 @@
     position: relative;
     text-align: center;
     height: 28px;
-    top: 10px;
     padding: 10px;
     cursor: pointer;
 }
@@ -65,7 +64,10 @@
 }
 
 .change{
+    transition: all 0.3s;
     transform:  rotateZ(-20deg);
+    transform:  rotateZ(90deg) scale(1);
+    vertical-align: middle;
 }
 
 .change:hover{
@@ -90,7 +92,8 @@
     display: block;
     position: relative;
     text-align: center;
-    height: 28px;
+    vertical-align: middle;
+    height: 30px;
     //padding: 16px;
     transition: all 0.3s ease;
     color: white;
@@ -106,7 +109,7 @@
     top: 0;
     left: -10px;
     width: auto;
-    height: 28px;
+    height: 30px;
     //display: none;
     visibility: hidden;
     text-align: center;
