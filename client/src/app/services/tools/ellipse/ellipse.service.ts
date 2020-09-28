@@ -28,8 +28,12 @@ export class EllipseService extends Tool {
         super(drawingService);
         this.lineWidth = 1;
         this.ellipseStyle = 1;
+        this.toolAttributes = ["ellipseStyle", "lineWidth"];
     }
+    setStyle(id: number): void {
+        this.ellipseStyle = id;
 
+    }
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseDown) {

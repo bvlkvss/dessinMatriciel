@@ -24,6 +24,8 @@ export class PencilService extends Tool {
 
     constructor(drawingService: DrawingService) {
         super(drawingService);
+        this.toolAttributes = ["lineWidth"];
+        this.lineWidth = 1;
         this.clearPath();
     }
 
@@ -32,10 +34,8 @@ export class PencilService extends Tool {
     }*/
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButton.Left;
-        console.log(this.primaryColor);
         if (this.mouseDown) {
             this.clearPath();
-
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.pathData.push(this.mouseDownCoord);
         }
@@ -80,7 +80,7 @@ export class PencilService extends Tool {
 
     private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.setLineDash([0, 0]);
-        ctx.lineWidth = this.pencilThickness;
+        ctx.lineWidth = this.lineWidth;
         ctx.lineCap = 'round';
         ctx.strokeStyle = this.primaryColor; 2
         ctx.beginPath();

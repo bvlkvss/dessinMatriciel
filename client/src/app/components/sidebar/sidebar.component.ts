@@ -10,22 +10,24 @@ import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.ser
 export class SidebarComponent {
     constructor(private tools: ToolsManagerService /*, private elRef: ElementRef*/) {}
 
-    paletteIsActive: boolean = false;
+    attributeBarIsActive: boolean = false;
 
     displayPalette(): void {
-        this.paletteIsActive = !this.paletteIsActive;
-        if (this.paletteIsActive) {
-            this.togglecanvas('drawing-container-open');
-            this.togglecolorpicker('colorpicker-open');
+
+        this.attributeBarIsActive = !this.attributeBarIsActive;
+        if (this.attributeBarIsActive) {
+            this.togglecanvas('canvas-open');
+            this.toggleAttributeBar('colorpicker-open');
         } else {
-            this.togglecanvas('drawing-container');
-            this.togglecolorpicker('colorpicker-close');
+            this.togglecanvas('canvas-close');
+            this.toggleAttributeBar('colorpicker-close');
         }
     }
 
-    togglecolorpicker(classname: string): void {
-        document.querySelectorAll('#colorpicker-container').forEach((item) => {
+    toggleAttributeBar(classname: string): void {
+        document.querySelectorAll('#attributeBar').forEach((item) => {
             item.setAttribute('class', classname);
+
         });
         //console.log(document.querySelectorAll('app-color-picker'));
     }

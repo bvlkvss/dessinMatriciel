@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
+
 // tslint:disable:no-magic-numbers
 @Component({
     selector: 'app-color-picker',
