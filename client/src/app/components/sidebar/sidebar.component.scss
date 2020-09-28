@@ -6,7 +6,7 @@
     position: fixed;
     left: 0px;
     top: 0;
-    background-color: rgb(63,65,76);
+    background-color: #04092a;
 }
 
 .sidebar-container {
@@ -24,7 +24,7 @@
 
 .icon-bar {
     width: 50px;
-    background-color: rgb(63,65,76);
+    background-color: #04092a;
     padding-bottom: 10px;
     border-bottom: solid 2px darkgray;
 }
@@ -33,49 +33,50 @@
     position: relative;
     top: 200px;
     width: 50px;
-    background-color: rgb(63,65,76);
+    background-color: #04092a;
 }
 
-.color-bar{
+.color-bar {
     position: relative;
     top: 15px;
-    width: 50px;
-    background-color: rgb(63,65,76);
+    width: 40px;
+    margin-left: 3px;
+    background-color: #04092a;
 }
 
-.color-bar a{
+.color-bar a {
     display: block;
     position: relative;
     text-align: center;
     vertical-align: middle;
-    height: 30px;
+    height: 20px;
     padding: 10px;
     cursor: pointer;
 }
 
-.color-box1{
+.color-box1 {
     background-color: salmon;
     border: slategray 1px solid;
     border-radius: 10px;
 }
-.color-box2{
+.color-box2 {
     background-color: skyblue;
     border: slategray 1px solid;
     border-radius: 10px;
 }
 
-.change{
+.change {
     transition: all 0.3s;
     left: -2px;
     vertical-align: middle;
 }
 
-.change:hover{
+.change:hover {
     transition: all 0.3s;
-    transform:  rotateZ(-90deg) scale(1.1);
+    transform: rotateZ(-90deg) scale(1.1);
 }
 
-.icon-bar2 a{
+.icon-bar2 a {
     display: block;
     position: relative;
     text-align: center;
@@ -84,7 +85,7 @@
     cursor: pointer;
 }
 
-.active{
+.active {
     background-color: #9fa1a3;
 }
 
@@ -99,7 +100,7 @@
     color: white;
     top: 10px;
     padding: 10px;
-    color: rgb(63,65,76);
+    color: rgb(63, 65, 76);
     cursor: pointer;
 }
 
@@ -118,7 +119,7 @@
     color: white;
     cursor: pointer;
     padding: 10px;
-    background-color: rgb(63,65,76);
+    background-color: #04092a;
     z-index: -1;
 }
 
@@ -133,7 +134,3 @@
         transform: translate(55px);
     }
 }
-
-
-  
-
