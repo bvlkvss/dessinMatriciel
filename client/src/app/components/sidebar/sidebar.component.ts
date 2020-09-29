@@ -21,10 +21,8 @@ export class SidebarComponent {
         } else {
             this.togglecanvas('drawing-container');
             this.toggleAttributeBar('attribute-close');
-
         }
     }
-
     toggleAttributeBar(classname: string): void {
         document.querySelectorAll('#attribute').forEach((item) => {
             item.setAttribute('class', classname);
