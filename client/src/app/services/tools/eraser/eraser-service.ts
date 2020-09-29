@@ -21,6 +21,8 @@ export class EraserService extends Tool {
 
     constructor(drawingService: DrawingService) {
         super(drawingService);
+        this.toolAttributes = ['lineWidth'];
+
         this.clearPath();
     }
 
