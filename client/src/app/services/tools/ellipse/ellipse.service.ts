@@ -28,11 +28,10 @@ export class EllipseService extends Tool {
         super(drawingService);
         this.lineWidth = 1;
         this.ellipseStyle = 1;
-        this.toolAttributes = ["ellipseStyle", "lineWidth"];
+        this.toolAttributes = ['ellipseStyle', 'lineWidth'];
     }
     setStyle(id: number): void {
         this.ellipseStyle = id;
-
     }
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButton.Left;
@@ -43,7 +42,23 @@ export class EllipseService extends Tool {
 
     onMouseOut(event: MouseEvent): void {
         this.isOut = true;
+
         this.mouseOutCoord = this.getPositionFromMouse(event);
+
+        if (this.mouseDown) {
+            if (this.mouseOutCoord.x > this.drawingService.previewCtx.canvas.width) {
+                this.mouseOutCoord.x = this.drawingService.canvas.width;
+            } else if (this.mouseOutCoord.x < 0) {
+                this.mouseOutCoord.x = 0;
+            }
+            if (this.mouseOutCoord.y > this.drawingService.previewCtx.canvas.height) {
+                this.mouseOutCoord.y = this.drawingService.canvas.height;
+            } else if (this.mouseOutCoord.y < 0) {
+                this.mouseOutCoord.y = 0;
+            }
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.drawEllipse(this.drawingService.previewCtx, this.mouseDownCoord, this.mouseOutCoord, this.toSquare);
+        }
     }
 
     onMouseEnter(event: MouseEvent): void {
@@ -101,43 +116,21 @@ export class EllipseService extends Tool {
         if (width !== 0 && height !== 0) {
             if (toSquare) {
                 if (Math.abs(width) > Math.abs(height)) {
-                    height = width * Math.sign(height) * Math.sign(width);
+                    width = height * Math.sign(height) * Math.sign(width);
                 } else {
-                    width = height * Math.sign(width) * Math.sign(height);
-                }
-
-                if (width + this.mouseDownCoord.x > ctx.canvas.width && width > 0) {
-                    width = ctx.canvas.width - this.mouseDownCoord.x;
-                    height = width * Math.sign(height) * Math.sign(width);
-                }
-
-                if (height + this.mouseDownCoord.y > ctx.canvas.height && height > 0) {
-                    height = ctx.canvas.height - this.mouseDownCoord.y;
-                    width = height * Math.sign(width) * Math.sign(height);
-                }
-
-                if (Math.abs(width) > startPos.x && width < 0) {
-                    console.log('in');
-                    width = -startPos.x;
-                    height = width * Math.sign(height) * Math.sign(width);
-                }
-                if (Math.abs(height) > startPos.y && height < 0) {
-                    console.log('in');
-                    height = -startPos.y;
-                    width = height * Math.sign(width) * Math.sign(height);
+                    height = width * Math.sign(width) * Math.sign(height);
                 }
             }
 
             const centerx = this.mouseDownCoord.x + width / 2;
-
             const centery = this.mouseDownCoord.y + height / 2;
 
-            const radiusX = Math.abs(Math.abs(width / 2) - this.lineWidth / 2);
-            const radiusY = Math.abs(Math.abs(height / 2) - this.lineWidth / 2);
+            const radiusX = Math.abs(Math.abs(width / 2) - this.lineWidth / 2 - 1);
+            const radiusY = Math.abs(Math.abs(height / 2) - this.lineWidth / 2 - 1);
 
             ctx.beginPath();
             ctx.setLineDash([0, 0]);
-            ctx.lineWidth = 5;
+            ctx.lineWidth = this.lineWidth;
             ctx.fillStyle = this.primaryColor;
             ctx.strokeStyle = 'green';
             ctx.ellipse(centerx, centery, radiusX, radiusY, 0, 0, 2 * Math.PI);
@@ -159,7 +152,7 @@ export class EllipseService extends Tool {
             if (preview) {
                 ctx.beginPath();
                 ctx.setLineDash([5, 15]);
-                ctx.lineWidth = 1;
+                ctx.lineWidth = 2;
                 ctx.strokeStyle = 'grey';
                 ctx.rect(startPos.x, startPos.y, width, height);
                 ctx.stroke();
