@@ -49,4 +49,14 @@ export class ToolsManagerService {
             element.primaryColor = color;
         });
     }
+    setRectangleStyle(id: number): void {
+        let rectangle = this.currentTool as RectangleService;
+        rectangle.setStyle(id);
+
+    }
+    setEllipseStyle(id: number): void {
+        let ellipse = this.currentTool as EllipseService;
+        ellipse.setStyle(id);
+
+    }
 }

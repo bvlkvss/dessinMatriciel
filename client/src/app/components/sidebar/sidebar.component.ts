@@ -10,48 +10,38 @@ import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.ser
 export class SidebarComponent {
     constructor(private tools: ToolsManagerService /*, private elRef: ElementRef*/) { }
 
-    paletteIsActive: boolean = false;
+    attributeBarIsActive: boolean = false;
 
     displayPalette(): void {
-        console.log(document.querySelectorAll('app-color-picker'));
 
-
-        this.paletteIsActive = !this.paletteIsActive;
-        if(this.paletteIsActive){
-            this.togglecanvas("drawing-container-open")
-            this.togglecolorpicker( "colorpicker-open")
+        let attribute = document.querySelector('#attribute') as HTMLElement;
+        this.attributeBarIsActive = !this.attributeBarIsActive;
+        if (this.attributeBarIsActive) {
+            this.togglecanvas('drawing-container-open');
+            this.toggleAttributeBar('attribute-open');
+            attribute.style.display = "block";
         } else {
-            this.togglecanvas("drawing-container")
-            this.togglecolorpicker( "colorpicker-close")
+            this.togglecanvas('drawing-container');
+            this.toggleAttributeBar('attribute-close');
+            attribute.style.display = "block";
+
         }
     }
 
-    togglecolorpicker(classname: string): void {
-        document.querySelectorAll('#colorpicker-container').forEach((item) => {
+    toggleAttributeBar(classname: string): void {
+        document.querySelectorAll('#attribute').forEach((item) => {
             item.setAttribute('class', classname);
+
         });
-        console.log(document.querySelectorAll("app-color-picker"));
-
-
+        //console.log(document.querySelectorAll('app-color-picker'));
     }
 
-    
-    togglecanvas(classname:string):void{
-
-        document.getElementById("drawing-div")?.setAttribute("class" , classname);
-
-
-        //document.getElementById("canvas-container")?.setAttribute("class" , "canvas-open");
-
-
-        /*
-        document.querySelectorAll("#canvas-container canvas").forEach(item=>{
-            item.setAttribute("class", classname);
-        })
-        */
+    togglecanvas(classname: string): void {
+        document.getElementById('drawing-div')?.setAttribute('class', classname);
     }
 
     changeTools(id: number): void {
+        console.log(id);
         this.tools.setTools(id);
     }
 

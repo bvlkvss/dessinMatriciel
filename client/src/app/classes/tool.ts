@@ -5,6 +5,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 // Ceci est justifié vu qu'on a des fonctions qui seront gérés par les classes enfant
 // tslint:disable:no-empty
 export abstract class Tool {
+    toolAttributes: string[];
     mouseDownCoord: Vec2;
     mouseDown: boolean = false;
 
@@ -16,7 +17,7 @@ export abstract class Tool {
     height: number;
     opacity: number;
     primaryColor: string; // by default black
-    secondaryColor: Color = { red: 0, green: 0, blue: 0, opacity: 255 }; //  by default black
+    secondaryColor: string; //  by default black
 
     constructor(protected drawingService: DrawingService) { }
 
@@ -51,4 +52,7 @@ export abstract class Tool {
         const color: Color = { red: redNum, green: greenNum, blue: blueNum, opacity: opacityNum };
         return color;
     }
+
+
+
 }
