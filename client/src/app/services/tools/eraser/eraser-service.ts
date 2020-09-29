@@ -17,12 +17,11 @@ export enum MouseButton {
 })
 export class EraserService extends Tool {
     private pathData: Vec2[];
-    private eraserThickness: number = 5;
 
     constructor(drawingService: DrawingService) {
         super(drawingService);
         this.toolAttributes = ['lineWidth'];
-
+        this.lineWidth = 5;
         this.clearPath();
     }
 
@@ -30,7 +29,6 @@ export class EraserService extends Tool {
         this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseDown) {
             this.clearPath();
-
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.pathData.push(this.mouseDownCoord);
         }
@@ -61,21 +59,21 @@ export class EraserService extends Tool {
         }
     }
 
-    setEraserThickness(thickness: number): void {
+    setLineWidth(thickness: number): void {
         if (thickness >= MINIMUM_ERASER_SIZE) {
-            this.eraserThickness = thickness;
+            this.lineWidth = thickness;
         } else {
-            this.eraserThickness = MINIMUM_ERASER_SIZE;
+            this.lineWidth = MINIMUM_ERASER_SIZE;
             console.log('Minimum eraser size is 5 px');
         }
     }
 
     getEraserThickness(): number {
-        return this.eraserThickness;
+        return this.lineWidth
     }
 
     private clearLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
-        ctx.lineWidth = this.eraserThickness;
+        ctx.lineWidth = this.lineWidth;
         ctx.lineCap = 'round';
         ctx.beginPath();
         ctx.strokeStyle = 'rgba(255,255,255)';
