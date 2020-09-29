@@ -1,3 +1,8 @@
+.material-icons{
+    padding-top: 2px;
+
+}
+
 .container2 {
     height: 100%;
     min-height: 98vh;
@@ -65,15 +70,13 @@
     border-radius: 10px;
 }
 
-.change {
-    transition: all 0.3s;
-    left: -2px;
-    vertical-align: middle;
+.change{
+    transition: all 0.1s;
 }
 
-.change:hover {
-    transition: all 0.3s;
-    transform: rotateZ(-90deg) scale(1.1);
+.change:hover{
+    transition: all 0.1s;
+    transform:  rotateX(180deg);
 }
 
 .icon-bar2 a {

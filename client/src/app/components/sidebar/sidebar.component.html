@@ -4,8 +4,8 @@
         <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
     </head>
 
-    <body>
-        <div class="container2">
+<body>
+     <div class="container2">
             <div class="icon-bar">
                 <a id="0" class="active" (click)="changeTools(0)" (click)="displayPalette()">
                     <i class="material-icons">gesture</i>
@@ -32,14 +32,16 @@
                     <span class="slidingtxt"> Eraser (w)</span>
                 </a>
             </div>
-
-            <div class="color-bar">
-                <a class="color-box1"> </a>
-                <a class="change">
-                    <i class="material-icons change">cached</i>
-                </a>
-                <a class="color-box2"> </a>
-            </div>
+        
+        <div class="color-bar">
+            <a class="color-box1">
+            </a>
+            <a>
+                <i class="material-icons change">swap_vert</i>
+            </a>
+            <a class="color-box2">
+            </a>
+        </div>
 
             <div class="icon-bar2">
                 <a (click)="openUserGuide()">
