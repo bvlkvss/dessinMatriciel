@@ -14,8 +14,8 @@ export enum MouseButton {
 
 export enum RectangleStyle {
     Empty = 0,
-    Filled = 1,
-    Filled_contour = 2,
+    Filled_contour = 1,
+    Filled = 2,
 }
 
 @Injectable({
@@ -29,7 +29,7 @@ export class RectangleService extends Tool {
     constructor(drawingService: DrawingService) {
         super(drawingService);
         this.toolAttributes = ['strokeWidth', 'rectangleStyle'];
-        this.rectangleStyle = 0;
+        this.rectangleStyle = 2;
         this.lineWidth = 1;
     }
     setStyle(id: number): void {

@@ -74,7 +74,7 @@
     <div id="lineWidthcontainer" *ngIf="checkIfContainAttribute('junction')">
         <p id="junctionHeader" class="header">Junction point</p>
         <div class="sliderJunction">
-            <input type="checkbox" id="sliderJunction" (change)="setJunctionState()" name="check" checked />
+            <input type="checkbox" id="sliderJunction" (input)="setJunctionState()" name="check" checked />
             <label for="sliderJunction"></label>
         </div>
     </div>
@@ -105,6 +105,6 @@
     </div>
     <div id="buttonContainer">
         <button id="accept" (click)="acceptChanges()" class="buttons">Accept</button>
-        <button (click)="restoreValues()" id="cancel" class="buttons">Cancel</button>
+        <button id="cancel" (click)="restoreValues()" class="buttons">Cancel</button>
     </div>
 </div>

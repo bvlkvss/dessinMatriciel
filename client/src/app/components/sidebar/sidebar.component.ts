@@ -12,15 +12,17 @@ export class SidebarComponent {
 
     attributeBarIsActive: boolean = false;
 
-    displayPalette(): void {
-
-        this.attributeBarIsActive = !this.attributeBarIsActive;
-        if (this.attributeBarIsActive) {
+    displayPalette(toolName: string): void {
+        if (!this.attributeBarIsActive) {
+            this.attributeBarIsActive = true;
             this.togglecanvas('drawing-container-open');
             this.toggleAttributeBar('attribute-open');
         } else {
-            this.togglecanvas('drawing-container');
-            this.toggleAttributeBar('attribute-close');
+            if ((this.tools.getTools().get(toolName) === this.tools.currentTool)) {
+                this.attributeBarIsActive = false;
+                this.togglecanvas('drawing-container');
+                this.toggleAttributeBar('attribute-close');
+            }
         }
     }
     toggleAttributeBar(classname: string): void {
@@ -28,7 +30,6 @@ export class SidebarComponent {
             item.setAttribute('class', classname);
 
         });
-        //console.log(document.querySelectorAll('app-color-picker'));
     }
 
     togglecanvas(classname: string): void {

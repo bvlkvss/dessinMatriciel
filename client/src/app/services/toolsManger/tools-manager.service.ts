@@ -34,6 +34,7 @@ export class ToolsManagerService {
         ]);
         this.currentTool = this.tools.get("pencil") as Tool;
     }
+
     setTools(name: string): void {
         this.currentTool = this.tools.get(name) as Tool;
     }
@@ -71,8 +72,8 @@ export class ToolsManagerService {
         line.setJunctionWidth(id);
 
     }
-    setJunctionState(): void {
+    setJunctionState(isChecked: boolean): void {
         let line = this.currentTool as LineService;
-        line.setJunctionState();
+        line.setJunctionState(isChecked);
     }
 }

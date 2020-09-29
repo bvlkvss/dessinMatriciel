@@ -22,7 +22,7 @@ export class LineService extends Tool {
   withJunction: boolean = true;
   private pathData: Vec2[];
   toAllign: boolean = false;
-  private junctionWidth: number = 1;;
+  junctionWidth: number = 1;;
   constructor(drawingService: DrawingService) {
     super(drawingService);
     this.pathData = [];
@@ -37,8 +37,8 @@ export class LineService extends Tool {
     this.primaryColor = color;
   }
 
-  setJunctionState(): void {
-    this.withJunction = !this.withJunction;
+  setJunctionState(isChecked: boolean): void {
+    this.withJunction = isChecked;
   }
   setLineWidth(width: number): void {
     this.lineWidth = width;
