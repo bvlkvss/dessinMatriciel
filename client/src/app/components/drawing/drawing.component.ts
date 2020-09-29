@@ -39,16 +39,20 @@ export class DrawingComponent implements AfterViewInit {
     }
 
     initResizing(event: MouseEvent): void {
+        event.stopPropagation();
         this.resizer.initResizing(event);
     }
 
     @HostListener('window:mousemove', ['$event'])
     resize(event: MouseEvent): void {
+        event.stopPropagation();
         this.resizer.resize(event);
     }
     @HostListener('window:mouseup', ['$event'])
     stopResize(event: MouseEvent): void {
+        event.stopPropagation();
         this.resizer.stopResize(event, this.baseCanvas.nativeElement, this.previewCanvas.nativeElement);
+        //this.delay(100);
     }
     @HostListener('mousemove', ['$event'])
     onMouseMove(event: MouseEvent): void {
