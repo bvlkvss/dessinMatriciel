@@ -22,6 +22,8 @@ export class DrawingComponent implements AfterViewInit {
     private baseCtx: CanvasRenderingContext2D;
     private previewCtx: CanvasRenderingContext2D;
     private canvasSize: Vec2 = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
+    private mouseFired: boolean;
+    // private UpFired: boolean;
     // TODO : Avoir un service dédié pour gérer tous les outils ? Ceci peut devenir lourd avec le temps
     constructor(private drawingService: DrawingService, private tools: ToolsManagerService, private resizer: ResizingService) {}
 
@@ -36,11 +38,14 @@ export class DrawingComponent implements AfterViewInit {
         this.drawingService.baseCtx = this.baseCtx;
         this.drawingService.previewCtx = this.previewCtx;
         this.drawingService.canvas = this.baseCanvas.nativeElement;
+        this.mouseFired = false;
+        // this.UpFired = false;
     }
 
     initResizing(event: MouseEvent): void {
         event.stopPropagation();
         this.resizer.initResizing(event);
+        this.mouseFired = true;
     }
 
     @HostListener('window:mousemove', ['$event'])
@@ -50,9 +55,11 @@ export class DrawingComponent implements AfterViewInit {
     }
     @HostListener('window:mouseup', ['$event'])
     stopResize(event: MouseEvent): void {
-        event.stopPropagation();
-        this.resizer.stopResize(event, this.baseCanvas.nativeElement, this.previewCanvas.nativeElement);
-        //this.delay(100);
+        if (this.resizer.resizing) {
+            event.stopPropagation();
+            this.resizer.stopResize(event, this.baseCanvas.nativeElement, this.previewCanvas.nativeElement);
+        }
+        // this.delay(100);
     }
     @HostListener('mousemove', ['$event'])
     onMouseMove(event: MouseEvent): void {
@@ -63,6 +70,7 @@ export class DrawingComponent implements AfterViewInit {
 
     @HostListener('mousedown', ['$event'])
     onMouseDown(event: MouseEvent): void {
+        console.log('mousedown');
         if (!this.resizer.resizing) {
             this.tools.currentTool.onMouseDown(event);
         }
@@ -83,6 +91,11 @@ export class DrawingComponent implements AfterViewInit {
 
     @HostListener('click', ['$event'])
     onClick(event: MouseEvent): void {
+        if (this.mouseFired && !this.resizer.IsextendingCanvas()) {
+            this.mouseFired = false;
+            return;
+        }
+        console.log('click');
         if (!this.resizer.resizing) {
             this.tools.currentTool.onClick(event);
         }
@@ -91,6 +104,8 @@ export class DrawingComponent implements AfterViewInit {
     onMouseUp(event: MouseEvent): void {
         if (!this.resizer.resizing) {
             this.tools.currentTool.onMouseUp(event);
+            console.log(event.offsetX, ';', event.offsetY);
+            console.log('i dont want it');
         }
     }
     @HostListener('mouseout', ['$event'])

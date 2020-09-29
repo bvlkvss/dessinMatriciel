@@ -34,20 +34,31 @@ export class RectangleService extends Tool {
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseDown) {
+            console.log(event.offsetX, ';', event.offsetY);
             this.mouseDownCoord = this.getPositionFromMouse(event);
         }
     }
 
     onMouseOut(event: MouseEvent): void {
+        if (!this.mouseDown) {
+            return;
+        }
+        console.log('mouseout rectangle');
         this.isOut = true;
         this.mouseOutCoord = this.getPositionFromMouse(event);
+        console.log(this.mouseOutCoord, 't', this.mouseDown);
     }
 
     onMouseEnter(event: MouseEvent): void {
+        if (!this.mouseDown) {
+            return;
+        }
+        console.log('mouseenter rectangle');
         this.isOut = false;
     }
 
     onMouseUp(event: MouseEvent): void {
+        console.log('mouseup rectangle');
         if (this.mouseDown) {
             let mousePosition = this.getPositionFromMouse(event);
             if (this.isOut) mousePosition = this.mouseOutCoord;
@@ -58,10 +69,12 @@ export class RectangleService extends Tool {
 
         this.mouseDown = false;
         this.toSquare = false;
+        console.log(this.mouseDown);
     }
 
     onMouseMove(event: MouseEvent): void {
         if (this.mouseDown) {
+            console.log('mousemove rectangle');
             this.currentPos = this.getPositionFromMouse(event);
 
             // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
@@ -139,7 +152,7 @@ export class RectangleService extends Tool {
                 ctx.fill();
                 break;
         }
-        
+
         ctx.closePath();
     }
 }

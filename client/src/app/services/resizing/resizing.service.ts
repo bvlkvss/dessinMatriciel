@@ -1,17 +1,19 @@
-
 import { Injectable } from '@angular/core';
+import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 const MIN_SIZE = 250;
-
+const DEFAULT_WIDTH = 1000;
+const DEFAULT_HEIGHT = 800;
 @Injectable({
     providedIn: 'root',
 })
-
 export class ResizingService {
     currentResizer: string;
     resizing: boolean = false;
+    hasBeenResized: boolean = false;
     resizedWidth: number;
     resizedHeight: number;
+    oldResolution: Vec2 = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
     constructor(private drawingService: DrawingService) {}
 
     initResizing(event: MouseEvent): void {
@@ -22,6 +24,7 @@ export class ResizingService {
             this.resizedWidth = this.drawingService.canvas.width;
             this.resizedHeight = this.drawingService.canvas.height;
             this.resizing = true;
+            this.hasBeenResized = true;
             console.log(this.currentResizer);
         }
     }
@@ -70,6 +73,8 @@ export class ResizingService {
     stopResize(event: MouseEvent, base: HTMLCanvasElement, preview: HTMLCanvasElement): void {
         const temp = this.saveCanvas();
         if (this.resizing) {
+            this.oldResolution.x = base.width;
+            this.oldResolution.y = base.height;
             base.width = this.resizedWidth;
             preview.width = this.resizedWidth;
             base.height = this.resizedHeight;
@@ -90,8 +95,16 @@ export class ResizingService {
         return temp;
     }
 
+    IsextendingCanvas(): boolean {
+        return this.oldResolution.x < this.resizedWidth || this.oldResolution.y < this.resizedHeight;
+    }
+
     drawCanvas(save: HTMLCanvasElement): void {
+        if (this.hasBeenResized) {
+            this.drawingService.clearCanvas(this.drawingService.baseCtx);
+        }
         this.drawingService.baseCtx.drawImage(save, 0, 0);
+
         console.log('canvas drawed');
     }
 }
