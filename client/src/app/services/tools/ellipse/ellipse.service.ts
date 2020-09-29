@@ -34,6 +34,12 @@ export class EllipseService extends Tool {
         this.ellipseStyle = id;
 
     }
+    setLineWidth(width: number): void {
+        this.lineWidth = width;
+    }
+    setPrimaryColor(color: string): void {
+        this.primaryColor = color;
+    }
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseDown) {
@@ -97,7 +103,6 @@ export class EllipseService extends Tool {
     private drawEllipse(ctx: CanvasRenderingContext2D, startPos: Vec2, currentPos: Vec2, toSquare: boolean, preview: boolean = true): void {
         let width = currentPos.x - startPos.x;
         let height = currentPos.y - startPos.y;
-
         if (width !== 0 && height !== 0) {
             if (toSquare) {
                 if (Math.abs(width) > Math.abs(height)) {
@@ -137,7 +142,7 @@ export class EllipseService extends Tool {
 
             ctx.beginPath();
             ctx.setLineDash([0, 0]);
-            ctx.lineWidth = 5;
+            ctx.lineWidth = this.lineWidth;
             ctx.fillStyle = this.primaryColor;
             ctx.strokeStyle = 'green';
             ctx.ellipse(centerx, centery, radiusX, radiusY, 0, 0, 2 * Math.PI);

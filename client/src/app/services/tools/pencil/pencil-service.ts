@@ -69,7 +69,12 @@ export class PencilService extends Tool {
             this.drawLine(this.drawingService.previewCtx, this.pathData);
         }
     }
-
+    setPrimaryColor(color: string): void {
+        this.primaryColor = color;
+    }
+    setLineWidth(width: number): void {
+        this.lineWidth = width;
+    }
     setPencilThickness(thickness: number): void {
         this.pencilThickness = thickness;
     }

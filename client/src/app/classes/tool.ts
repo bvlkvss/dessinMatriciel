@@ -52,7 +52,11 @@ export abstract class Tool {
         const color: Color = { red: redNum, green: greenNum, blue: blueNum, opacity: opacityNum };
         return color;
     }
-
-
+    setLineWidth(value: number): void { }
+    getLineWidth(): number {
+        return this.lineWidth;
+    }
+    setPrimaryColor(color: string): void {
+    }
 
 }

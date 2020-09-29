@@ -20,18 +20,28 @@ export class LineService extends Tool {
   private allignementPoint: Vec2;
   isDoubleClicked: boolean = false;
   withJunction: boolean = true;
-  private diameter: number = 2;
   private pathData: Vec2[];
   toAllign: boolean = false;
-
+  private junctionWidth: number = 1;;
   constructor(drawingService: DrawingService) {
     super(drawingService);
     this.pathData = [];
+    this.toolAttributes = ["lineWidth", "junctionWidth", "junction"];
+    this.lineWidth = 1;
+
   }
 
   onMouseOut(event: MouseEvent): void { }
   onMouseEnter(event: MouseEvent): void { }
-
+  setPrimaryColor(color: string): void {
+    this.primaryColor = color;
+  }
+  setLineWidth(width: number): void {
+    this.lineWidth = width;
+  }
+  setJunctionWidth(width: number): void {
+    this.junctionWidth = width;
+  }
   onClick(event: MouseEvent): void {
 
     this.isDoubleClicked = false;
@@ -49,7 +59,6 @@ export class LineService extends Tool {
 
     // check if the distance  between the new point and last one is less than 20  
     if (this.distanceBetween2Points(lastPoint, this.pathData[this.pathData.length - 2]) <= 20) {
-      console.log(this.distanceBetween2Points(lastPoint, this.pathData[this.pathData.length - 2]));
       this.pathData[this.pathData.length - 2] = lastPoint;
 
     }
@@ -109,6 +118,7 @@ export class LineService extends Tool {
   private drawLine(ctx: CanvasRenderingContext2D, startPoint: Vec2, endPoint: Vec2): void {
     if (startPoint && endPoint) {
       ctx.fillStyle = this.primaryColor;
+      ctx.lineWidth = this.lineWidth;
       ctx.beginPath();
       ctx.moveTo(startPoint.x, startPoint.y);
       ctx.lineTo(endPoint.x, endPoint.y);
@@ -129,7 +139,7 @@ export class LineService extends Tool {
   private drawJunction(ctx: CanvasRenderingContext2D, centerPoint: Vec2) {
 
     ctx.beginPath();
-    ctx.arc(centerPoint.x, centerPoint.y, this.diameter, 0, 2 * Math.PI);
+    ctx.arc(centerPoint.x, centerPoint.y, this.junctionWidth, 0, 2 * Math.PI);
     ctx.fill();
     ctx.closePath();
   }

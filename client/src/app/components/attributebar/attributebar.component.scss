@@ -48,7 +48,7 @@
     position: relative;
     width: 40px;
     bottom: 40px;
-    left: 75%;
+    left: 83%;
     font-size: 14px;
     color: whitesmoke;
     background-color: #081144;
@@ -77,6 +77,14 @@
 #headerImage {
     left: 23%;
 }
+#isJunction {
+    position: relative;
+    left: 6%;
+    top: 36%;
+    height: 30px;
+    width: 30px;
+    border-radius: 100%;
+}
 .header {
     position: absolute;
     color: white;
@@ -84,6 +92,9 @@
     font-size: 19px;
     font-family: Hack, monospace;
     height: 0px;
+}
+#junctionHeader {
+    left: 20%;
 }
 #headerStyle {
     top: 10px;

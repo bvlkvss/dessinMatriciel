@@ -9,19 +9,33 @@ import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.ser
 })
 export class AttributebarComponent implements OnInit {
   widthValue: string
+  junctionWidth: string = "1";
   constructor(private tools: ToolsManagerService) {
   }
   private showContainer: boolean = false;
   ngOnInit(): void {
     this.widthValue = this.tools.currentTool.lineWidth.toString();
   }
+  restoreValues(): void {
+    if (this.tools.currentTool.lineWidth)
+      this.widthValue = this.tools.currentTool.lineWidth.toString();
 
+  }
   checkIfContainAttribute(attribute: string): boolean {
+    this.restoreValues();
     return this.tools.currentTool.toolAttributes.includes(attribute);
   }
   setLineWidth(input: string): void {
+    //if (this.tools.currentTool.lineWidth != Number(this.widthValue))
+    // this.widthValue = this.tools.currentTool.lineWidth.toString();
     this.widthValue = input;
     this.tools.setLineWidth(Number(input));
+  }
+  setJunctionWidth(input: string): void {
+
+    this.junctionWidth = input;
+    this.tools.setJunctionWidth(Number(input));
+
   }
   updateTextInput(): void {
     let input = document.querySelector(".size-slider") as HTMLInputElement

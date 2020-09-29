@@ -30,8 +30,11 @@ export class RectangleService extends Tool {
         super(drawingService);
         this.toolAttributes = ["strokeWidth", "rectangleStyle"];
         this.rectangleStyle = 0;
+        this.lineWidth = 1;
     }
-
+    setLineWidth(width: number): void {
+        this.lineWidth = width;
+    }
     setStyle(id: number): void {
         this.rectangleStyle = id;
 
@@ -42,7 +45,9 @@ export class RectangleService extends Tool {
             this.mouseDownCoord = this.getPositionFromMouse(event);
         }
     }
-
+    setPrimaryColor(color: string): void {
+        this.primaryColor = color;
+    }
     onMouseOut(event: MouseEvent): void {
         this.isOut = true;
         this.mouseOutCoord = this.getPositionFromMouse(event);
@@ -97,6 +102,7 @@ export class RectangleService extends Tool {
 
     private drawRectangle(ctx: CanvasRenderingContext2D, startPos: Vec2, currentPos: Vec2, toSquare: boolean): void {
         ctx.beginPath();
+        console.log(this.lineWidth);
         let width = currentPos.x - startPos.x;
         let height = currentPos.y - startPos.y;
         if (toSquare) {
@@ -126,7 +132,6 @@ export class RectangleService extends Tool {
         }
         ctx.beginPath();
         ctx.setLineDash([0, 0]);
-
         ctx.fillStyle = this.primaryColor;
         ctx.strokeStyle = 'red';
         ctx.lineWidth = this.lineWidth;

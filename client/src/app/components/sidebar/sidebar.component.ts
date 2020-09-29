@@ -44,7 +44,7 @@ export class SidebarComponent {
         console.log(id);
         this.tools.setTools(id);
     }
-
+   
     openUserGuide(): void {
         UserGuideComponent.displayUserGuide();
     }
