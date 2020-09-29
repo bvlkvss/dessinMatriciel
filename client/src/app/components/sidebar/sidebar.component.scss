@@ -41,30 +41,29 @@
     background-color: #04092a;
 }
 
-.color-bar {
+.color-bar{
     position: relative;
     top: 15px;
-    width: 40px;
-    margin-left: 3px;
+    width: 50px;
     background-color: #04092a;
 }
 
-.color-bar a {
+.color-bar a{
     display: block;
     position: relative;
     text-align: center;
     vertical-align: middle;
-    height: 20px;
+    height: 30px;
     padding: 10px;
     cursor: pointer;
 }
 
-.color-box1 {
+.color-box1{
     background-color: salmon;
     border: slategray 1px solid;
     border-radius: 10px;
 }
-.color-box2 {
+.color-box2{
     background-color: skyblue;
     border: slategray 1px solid;
     border-radius: 10px;
@@ -79,7 +78,7 @@
     transform:  rotateX(180deg);
 }
 
-.icon-bar2 a {
+.icon-bar2 a{
     display: block;
     position: relative;
     text-align: center;
@@ -88,7 +87,7 @@
     cursor: pointer;
 }
 
-.active {
+.active{
     background-color: #9fa1a3;
 }
 
@@ -103,7 +102,7 @@
     color: white;
     top: 10px;
     padding: 10px;
-    color: rgb(63, 65, 76);
+    color: #04092a;
     cursor: pointer;
 }
 
@@ -122,7 +121,7 @@
     color: white;
     cursor: pointer;
     padding: 10px;
-    background-color: #04092a;
+    background-color: rgb(63,65,76);
     z-index: -1;
 }
 
@@ -137,3 +136,7 @@
         transform: translate(55px);
     }
 }
+
+
+  
+
