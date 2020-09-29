@@ -27,20 +27,21 @@
     left: -30px;
     bottom: 6px;
     border-radius: 5px;
-    background: #d3d3d3;
+    background-color: white;
     outline: none;
-    opacity: 0.7;
+    opacity: 0.98;
     -webkit-transition: 0.2s;
     transition: opacity 0.2s;
 }
 
 .size-slider::-webkit-slider-thumb {
     -webkit-appearance: none;
+    box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.3);
 
     width: 15px;
     height: 15px;
     border-radius: 50%;
-    background: white;
+    background: rgb(230, 205, 205);
     cursor: pointer;
 }
 
@@ -94,7 +95,7 @@
     height: 0px;
 }
 #junctionHeader {
-    left: 20%;
+    left: 9%;
 }
 #headerStyle {
     top: 10px;
@@ -225,4 +226,38 @@
     box-shadow: inset 0px 64px 59px -71px rgba(255, 255, 255, 0.1);
     height: 60px;
     width: auto;
+}
+
+.sliderJunction {
+    width: 50px;
+    height: 10px;
+    background: white;
+    margin: 20px auto;
+    position: relative;
+    opacity: 0.98;
+    border-radius: 50px;
+    top: 7px;
+    left: 30%;
+
+    label {
+        width: 16px;
+        height: 16px;
+        position: absolute;
+        top: -3px;
+        left: -3px;
+        cursor: pointer;
+        background: rgb(230, 205, 205);
+        border-radius: 50px;
+        box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.3);
+        transition: all 0.4s ease;
+    }
+    input[type='checkbox'] {
+        visibility: hidden;
+        &:checked + label {
+            left: 37px;
+        }
+        input[type='checkbox']:not(:checked) {
+            background: gray;
+        }
+    }
 }

@@ -63,4 +63,8 @@ export class ToolsManagerService {
         line.setJunctionWidth(id);
 
     }
+    setJunctionState():void{
+        let line = this.currentTool as LineService;
+        line.setJunctionState();
+    }
 }

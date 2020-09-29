@@ -35,6 +35,17 @@ export class AttributebarComponent implements OnInit {
     this.tools.setJunctionWidth(Number(input));
 
   }
+  setJunctionState(): void {
+    let checkBox = document.querySelector("#sliderJunction") as HTMLInputElement;
+    let slider = document.querySelector(".sliderJunction") as HTMLElement;
+    slider.style.background = "gray";
+    if (checkBox.checked) {
+      slider.style.background = "white";
+    }
+    this.tools.setJunctionState();
+
+
+  }
   updateTextInput(): void {
     let input = document.querySelector(".size-slider") as HTMLInputElement
     let inputToUpdate = document.querySelector(".textInput") as HTMLInputElement;
@@ -51,7 +62,6 @@ export class AttributebarComponent implements OnInit {
         container.style.display = "table-cell";
       else
         container.style.display = "flex";
-
       icon.innerHTML = "expand_less";
     }
     else {

@@ -36,6 +36,10 @@ export class LineService extends Tool {
   setPrimaryColor(color: string): void {
     this.primaryColor = color;
   }
+
+  setJunctionState(): void {
+    this.withJunction = !this.withJunction;
+  }
   setLineWidth(width: number): void {
     this.lineWidth = width;
   }

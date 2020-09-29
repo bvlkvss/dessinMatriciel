@@ -57,9 +57,13 @@
         />
         <input class="size-slider" type="range" (change)="setLineWidth($event.target.value)" [value]="widthValue" min="1" max="100" />
     </div>
+
     <div id="lineWidthcontainer" *ngIf="checkIfContainAttribute('junction')">
-        <p  id="junctionHeader" class="header"> With Junction </p>
-        <input type="checkbox" id="isJunction" />
+        <p id="junctionHeader" class="header">Junction point</p>
+        <div class="sliderJunction">
+            <input type="checkbox" id="sliderJunction" (change)="setJunctionState()" name="check" checked />
+            <label for="sliderJunction"></label>
+        </div>
     </div>
     <div *ngIf="checkIfContainAttribute('rectangleStyle')">
         <div id="currentImageContainer">
