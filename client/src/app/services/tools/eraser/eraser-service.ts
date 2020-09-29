@@ -20,7 +20,7 @@ export class EraserService extends Tool {
 
     constructor(drawingService: DrawingService) {
         super(drawingService);
-        this.toolAttributes = ['lineWidth'];
+        this.toolAttributes = ['eraserWidth'];
         this.lineWidth = 5;
         this.clearPath();
     }
