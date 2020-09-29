@@ -35,9 +35,8 @@ export class SidebarComponent {
         document.getElementById('drawing-div')?.setAttribute('class', classname);
     }
 
-    changeTools(id: number): void {
-        console.log(id);
-        this.tools.setTools(id);
+    changeTools(name: string): void {
+        this.tools.setTools(name);
     }
 
     openUserGuide(): void {

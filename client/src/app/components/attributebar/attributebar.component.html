@@ -104,7 +104,7 @@
         </div>
     </div>
     <div id="buttonContainer">
-        <button id="accept" class="buttons">Accept</button>
-        <button id="cancel" class="buttons">Cancel</button>
+        <button id="accept" (click)="acceptChanges()" class="buttons">Accept</button>
+        <button (click)="restoreValues()" id="cancel" class="buttons">Cancel</button>
     </div>
 </div>

@@ -13,7 +13,7 @@ const OPACITY_DIVIDER = 100.0;
     providedIn: 'root',
 })
 export class ToolsManagerService {
-    private tools: Tool[];
+    private tools: Map<string, Tool>;
     currentTool: Tool;
 
     constructor(
@@ -24,17 +24,24 @@ export class ToolsManagerService {
         ellipseService: EllipseService,
         lineService: LineService,
     ) {
-        this.tools = [pencilService, brushService, rectangleService, eraserService, ellipseService, lineService];
-        this.currentTool = this.tools[0];
+        this.tools = new Map<string, Tool>([
+            ["pencil", pencilService],
+            ["brush", brushService],
+            ["rectangle", rectangleService],
+            ["eraser", eraserService],
+            ["ellipse", ellipseService],
+            ["line", lineService]
+        ]);
+        this.currentTool = this.tools.get("pencil") as Tool;
     }
-    setTools(index: number): void {
-        this.currentTool = this.tools[index];
+    setTools(name: string): void {
+        this.currentTool = this.tools.get(name) as Tool;
     }
     setSize(width: number, height: number): void {
         this.currentTool.height = height;
         this.currentTool.width = width;
     }
-    getTools(): Tool[] {
+    getTools(): Map<string, Tool> {
         return this.tools;
     }
     setOpacity(opacity: number): void {
@@ -53,6 +60,7 @@ export class ToolsManagerService {
         rectangle.setStyle(id);
 
     }
+
     setEllipseStyle(id: number): void {
         let ellipse = this.currentTool as EllipseService;
         ellipse.setStyle(id);
@@ -63,7 +71,7 @@ export class ToolsManagerService {
         line.setJunctionWidth(id);
 
     }
-    setJunctionState():void{
+    setJunctionState(): void {
         let line = this.currentTool as LineService;
         line.setJunctionState();
     }

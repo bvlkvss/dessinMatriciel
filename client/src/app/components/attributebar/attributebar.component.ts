@@ -21,18 +21,28 @@ export class AttributebarComponent implements OnInit {
       this.widthValue = this.tools.currentTool.lineWidth.toString();
 
   }
+  acceptChanges(): void {
+    if (this.tools.currentTool === this.tools.getTools().get("pencil")) {
+
+    }
+
+
+
+  }
   checkIfContainAttribute(attribute: string): boolean {
     this.restoreValues();
     return this.tools.currentTool.toolAttributes.includes(attribute);
   }
   setLineWidth(input: string): void {
     this.widthValue = input;
-    this.tools.setLineWidth(Number(input));
+    this.tools.setLineWidth(Number(this.widthValue));
+
   }
   setJunctionWidth(input: string): void {
 
     this.junctionWidth = input;
-    this.tools.setJunctionWidth(Number(input));
+    this.tools.setJunctionWidth(Number(this.widthValue));
+
 
   }
   setJunctionState(): void {
@@ -72,7 +82,7 @@ export class AttributebarComponent implements OnInit {
 
   }
   setTexture(id: number): void {
-    let brush = this.tools.getTools()[1] as BrushService;
+    let brush = this.tools.getTools().get("brush") as BrushService;
     brush.setTexture(id);
     let currentImage = document.querySelector("#currentImage") as HTMLImageElement;
     currentImage.src = '../../../assets/b' + id + '.svg';

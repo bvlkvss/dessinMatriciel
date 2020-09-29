@@ -25,10 +25,12 @@ export class DrawingComponent implements AfterViewInit {
     constructor(private drawingService: DrawingService, private tools: ToolsManagerService) { }
 
     ngAfterViewInit(): void {
-        this.keyBindings.set('c', this.tools.getTools()[0])
-            .set('w', this.tools.getTools()[1])
-            .set('e', this.tools.getTools()[3])
-            .set('2', this.tools.getTools()[4]);
+        this.keyBindings.set('c', this.tools.getTools().get("pencil") as Tool)
+            .set('w', this.tools.getTools().get("brush") as Tool)
+            .set('e', this.tools.getTools().get("eraser") as Tool)
+            .set('2', this.tools.getTools().get("ellipse") as Tool)
+            .set('l', this.tools.getTools().get("line") as Tool);
+
         this.baseCtx = this.baseCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.previewCtx = this.previewCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.drawingService.baseCtx = this.baseCtx;
