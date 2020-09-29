@@ -12,9 +12,11 @@ describe('RectangleService', () => {
 
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
-    let fillRectangleSpy: jasmine.Spy<any>;
+    let canvasStub: HTMLCanvasElement;
+    let drawRectangleSpy: jasmine.Spy<any>;
 
     beforeEach(() => {
+        canvasStub = canvasTestHelper.canvas
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
         drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
@@ -23,12 +25,19 @@ describe('RectangleService', () => {
             providers: [{ provide: DrawingService, useValue: drawServiceSpy }],
         });
         service = TestBed.inject(RectangleService);
-        fillRectangleSpy = spyOn<any>(service, 'fillRectangle').and.callThrough();
+        drawRectangleSpy = spyOn<any>(service, 'drawRectangle').and.callThrough();
 
         // Configuration du spy du service
         // tslint:disable:no-string-literal
+        service['drawingService'].canvas = canvasStub; 
         service['drawingService'].baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
         service['drawingService'].previewCtx = previewCtxStub;
+        service['drawingService'].canvas.width = canvasStub.width;
+        service['drawingService'].canvas.height = canvasStub.height; 
+        service['drawingService'].baseCtx.canvas.width = baseCtxStub.canvas.width; // Jasmine doesnt copy properties with underlying data
+        service['drawingService'].previewCtx.canvas.width = previewCtxStub.canvas.width;
+        service['drawingService'].baseCtx.canvas.height = baseCtxStub.canvas.height; // Jasmine doesnt copy properties with underlying data
+        service['drawingService'].previewCtx.canvas.height = previewCtxStub.canvas.height;
 
         mouseEvent = {
             offsetX: 25,
@@ -39,6 +48,11 @@ describe('RectangleService', () => {
 
     it('should be created', () => {
         expect(service).toBeTruthy();
+    });
+
+    it('style should be set to assigned value when setStyle is called', () => {
+        service.setStyle(2)
+        expect(service.rectangleStyle).toEqual(2);
     });
 
     it(' mouseDown should set mouseDownCoord to correct position', () => {
@@ -62,57 +76,222 @@ describe('RectangleService', () => {
         expect(service.mouseDown).toEqual(false);
     });
 
-    it(' onMouseUp should call fillRectangleSpy if mouse was already down', () => {
-        service.mouseDownCoord = { x: 0, y: 0 };
-        service.mouseDown = true;
-
-        service.onMouseUp(mouseEvent);
-        expect(fillRectangleSpy).toHaveBeenCalled();
-    });
-
-    it(' onMouseUp should not call fillRectangle if mouse was not already down', () => {
-        service.mouseDown = false;
-        service.mouseDownCoord = { x: 0, y: 0 };
-
-        service.onMouseUp(mouseEvent);
-        expect(fillRectangleSpy).not.toHaveBeenCalled();
-    });
-
-    it(' onMouseMove should call fillRectangle if mouse was already down', () => {
-        service.mouseDownCoord = { x: 0, y: 0 };
-        service.mouseDown = true;
-
-        service.onMouseMove(mouseEvent);
-        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
-        expect(fillRectangleSpy).toHaveBeenCalled();
-    });
-
-    it(' onMouseMove should not call fillRectangle if mouse was not already down', () => {
-        service.mouseDownCoord = { x: 0, y: 0 };
-        service.mouseDown = false;
-
-        service.onMouseMove(mouseEvent);
-        expect(drawServiceSpy.clearCanvas).not.toHaveBeenCalled();
-        expect(fillRectangleSpy).not.toHaveBeenCalled();
-    });
-
-    // it(' onMouseOut should not call fillRectangle ')
-
-    /*
-    // Exemple de test d'intégration qui est quand même utile
-    it(' should change the pixel of the canvas ', () => {
-        mouseEvent = { offsetX: 0, offsetY: 0, button: 0 } as MouseEvent;
-        service.onMouseDown(mouseEvent);
-        mouseEvent = { offsetX: 1, offsetY: 0, button: 0 } as MouseEvent;
-        service.onMouseUp(mouseEvent);
-
-        // Premier pixel seulement
-        const imageData: ImageData = baseCtxStub.getImageData(0, 0, 1, 1);
-        expect(imageData.data[0]).toEqual(0); // R
-        expect(imageData.data[1]).toEqual(0); // G
-        expect(imageData.data[2]).toEqual(0); // B
+    it('setLineWidth should set lineWidth to correct value', () => {
         // tslint:disable-next-line:no-magic-numbers
-        expect(imageData.data[3]).not.toEqual(0); // A
+        service.setLineWidth(3);
+        // tslint:disable-next-line:no-magic-numbers
+        expect(service.lineWidth).toEqual(3);
     });
-    */
+
+    it('setPrimaryColor should set primaryColor to correct value', () => {
+        service.setPrimaryColor('#ababab');
+        expect(service.primaryColor).toEqual('#ababab');
+    });
+
+    it('onMouseOut should not set isOut to true if mouse is not down', () => {
+        service.mouseDown = false;
+        service.isOut = false;
+        service.onMouseOut(mouseEvent);
+        expect(service.isOut).toBe(false);
+    });
+
+    it('onMouseOut should  set isOut to true if mouse is  down', () => {
+        service.mouseDownCoord = {x:6, y:20};
+        service.mouseDown = true;
+        service.isOut = false;
+        service.onMouseOut(mouseEvent);
+        expect(service.isOut).toBe(true);
+    });
+
+    it('onMouseOut should not call drawRectangle if mouseDown is false', () => {
+        service.mouseDown = false;
+        service.onMouseOut(mouseEvent);
+        expect(drawRectangleSpy).not.toHaveBeenCalled();
+    });
+
+    it('onMouseOut should call drawRectangle if mouseDown is true', () => {
+        service.mouseDownCoord = {x:6, y:20};
+        service.rectangleStyle = 1;
+        service.mouseDown = true;
+        service.onMouseOut(mouseEvent);
+        expect(drawRectangleSpy).toHaveBeenCalled();
+    });
+
+    it('onMouseOut should set x to 100 if more than 100', () => {
+        service.mouseDownCoord = {x:6, y:20};
+        service.rectangleStyle = 2;
+        let mouseOutEvent = {
+            offsetX: 103,
+            offsetY: 25,
+            button: 0,
+        } as MouseEvent;
+        service.mouseDown = true;
+        service.onMouseOut(mouseOutEvent);
+        expect(service.mouseOutCoord.x).toEqual(100);
+    });
+
+    it('onMouseOut should set x to 0 if less than 0', () => {
+        service.mouseDownCoord = {x:6, y:20};
+        service.rectangleStyle = 0;
+        let mouseOutEvent = {
+            offsetX: -2,
+            offsetY: 25,
+            button: 0,
+        } as MouseEvent;
+        service.mouseDown = true;
+        service.onMouseOut(mouseOutEvent);
+        expect(service.mouseOutCoord.x).toEqual(0);
+    });
+
+    it('onMouseOut should set y to 100 if more than 100', () => {
+        service.mouseDownCoord = {x:6, y:20};
+        let mouseOutEvent = {
+            offsetX: 25,
+            offsetY: 102,
+            button: 0,
+        } as MouseEvent;
+        service.mouseDown = true;
+        service.onMouseOut(mouseOutEvent);
+        expect(service.mouseOutCoord.y).toEqual(100);
+    });
+
+    it('onMouseOut should set y to 0 if less than 0', () => {
+        service.mouseDownCoord = {x:6, y:20};
+        let mouseOutEvent = {
+            offsetX: 25,
+            offsetY: -2,
+            button: 0,
+        } as MouseEvent;
+        service.mouseDown = true;
+        service.onMouseOut(mouseOutEvent);
+        expect(service.mouseOutCoord.y).toEqual(0);
+    });
+
+    it('onMouseEnter should set isOut to false', () => {
+        service.onMouseEnter(mouseEvent);
+        expect(service.isOut).toBe(false);
+    });
+
+    it('onMouseUp should not call drawRectangle if mouse is not down', () => {
+        service.mouseDown = false;
+        service.onMouseUp(mouseEvent);
+        expect(drawRectangleSpy).not.toHaveBeenCalled();
+    });
+
+    it('onMouseUp should  call drawRectangle if mouse is down', () => {
+        service.mouseDownCoord = {x:6, y:20};
+        service.mouseDown = true;
+        service.onMouseUp(mouseEvent);
+        expect(drawRectangleSpy).toHaveBeenCalled();
+    });
+
+    it('if mouse is out onMouseUp should  call drawRectangle with mouseOutCoords', () => {
+        service.mouseDownCoord = {x:6, y:20};
+        service.mouseOutCoord = {x:102, y:20};
+        service.mouseDown = true;
+        service.isOut = true;
+        service.onMouseUp(mouseEvent);
+        expect(drawRectangleSpy).toHaveBeenCalledWith(service['drawingService'].baseCtx, service.mouseDownCoord, service.mouseOutCoord, false);
+    });
+
+    it('onMouseMove should  not call drawRectangle if mouse is not down', () => {
+        service.mouseDownCoord = {x:6, y:20};
+        service.mouseDown = false;
+        service.onMouseMove(mouseEvent);
+        expect(drawRectangleSpy).not.toHaveBeenCalled();
+    });
+
+    it('onMouseMove should  call drawRectangle if mouse is down', () => {
+        service.mouseDownCoord = {x:6, y:20};
+        service.mouseDown = true;
+        service.onMouseMove(mouseEvent);
+        expect(drawRectangleSpy).toHaveBeenCalled();
+    });
+
+    it('onKeyUp should not call drawRectangle if mouse is not down', () => {
+        service.mouseDown = false;
+        const event = new KeyboardEvent('document:keydown', {
+            key: 'z',
+            shiftKey:false,
+        });
+        service.onKeyUp(event);
+        expect(drawRectangleSpy).not.toHaveBeenCalled();
+    });
+
+    it('onKeyUp should not call drawRectangle if shift is pressed', () => {
+        service.mouseDown = true;
+        const event = new KeyboardEvent('document:keydown', {
+            key: 'Shift',
+            shiftKey:true,
+        });
+        service.onKeyUp(event);
+        expect(drawRectangleSpy).not.toHaveBeenCalled();
+    });
+
+    it('onKeyUp should call drawRectangle if shift is not pressed and mouseDown is true', () => {
+        service.mouseDownCoord = {x:6, y:20};
+        service.currentPos = {x:8, y:42};
+        service.mouseDown = true;
+        const event = new KeyboardEvent('document:keydown', {
+            key: 'z',
+            shiftKey:false,
+        });
+
+        service.onKeyUp(event);
+        expect(drawRectangleSpy).toHaveBeenCalled();
+    });
+
+    it('shift onKeyDown should not set toSquare to true if mouse is not down', () => {
+        service.mouseDown = false;
+        service.toSquare = false;
+        const event = new KeyboardEvent('document:keydown', {
+            key: 'Shift',
+            shiftKey:true,
+        });
+
+        service.onKeyDown(event);
+        expect(service.toSquare).toBe(false);
+    });
+
+    it('shift onKeyDown should not set toSquare to true if mouse is down but shift is not pressed', () => {
+        service.mouseDownCoord = {x:6, y:20};
+        service.mouseDown = true;
+        service.toSquare = false;
+        const event = new KeyboardEvent('document:keydown', {
+            key: 'z',
+            shiftKey:false,
+        });
+
+        service.onKeyDown(event);
+        expect(service.toSquare).toBe(false);
+    });
+
+    it('shift onKeyDown should set toSquare to true if mouse is down and shift is  pressed', () => {
+        service.mouseDownCoord = {x:6, y:20};
+        service.currentPos = {x:20, y:22};
+        service.mouseDown = true;
+        service.toSquare = false;
+        const event = new KeyboardEvent('document:keydown', {
+            key: 'Shift',
+            shiftKey:true,
+        });
+
+        service.onKeyDown(event);
+        expect(service.toSquare).toBe(true);
+    });
+
+    it('shift onKeyDown should call drawRectangle and toSquare should be true if mouse is down and shift is  pressed', () => {
+        service.mouseDownCoord = {x:6, y:20};
+        service.currentPos = {x:20, y:54};
+        service.mouseDown = true;
+        service.toSquare = false;
+        const event = new KeyboardEvent('document:keydown', {
+            key: 'Shift',
+            shiftKey:true,
+        });
+
+        service.onKeyDown(event);
+        expect(service.toSquare).toBe(true);
+        expect(drawRectangleSpy).toHaveBeenCalled();
+    });
 });

@@ -33,9 +33,11 @@ export class RectangleService extends Tool {
         this.lineWidth = 1;
         this.secondaryColor = '#ff0000';
     }
+
     setStyle(id: number): void {
         this.rectangleStyle = id;
     }
+
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseDown) {
@@ -111,10 +113,6 @@ export class RectangleService extends Tool {
             this.toSquare = false;
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.drawRectangle(this.drawingService.previewCtx, this.mouseDownCoord, this.currentPos, this.toSquare);
-            if (!this.mouseDown) {
-                // if shift key is still down while mouse is up, the shift event clears the preview
-                this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            }
         }
     }
 

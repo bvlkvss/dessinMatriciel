@@ -1,6 +1,5 @@
 import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
-import { Color } from '@app/classes/color';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { delay } from 'rxjs/operators';
@@ -17,6 +16,7 @@ describe('BrushService', () => {
     let baseCtxStub: CanvasRenderingContext2D;
     let drawLineSpy: jasmine.Spy<any>;
     let changeColorSpy: jasmine.Spy<any>;
+    let getPositionSpy: jasmine.Spy<any>;
 
     mouseEvent = {
         offsetX: 25,
@@ -41,6 +41,7 @@ describe('BrushService', () => {
         service = TestBed.inject(BrushService);
         drawLineSpy = spyOn<any>(service, 'drawLine').and.callThrough();
         changeColorSpy = spyOn<any>(service, 'changeColor').and.callThrough();
+        getPositionSpy = spyOn<any>(service, 'getPositionFromMouse').and.callThrough();
 
         // tslint:disable:no-string-literal
         service['drawingService'].baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
@@ -62,6 +63,7 @@ describe('BrushService', () => {
         delay(100);
         expect(service.mouseDown).toEqual(true);
     });
+
     it(' mouseDown should set isOut property to false when the cursor exits the canvas field', () => {
         service.onMouseDown(mouseEvent);
         delay(100);
@@ -82,6 +84,7 @@ describe('BrushService', () => {
         delay(10);
         expect(drawLineSpy).toHaveBeenCalled();
     });
+
     it(' onMouseOut should not call drawLine just before the mouse exits the the canvas', () => {
         service.mouseDownCoord = { x: 20, y: 20 };
         service.mouseDown = true;
@@ -90,6 +93,7 @@ describe('BrushService', () => {
         delay(5);
         expect(drawLineSpy).toHaveBeenCalled();
     });
+
     it(' onMouseOut should change isOut value to true', () => {
         service.onMouseOut(mouseEvent);
         expect(service.isOut).toEqual(true);
@@ -142,28 +146,33 @@ describe('BrushService', () => {
         expect(drawLineSpy).not.toHaveBeenCalled();
     });
 
-    it(' setColor should set the color attribute to the given color', () => {
-        const testColor: Color = { red: 255, green: 0, blue: 0 };
-        service.setColor(testColor);
-        expect(service.getColor()).toBe(testColor);
+    it(' onMouseEnter should not call getPosition if mouse is not down', () => {
+        service.mouseDown = false;
+        service.onMouseEnter(mouseEvent);
+        expect(getPositionSpy).not.toHaveBeenCalled();
     });
 
-    it('changeColor should change pixels to the given Color', () => {
-        mouseEvent = { offsetX: 0, offsetY: 0, button: 1 } as MouseEvent;
-        service.onMouseDown(mouseEvent);
-        mouseEvent = { offsetX: 0, offsetY: 0, button: 1 } as MouseEvent;
-        service.onMouseUp(mouseEvent);
-        service.setColor({ red: 255, green: 0, blue: 0 });
-        const imageData: ImageData = baseCtxStub.getImageData(0, 0, 1, 1);
-        service.changeColor(imageData);
-        expect(imageData.data[0]).toEqual(255); // R
-        expect(imageData.data[1]).toEqual(0); // G
-        expect(imageData.data[2]).toEqual(0); // B
+    it(' onMouseEnter should call getPosition if mouse is down', () => {
+        service.mouseDown = true;
+        service.onMouseEnter(mouseEvent);
+        expect(getPositionSpy).toHaveBeenCalled();
     });
 
     it('makeBaseImage should call changeColor', () => {
         service.makeBaseImage();
         delay(100);
         expect(changeColorSpy).toHaveBeenCalled();
+    });
+
+    it('should change image to b3 id when setTexture is called with 3 as id', () => {
+        service.setTexture(3);
+        let src = (service as any).image.src;
+        expect(src).toEqual('http://localhost:9876/assets/b3.png');
+    });
+
+    it('should change color to #ababab when setPrimaryColor is called with #ababab as paramater', () => {
+        service.setPrimaryColor("#ababab");
+        let color = (service as any).primaryColor
+        expect(color).toEqual('#ababab');
     });
 });

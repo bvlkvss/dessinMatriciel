@@ -62,15 +62,6 @@ export class ColorSliderComponent implements AfterViewInit {
         this.mousedown = false;
     }
 
-    emitColor(x: number, y: number): void {
-        const rgbaColor = this.getColorAtPosition(x, y);
-        this.color.emit(rgbaColor);
-    }
-
-    getColorAtPosition(x: number, y: number): string {
-        const imageData = this.ctx.getImageData(x, y, 1, 1).data;
-        return '#' + this.rgbToHex(imageData[0]) + '' + this.rgbToHex(imageData[1]) + '' + this.rgbToHex(imageData[2]);
-    }
     rgbToHex(rgb: number): string {
         let hex = Number(rgb).toString(16);
         if (hex.length < 2) {
@@ -78,6 +69,17 @@ export class ColorSliderComponent implements AfterViewInit {
         }
         return hex;
     }
+
+    getColorAtPosition(x: number, y: number): string {
+        const imageData = this.ctx.getImageData(x, y, 1, 1).data;
+        return '#' + this.rgbToHex(imageData[0]) + '' + this.rgbToHex(imageData[1]) + '' + this.rgbToHex(imageData[2]);
+    }
+
+    emitColor(x: number, y: number): void {
+        const rgbaColor = this.getColorAtPosition(x, y);
+        this.color.emit(rgbaColor);
+    }
+
     onMouseDown(event: MouseEvent): void {
         this.mousedown = true;
         this.selectedHeight = event.offsetY;

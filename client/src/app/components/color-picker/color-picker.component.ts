@@ -68,7 +68,6 @@ export class ColorPickerComponent implements OnInit {
         const input = document.querySelector('#opacityValue') as HTMLInputElement;
         if (input.valueAsNumber >= 100) input.value = '100';
         else if (input.valueAsNumber <= 0) input.value = '0';
-        else if (input.value === '') input.value = '100';
         const integerValue = Math.round((input.valueAsNumber * 255) / 100);
         this.opacity = integerValue.toString(16);
     }
