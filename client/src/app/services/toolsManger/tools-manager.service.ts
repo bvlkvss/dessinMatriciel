@@ -41,12 +41,30 @@ export class ToolsManagerService {
         this.currentTool.opacity = opacity / OPACITY_DIVIDER;
     }
     setLineWidth(lineWidth: number): void {
-        this.currentTool.lineWidth = lineWidth;
+        this.currentTool.setLineWidth(lineWidth);
     }
-
     setColor(color: string): void {
         this.tools.forEach((element) => {
-            element.primaryColor = color;
+            element.setPrimaryColor(color);
         });
+    }
+    setRectangleStyle(id: number): void {
+        let rectangle = this.currentTool as RectangleService;
+        rectangle.setStyle(id);
+
+    }
+    setEllipseStyle(id: number): void {
+        let ellipse = this.currentTool as EllipseService;
+        ellipse.setStyle(id);
+
+    }
+    setJunctionWidth(id: number): void {
+        let line = this.currentTool as LineService;
+        line.setJunctionWidth(id);
+
+    }
+    setJunctionState():void{
+        let line = this.currentTool as LineService;
+        line.setJunctionState();
     }
 }

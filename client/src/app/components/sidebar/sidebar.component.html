@@ -1,38 +1,37 @@
 <!DOCTYPE html>
 <html>
-
-<head>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
-</head>
+    <head>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+    </head>
 
 <body>
-    <div class="container2">
-        <div class="icon-bar">
-            <a id="0" class="active" (click)="changeTools(0)" >
-                <i class="material-icons">gesture</i>
-                <span class="slidingtxt"> Pencil (1)</span>
-            </a>
-            <a (click)="changeTools(1)">
-                <i class="material-icons">brush</i>
-                <span class="slidingtxt"> Brush (w)</span>
-            </a>
-            <a (click)="changeTools(2)">
-                <i class="material-icons">crop_16_9</i>
-                <span class="slidingtxt"> Rectangle (w)</span>
-            </a>
-            <a (click)="changeTools(4)">
-                <i class="material-icons">panorama_fish_eye</i>
-                <span class="slidingtxt"> Ellipse (X)</span>
-            </a>
-            <a (click)="changeTools(5)">
-                <i class="material-icons">architecture</i>
-                <span class="slidingtxt"> Line (X)</span>
-            </a>
-            <a (click)="changeTools(3)">
-                <i class="material-icons">remove_circle_outline</i>
-                <span class="slidingtxt"> Eraser (w)</span>
-            </a>
-        </div>
+     <div class="container2">
+            <div class="icon-bar">
+                <a id="0" class="active" (click)="changeTools(0)" (click)="displayPalette()">
+                    <i class="material-icons">gesture</i>
+                    <span class="slidingtxt"> Pencil (1)</span>
+                </a>
+                <a (click)="changeTools(1)" (click)="displayPalette()">
+                    <i class="material-icons">brush</i>
+                    <span class="slidingtxt"> Brush (w)</span>
+                </a>
+                <a (click)="changeTools(2)" (click)="displayPalette()">
+                    <i class="material-icons">crop_16_9</i>
+                    <span class="slidingtxt"> Rectangle (w)</span>
+                </a>
+                <a (click)="changeTools(4)" (click)="displayPalette()">
+                    <i class="material-icons">panorama_fish_eye</i>
+                    <span class="slidingtxt"> Ellipse (X)</span>
+                </a>
+                <a (click)="changeTools(5)" (click)="displayPalette()">
+                    <i class="material-icons">architecture</i>
+                    <span class="slidingtxt"> Line (X)</span>
+                </a>
+                <a (click)="changeTools(3)" (click)="displayPalette()">
+                    <i class="material-icons">remove_circle_outline</i>
+                    <span class="slidingtxt"> Eraser (w)</span>
+                </a>
+            </div>
         
         <div class="color-bar">
             <a class="color-box1">
@@ -44,17 +43,15 @@
             </a>
         </div>
 
-        <div class="icon-bar2">
-            
-            <a (click)="openUserGuide()">
-                <i class="material-icons">add</i>
-            </a>
+            <div class="icon-bar2">
+                <a (click)="openUserGuide()">
+                    <i class="material-icons">add</i>
+                </a>
 
-            <a (click)="openUserGuide()">
-                <i class="material-icons">help_center</i>
-            </a>
+                <a (click)="openUserGuide()">
+                    <i class="material-icons">help_center</i>
+                </a>
+            </div>
         </div>
-    </div>
-</body>
-
+    </body>
 </html>

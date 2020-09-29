@@ -8,24 +8,30 @@ import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.ser
     styleUrls: ['./sidebar.component.scss'],
 })
 export class SidebarComponent {
-    constructor(private tools: ToolsManagerService /*, private elRef: ElementRef*/) {}
+    constructor(private tools: ToolsManagerService /*, private elRef: ElementRef*/) { }
 
-    paletteIsActive: boolean = false;
+    attributeBarIsActive: boolean = false;
 
     displayPalette(): void {
-        this.paletteIsActive = !this.paletteIsActive;
-        if (this.paletteIsActive) {
+
+        let attribute = document.querySelector('#attribute') as HTMLElement;
+        this.attributeBarIsActive = !this.attributeBarIsActive;
+        if (this.attributeBarIsActive) {
             this.togglecanvas('drawing-container-open');
-            this.togglecolorpicker('colorpicker-open');
+            this.toggleAttributeBar('attribute-open');
+            attribute.style.display = "block";
         } else {
             this.togglecanvas('drawing-container');
-            this.togglecolorpicker('colorpicker-close');
+            this.toggleAttributeBar('attribute-close');
+            attribute.style.display = "block";
+
         }
     }
 
-    togglecolorpicker(classname: string): void {
-        document.querySelectorAll('#colorpicker-container').forEach((item) => {
+    toggleAttributeBar(classname: string): void {
+        document.querySelectorAll('#attribute').forEach((item) => {
             item.setAttribute('class', classname);
+
         });
         //console.log(document.querySelectorAll('app-color-picker'));
     }
@@ -34,11 +40,11 @@ export class SidebarComponent {
         document.getElementById('drawing-div')?.setAttribute('class', classname);
     }
 
-    changeTools(id:number): void {
+    changeTools(id: number): void {
         console.log(id);
         this.tools.setTools(id);
     }
-
+   
     openUserGuide(): void {
         UserGuideComponent.displayUserGuide();
     }
