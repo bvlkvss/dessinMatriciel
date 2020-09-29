@@ -41,6 +41,11 @@ export class RectangleService extends Tool {
             this.mouseDownCoord = this.getPositionFromMouse(event);
         }
     }
+
+    setLineWidth(width: number): void {
+        this.lineWidth = width;
+    }
+
     setPrimaryColor(color: string): void {
         this.primaryColor = color;
     }

@@ -26,8 +26,6 @@ export class AttributebarComponent implements OnInit {
     return this.tools.currentTool.toolAttributes.includes(attribute);
   }
   setLineWidth(input: string): void {
-    //if (this.tools.currentTool.lineWidth != Number(this.widthValue))
-    // this.widthValue = this.tools.currentTool.lineWidth.toString();
     this.widthValue = input;
     this.tools.setLineWidth(Number(input));
   }
