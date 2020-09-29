@@ -14,17 +14,13 @@ export class SidebarComponent {
 
     displayPalette(): void {
 
-        let attribute = document.querySelector('#attribute') as HTMLElement;
         this.attributeBarIsActive = !this.attributeBarIsActive;
         if (this.attributeBarIsActive) {
             this.togglecanvas('drawing-container-open');
             this.toggleAttributeBar('attribute-open');
-            attribute.style.display = "block";
         } else {
             this.togglecanvas('drawing-container');
             this.toggleAttributeBar('attribute-close');
-            attribute.style.display = "block";
-
         }
     }
 
