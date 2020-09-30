@@ -58,11 +58,12 @@ export class LineService extends Tool {
   }
   onDblClick(event: MouseEvent): void {
     //  click is triggred twice when calling doubleClick so, it push twice the last point
-    let lastPoint = this.pathData.pop() as Vec2;
+    let lastPoint = this.pathData[this.pathData.length - 1] as Vec2;
     this.isDoubleClicked = true;
 
     // check if the distance  between the new point and last one is less than 20  
     if (this.distanceBetween2Points(lastPoint, this.pathData[this.pathData.length - 2]) <= 20) {
+      this.pathData.pop();
       this.pathData[this.pathData.length - 2] = lastPoint;
 
     }
@@ -70,11 +71,12 @@ export class LineService extends Tool {
     else
       this.pathData.push(lastPoint);
     this.drawingService.clearCanvas(this.drawingService.previewCtx);
+
+    this.drawLines(this.drawingService.baseCtx);
     if (this.toAllign) {
       this.toAllign = false;
-      this.pathData.push(this.allignementPoint);
+      this.drawLine(this.drawingService.baseCtx, this.pathData[this.pathData.length - 1], this.allignementPoint);
     }
-    this.drawLines(this.drawingService.baseCtx);
     this.mouseDown = false;
 
     this.clearPath();
