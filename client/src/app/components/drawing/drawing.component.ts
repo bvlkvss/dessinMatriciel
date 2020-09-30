@@ -27,7 +27,7 @@ export class DrawingComponent implements AfterViewInit {
     // TODO : Avoir un service dédié pour gérer tous les outils ? Ceci peut devenir lourd avec le temps
     constructor(private drawingService: DrawingService, private tools: ToolsManagerService, private resizer: ResizingService) { }
 
-    ngOnInit(): void{
+    ngOnInit(): void {
         this.drawingService.resizeCanvas();
     }
     ngAfterViewInit(): void {
@@ -133,11 +133,11 @@ export class DrawingComponent implements AfterViewInit {
     onkeyDownWindow(event: KeyboardEvent): void {
 
         if (event.ctrlKey && event.key == "o") {
-        event.preventDefault();
-        event.stopPropagation();
-        this.drawingService.newDrawing();
-        this.drawingService.resizeCanvas();
-    }
+            event.preventDefault();
+            event.stopPropagation();
+            this.drawingService.newDrawing();
+            this.drawingService.resizeCanvas();
+        }
 
 
     }
@@ -146,9 +146,9 @@ export class DrawingComponent implements AfterViewInit {
         this.drawingService.baseCtx.restore();
         this.drawingService.previewCtx.restore();
         if (event.ctrlKey && event.key == "o") {
-            return;         
+            return;
         }
-        else if (this.keyBindings.has(event.key)){
+        else if (this.keyBindings.has(event.key)) {
             this.drawingService.restoreCanvasState();
             this.tools.currentTool = this.keyBindings.get(event.key) as Tool;
         }

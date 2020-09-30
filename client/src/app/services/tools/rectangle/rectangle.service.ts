@@ -31,7 +31,7 @@ export class RectangleService extends Tool {
         this.toolAttributes = ['strokeWidth', 'rectangleStyle'];
         this.rectangleStyle = 2;
         this.lineWidth = 1;
-        this.secondaryColor="#ff0000"
+        this.secondaryColor = '#ff0000';
     }
     setStyle(id: number): void {
         this.rectangleStyle = id;
@@ -52,14 +52,10 @@ export class RectangleService extends Tool {
         this.primaryColor = color;
     }
     onMouseOut(event: MouseEvent): void {
-        if (!this.mouseDown) {
-            return;
-        }
-        console.log('mouseout rectangle');
-        
+
         if (this.mouseDown) {
             this.isOut = true;
-    
+
             this.mouseOutCoord = this.getPositionFromMouse(event);
             if (this.mouseOutCoord.x > this.drawingService.previewCtx.canvas.width) {
                 this.mouseOutCoord.x = this.drawingService.canvas.width;
@@ -77,9 +73,6 @@ export class RectangleService extends Tool {
     }
 
     onMouseEnter(event: MouseEvent): void {
-        if (!this.mouseDown) {
-            return;
-        }
         console.log('mouseenter rectangle');
         this.isOut = false;
     }
@@ -158,7 +151,7 @@ export class RectangleService extends Tool {
                 ctx.fill();
                 break;
             case 2:
-                ctx.rect(startPos.x, startPos.y, width, height);               
+                ctx.rect(startPos.x, startPos.y, width, height);
                 ctx.fill();
                 break;
         }
