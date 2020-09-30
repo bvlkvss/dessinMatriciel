@@ -90,9 +90,7 @@ export class DrawingComponent implements AfterViewInit {
     @HostListener('mouseenter', ['$event'])
     onMouseEnter(event: MouseEvent): void {
         if (!this.resizer.resizing) {
-            if (!this.resized) {
-                this.resized = false;
-            }
+
             this.tools.currentTool.onMouseEnter(event);
         }
     }

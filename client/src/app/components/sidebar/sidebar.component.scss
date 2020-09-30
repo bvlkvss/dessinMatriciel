@@ -1,4 +1,4 @@
-body{
+body {
     user-select: none;
 }
 
@@ -14,7 +14,7 @@ body{
     position: fixed;
     left: 0px;
     top: 0;
-    background-color: rgb(64,61,85);
+    background-color: rgb(64, 61, 85);
 }
 
 .sidebar-container {
@@ -32,7 +32,7 @@ body{
 
 .icon-bar {
     width: 50px;
-    background-color: rgb(64,61,85);
+    background-color: rgb(64, 61, 85);
     padding-bottom: 10px;
     border-bottom: solid 2px darkgray;
 }
@@ -41,14 +41,14 @@ body{
     position: relative;
     top: 200px;
     width: 50px;
-    background-color: rgb(64,61,85);
+    background-color: rgb(64, 61, 85);
 }
 
 .color-bar {
     position: relative;
     top: 15px;
     width: 50px;
-    background-color: rgb(64,61,85);
+    background-color: rgb(64, 61, 85);
 }
 
 .color-bar a {
@@ -107,7 +107,7 @@ body{
     color: white;
     top: 10px;
     padding: 10px;
-    color: rgb(64,61,85);
+    color: rgb(64, 61, 85);
     cursor: pointer;
 }
 
@@ -126,10 +126,9 @@ body{
     color: white;
     cursor: pointer;
     padding: 10px;
-    background-color: rgb(64,61,85);
+    background-color: rgb(64, 61, 85);
     z-index: -1;
 }
-
 
 .icon-bar a:hover {
     //-webkit-transform: translateX(5px);

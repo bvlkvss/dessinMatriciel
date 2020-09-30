@@ -136,7 +136,6 @@ export class BrushService extends Tool {
         tempCanvas.height = this.image.height / IMAGE_SIZE_DIVIDER;
         const tempCtx = tempCanvas.getContext('2d');
         if (tempCtx) {
-            console.log(this.image);
             tempCtx.drawImage(this.image, 0, 0, this.image.width / IMAGE_SIZE_DIVIDER, this.image.height / IMAGE_SIZE_DIVIDER);
             const data = tempCtx.getImageData(0, 0, this.image.width, this.image.height);
             this.changeColor(data);
