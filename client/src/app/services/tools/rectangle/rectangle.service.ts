@@ -31,6 +31,7 @@ export class RectangleService extends Tool {
         this.toolAttributes = ['strokeWidth', 'rectangleStyle'];
         this.rectangleStyle = 2;
         this.lineWidth = 1;
+        this.secondaryColor="#ff0000"
     }
     setStyle(id: number): void {
         this.rectangleStyle = id;
@@ -133,17 +134,19 @@ export class RectangleService extends Tool {
         ctx.fillStyle = this.secondaryColor;
         ctx.strokeStyle = this.primaryColor;
         ctx.lineWidth = this.lineWidth;
-        ctx.rect(startPos.x, startPos.y, width - (this.lineWidth / 2) * Math.sign(width), height - (this.lineWidth / 2) * Math.sign(height));
 
         switch (this.rectangleStyle) {
             case 0:
+                ctx.rect(startPos.x, startPos.y, width - (this.lineWidth / 2) * Math.sign(width), height - (this.lineWidth / 2) * Math.sign(height));
                 ctx.stroke();
                 break;
             case 1:
+                ctx.rect(startPos.x, startPos.y, width - (this.lineWidth / 2) * Math.sign(width), height - (this.lineWidth / 2) * Math.sign(height));
                 ctx.stroke();
                 ctx.fill();
                 break;
             case 2:
+                ctx.rect(startPos.x, startPos.y, width, height);               
                 ctx.fill();
                 break;
         }
