@@ -39,6 +39,7 @@ export class SidebarComponent {
     }
 
     changeTools(name: string): void {
+        this.drawingService.restoreCanvasState();
         this.tools.setTools(name);
     }
 

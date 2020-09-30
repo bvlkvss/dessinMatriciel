@@ -34,9 +34,12 @@ export class DrawingComponent implements AfterViewInit {
 
         this.baseCtx = this.baseCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.previewCtx = this.previewCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
+
         this.drawingService.baseCtx = this.baseCtx;
         this.drawingService.previewCtx = this.previewCtx;
         this.drawingService.canvas = this.baseCanvas.nativeElement;
+        this.baseCtx.save();
+        this.previewCtx.save();
     }
 
 
@@ -98,8 +101,10 @@ export class DrawingComponent implements AfterViewInit {
         if (event.ctrlKey && event.key == "o") {
             return;         
         }
-        else if (this.keyBindings.has(event.key))
+        else if (this.keyBindings.has(event.key)){
+            this.drawingService.restoreCanvasState();
             this.tools.currentTool = this.keyBindings.get(event.key) as Tool;
+        }
         else
             this.tools.currentTool.onKeyDown(event);
     }
