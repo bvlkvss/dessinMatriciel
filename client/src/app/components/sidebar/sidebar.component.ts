@@ -8,7 +8,7 @@ import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.ser
     styleUrls: ['./sidebar.component.scss'],
 })
 export class SidebarComponent {
-    constructor(private tools: ToolsManagerService /*, private elRef: ElementRef*/) {}
+    constructor(private tools: ToolsManagerService /*, private elRef: ElementRef*/) { }
 
     paletteIsActive: boolean = false;
 

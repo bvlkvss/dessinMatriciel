@@ -23,9 +23,11 @@ export class DrawingComponent implements AfterViewInit {
     private previewCtx: CanvasRenderingContext2D;
     private canvasSize: Vec2 = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
     private mouseFired: boolean;
+    private resized: boolean;
+
     // private UpFired: boolean;
     // TODO : Avoir un service dédié pour gérer tous les outils ? Ceci peut devenir lourd avec le temps
-    constructor(private drawingService: DrawingService, private tools: ToolsManagerService, private resizer: ResizingService) {}
+    constructor(private drawingService: DrawingService, private tools: ToolsManagerService, private resizer: ResizingService) { }
 
     ngAfterViewInit(): void {
         this.keyBindings
@@ -44,14 +46,16 @@ export class DrawingComponent implements AfterViewInit {
 
     initResizing(event: MouseEvent): void {
         event.stopPropagation();
-        this.resizer.initResizing(event);
         this.mouseFired = true;
+        this.resizer.initResizing(event);
     }
 
     @HostListener('window:mousemove', ['$event'])
     resize(event: MouseEvent): void {
         event.stopPropagation();
-        this.resizer.resize(event);
+        if (this.resizer.resizing) {
+            this.resizer.resize(event);
+        }
     }
     @HostListener('window:mouseup', ['$event'])
     stopResize(event: MouseEvent): void {
@@ -61,66 +65,74 @@ export class DrawingComponent implements AfterViewInit {
         }
         // this.delay(100);
     }
+
     @HostListener('mousemove', ['$event'])
     onMouseMove(event: MouseEvent): void {
-        if (!this.resizer.resizing) {
-            this.tools.currentTool.onMouseMove(event);
+        const t = event.target as HTMLDivElement;
+        if (t.className === 'resizer') {
+            return;
         }
+        this.tools.currentTool.onMouseMove(event);
     }
 
     @HostListener('mousedown', ['$event'])
     onMouseDown(event: MouseEvent): void {
-        console.log('mousedown');
-        if (!this.resizer.resizing) {
-            this.tools.currentTool.onMouseDown(event);
+        event.preventDefault ? event.preventDefault() : (event.returnValue = false);
+        const t = event.target as HTMLDivElement;
+        if (t.className === 'resizer') {
+            return;
         }
+        this.tools.currentTool.onMouseDown(event);
     }
 
     @HostListener('mouseenter', ['$event'])
     onMouseEnter(event: MouseEvent): void {
         if (!this.resizer.resizing) {
+            if (!this.resized) {
+                this.resized = false;
+                return;
+            }
             this.tools.currentTool.onMouseEnter(event);
         }
     }
+
     @HostListener('dblclick', ['$event'])
     onDblClick(event: MouseEvent): void {
-        if (!this.resizer.resizing) {
-            this.tools.currentTool.onDblClick(event);
-        }
+        this.tools.currentTool.onDblClick(event);
     }
 
     @HostListener('click', ['$event'])
     onClick(event: MouseEvent): void {
+        const t = event.target as HTMLDivElement;
         if (this.mouseFired && !this.resizer.IsextendingCanvas()) {
             this.mouseFired = false;
             return;
         }
-        console.log('click');
-        if (!this.resizer.resizing) {
-            this.tools.currentTool.onClick(event);
+        if (t.className === 'resizer') {
+            return;
         }
+        this.tools.currentTool.onClick(event);
     }
     @HostListener('document:mouseup', ['$event'])
     onMouseUp(event: MouseEvent): void {
-        if (!this.resizer.resizing) {
-            this.tools.currentTool.onMouseUp(event);
-            console.log(event.offsetX, ';', event.offsetY);
-            console.log('i dont want it');
-        }
+        this.tools.currentTool.onMouseUp(event);
     }
     @HostListener('mouseout', ['$event'])
     onMouseOut(event: MouseEvent): void {
         if (!this.resizer.resizing) {
+            if (!this.resized) {
+                this.resized = false;
+                return;
+            }
             this.tools.currentTool.onMouseOut(event);
         }
     }
 
     @HostListener('document:keyup', ['$event'])
     KeyUp(event: KeyboardEvent): void {
-        if (!this.resizer.resizing) {
-            this.tools.currentTool.onKeyUp(event);
-        }
+        this.tools.currentTool.onKeyUp(event);
     }
+
 
     @HostListener('keydown', ['$event'])
     onKeyDown(event: KeyboardEvent): void {
