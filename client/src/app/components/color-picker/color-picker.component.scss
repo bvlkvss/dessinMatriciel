@@ -61,7 +61,9 @@
     -moz-box-shadow: inset 0px 64px 59px -71px rgba(255, 255, 255, 0.2);
     box-shadow: inset 0px 64px 59px -71px rgba(255, 255, 255, 0.2);
 }
-
+.primaryColor-open {
+    display: block;
+}
 .color-div {
     position: relative;
     bottom: 15px;
@@ -77,8 +79,8 @@
     margin: none;
     color: white;
     position: relative;
-    bottom: 42px;
-    left: 47px;
+    bottom: 45px;
+    left: 46px;
     width: 50%;
     font-size: 18px;
     height: 28px;

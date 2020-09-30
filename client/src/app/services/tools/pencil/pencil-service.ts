@@ -24,14 +24,13 @@ export class PencilService extends Tool {
 
     constructor(drawingService: DrawingService) {
         super(drawingService);
+
         this.toolAttributes = ["lineWidth"];
-        this.lineWidth = 1;
+        this.lineWidth = 20;
         this.clearPath();
     }
 
-    /*setColor(color: string): void {
-        this.primaryColor = color;
-    }*/
+   
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseDown) {

@@ -7,7 +7,7 @@
     <body>
         <div class="container2">
             <div id="#icons" class="icon-bar">
-                <a id="pencil"  class="active" (click)="displayPalette('pencil')" (click)="changeTools('pencil')">
+                <a id="pencil" class="active" (click)="displayPalette('pencil')" (click)="changeTools('pencil')">
                     <i class="material-icons">gesture</i>
                     <span class="slidingtxt"> Pencil (1)</span>
                 </a>
@@ -34,24 +34,23 @@
             </div>
 
             <div class="color-bar">
-                <a class="color-box1"> </a>
+                <a (click)="toggleColorPalette()" class="color-box1"> </a>
                 <a>
                     <i class="material-icons change">swap_vert</i>
                 </a>
                 <a class="color-box2"> </a>
             </div>
 
-        <div class="icon-bar2">
-            
-            <a (click)="newDrawing()">
-                <i class="material-icons">add</i>
-            </a>
-            <a (click)="openUserGuide()">
-                <i class="material-icons">help_center</i>
-            </a>
-            <a (click)="warningMessage()">
-                <i  class="material-icons">house</i>
-            </a>
+            <div class="icon-bar2">
+                <a (click)="newDrawing()">
+                    <i class="material-icons">add</i>
+                </a>
+                <a (click)="openUserGuide()">
+                    <i class="material-icons">help_center</i>
+                </a>
+                <a (click)="warningMessage()">
+                    <i class="material-icons">house</i>
+                </a>
             </div>
         </div>
     </body>

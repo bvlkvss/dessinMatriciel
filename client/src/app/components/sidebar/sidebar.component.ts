@@ -33,6 +33,13 @@ export class SidebarComponent {
         });
         console.log(document.querySelectorAll('app-color-picker'));
     }
+    toggleColorPalette(): void {
+        if (document.querySelector("#primaryColorPicker")?.getAttribute("style") === "display:block")
+            document.querySelector("#primaryColorPicker")?.setAttribute("style", "display:none");
+        else
+            document.querySelector("#primaryColorPicker")?.setAttribute("style", "display:block");
+
+    }
 
     togglecanvas(classname: string): void {
         document.getElementById('drawing-div')?.setAttribute('class', classname);
@@ -41,8 +48,8 @@ export class SidebarComponent {
     changeTools(name: string): void {
         this.drawingService.restoreCanvasState();
         this.tools.setTools(name);
-        var nb  = document.getElementsByTagName("a").length;
-        for(var i = 0; i < nb; i++){
+        var nb = document.getElementsByTagName("a").length;
+        for (var i = 0; i < nb; i++) {
             document.getElementsByTagName("a")[i].classList.remove("active");
         }
         document.getElementById(name)?.setAttribute('class', "active");
@@ -55,10 +62,10 @@ export class SidebarComponent {
     newDrawing(): void {
         this.drawingService.newDrawing();
     }
-    
+
     warningMessage(): void {
-       if(window.confirm("Warning, your current sketch will be deleted.\n Do you want to proceed to the main menu?")){
+        if (window.confirm("Warning, your current sketch will be deleted.\n Do you want to proceed to the main menu?")) {
             location.replace("main-page.component.html");
-       };
+        };
     }
 }

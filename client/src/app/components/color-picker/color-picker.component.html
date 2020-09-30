@@ -2,27 +2,27 @@
     <div class="input-wrapper">
         <p id="primaryColor" class="header">Primary color</p>
         <div class="color-div" [ngStyle]="{ 'background-color': color || 'white' }"></div>
-        <input class="text" maxlength="6" [value]="color.slice(1, 7)" (change)="setColorFromInput()" />
+        <input class="text" maxlength="6" [value]="color.slice(1, 7)" />
     </div>
     <div id="pickerContainer">
         <div class="color-wrapper">
-            <app-color-palette [hue]="hue" (color)="color = $event" (color)="addColor($event)" (color)="setColor()"></app-color-palette>
-            <app-color-slider (color)="hue = $event" (color)="setColor()"></app-color-slider>
+            <app-color-palette [hue]="hue" (color)="color = $event"></app-color-palette>
+            <app-color-slider (color)="hue = $event"></app-color-slider>
         </div>
         <div class="container">
             <p class="header">Last colors :</p>
             <div *ngFor="let i of lastColors" class="color-container">
-                <button (click)="color = i" (click)="setColor()" class="lastColors" [ngStyle]="{ 'background-color': i }"></button>
+                <button (click)="color = i" class="lastColors" [ngStyle]="{ 'background-color': i }"></button>
             </div>
         </div>
     </div>
     <div class="container">
         <p class="header">Opacity</p>
-        <input class="slider" type="range" (change)="setOpacity()" id="opacityValue" value="100" min="0" max="100" />
+        <input class="slider" type="range" id="opacityValue" value="100" min="0" max="100" />
     </div>
 
     <div id="buttonsContainer">
-        <button id="accept" class="buttons">Accept</button>
-        <button id="cancel" class="buttons">Cancel</button>
+        <button id="accept" (click)="acceptChanges()" class="buttons">Accept</button>
+        <button id="cancel" (click)="cancelChanges()" class="buttons">Cancel</button>
     </div>
 </div>

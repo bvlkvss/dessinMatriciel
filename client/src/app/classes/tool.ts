@@ -16,7 +16,7 @@ export abstract class Tool {
     width: number;
     height: number;
     opacity: number;
-    primaryColor: string; // by default black
+    primaryColor: string = "#000000"; // by default black
     secondaryColor: string; //  by default black
 
     constructor(protected drawingService: DrawingService) { }
