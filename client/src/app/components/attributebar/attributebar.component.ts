@@ -18,7 +18,7 @@ export class AttributebarComponent implements OnInit, OnChanges {
   idStyleBrush: number = 0;
   constructor(private tools: ToolsManagerService) { }
   private showContainer: boolean = false;
-  private lastTool = this.tools.currentTool as Tool;
+  private lastTool: Tool = this.tools.currentTool;
 
   ngOnChanges(): void {
     this.restoreValues();
@@ -27,8 +27,8 @@ export class AttributebarComponent implements OnInit, OnChanges {
     this.widthValue = this.tools.currentTool.lineWidth.toString();
   }
   changeStyle(styleToChangeId: string, styleId: number): void {
-    let shapeStyle = document.querySelector('#style' + styleId) as HTMLElement;
-    let currentStyle = document.querySelector('#' + styleToChangeId) as HTMLElement;
+    const shapeStyle = document.querySelector('#style' + styleId) as HTMLElement;
+    const currentStyle = document.querySelector('#' + styleToChangeId) as HTMLElement;
     if (shapeStyle && currentStyle) {
       currentStyle.style.borderColor = window.getComputedStyle(shapeStyle).borderColor;
       currentStyle.style.backgroundColor = window.getComputedStyle(shapeStyle).backgroundColor;
@@ -39,50 +39,49 @@ export class AttributebarComponent implements OnInit, OnChanges {
   restoreValues(): void {
     let currentTool;
     if (this.tools.currentTool.lineWidth) this.widthValue = this.tools.currentTool.lineWidth.toString();
-    if (this.tools.currentTool === this.tools.getTools().get('rectangle')) {
-      currentTool = this.tools.currentTool as RectangleService;
-      this.changeStyle("currentRectangleStyle", currentTool.rectangleStyle);
-    } else if (this.tools.currentTool === this.tools.getTools().get('ellipse')) {
-      currentTool = this.tools.currentTool as EllipseService;
-      this.changeStyle("currentEllipseStyle", currentTool.ellipseStyle);
-    } else if (this.tools.currentTool === this.tools.getTools().get('line')) {
-      currentTool = this.tools.currentTool as LineService;
-      this.junctionWidth = currentTool.junctionWidth.toString();
-      let inputValue = document.getElementById('sliderJunction') as HTMLInputElement;
-      if (inputValue) inputValue.checked = currentTool.withJunction;
+    switch (this.tools.currentTool) {
+      case this.tools.getTools().get('rectangle'):
+        currentTool = this.tools.currentTool as RectangleService;
+        this.changeStyle('currentRectangleStyle', currentTool.rectangleStyle); break;
+      case this.tools.getTools().get('ellipse'):
+        currentTool = this.tools.currentTool as EllipseService;
+        this.changeStyle('currentEllipseStyle', currentTool.ellipseStyle); break
+      case this.tools.getTools().get('line'):
+        currentTool = this.tools.currentTool as LineService;
+        this.junctionWidth = currentTool.junctionWidth.toString();
+        let inputValue = document.getElementById('sliderJunction') as HTMLInputElement;
+        if (inputValue) inputValue.checked = currentTool.withJunction; break;
+      case this.tools.getTools().get('brush'):
+        let brush = this.tools.currentTool as BrushService;
+        brush.setTexture(brush.imageId);
+        let currentImage = document.querySelector('#currentImage') as HTMLImageElement;
+        if (currentImage) currentImage.src = '../../../assets/b' + brush.imageId + '.svg';
     }
-    else if (this.tools.currentTool === this.tools.getTools().get('brush')) {
-      let brush = this.tools.currentTool as BrushService;
-      brush.setTexture(brush.imageId);
-      let currentImage = document.querySelector('#currentImage') as HTMLImageElement;
-      if (currentImage)
-        currentImage.src = '../../../assets/b' + brush.imageId + '.svg'
-    }
+
   }
   acceptChanges(): void {
     let inputValue;
-    if (this.tools.currentTool === this.tools.getTools().get('pencil')) {
-      this.tools.setLineWidth(Number(this.widthValue));
-    } else if (this.tools.currentTool === this.tools.getTools().get('rectangle')) {
+    this.tools.setLineWidth(Number(this.widthValue));
+    switch (this.tools.currentTool) {
+      case this.tools.getTools().get('rectangle'):
+        this.tools.setRectangleStyle(this.idStyleRectangle);
+        break;
 
-      this.tools.setLineWidth(Number(this.widthValue));
-      this.tools.setRectangleStyle(this.idStyleRectangle);
-    } else if (this.tools.currentTool === this.tools.getTools().get('ellipse')) {
-      this.tools.setEllipseStyle(this.idStyleRectangle);
-      this.tools.setLineWidth(Number(this.widthValue));
-    } else if (this.tools.currentTool === this.tools.getTools().get('line')) {
-      this.tools.setLineWidth(Number(this.widthValue));
-      this.tools.setJunctionWidth(Number(this.junctionWidth));
-      inputValue = document.getElementById('sliderJunction') as HTMLInputElement;
-      this.tools.setJunctionState(inputValue.checked);
+      case this.tools.getTools().get('ellipse'):
+        this.tools.setEllipseStyle(this.idStyleRectangle);
+        break;
 
-    } else if (this.tools.currentTool === this.tools.getTools().get('brush')) {
-      let brush = this.tools.currentTool as BrushService;
-      brush.imageId = this.idStyleBrush;
-      brush.setTexture(this.idStyleBrush);
-    }
-    else {
-      this.tools.setLineWidth(Number(this.widthValue));
+      case this.tools.getTools().get('line'):
+        this.tools.setJunctionWidth(Number(this.junctionWidth));
+        inputValue = document.getElementById('sliderJunction') as HTMLInputElement;
+        this.tools.setJunctionState(inputValue.checked);
+        break;
+
+      case this.tools.getTools().get('brush'):
+        let brush = this.tools.currentTool as BrushService;
+        brush.imageId = this.idStyleBrush;
+        brush.setTexture(this.idStyleBrush);
+        break;
     }
   }
   checkIfContainAttribute(attribute: string): boolean {
@@ -125,15 +124,13 @@ export class AttributebarComponent implements OnInit, OnChanges {
   }
   setTexture(id: number): void {
     let currentImage = document.querySelector('#currentImage') as HTMLImageElement;
-    currentImage.src = '../../../assets/b' + id + '.svg'
+    currentImage.src = '../../../assets/b' + id + '.svg';
     this.idStyleBrush = id;
   }
 
   setShapeStyle(idStyle: number, isEllipse: boolean): void {
-    if (isEllipse)
-      this.changeStyle("currentEllipseStyle", idStyle);
-    else
-      this.changeStyle("currentRectangleStyle", idStyle);
+    if (isEllipse) this.changeStyle('currentEllipseStyle', idStyle);
+    else this.changeStyle('currentRectangleStyle', idStyle);
     this.idStyleRectangle = idStyle;
   }
 }
