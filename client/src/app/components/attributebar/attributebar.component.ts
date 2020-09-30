@@ -16,7 +16,7 @@ export class AttributebarComponent implements OnInit, OnChanges {
     junctionWidth: string = '1';
     idStyleRectangle: number = 2;
     idStyleBrush: number = 0;
-    constructor(private tools: ToolsManagerService) {}
+    constructor(private tools: ToolsManagerService) { }
     private showContainer: boolean = false;
     private lastTool: Tool = this.tools.currentTool;
 
@@ -115,9 +115,10 @@ export class AttributebarComponent implements OnInit, OnChanges {
         let container = document.querySelector('#' + id) as HTMLElement;
         let icon = container.previousSibling?.lastChild as HTMLElement;
         if (this.showContainer) {
-            if (container.id === 'currentImageContainer') container.style.display = 'table-cell';
-            else container.style.display = 'flex';
+            if (container.id === 'styleContainer') container.style.display = 'flex';
+            else container.style.display = 'table-cell';
             icon.innerHTML = 'expand_less';
+
         } else {
             container.style.display = 'none';
             icon.innerHTML = 'expand_more';

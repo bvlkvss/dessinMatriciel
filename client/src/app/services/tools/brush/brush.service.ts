@@ -15,7 +15,7 @@ export enum MouseButton {
 const BYTE_SIZE = 4;
 const IMAGE_SIZE_DIVIDER = 3;
 const MOUSE_POSITION_OFFSET_DIVIDER = 10;
-const IMAGES_PER_POINT = 4;
+const IMAGES_PER_POINT = 5;
 
 // TODO : Déplacer ça dans un fichier séparé accessible par tous
 
@@ -37,13 +37,12 @@ export class BrushService extends Tool {
         this.image = new Image();
         this.imageId = 0;
         this.lineWidth = 1;
-        this.image.src = '../../../assets/b0.svg';
+        this.image.src = '../../../assets/b0.png';
 
         this.toolAttributes = ["texture", "lineWidth"];
     }
     setTexture(id: number): void {
-
-        this.image.src = '../../../assets/b' + id + '.svg';
+        this.image.src = '../../../assets/b' + id + '.png';
 
     }
     setPrimaryColor(color: string): void {
@@ -76,7 +75,6 @@ export class BrushService extends Tool {
 
         if (this.mouseDown) {
             this.mouseDownCoord = this.getPositionFromMouse(event);
-            console.log(this.mouseDownCoord.x);
         }
         this.isOut = false;
 
@@ -138,6 +136,7 @@ export class BrushService extends Tool {
         tempCanvas.height = this.image.height / IMAGE_SIZE_DIVIDER;
         const tempCtx = tempCanvas.getContext('2d');
         if (tempCtx) {
+            console.log(this.image);
             tempCtx.drawImage(this.image, 0, 0, this.image.width / IMAGE_SIZE_DIVIDER, this.image.height / IMAGE_SIZE_DIVIDER);
             const data = tempCtx.getImageData(0, 0, this.image.width, this.image.height);
             this.changeColor(data);
