@@ -16,6 +16,7 @@ export const DEFAULT_HEIGHT = 800;
 })
 export class DrawingComponent implements AfterViewInit {
     @ViewChild('baseCanvas', { static: false }) baseCanvas: ElementRef<HTMLCanvasElement>;
+    @ViewChild('container') container: ElementRef<HTMLDivElement>;
     // On utilise ce canvas pour dessiner sans affecter le dessin final
     @ViewChild('previewCanvas', { static: false }) previewCanvas: ElementRef<HTMLCanvasElement>;
     private keyBindings: Map<string, Tool> = new Map();
@@ -63,13 +64,14 @@ export class DrawingComponent implements AfterViewInit {
             event.stopPropagation();
             this.resizer.stopResize(event, this.baseCanvas.nativeElement, this.previewCanvas.nativeElement);
         }
-        // this.delay(100);
     }
 
     @HostListener('mousemove', ['$event'])
     onMouseMove(event: MouseEvent): void {
-        const t = event.target as HTMLDivElement;
-        if (t.className === 'resizer') {
+        const diff = 4;
+        const shiftX = this.container.nativeElement.getBoundingClientRect().x - diff;
+        const shiftY = this.container.nativeElement.getBoundingClientRect().y - diff;
+        if (event.pageX > this.baseCanvas.nativeElement.clientWidth + shiftX || event.pageY > this.baseCanvas.nativeElement.clientHeight + shiftY) {
             return;
         }
         this.tools.currentTool.onMouseMove(event);
@@ -78,10 +80,6 @@ export class DrawingComponent implements AfterViewInit {
     @HostListener('mousedown', ['$event'])
     onMouseDown(event: MouseEvent): void {
         event.preventDefault ? event.preventDefault() : (event.returnValue = false);
-        const t = event.target as HTMLDivElement;
-        if (t.className === 'resizer') {
-            return;
-        }
         this.tools.currentTool.onMouseDown(event);
     }
 
@@ -103,12 +101,8 @@ export class DrawingComponent implements AfterViewInit {
 
     @HostListener('click', ['$event'])
     onClick(event: MouseEvent): void {
-        const t = event.target as HTMLDivElement;
         if (this.mouseFired && !this.resizer.IsextendingCanvas()) {
             this.mouseFired = false;
-            return;
-        }
-        if (t.className === 'resizer') {
             return;
         }
         this.tools.currentTool.onClick(event);
@@ -132,7 +126,6 @@ export class DrawingComponent implements AfterViewInit {
     KeyUp(event: KeyboardEvent): void {
         this.tools.currentTool.onKeyUp(event);
     }
-
 
     @HostListener('keydown', ['$event'])
     onKeyDown(event: KeyboardEvent): void {
