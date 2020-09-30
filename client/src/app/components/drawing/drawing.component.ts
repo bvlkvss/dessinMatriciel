@@ -20,7 +20,7 @@ export class DrawingComponent implements AfterViewInit {
     private keyBindings: Map<string, Tool> = new Map();
     private baseCtx: CanvasRenderingContext2D;
     private previewCtx: CanvasRenderingContext2D;
-    private canvasSize: Vec2 = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
+    //private canvasSize: Vec2 = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
     private mouseFired: boolean;
     private resized: boolean;
 
