@@ -54,4 +54,9 @@ export class SidebarComponent {
     newDrawing(): void {
         this.drawingService.newDrawing();
     }
+    warningMessage(): void {
+       if(window.confirm("Warning, your current sketch will be deleted.\n Do you want to preceed to the main menu?")){
+            location.replace("main-page.component.html");
+       };
+    }
 }
