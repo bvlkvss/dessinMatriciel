@@ -48,11 +48,11 @@ export class EllipseService extends Tool {
     }
 
     onMouseOut(event: MouseEvent): void {
-        this.isOut = true;
-
-        this.mouseOutCoord = this.getPositionFromMouse(event);
-
+        
         if (this.mouseDown) {
+            this.isOut = true;
+    
+            this.mouseOutCoord = this.getPositionFromMouse(event);
             if (this.mouseOutCoord.x > this.drawingService.previewCtx.canvas.width) {
                 this.mouseOutCoord.x = this.drawingService.canvas.width;
             } else if (this.mouseOutCoord.x < 0) {

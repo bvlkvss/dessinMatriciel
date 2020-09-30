@@ -92,7 +92,6 @@ export class DrawingComponent implements AfterViewInit {
         if (!this.resizer.resizing) {
             if (!this.resized) {
                 this.resized = false;
-                return;
             }
             this.tools.currentTool.onMouseEnter(event);
         }
@@ -120,7 +119,6 @@ export class DrawingComponent implements AfterViewInit {
         if (!this.resizer.resizing) {
             if (!this.resized) {
                 this.resized = false;
-                return;
             }
             this.tools.currentTool.onMouseOut(event);
         }
