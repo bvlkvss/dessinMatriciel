@@ -4,7 +4,6 @@ canvas {
     border-bottom: 2px solid #000000;
     position: absolute;
     top: 0;
-    transition: all 0.3s ease;
 }
 
 #canvas-container {
@@ -12,8 +11,8 @@ canvas {
     top: 0;
     height: 800px;
     width: 1000px;
-    transition: all 0.3s ease;
 }
+
 #resizeView
 {
     position: absolute;
@@ -24,7 +23,6 @@ canvas {
     width: 100%;
     z-index: 1;
     outline: dotted black 3px;
-
 }
 
 #canvas {
