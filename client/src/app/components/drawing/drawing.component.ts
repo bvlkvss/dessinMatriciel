@@ -39,12 +39,7 @@ export class DrawingComponent implements AfterViewInit {
         this.drawingService.canvas = this.baseCanvas.nativeElement;
     }
 
-    newDrawing(): void {
-        if(window.confirm("Voulez vous créer un nouveau dessin?\nCette action va supprimer le dessin actuel")){
-                this.drawingService.clearCanvas(this.drawingService.baseCtx);
-                this.drawingService.clearCanvas(this.drawingService.previewCtx);  
-        }
-    }
+
 
     @HostListener('mousemove', ['$event'])
     onMouseMove(event: MouseEvent): void {
@@ -90,12 +85,8 @@ export class DrawingComponent implements AfterViewInit {
         if (event.ctrlKey && event.key == "o") {
         event.preventDefault();
         event.stopPropagation();
-        if(window.confirm("Voulez vous créer un nouveau dessin?\nCette action va supprimer le dessin actuel")){ 
-            this.drawingService.clearCanvas(this.drawingService.baseCtx);
-            this.drawingService.clearCanvas(this.drawingService.previewCtx);  
-            this.drawingService.canvasSize.x = (document.querySelectorAll("#background-vue")[0].clientWidth - 50)/2;
-            this.drawingService.canvasSize.y = (document.querySelectorAll("#background-vue")[0].clientHeight)/2;   
-        }          
+        this.drawingService.newDrawing();
+        this.drawingService.resizeCanvas();
     }
 
 

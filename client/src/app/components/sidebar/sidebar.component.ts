@@ -47,10 +47,6 @@ export class SidebarComponent {
     }
 
     newDrawing(): void{
-        if(window.confirm("Voulez vous créer un nouveau dessin?\nCette action va supprimer le dessin actuel")){
-            this.drawingService.clearCanvas(this.drawingService.baseCtx);
-            this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.drawingService.resizeCanvas();
-     }
+        this.drawingService.newDrawing();
     }
 }
