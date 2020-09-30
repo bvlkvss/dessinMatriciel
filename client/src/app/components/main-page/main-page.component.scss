@@ -12,14 +12,16 @@ html{
     font-size: 20px;
     color: gray;
 }
+
 #buttons {
     position: absolute;
     display: flex;
     flex-direction: column;
-    top: 350px;
+    top: 330px;
     background-color: rgba(150, 150, 150, 0.7);
     padding: 15px;
     border-radius: 20px;
+    z-index: 0;
 }
 
 .container {
