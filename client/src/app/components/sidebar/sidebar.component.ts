@@ -14,6 +14,7 @@ export class SidebarComponent {
 
     displayPalette(toolName: string): void {
         if (!this.attributeBarIsActive) {
+            console.log(this.tools.currentTool);
             this.attributeBarIsActive = true;
             this.togglecanvas('drawing-container-open');
             this.toggleAttributeBar('attribute-open');
