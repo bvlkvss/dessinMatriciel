@@ -10,7 +10,21 @@ canvas {
 #canvas-container {
     position: fixed;
     top: 0;
-    //transition: all 0.3s ease;    
+    height: 800px;
+    width: 1000px;
+    transition: all 0.3s ease;
+}
+#resizeView
+{
+    position: absolute;
+    display: block;
+    top:0;
+    left:0;
+    height: 100%;
+    width: 100%;
+    z-index: 1;
+    outline: dotted black 3px;
+
 }
 
 #canvas {
@@ -20,4 +34,36 @@ canvas {
 
 #drawCanvas {
     z-index: 1;
+}
+
+.resizer {
+    width: 5px;
+    height: 5px;
+    color: red;
+    background-color: red;
+    z-index: 1;
+}
+.right:hover {
+    cursor: ew-resize;
+}
+.bottom:hover {
+    cursor: ns-resize;
+}
+.bottom-right {
+    cursor: nwse-resize;
+}
+.right {
+    position: absolute;
+    right: -5px;
+    top: 50%;
+}
+.bottom {
+    position: absolute;
+    bottom: -5px;
+    right: 50%;
+}
+.bottom-right {
+    position: absolute;
+    bottom: -5px;
+    right: -5px;
 }

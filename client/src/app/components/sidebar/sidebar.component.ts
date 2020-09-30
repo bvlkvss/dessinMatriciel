@@ -31,6 +31,7 @@ export class SidebarComponent {
             item.setAttribute('class', classname);
 
         });
+        console.log(document.querySelectorAll('app-color-picker'));
     }
 
     togglecanvas(classname: string): void {
