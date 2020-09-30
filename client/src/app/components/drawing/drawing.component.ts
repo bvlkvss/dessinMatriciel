@@ -68,7 +68,7 @@ export class DrawingComponent implements AfterViewInit {
 
     @HostListener('mousemove', ['$event'])
     onMouseMove(event: MouseEvent): void {
-        const diff = 4;
+        const diff = 1;
         const shiftX = this.container.nativeElement.getBoundingClientRect().x - diff;
         const shiftY = this.container.nativeElement.getBoundingClientRect().y - diff;
         if (event.pageX > this.baseCanvas.nativeElement.clientWidth + shiftX || event.pageY > this.baseCanvas.nativeElement.clientHeight + shiftY) {
