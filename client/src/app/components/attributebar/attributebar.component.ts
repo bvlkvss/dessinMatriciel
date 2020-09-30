@@ -14,7 +14,8 @@ import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.ser
 export class AttributebarComponent implements OnInit, OnChanges {
   widthValue: string;
   junctionWidth: string = '1';
-  idStyle: number = 2;
+  idStyleRectangle: number = 2;
+  idStyleBrush: number = 0;
   constructor(private tools: ToolsManagerService) { }
   private showContainer: boolean = false;
   private lastTool = this.tools.currentTool as Tool;
@@ -37,13 +38,8 @@ export class AttributebarComponent implements OnInit, OnChanges {
   }
   restoreValues(): void {
     let currentTool;
-    let inputValue;
-
-    // pencil has only line width and its case is treated here
     if (this.tools.currentTool.lineWidth) this.widthValue = this.tools.currentTool.lineWidth.toString();
-
     if (this.tools.currentTool === this.tools.getTools().get('rectangle')) {
-
       currentTool = this.tools.currentTool as RectangleService;
       this.changeStyle("currentRectangleStyle", currentTool.rectangleStyle);
     } else if (this.tools.currentTool === this.tools.getTools().get('ellipse')) {
@@ -52,9 +48,15 @@ export class AttributebarComponent implements OnInit, OnChanges {
     } else if (this.tools.currentTool === this.tools.getTools().get('line')) {
       currentTool = this.tools.currentTool as LineService;
       this.junctionWidth = currentTool.junctionWidth.toString();
-      inputValue = document.getElementById('sliderJunction') as HTMLInputElement;
+      let inputValue = document.getElementById('sliderJunction') as HTMLInputElement;
       if (inputValue) inputValue.checked = currentTool.withJunction;
-    } else {
+    }
+    else if (this.tools.currentTool === this.tools.getTools().get('brush')) {
+      let brush = this.tools.currentTool as BrushService;
+      brush.setTexture(brush.imageId);
+      let currentImage = document.querySelector('#currentImage') as HTMLImageElement;
+      if (currentImage)
+        currentImage.src = '../../../assets/b' + brush.imageId + '.svg'
     }
   }
   acceptChanges(): void {
@@ -62,17 +64,24 @@ export class AttributebarComponent implements OnInit, OnChanges {
     if (this.tools.currentTool === this.tools.getTools().get('pencil')) {
       this.tools.setLineWidth(Number(this.widthValue));
     } else if (this.tools.currentTool === this.tools.getTools().get('rectangle')) {
+
       this.tools.setLineWidth(Number(this.widthValue));
-      this.tools.setRectangleStyle(this.idStyle);
+      this.tools.setRectangleStyle(this.idStyleRectangle);
     } else if (this.tools.currentTool === this.tools.getTools().get('ellipse')) {
-      this.tools.setEllipseStyle(this.idStyle);
+      this.tools.setEllipseStyle(this.idStyleRectangle);
       this.tools.setLineWidth(Number(this.widthValue));
     } else if (this.tools.currentTool === this.tools.getTools().get('line')) {
       this.tools.setLineWidth(Number(this.widthValue));
       this.tools.setJunctionWidth(Number(this.junctionWidth));
       inputValue = document.getElementById('sliderJunction') as HTMLInputElement;
       this.tools.setJunctionState(inputValue.checked);
-    } else {
+
+    } else if (this.tools.currentTool === this.tools.getTools().get('brush')) {
+      let brush = this.tools.currentTool as BrushService;
+      brush.imageId = this.idStyleBrush;
+      brush.setTexture(this.idStyleBrush);
+    }
+    else {
       this.tools.setLineWidth(Number(this.widthValue));
     }
   }
@@ -92,7 +101,6 @@ export class AttributebarComponent implements OnInit, OnChanges {
   setJunctionState(): void {
     let checkBox = document.querySelector('#sliderJunction') as HTMLInputElement;
     let slider = document.querySelector('.sliderJunction') as HTMLElement;
-    console.log('ok');
     if (checkBox.checked) {
       slider.style.background = 'white';
     } else slider.style.background = 'gray';
@@ -105,7 +113,6 @@ export class AttributebarComponent implements OnInit, OnChanges {
   toggleList(id: string): void {
     this.showContainer = !this.showContainer;
     let container = document.querySelector('#' + id) as HTMLElement;
-
     let icon = container.previousSibling?.lastChild as HTMLElement;
     if (this.showContainer) {
       if (container.id === 'currentImageContainer') container.style.display = 'table-cell';
@@ -117,20 +124,16 @@ export class AttributebarComponent implements OnInit, OnChanges {
     }
   }
   setTexture(id: number): void {
-    let brush = this.tools.getTools().get('brush') as BrushService;
-    brush.setTexture(id);
     let currentImage = document.querySelector('#currentImage') as HTMLImageElement;
-    currentImage.src = '../../../assets/b' + id + '.svg';
+    currentImage.src = '../../../assets/b' + id + '.svg'
+    this.idStyleBrush = id;
   }
+
   setShapeStyle(idStyle: number, isEllipse: boolean): void {
-    let currentStyle;
-    if (isEllipse) currentStyle = document.querySelector('#currentEllipseStyle') as HTMLElement;
-    else currentStyle = document.querySelector('#currentRectangleStyle') as HTMLElement;
-    let shapeStyle = document.querySelector('#style' + idStyle) as HTMLElement;
-    currentStyle.style.borderColor = window.getComputedStyle(shapeStyle).borderColor;
-    currentStyle.style.backgroundColor = window.getComputedStyle(shapeStyle).backgroundColor;
-    currentStyle.style.borderStyle = window.getComputedStyle(shapeStyle).borderStyle;
-    currentStyle.style.borderWidth = window.getComputedStyle(shapeStyle).borderWidth;
-    this.idStyle = idStyle;
+    if (isEllipse)
+      this.changeStyle("currentEllipseStyle", idStyle);
+    else
+      this.changeStyle("currentRectangleStyle", idStyle);
+    this.idStyleRectangle = idStyle;
   }
 }
