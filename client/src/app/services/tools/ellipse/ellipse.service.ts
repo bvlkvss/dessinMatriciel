@@ -13,8 +13,8 @@ export enum MouseButton {
 
 export enum RectangleStyle {
     Empty = 0,
-    Filled_contour = 1,
-    Filled = 2,
+    Filled_contour = 2,
+    Filled = 1,
 }
 @Injectable({
     providedIn: 'root',
@@ -27,7 +27,7 @@ export class EllipseService extends Tool {
     constructor(drawingService: DrawingService) {
         super(drawingService);
         this.lineWidth = 1;
-        this.ellipseStyle = 1;
+        this.ellipseStyle = 2;
         this.toolAttributes = ['ellipseStyle', 'lineWidth'];
     }
     setStyle(id: number): void {
@@ -38,6 +38,13 @@ export class EllipseService extends Tool {
         if (this.mouseDown) {
             this.mouseDownCoord = this.getPositionFromMouse(event);
         }
+    }
+
+    setLineWidth(width: number): void {
+        this.lineWidth = width;
+    }
+    setPrimaryColor(color: string): void {
+        this.primaryColor = color;
     }
 
     onMouseOut(event: MouseEvent): void {

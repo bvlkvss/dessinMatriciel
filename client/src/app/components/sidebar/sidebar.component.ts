@@ -12,37 +12,32 @@ export class SidebarComponent {
 
     attributeBarIsActive: boolean = false;
 
-    displayPalette(): void {
-
-        let attribute = document.querySelector('#attribute') as HTMLElement;
-        this.attributeBarIsActive = !this.attributeBarIsActive;
-        if (this.attributeBarIsActive) {
+    displayPalette(toolName: string): void {
+        if (!this.attributeBarIsActive) {
+            this.attributeBarIsActive = true;
             this.togglecanvas('drawing-container-open');
             this.toggleAttributeBar('attribute-open');
-            attribute.style.display = "block";
         } else {
-            this.togglecanvas('drawing-container');
-            this.toggleAttributeBar('attribute-close');
-            attribute.style.display = "block";
-
+            if ((this.tools.getTools().get(toolName) === this.tools.currentTool)) {
+                this.attributeBarIsActive = false;
+                this.togglecanvas('drawing-container');
+                this.toggleAttributeBar('attribute-close');
+            }
         }
     }
-
     toggleAttributeBar(classname: string): void {
         document.querySelectorAll('#attribute').forEach((item) => {
             item.setAttribute('class', classname);
 
         });
-        //console.log(document.querySelectorAll('app-color-picker'));
     }
 
     togglecanvas(classname: string): void {
         document.getElementById('drawing-div')?.setAttribute('class', classname);
     }
 
-    changeTools(id: number): void {
-        console.log(id);
-        this.tools.setTools(id);
+    changeTools(name: string): void {
+        this.tools.setTools(name);
     }
 
     openUserGuide(): void {

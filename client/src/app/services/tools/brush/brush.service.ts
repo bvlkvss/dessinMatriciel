@@ -43,6 +43,9 @@ export class BrushService extends Tool {
         this.image.src = '../../../assets/b' + id + '.svg';
 
     }
+    setPrimaryColor(color: string): void {
+        this.primaryColor = color;
+    }
 
 
     onMouseDown(event: MouseEvent): void {
@@ -65,7 +68,7 @@ export class BrushService extends Tool {
         this.mouseDown = false;
     }
     onMouseEnter(event: MouseEvent): void {
-        
+
         if (this.mouseDown) {
             this.mouseDownCoord = this.getPositionFromMouse(event);
             console.log(this.mouseDownCoord.x);
