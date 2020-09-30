@@ -9,13 +9,12 @@ import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.ser
     styleUrls: ['./sidebar.component.scss'],
 })
 export class SidebarComponent {
-    constructor(private tools: ToolsManagerService ,protected drawingService: DrawingService/*, private elRef: ElementRef*/) {}
+    constructor(private tools: ToolsManagerService, protected drawingService: DrawingService/*, private elRef: ElementRef*/) { }
 
     attributeBarIsActive: boolean = false;
 
     displayPalette(toolName: string): void {
         if (!this.attributeBarIsActive) {
-            console.log(this.tools.currentTool);
             this.attributeBarIsActive = true;
             this.togglecanvas('drawing-container-open');
             this.toggleAttributeBar('attribute-open');
@@ -46,7 +45,7 @@ export class SidebarComponent {
         UserGuideComponent.displayUserGuide();
     }
 
-    newDrawing(): void{
+    newDrawing(): void {
         this.drawingService.newDrawing();
     }
 }
