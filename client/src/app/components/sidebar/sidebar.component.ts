@@ -40,6 +40,11 @@ export class SidebarComponent {
     changeTools(name: string): void {
         this.drawingService.restoreCanvasState();
         this.tools.setTools(name);
+        var nb  = document.getElementsByTagName("a").length;
+        for(var i = 0; i < nb; i++){
+            document.getElementsByTagName("a")[i].classList.remove("active");
+        }
+        document.getElementById(name)?.setAttribute('class', "active");
     }
 
     openUserGuide(): void {
