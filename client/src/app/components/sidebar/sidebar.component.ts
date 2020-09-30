@@ -1,5 +1,6 @@
 import { Component /*, ElementRef*/ } from '@angular/core';
 import { UserGuideComponent } from '@app/components/user-guide/user-guide.component';
+import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
 
 @Component({
@@ -8,7 +9,7 @@ import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.ser
     styleUrls: ['./sidebar.component.scss'],
 })
 export class SidebarComponent {
-    constructor(private tools: ToolsManagerService /*, private elRef: ElementRef*/) { }
+    constructor(private tools: ToolsManagerService ,protected drawingService: DrawingService/*, private elRef: ElementRef*/) {}
 
     attributeBarIsActive: boolean = false;
 
@@ -43,5 +44,13 @@ export class SidebarComponent {
 
     openUserGuide(): void {
         UserGuideComponent.displayUserGuide();
+    }
+
+    newDrawing(): void{
+        if(window.confirm("Voulez vous créer un nouveau dessin?\nCette action va supprimer le dessin actuel")){
+            this.drawingService.clearCanvas(this.drawingService.baseCtx);
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.drawingService.resizeCanvas();
+     }
     }
 }
