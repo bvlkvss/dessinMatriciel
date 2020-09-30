@@ -1,5 +1,6 @@
 import { Component /*, ElementRef*/ } from '@angular/core';
 import { UserGuideComponent } from '@app/components/user-guide/user-guide.component';
+import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
 
 @Component({
@@ -8,47 +9,50 @@ import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.ser
     styleUrls: ['./sidebar.component.scss'],
 })
 export class SidebarComponent {
-    constructor(private tools: ToolsManagerService /*, private elRef: ElementRef*/) { }
+    constructor(private tools: ToolsManagerService, protected drawingService: DrawingService/*, private elRef: ElementRef*/) { }
 
-    paletteIsActive: boolean = false;
+    attributeBarIsActive: boolean = false;
 
-    displayPalette(): void {
-        console.log(document.querySelectorAll('app-color-picker'));
-
-        this.paletteIsActive = !this.paletteIsActive;
-        if (this.paletteIsActive) {
+    displayPalette(toolName: string): void {
+        if (!this.attributeBarIsActive) {
+            this.attributeBarIsActive = true;
             this.togglecanvas('drawing-container-open');
-            this.togglecolorpicker('colorpicker-open');
+            this.toggleAttributeBar('attribute-open');
         } else {
-            this.togglecanvas('drawing-container');
-            this.togglecolorpicker('colorpicker-close');
+            if ((this.tools.getTools().get(toolName) === this.tools.currentTool)) {
+                this.attributeBarIsActive = false;
+                this.togglecanvas('drawing-container');
+                this.toggleAttributeBar('attribute-close');
+            }
         }
     }
-
-    togglecolorpicker(classname: string): void {
-        document.querySelectorAll('#colorpicker-container').forEach((item) => {
+    toggleAttributeBar(classname: string): void {
+        document.querySelectorAll('#attribute').forEach((item) => {
             item.setAttribute('class', classname);
+
         });
         console.log(document.querySelectorAll('app-color-picker'));
     }
 
     togglecanvas(classname: string): void {
         document.getElementById('drawing-div')?.setAttribute('class', classname);
-
-        // document.getElementById("canvas-container")?.setAttribute("class" , "canvas-open");
-
-        /*
-        document.querySelectorAll("#canvas-container canvas").forEach(item=>{
-            item.setAttribute("class", classname);
-        })
-        */
     }
 
-    changeTools(id: number): void {
-        this.tools.setTools(id);
+    changeTools(name: string): void {
+        this.drawingService.restoreCanvasState();
+        this.tools.setTools(name);
+        var nb  = document.getElementsByTagName("a").length;
+        for(var i = 0; i < nb; i++){
+            document.getElementsByTagName("a")[i].classList.remove("active");
+        }
+        document.getElementById(name)?.setAttribute('class', "active");
     }
 
     openUserGuide(): void {
         UserGuideComponent.displayUserGuide();
+    }
+
+    newDrawing(): void {
+        this.drawingService.newDrawing();
     }
 }

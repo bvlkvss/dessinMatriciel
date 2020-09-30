@@ -14,8 +14,8 @@ export enum MouseButton {
 }
 const BYTE_SIZE = 4;
 const IMAGE_SIZE_DIVIDER = 3;
-const MOUSE_POSITION_OFFSET_DIVIDER = 6;
-const IMAGES_PER_POINT = 4;
+const MOUSE_POSITION_OFFSET_DIVIDER = 10;
+const IMAGES_PER_POINT = 5;
 
 // TODO : Déplacer ça dans un fichier séparé accessible par tous
 
@@ -29,20 +29,29 @@ const IMAGES_PER_POINT = 4;
 })
 export class BrushService extends Tool {
     private image: HTMLImageElement;
+    imageId: number;
     private color: Color = { red: 0, green: 0, blue: 0, opacity: 255 };
     constructor(drawingService: DrawingService) {
         super(drawingService);
         this.primaryColor = '0000000';
         this.image = new Image();
-        this.image.src = '../../../assets/b4.png';
+        this.imageId = 0;
+        this.lineWidth = 1;
+        this.image.src = '../../../assets/b0.png';
+
+        this.toolAttributes = ["texture", "lineWidth"];
     }
-    /* private setTexture(id: number): void {
-     
-             this.image.src = '../../../assets/b' + id + '.png';
-     
-         }*/
+    setTexture(id: number): void {
+        this.image.src = '../../../assets/b' + id + '.png';
 
+    }
+    setPrimaryColor(color: string): void {
+        this.primaryColor = color;
+    }
 
+    setLineWidth(width: number): void {
+        this.lineWidth = width;
+    }
     onMouseDown(event: MouseEvent): void {
         this.isOut = false;
         this.mouseDown = event.button === MouseButton.Left;
@@ -63,10 +72,12 @@ export class BrushService extends Tool {
         this.mouseDown = false;
     }
     onMouseEnter(event: MouseEvent): void {
+
         if (this.mouseDown) {
             this.mouseDownCoord = this.getPositionFromMouse(event);
         }
         this.isOut = false;
+
     }
     onMouseMove(event: MouseEvent): void {
         if (this.mouseDown && !this.isOut) {
@@ -82,11 +93,12 @@ export class BrushService extends Tool {
         const angle = this.angleBetween2Points(this.mouseDownCoord, this.currentPos);
         let i = 0;
         const image = this.makeBaseImage();
+
         do {
             const x = this.mouseDownCoord.x + Math.sin(angle) * i - this.image.width / MOUSE_POSITION_OFFSET_DIVIDER;
             const y = this.mouseDownCoord.y + Math.cos(angle) * i - this.image.height / MOUSE_POSITION_OFFSET_DIVIDER;
             ctx.globalAlpha = this.color.opacity / 255;
-            ctx.drawImage(image, x, y, image.width, image.height);
+            ctx.drawImage(image, x, y, this.lineWidth, this.lineWidth);
             i += IMAGES_PER_POINT;
         } while (i < dist);
         this.mouseDownCoord = this.currentPos;
@@ -124,6 +136,7 @@ export class BrushService extends Tool {
         tempCanvas.height = this.image.height / IMAGE_SIZE_DIVIDER;
         const tempCtx = tempCanvas.getContext('2d');
         if (tempCtx) {
+            console.log(this.image);
             tempCtx.drawImage(this.image, 0, 0, this.image.width / IMAGE_SIZE_DIVIDER, this.image.height / IMAGE_SIZE_DIVIDER);
             const data = tempCtx.getImageData(0, 0, this.image.width, this.image.height);
             this.changeColor(data);

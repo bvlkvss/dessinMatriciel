@@ -1,20 +1,17 @@
 <div class="container">
     <div class="topBar">
-        <h1 class="header-item"> {{ title }}</h1>
-        <h4 style="text-align: center;">Bienvenue dans notre application de dessin matriciel</h4>
-
+        <h1 class="header-item">{{ title }}</h1>
+        <h4 style="text-align: center">Bienvenue dans notre application de dessin matriciel</h4>
     </div>
-    <div id="Buttons">
+    <div id="buttons">
         <button class="button" routerLink="/editor">Créer un nouveau dessin</button>
+        <button class="button" routerLink="/editor">Continuer un dessin</button>
         <button class="button">Ouvrir le caroussel de dessins</button>
-        <button *ngIf="" class="button" routerLink="/editor">Continuer un dessin</button>
+        <button id="user manual" class="button" (click)="openUserGuide()">Afficher le guide d'utilisation</button>
     </div>
 
-    <div id="user manual">
-        <button class="button" (click)="openUserGuide()">Afficher le guide d'utilisation</button>
-    </div>
-    <div class="footer-item ">
-        <h4 class="team-name ">Équipe 102</h4>
+    <div class="footer-item">
+        <h4 class="team-name">Équipe 102</h4>
         <p>Hakim, Haroun , Nassim, Anaas, Yacine, Yassin</p>
     </div>
 </div>

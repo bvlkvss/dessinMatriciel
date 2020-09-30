@@ -28,9 +28,14 @@ export class RectangleService extends Tool {
     rectangleStyle: RectangleStyle;
     constructor(drawingService: DrawingService) {
         super(drawingService);
-        this.rectangleStyle = 0;
+        this.toolAttributes = ['strokeWidth', 'rectangleStyle'];
+        this.rectangleStyle = 2;
+        this.lineWidth = 1;
+        this.secondaryColor="#ff0000"
     }
-
+    setStyle(id: number): void {
+        this.rectangleStyle = id;
+    }
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseDown) {
@@ -39,14 +44,36 @@ export class RectangleService extends Tool {
         }
     }
 
+    setLineWidth(width: number): void {
+        this.lineWidth = width;
+    }
+
+    setPrimaryColor(color: string): void {
+        this.primaryColor = color;
+    }
     onMouseOut(event: MouseEvent): void {
         if (!this.mouseDown) {
             return;
         }
         console.log('mouseout rectangle');
         this.isOut = true;
+
         this.mouseOutCoord = this.getPositionFromMouse(event);
-        console.log(this.mouseOutCoord, 't', this.mouseDown);
+
+        if (this.mouseDown) {
+            if (this.mouseOutCoord.x > this.drawingService.previewCtx.canvas.width) {
+                this.mouseOutCoord.x = this.drawingService.canvas.width;
+            } else if (this.mouseOutCoord.x < 0) {
+                this.mouseOutCoord.x = 0;
+            }
+            if (this.mouseOutCoord.y > this.drawingService.previewCtx.canvas.height) {
+                this.mouseOutCoord.y = this.drawingService.canvas.height;
+            } else if (this.mouseOutCoord.y < 0) {
+                this.mouseOutCoord.y = 0;
+            }
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.drawRectangle(this.drawingService.previewCtx, this.mouseDownCoord, this.mouseOutCoord, this.toSquare);
+        }
     }
 
     onMouseEnter(event: MouseEvent): void {
@@ -104,51 +131,34 @@ export class RectangleService extends Tool {
     }
 
     private drawRectangle(ctx: CanvasRenderingContext2D, startPos: Vec2, currentPos: Vec2, toSquare: boolean): void {
-        ctx.beginPath();
         let width = currentPos.x - startPos.x;
         let height = currentPos.y - startPos.y;
         if (toSquare) {
             if (Math.abs(width) > Math.abs(height)) {
-                height = width * Math.sign(height) * Math.sign(width);
+                width = height * Math.sign(height) * Math.sign(width);
             } else {
-                width = height * Math.sign(width) * Math.sign(height);
-            }
-            if (width + this.mouseDownCoord.x > ctx.canvas.width && width > 0) {
-                width = ctx.canvas.width - this.mouseDownCoord.x;
-                height = width * Math.sign(height) * Math.sign(width);
-            }
-
-            if (height + this.mouseDownCoord.y > ctx.canvas.height && height > 0) {
-                height = ctx.canvas.height - this.mouseDownCoord.y;
-                width = height * Math.sign(width) * Math.sign(height);
-            }
-
-            if (Math.abs(width) > startPos.x && width < 0) {
-                width = -startPos.x;
-                height = width * Math.sign(height) * Math.sign(width);
-            }
-            if (Math.abs(height) > startPos.y && height < 0) {
-                height = -startPos.y;
-                width = height * Math.sign(width) * Math.sign(height);
+                height = width * Math.sign(width) * Math.sign(height);
             }
         }
         ctx.beginPath();
         ctx.setLineDash([0, 0]);
 
-        ctx.fillStyle = this.primaryColor;
-        ctx.strokeStyle = 'red';
+        ctx.fillStyle = this.secondaryColor;
+        ctx.strokeStyle = this.primaryColor;
         ctx.lineWidth = this.lineWidth;
-        ctx.rect(startPos.x, startPos.y, width, height);
 
         switch (this.rectangleStyle) {
             case 0:
+                ctx.rect(startPos.x, startPos.y, width - (this.lineWidth / 2) * Math.sign(width), height - (this.lineWidth / 2) * Math.sign(height));
                 ctx.stroke();
                 break;
             case 1:
+                ctx.rect(startPos.x, startPos.y, width - (this.lineWidth / 2) * Math.sign(width), height - (this.lineWidth / 2) * Math.sign(height));
                 ctx.stroke();
                 ctx.fill();
                 break;
             case 2:
+                ctx.rect(startPos.x, startPos.y, width, height);               
                 ctx.fill();
                 break;
         }

@@ -1,4 +1,4 @@
-#background{
+#background-vue{
     width: 100%;
     height: 100%;
     top: 0;
@@ -19,15 +19,21 @@
     overflow: auto;
     flex: 1 1 auto;
     left: 25px;
-    transition: all 0.3s ease;
-    
+    transition: all 0.6s ease;
 }
-
-.drawing-container-open{
+#background {
+    width: 100%;
+    height: 100%;
+    top: 0;
+    z-index: -4;
+    position: absolute;
+    background-color: #04092a;
+}
+.drawing-container-open {
     position: relative;
     overflow: auto;
     flex: 1 1 auto;
-    transition: all 0.3s ease;
+    transition: all 0.6s ease;
     left: 295px;
 }
 
@@ -35,4 +41,14 @@
     display: grid;
     width: min-content;
     outline: none;
+}
+#attributeBar {
+    top: -8px;
+    display: flex;
+    flex-direction: column;
+    background-color: #070f3a;
+    width: 0;
+    height: 101%;
+    z-index: -4;
+    position: absolute;
 }

@@ -9,9 +9,11 @@ import { EditorComponent } from './components/editor/editor.component';
 import { MainPageComponent } from './components/main-page/main-page.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { UserGuideComponent } from './components/user-guide/user-guide.component';
+import { AttributebarComponent } from './components/attributebar/attributebar.component';
+
 
 @NgModule({
-    declarations: [AppComponent, EditorComponent, SidebarComponent, DrawingComponent, MainPageComponent, UserGuideComponent],
+    declarations: [AppComponent, EditorComponent, SidebarComponent, DrawingComponent, MainPageComponent, UserGuideComponent, AttributebarComponent],
     imports: [BrowserModule, HttpClientModule, AppRoutingModule, ColorPickerModule],
     providers: [],
     bootstrap: [AppComponent],

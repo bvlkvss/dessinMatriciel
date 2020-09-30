@@ -1,3 +1,7 @@
+.material-icons {
+    padding-top: 2px;
+}
+
 .container2 {
     height: 100%;
     min-height: 98vh;
@@ -25,20 +29,82 @@
 .icon-bar {
     width: 50px;
     background-color: #04092a;
+    padding-bottom: 10px;
+    border-bottom: solid 2px darkgray;
+}
+
+.icon-bar2 {
+    position: relative;
+    top: 200px;
+    width: 50px;
+    background-color: #04092a;
+}
+
+.color-bar {
+    position: relative;
+    top: 15px;
+    width: 50px;
+    background-color: #04092a;
+}
+
+.color-bar a {
+    display: block;
+    position: relative;
+    text-align: center;
+    vertical-align: middle;
+    height: 20px;
+    width: 20px;
+    left: 3px;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.color-box1 {
+    background-color: salmon;
+    border: slategray 1px solid;
+    border-radius: 10px;
+}
+.color-box2 {
+    background-color: skyblue;
+    border: slategray 1px solid;
+    border-radius: 10px;
+}
+
+.change {
+    transition: all 0.1s;
+}
+
+.change:hover {
+    transition: all 0.1s;
+    transform: rotateX(180deg);
+}
+
+.icon-bar2 a {
+    display: block;
+    position: relative;
+    text-align: center;
+    top: 10px;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.active {
+    background-color: #9fa1a3;
 }
 
 .icon-bar a {
     display: block;
     position: relative;
     text-align: center;
-    height: 28px;
+    vertical-align: middle;
+    height: 30px;
     //padding: 16px;
     transition: all 0.3s ease;
     color: white;
-    cursor: pointer;
     top: 10px;
     padding: 10px;
-    background-color: #04092a;
+    color: #04092a;
+    cursor: pointer;
 }
 
 .slidingtxt {
@@ -47,7 +113,7 @@
     top: 0;
     left: -10px;
     width: auto;
-    height: 28px;
+    height: 30px;
     //display: none;
     visibility: hidden;
     text-align: center;
@@ -56,8 +122,7 @@
     color: white;
     cursor: pointer;
     padding: 10px;
-    background-color: #04092a;
-
+    background-color: rgb(63, 65, 76);
     z-index: -1;
 }
 
@@ -66,7 +131,7 @@
     //-webkit-transform: translateX(5px);
     //transform: translate(5px, -5px);
     background-color: #9fa1a3;
-    box-shadow: -1px 1px #6f7172, -2px 2px #6f7172, -3px 3px #6f7172;
+    //box-shadow: -1px 1px #6f7172, -2px 2px #6f7172, -3px 3px #6f7172;
     .slidingtxt {
         visibility: initial;
         -webkit-transform: translateX(55px);

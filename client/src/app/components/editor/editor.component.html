@@ -1,10 +1,9 @@
-<div id="background">
+<div id="background-vue">
     <div class="container">
-        <app-sidebar style="z-index: 1;"></app-sidebar>
-        <app-color-picker style="z-index: -1;"></app-color-picker>
-        
-        <div  id="drawing-div" class="drawing-container">
-            <app-drawing  class="drawing" tabindex="0"></app-drawing>
+        <app-sidebar style="z-index: 1"></app-sidebar>
+        <app-attributebar id="attributeBar"></app-attributebar>
+        <div id="drawing-div" class="drawing-container">
+            <app-drawing class="drawing" tabindex="0"></app-drawing>
         </div>
     </div>
 </div>
