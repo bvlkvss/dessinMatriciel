@@ -42,7 +42,6 @@ export class BrushService extends Tool {
     }
     setTexture(id: number): void {
         this.image.src = '../../../assets/b' + id + '.png';
-
     }
     setPrimaryColor(color: string): void {
         this.primaryColor = color;
@@ -112,7 +111,7 @@ export class BrushService extends Tool {
             imageData.data[j] = this.color.red; // Invert Red
             imageData.data[j + 1] = this.color.green; // Invert Green
             imageData.data[j + 2] = this.color.blue; // Invert Blue
-            //imageData.data[j + 3] = this.color.opacity;//working but it transfrom texture to square
+            // imageData.data[j + 3] = this.color.opacity;//working but it transfrom texture to square
         }
     }
 

@@ -5,6 +5,7 @@ import { ResizingService } from './resizing.service';
 
 describe('ResizingService', () => {
     let service: ResizingService;
+<<<<<<< HEAD
     let canvasStub: HTMLCanvasElement;
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
@@ -241,4 +242,15 @@ it('should not call clearCanvas if it has not been resized when  drawCanvas is C
 
 
 
+=======
+
+    beforeEach(() => {
+        TestBed.configureTestingModule({});
+        service = TestBed.inject(ResizingService);
+    });
+
+    it('should be created', () => {
+        expect(service).toBeTruthy();
+    });
+>>>>>>> ceebf4f6d07b9368ceed89d93090cebe83142624
 });

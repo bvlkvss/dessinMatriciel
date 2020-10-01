@@ -1,9 +1,21 @@
+<!--
+ /****************************************************************************************
+ * this html was inspired from :
+ *
+ *    Title: color-picker Component with Angular
+ *    Author: Lukas Marx
+ *    Date: 2018
+ *    Availability: https://malcoded.com/posts/angular-color-picker/
+ *
+ ***************************************************************************************/
+-->
+
 <div class="colorpicker">
     <div class="input-wrapper">
         <p *ngIf="isPrimaryColor" id="primaryColor" class="header">Primary color</p>
         <p *ngIf="!isPrimaryColor" id="primaryColor" class="header">Secondary color</p>
         <div class="color-div" [ngStyle]="{ 'background-color': color || 'white' }"></div>
-        <input class="text" maxlength="6" [value]="color.slice(1, 7)" />
+        <input class="text" maxlength="6" (change)="setColorFromInput()" [value]="color.slice(1, 7)" />
     </div>
     <div id="pickerContainer">
         <div class="color-wrapper">
@@ -15,7 +27,7 @@
             <div *ngFor="let i of lastColors" class="color-container">
                 <button
                     oncontextmenu="return false;"
-                    (mouseup)="setColorOnClick($event,i)"
+                    (mouseup)="setColorOnClick($event, i)"
                     class="lastColors"
                     [ngStyle]="{ 'background-color': i }"
                 ></button>

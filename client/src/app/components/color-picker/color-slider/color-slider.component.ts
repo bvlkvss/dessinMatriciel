@@ -1,3 +1,13 @@
+/****************************************************************************************
+ * this code was inspired from :
+ *
+ *    Title: color-picker Component with Angular
+ *    Author: Lukas Marx
+ *    Date: 2018
+ *    Availability: https://malcoded.com/posts/angular-color-picker/
+ *
+ ***************************************************************************************/
+
 import { AfterViewInit, Component, ElementRef, EventEmitter, HostListener, Injectable, Output, ViewChild } from '@angular/core';
 @Component({
     selector: 'app-color-slider',
@@ -19,7 +29,7 @@ export class ColorSliderComponent implements AfterViewInit {
     selectedHeight: number;
 
     /*tslint:disable-next-line:no-empty*/
-    constructor() { }
+    constructor() {}
 
     draw(): void {
         const width = this.canvas.nativeElement.width;

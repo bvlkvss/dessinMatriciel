@@ -1,3 +1,13 @@
+/****************************************************************************************
+ * this code was inspired from :
+ *
+ *    Title: color-picker Component with Angular
+ *    Author: Lukas Marx
+ *    Date: 2018
+ *    Availability: https://malcoded.com/posts/angular-color-picker/
+ *
+ ***************************************************************************************/
+
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { Vec2 } from '@app/classes/vec2';
 import { ColorPaletteComponent } from '@app/components/color-picker/color-palette/color-palette.component';
@@ -76,6 +86,11 @@ export class ColorPickerComponent implements OnInit {
 
     setColorFromInput(): void {
         const input = document.querySelector('.text') as HTMLInputElement;
+        console.log(input.value);
+        if (input.value > "ffffff")
+            input.value = "ffffff";
+        else if (input.value < "000000")
+            input.value = "000000";
         this.color = '#' + input.value;
     }
     addColor(color: string): void {
