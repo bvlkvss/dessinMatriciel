@@ -122,5 +122,12 @@ describe('SidebarComponent', () => {
         component.togglecanvas("dummyClassName");
         expect(dummyElement.className).toEqual("dummyClassName");
     });
+
+    it('should set primaryColor to secondaryColor when revertColor is called', () => {
+        toolManagerStub.currentTool.primaryColor = "#aabbccdd";
+        toolManagerStub.currentTool.secondaryColor = "#bbaabbaa";
+        component.revertColors();
+        expect(toolManagerStub.currentTool.primaryColor).toEqual("#bbaabbaa");
+    });
    
 });

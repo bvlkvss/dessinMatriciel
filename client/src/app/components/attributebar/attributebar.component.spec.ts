@@ -30,7 +30,6 @@ describe('AttributebarComponent', () => {
         ellipseStub = new EllipseService(drawServiceMock);
         eraserStub = new EraserService(drawServiceMock);
         toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub);
-
         TestBed.configureTestingModule({
             declarations: [AttributebarComponent],
             providers: [{ provide: ToolsManagerService, useValue: toolManagerStub }],
@@ -221,10 +220,9 @@ describe('AttributebarComponent', () => {
   });
 
   it('should call querySelector when updateTextInput is called', () => {
-    
     let querySelectorSpy = spyOn(document, "querySelector").and.returnValue({value:'x'} as HTMLInputElement);
       component.updateTextInput();
-      expect(querySelectorSpy.calls.count()).toEqual(2);
+      expect(querySelectorSpy).toHaveBeenCalled();
   });
 
   it('should call querySelector when toggleList is called', () => {

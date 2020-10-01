@@ -38,6 +38,7 @@ export class ColorPickerComponent implements OnInit {
         this.setOpacity();
         this.tools.setColor(this.color + this.opacity, this.isPrimaryColor);
     }
+
     setColorOnClick(event: MouseEvent, color: string): void {
         this.color = color;
         if (event.button === 0) {
@@ -46,6 +47,7 @@ export class ColorPickerComponent implements OnInit {
             this.tools.setColor(this.color + this.opacity, false);
         }
     }
+
     cancelChanges(): void {
         if (this.isPrimaryColor) this.color = this.tools.currentTool.primaryColor.slice(0, 7);
         else this.color = this.tools.currentTool.secondaryColor.slice(0, 7);
@@ -63,8 +65,6 @@ export class ColorPickerComponent implements OnInit {
             this.colorSlider.draw();
 
         }
-
-
     }
     setOpacity(): void {
         const input = document.querySelector('#opacityValue') as HTMLInputElement;

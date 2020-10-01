@@ -7,7 +7,6 @@ import { LineService } from '@app/services/tools/line/line.service';
 import { PencilService } from '@app/services/tools/pencil/pencil-service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle.service';
 
-const OPACITY_DIVIDER = 100.0;
 @Injectable({
     providedIn: 'root',
 })
@@ -37,19 +36,15 @@ export class ToolsManagerService {
     setTools(name: string): void {
         this.currentTool = this.tools.get(name) as Tool;
     }
-    setSize(width: number, height: number): void {
-        this.currentTool.height = height;
-        this.currentTool.width = width;
-    }
+    
     getTools(): Map<string, Tool> {
         return this.tools;
     }
-    setOpacity(opacity: number): void {
-        this.currentTool.opacity = opacity / OPACITY_DIVIDER;
-    }
+    
     setLineWidth(lineWidth: number): void {
         this.currentTool.setLineWidth(lineWidth);
     }
+
     setColor(color: string, isPrimary: boolean): void {
         if (isPrimary)
             this.tools.forEach((element) => {
@@ -60,6 +55,7 @@ export class ToolsManagerService {
                 element.setSecondaryColor(color);
             });
     }
+    
     setRectangleStyle(id: number): void {
         const rectangle = this.currentTool as RectangleService;
         rectangle.setStyle(id);

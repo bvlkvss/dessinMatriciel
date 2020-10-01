@@ -7,7 +7,7 @@ const DEFAULT_HEIGHT = 800;
 @Injectable({
     providedIn: 'root',
 })
-export class ResizingService {
+export class  ResizingService {
     currentResizer: string;
     resizing: boolean = false;
     hasBeenResized: boolean = false;
@@ -76,6 +76,7 @@ export class ResizingService {
             t.style.height = this.resizedHeight + 'px';
         }
     }
+
     stopResize(event: MouseEvent, base: HTMLCanvasElement): void {
         const temp = this.saveCanvas();
         if (this.resizing) {
@@ -88,13 +89,12 @@ export class ResizingService {
         this.drawCanvas(temp);
     }
     saveCanvas(): HTMLCanvasElement {
-        const temp = document.createElement('canvas');
+        const temp = document.createElement('canvas') as HTMLCanvasElement;
         temp.width = this.resizedWidth;
         temp.height = this.resizedHeight;
-        const tempCtx = temp.getContext('2d');
-        if (tempCtx) {
-            tempCtx.drawImage(this.drawingService.canvas, 0, 0, this.resizedWidth, this.resizedHeight, 0, 0, temp.width, temp.height);
-        }
+        const tempCtx = temp.getContext('2d') as CanvasRenderingContext2D;
+        tempCtx.drawImage(this.drawingService.canvas, 0, 0, this.resizedWidth, this.resizedHeight, 0, 0, temp.width, temp.height);
+        
         return temp;
     }
 

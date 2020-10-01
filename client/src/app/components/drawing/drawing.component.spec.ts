@@ -300,7 +300,6 @@ describe('DrawingComponent', () => {
 
     it('should not call tool.onMouseUp when onMouseUp is called if mouseFired is true ', () => {
         let event = {} as MouseEvent;
-        event = jasmine.createSpyObj('event', ['preventDefault', 'stopPropagation']);
         let onMouseUpSpy = spyOn<any>((component as any).tools.currentTool, 'onMouseUp');
         (component as any).mouseFired = true;
         component.onMouseUp(event);

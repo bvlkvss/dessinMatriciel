@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { delay } from 'rxjs/operators';
 import { ColorPickerComponent } from './color-picker.component';
 
 
@@ -8,16 +9,15 @@ describe('ColorPickerComponent', () => {
 
 
     beforeEach(async(() => {
+       delay(1000);
         TestBed.configureTestingModule({
             declarations: [ColorPickerComponent],
         }).compileComponents();
-    }));
-
-    beforeEach(() => {
         fixture = TestBed.createComponent(ColorPickerComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
-    });
+    }));
+
 
     it('should create', () => {
         expect(component).toBeTruthy();
@@ -84,4 +84,55 @@ describe('ColorPickerComponent', () => {
         let newColors =  ["#abbabb", "#aabacc", "#abbbbb", "#cccccc", "#dddddd", "#000000", "#111111", "#ffffff", "#eeeeee", "#bababa"]as Array<string>
         expect(component.lastColors).toEqual(newColors);
     });
+
+    it('setColor on click should set the current color', () => {
+        let mouseEvent = {} as MouseEvent;
+        component.color = "#bababa";
+        component.setColorOnClick(mouseEvent, "#ababab");
+        expect(component.color).toEqual("#ababab");
+    });
+
+    it('setColor on click should set the primary color on leftClick', () => {
+        let mouseEvent = {button:0} as MouseEvent;
+        component.color = "#bababa";
+        let setColorSpy = spyOn((component as any).tools, 'setColor');
+        component.setColorOnClick(mouseEvent, "#ababab");
+        expect(component.color).toEqual("#ababab");
+        expect(setColorSpy).toHaveBeenCalledWith(component.color + component.opacity, true);
+    });
+
+    it('setColor on click should set the secondary color on right', () => {
+        let mouseEvent = {button:2} as MouseEvent;
+        component.color = "#bababa";
+        let setColorSpy = spyOn((component as any).tools, 'setColor');
+        component.setColorOnClick(mouseEvent, "#ababab");
+        expect(component.color).toEqual("#ababab");
+        expect(setColorSpy).toHaveBeenCalledWith(component.color + component.opacity, false);
+    });
+
+    it('accept changes should call setColor addColor and setOpacity', () => {
+        let addColorSpy = spyOn(component, 'addColor');
+        let setOpacitySpy = spyOn(component, 'setOpacity');
+        let setColorSpy = spyOn((component as any).tools, 'setColor');
+        component.acceptChanges()
+        expect(setColorSpy).toHaveBeenCalled();
+        expect(setOpacitySpy).toHaveBeenCalled();
+        expect(addColorSpy).toHaveBeenCalled();
+    });
+
+    it('cancel changes should set color to primary color if isPrimary color is true', () => {
+        component.isPrimaryColor = true;
+        component.cancelChanges();
+        expect(component.color).toEqual((component as any).tools.currentTool.primaryColor.slice(0,7));
+        
+    });
+
+    it('cancel changes should set color to secondary color if isPrimary color is false', () => {
+        component.isPrimaryColor = true;
+        component.cancelChanges();
+        expect(component.color).toEqual((component as any).tools.currentTool.secondaryColor.slice(0,7));
+        
+    });
+
+
 });

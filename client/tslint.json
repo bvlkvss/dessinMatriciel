@@ -5,6 +5,9 @@
         "deprecation": {
             "severity": "warn"
         },
+        "linterOptions": {
+            "exclude": "*.spec.ts"
+        },
         "import-blacklist": [true, "rxjs/Rx"],
         "no-output-on-prefix": true,
         "no-inputs-metadata-property": true,
