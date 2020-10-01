@@ -51,10 +51,15 @@ export class ToolsManagerService {
     setLineWidth(lineWidth: number): void {
         this.currentTool.setLineWidth(lineWidth);
     }
-    setColor(color: string): void {
-        this.tools.forEach((element) => {
-            element.setPrimaryColor(color);
+    setColor(color: string, isPrimary: boolean): void {
+        if (isPrimary)
+            this.tools.forEach((element) => {
+                element.setPrimaryColor(color);
+            });
+        else this.tools.forEach((element) => {
+            element.setSecondaryColor(color);
         });
+
     }
     setRectangleStyle(id: number): void {
         let rectangle = this.currentTool as RectangleService;

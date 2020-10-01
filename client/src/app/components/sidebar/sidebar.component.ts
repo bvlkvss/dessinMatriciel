@@ -33,12 +33,23 @@ export class SidebarComponent {
         });
         console.log(document.querySelectorAll('app-color-picker'));
     }
-    toggleColorPalette(): void {
-        if (document.querySelector("#primaryColorPicker")?.getAttribute("style") === "display:block")
-            document.querySelector("#primaryColorPicker")?.setAttribute("style", "display:none");
-        else
-            document.querySelector("#primaryColorPicker")?.setAttribute("style", "display:block");
-
+    toggleColorPalette(colorpickerId: string): void {
+        if (colorpickerId === "primaryColorPicker") {
+            if (document.querySelector("#primaryColorPicker")?.getAttribute("style") === "display:block")
+                document.querySelector("#primaryColorPicker")?.setAttribute("style", "display:none");
+            else {
+                document.querySelector("#primaryColorPicker")?.setAttribute("style", "display:block");
+                document.querySelector("#secondaryColorPicker")?.setAttribute("style", "display:none");
+            }
+        }
+        else {
+            if (document.querySelector("#secondaryColorPicker")?.getAttribute("style") === "display:block")
+                document.querySelector("#secondaryColorPicker")?.setAttribute("style", "display:none");
+            else {
+                document.querySelector("#secondaryColorPicker")?.setAttribute("style", "display:block");
+                document.querySelector("#primaryColorPicker")?.setAttribute("style", "display:none");
+            }
+        }
     }
 
     togglecanvas(classname: string): void {

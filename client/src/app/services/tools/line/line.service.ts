@@ -36,7 +36,9 @@ export class LineService extends Tool {
   setPrimaryColor(color: string): void {
     this.primaryColor = color;
   }
-
+  setSecondaryColor(color: string): void {
+    this.secondaryColor = color;
+}
   setJunctionState(isChecked: boolean): void {
     this.withJunction = isChecked;
   }

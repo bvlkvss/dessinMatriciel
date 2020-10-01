@@ -1,6 +1,7 @@
 <div class="colorpicker">
     <div class="input-wrapper">
-        <p id="primaryColor" class="header">Primary color</p>
+        <p *ngIf="isPrimaryColor" id="primaryColor" class="header">Primary color</p>
+        <p *ngIf="!isPrimaryColor" id="primaryColor" class="header">Secondary color</p>
         <div class="color-div" [ngStyle]="{ 'background-color': color || 'white' }"></div>
         <input class="text" maxlength="6" [value]="color.slice(1, 7)" />
     </div>

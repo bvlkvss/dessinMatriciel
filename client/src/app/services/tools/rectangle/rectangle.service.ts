@@ -51,6 +51,9 @@ export class RectangleService extends Tool {
     setPrimaryColor(color: string): void {
         this.primaryColor = color;
     }
+    setSecondaryColor(color: string): void {
+        this.secondaryColor = color;
+    }
     onMouseOut(event: MouseEvent): void {
 
         if (this.mouseDown) {

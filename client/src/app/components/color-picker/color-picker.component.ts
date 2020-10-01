@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
 
 // tslint:disable:no-magic-numbers
@@ -10,6 +10,7 @@ import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.ser
 export class ColorPickerComponent implements OnInit {
     hue: string;
     color: string;
+    @Input() isPrimaryColor: boolean = true;
     opacity: string;
     lastColors: string[] = new Array<string>();
     constructor(private tools: ToolsManagerService) {
@@ -24,7 +25,7 @@ export class ColorPickerComponent implements OnInit {
     acceptChanges(): void {
         this.addColor(this.color);
         this.setOpacity();
-        this.tools.setColor(this.color + this.opacity);
+        this.tools.setColor(this.color + this.opacity, this.isPrimaryColor);
     }
     cancelChanges(): void {
         this.color = this.tools.currentTool.primaryColor.slice(0, 7);
