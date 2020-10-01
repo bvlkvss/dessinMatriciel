@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges } from '@angular/core';
 import { UserGuideComponent } from '@app/components/user-guide/user-guide.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
@@ -14,7 +14,8 @@ export class SidebarComponent implements OnChanges {
     @Input() secondaryColor: string = this.tools.currentTool.secondaryColor.slice(0, 7);
     isRevertClicked: boolean = false;
     attributeBarIsActive: boolean = false;
-    ngOnChanges(changes: SimpleChanges): void {
+    ngOnChanges(): void {
+        console.log("ok");
         if (!this.isRevertClicked) {
             let primColorDiv = document.querySelector(".color-box1") as HTMLElement;
             let secondColorDiv = document.querySelector(".color-box2") as HTMLElement;
@@ -62,6 +63,7 @@ export class SidebarComponent implements OnChanges {
                 document.querySelector("#primaryColorPicker")?.setAttribute("style", "display:none");
             }
         }
+
     }
 
     togglecanvas(classname: string): void {
@@ -82,7 +84,8 @@ export class SidebarComponent implements OnChanges {
         let primColorDiv = document.querySelector(".color-box1") as HTMLElement;
         let secondColorDiv = document.querySelector(".color-box2") as HTMLElement;
         let tmp: string = this.tools.currentTool.primaryColor;
-        this.tools.currentTool.primaryColor = this.tools.currentTool.secondaryColor;
+        let tmp2: string = this.tools.currentTool.secondaryColor;
+        this.tools.currentTool.primaryColor = tmp2;
         this.tools.currentTool.secondaryColor = tmp;
         primColorDiv.style.backgroundColor = this.tools.currentTool.primaryColor;
         secondColorDiv.style.backgroundColor = this.tools.currentTool.secondaryColor;

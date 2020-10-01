@@ -103,7 +103,9 @@ export class BrushService extends Tool {
         }
         this.isOut = true;
     }
-
+    setSecondaryColor(color: string): void {
+        this.secondaryColor = color;
+    }
     changeColor(imageData: ImageData): void {
         this.color = this.hexToColor(this.primaryColor);
 

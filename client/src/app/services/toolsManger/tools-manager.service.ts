@@ -36,11 +36,11 @@ export class ToolsManagerService {
     setTools(name: string): void {
         this.currentTool = this.tools.get(name) as Tool;
     }
-    
+
     getTools(): Map<string, Tool> {
         return this.tools;
     }
-    
+
     setLineWidth(lineWidth: number): void {
         this.currentTool.setLineWidth(lineWidth);
     }
@@ -55,7 +55,7 @@ export class ToolsManagerService {
                 element.setSecondaryColor(color);
             });
     }
-    
+
     setRectangleStyle(id: number): void {
         const rectangle = this.currentTool as RectangleService;
         rectangle.setStyle(id);

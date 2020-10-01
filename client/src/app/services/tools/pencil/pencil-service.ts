@@ -84,7 +84,9 @@ export class PencilService extends Tool {
         }
         ctx.stroke();
     }
-
+    setSecondaryColor(color: string): void {
+        this.secondaryColor = color;
+    }
     private clearPath(): void {
         this.pathData = [];
     }

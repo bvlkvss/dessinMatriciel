@@ -38,7 +38,7 @@ export class LineService extends Tool {
   }
   setSecondaryColor(color: string): void {
     this.secondaryColor = color;
-}
+  }
   setJunctionState(isChecked: boolean): void {
     this.withJunction = isChecked;
   }
@@ -79,9 +79,7 @@ export class LineService extends Tool {
       this.toAllign = false;
       this.drawLine(this.drawingService.baseCtx, this.pathData[this.pathData.length - 1], this.allignementPoint);
     }
-    console.log(this.pathData[this.pathData.length - 1]);
-    console.log(this.pathData[this.pathData.length - 2]);
-    console.log(this.pathData[this.pathData.length - 3]);
+
 
     this.mouseDown = false;
 
