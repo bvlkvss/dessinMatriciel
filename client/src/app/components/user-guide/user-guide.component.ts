@@ -6,25 +6,52 @@ import { Component } from '@angular/core';
     styleUrls: ['./user-guide.component.css'],
 })
 export class UserGuideComponent {
-    openTab(tab:string):void {
-        console.log("openTAB CLICKED");
-        let i, tablinks;
+    openTab(id:string):void {
+        let j;
         let tabcontent;
         tabcontent = document.getElementsByClassName("tabcontent");
-        console.log(tabcontent);
-        for (i = 0; i < tabcontent.length; i++) {
-            let tabElement = tabcontent[i] as HTMLElement;
+        for (j = 0; j < tabcontent.length; j++) {
+            let tabElement = tabcontent[j] as HTMLElement;
             tabElement.style.display = "none";
         }
-        tablinks = document.getElementsByClassName("tablinks");
-        console.log(tablinks);
-        for (i = 0; i < tablinks.length; i++) {
-            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        let y = document.getElementById(id) as HTMLElement;
+        y.style.display = "block";
+
+
+        // set active elements
+        let i;
+        let options = document.getElementsByTagName("li")
+        for (i = 0; i < options.length; i++) {
+            if(options[i].id==="#"+id){
+                options[i].setAttribute('class', "active");
+            } else{
+                options[i].setAttribute('class', "tablinks");
+            }
         }
-        
-        let x = document.getElementById(tab) as HTMLElement;
-        console.log("X is", x)
-        x.style.display = "block";
+    }
+
+    showTools():void {
+        let element = document.getElementById("#tools");
+    
+        if(element?.className =="dropDown-open"){
+            element?.setAttribute('class'," ");
+            element?.setAttribute('class',"dropDown");
+        }   else{
+            element?.setAttribute('class'," ");
+            element?.setAttribute('class',"dropDown-open");
+        }
+    }
+
+    showOther(tab:string):void {
+        let element = document.getElementById("#other");
+
+        if(element?.className =="dropDown-open"){
+            element?.setAttribute('class'," ");
+            element?.setAttribute('class',"dropDown");
+        }   else{
+            element?.setAttribute('class'," ");
+            element?.setAttribute('class',"dropDown-open");
+        }
     }
 
     static displayUserGuide():void{

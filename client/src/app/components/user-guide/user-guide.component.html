@@ -1,46 +1,64 @@
 <div id="background">
     <div class="userGuide">
         <div class="topBar">
+            <button class="close" (click)="closeUserGuide()">x</button>
             <h1>Guide d'utilisation</h1>
+
         </div>
 
         <div class="tab">
-            <button class="tablinks" (click)="openTab( 'Divers')">Divers</button>
-            <button class="tablinks" (click)="openTab( 'Dessiner')">Dessiner</button>
+            <button (click)="showTools()">Outils</button>
+            <ul id="#tools" class="dropDown-open">
+                <li id="#Pencil" class="tablinks active" (click)="openTab('Pencil')">Crayon</li>
+                <li id="#Brush" class="tablinks" (click)="openTab('Brush')">Pinceau</li>
+                <li id="#Rectangle" class="tablinks" (click)="openTab('Rectangle')">Rectangle</li>
+            </ul>
+            <button (click)="showOther('Divers')">Divers</button>
+            <ul id="#other" class="dropDown">
+                <li id="#Dessiner" class="tablinks" (click)="openTab('Dessiner')">Créer un dessin</li>
+                <li id="#Continuer" class="tablinks" (click)="openTab('Continuer')">Continuer un dessin</li>
+                <li id="#Caroussel" class="tablinks" (click)="openTab('Caroussel')">Ouvrir le caroussel de dessins</li>
+            </ul>
         </div>
 
-        <div id="Divers" class="tabcontent">
-            <h3>1) Créer un dessin</h3>
+
+        <div id="Pencil" style="display: block;" class="tabcontent">
+            <h2>Crayon</h2>
+            <p>Le crayon permet de dessiner un trait uni sur la surface de de dessin</p>
+            <div class="demo">
+                <img  width="320" height="240" src="">
+            </div>
+        </div>
+        <div id="Brush" class="tabcontent">
+            <h2>Pinceau</h2>
+            <p>xxxx</p>
+            <div class="demo">
+                <img  width="320" height="240" src="">
+            </div>        </div>
+        <div id="Rectangle" class="tabcontent">
+            <h2>Rectangle</h2>
+            <p>xxxx</p>
+            <div class="demo">
+                <img  width="320" height="240" src="">
+            </div>
+        </div>
+
+
+
+        <div id="Dessiner" class="tabcontent">
+            <h2>Créer un dessin</h2>
             <p>En cliquant sur le bouton "Créer un dessin ", vous ouvrirez un nouvel éditeur dans le quel vous pourrez laisser aller votre créativité!</p>
-            <br>
-            <br>
-            <br>
-            <h3>2) Continuer un dessin</h3>
+        </div>
+        <div id="Continuer" class="tabcontent">
+            <h2>Continuer un dessin</h2>
             <p>En cliquant sur le bouton "Continuer un dessin ", vous ouvrirez le caroussel de dessins et vous pourrez choisir un dessin à continuer!</p>
-            <br>
-            <br>
-            <br>
-            <h3>3) Ouvrir le caroussel de dessins</h3>
+        </div>
+        <div id="Caroussel" class="tabcontent">
+            <h2>Ouvrir le caroussel de dessins</h2>
             <p>En cliquant sur le bouton "Ouvrir le caroussel de dessins ", vous ouvrirez le caroussel de dessins et vous pourrez choisir un dessin sauvegardé afin de le continuer, le modifier ou le supprimer!</p>
         </div>
 
-        <div id="Dessiner" class="tabcontent">
-            <h3>Outils</h3>
-            <h4>Crayon</h4>
-            <p>Le crayon permet de dessiner un trait uni sur la surface de de dessin</p>
-            <br>
-            <br>
-            <br>
-            <h4>Pinceau</h4>
-            <p>Le pinceau permet de dessiner des traits texturés sur la surface de de dessin</p>
-            <br>
-            <br>
-            <br>
-            <h3>Rectangle</h3>
-            <p>L'outil rectangle permet de dessiner des rectangles ou des carrés en cliquant sur la touche "Shift "</p>
-        </div>
-        <div id="quit">
-            <button class="button" (click)="closeUserGuide()">Quitter le guide!</button>
-        </div>
+       
+        
     </div>
 </div>
