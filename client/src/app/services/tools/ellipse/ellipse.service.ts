@@ -134,7 +134,9 @@ export class EllipseService extends Tool {
 
             const centerx = this.mouseDownCoord.x + width / 2;
             const centery = this.mouseDownCoord.y + height / 2;
-
+            if(this.ellipseStyle==2){
+                this.lineWidth=0;
+            }
             const radiusX = Math.abs(Math.abs(width / 2) - this.lineWidth / 2 - 1);
             const radiusY = Math.abs(Math.abs(height / 2) - this.lineWidth / 2 - 1);
 
@@ -145,6 +147,7 @@ export class EllipseService extends Tool {
             ctx.strokeStyle = this.secondaryColor;
             ctx.ellipse(centerx, centery, radiusX, radiusY, 0, 0, 2 * Math.PI);
 
+            if(Math.abs(width)>this.lineWidth*2&& Math.abs(height)>this.lineWidth*2){ 
             switch (this.ellipseStyle) {
                 case 0:
                     ctx.stroke();
@@ -158,7 +161,7 @@ export class EllipseService extends Tool {
                     break;
             }
             ctx.closePath();
-
+        }
             if (preview) {
                 ctx.beginPath();
                 ctx.setLineDash([5, 15]);

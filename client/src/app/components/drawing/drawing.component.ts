@@ -140,8 +140,6 @@ export class DrawingComponent implements AfterViewInit {
     }
     @HostListener('keydown', ['$event'])
     onKeyDown(event: KeyboardEvent): void {
-        this.drawingService.baseCtx.restore();
-        this.drawingService.previewCtx.restore();
         if (event.ctrlKey && event.key === 'o') {
             return;
         } else if (this.keyBindings.has(event.key)) {
