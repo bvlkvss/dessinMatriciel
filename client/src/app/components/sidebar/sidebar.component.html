@@ -36,7 +36,7 @@
             <div class="color-bar">
                 <a (click)="toggleColorPalette('primaryColorPicker')" class="color-box1"> </a>
                 <a>
-                    <i class="material-icons change">swap_vert</i>
+                    <i (click)="revertColors()"class="material-icons change">swap_vert</i>
                 </a>
                 <a (click)="toggleColorPalette('secondaryColorPicker')" class="color-box2"> </a>
             </div>

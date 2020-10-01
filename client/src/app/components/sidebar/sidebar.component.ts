@@ -65,7 +65,16 @@ export class SidebarComponent {
         }
         document.getElementById(name)?.setAttribute('class', "active");
     }
+    revertColors(): void {
+        let primColorDiv = document.querySelector(".color-box1") as HTMLElement;
+        let secondColorDiv = document.querySelector(".color-box2") as HTMLElement;
+        let tmp: string = this.tools.currentTool.primaryColor;
+        this.tools.currentTool.primaryColor = this.tools.currentTool.secondaryColor;
+        this.tools.currentTool.secondaryColor = tmp;
+        primColorDiv.style.backgroundColor = this.tools.currentTool.primaryColor;
+        secondColorDiv.style.backgroundColor = this.tools.currentTool.secondaryColor;
 
+    }
     openUserGuide(): void {
         UserGuideComponent.displayUserGuide();
     }
