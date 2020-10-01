@@ -71,6 +71,7 @@ export class ColorSliderComponent implements AfterViewInit {
         this.mousedown = false;
     }
 
+
     rgbToHex(rgb: number): string {
         let hex = Number(rgb).toString(16);
         if (hex.length < 2) {

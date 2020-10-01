@@ -1,4 +1,4 @@
-import { Component} from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { UserGuideComponent } from '@app/components/user-guide/user-guide.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
@@ -8,10 +8,22 @@ import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.ser
     templateUrl: './sidebar.component.html',
     styleUrls: ['./sidebar.component.scss'],
 })
-export class SidebarComponent {
+export class SidebarComponent implements OnChanges {
     constructor(private tools: ToolsManagerService, protected drawingService: DrawingService) { }
-
+    @Input() primaryColor: string = this.tools.currentTool.primaryColor.slice(0, 7);
+    @Input() secondaryColor: string = this.tools.currentTool.secondaryColor.slice(0, 7);
+    isRevertClicked: boolean = false;
     attributeBarIsActive: boolean = false;
+    ngOnChanges(changes: SimpleChanges): void {
+        if (!this.isRevertClicked) {
+            let primColorDiv = document.querySelector(".color-box1") as HTMLElement;
+            let secondColorDiv = document.querySelector(".color-box2") as HTMLElement;
+            primColorDiv.style.backgroundColor = this.primaryColor;
+            secondColorDiv.style.backgroundColor = this.secondaryColor;
+        }
+        this.isRevertClicked = false;
+
+    }
     displayPalette(toolName: string): void {
         if (!this.attributeBarIsActive) {
             this.attributeBarIsActive = true;
@@ -31,7 +43,6 @@ export class SidebarComponent {
             item.setAttribute('class', classname);
 
         });
-        console.log(document.querySelectorAll('app-color-picker'));
     }
 
     toggleColorPalette(colorpickerId: string): void {
@@ -66,7 +77,17 @@ export class SidebarComponent {
         }
         document.getElementById(name)?.setAttribute('class', "active");
     }
+    revertColors(): void {
+        this.isRevertClicked = true;
+        let primColorDiv = document.querySelector(".color-box1") as HTMLElement;
+        let secondColorDiv = document.querySelector(".color-box2") as HTMLElement;
+        let tmp: string = this.tools.currentTool.primaryColor;
+        this.tools.currentTool.primaryColor = this.tools.currentTool.secondaryColor;
+        this.tools.currentTool.secondaryColor = tmp;
+        primColorDiv.style.backgroundColor = this.tools.currentTool.primaryColor;
+        secondColorDiv.style.backgroundColor = this.tools.currentTool.secondaryColor;
 
+    }
     openUserGuide(): void {
         UserGuideComponent.displayUserGuide();
     }

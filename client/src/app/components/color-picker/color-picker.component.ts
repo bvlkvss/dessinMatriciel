@@ -61,15 +61,20 @@ export class ColorPickerComponent implements OnInit {
         else this.color = this.tools.currentTool.secondaryColor.slice(0, 7);
         const input = document.querySelector('#opacityValue') as HTMLInputElement;
         input.value = ((parseInt(this.opacity, 16) / 255) * 100).toString();
-        if (this.colorSlider.selectedHeight !== this.selectedPositionSlider) {
-            this.colorSlider.selectedHeight = this.selectedPositionSlider;
-            this.colorSlider.draw();
-            this.colorSlider.color.emit(this.color);
-        }
-        if (this.colorPalette.selectedPosition !== this.selectedPositionPalette) {
+        if (this.colorPalette.selectedPosition != this.selectedPositionPalette) {
             this.colorPalette.selectedPosition = this.selectedPositionPalette;
+            this.colorPalette.color.emit(this.color);
             this.colorPalette.draw();
+
         }
+        if (this.colorSlider.selectedHeight != this.selectedPositionSlider) {
+            this.colorSlider.selectedHeight = this.selectedPositionSlider;
+            this.colorSlider.color.emit(this.color);
+            this.colorSlider.draw();
+
+        }
+
+
     }
     setOpacity(): void {
         const input = document.querySelector('#opacityValue') as HTMLInputElement;
@@ -81,6 +86,11 @@ export class ColorPickerComponent implements OnInit {
 
     setColorFromInput(): void {
         const input = document.querySelector('.text') as HTMLInputElement;
+        console.log(input.value);
+        if (input.value > "ffffff")
+            input.value = "ffffff";
+        else if (input.value < "000000")
+            input.value = "000000";
         this.color = '#' + input.value;
     }
     addColor(color: string): void {
