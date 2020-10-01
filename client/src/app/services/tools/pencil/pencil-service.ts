@@ -30,7 +30,7 @@ export class PencilService extends Tool {
         this.clearPath();
     }
 
-   
+
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseDown) {
@@ -70,6 +70,9 @@ export class PencilService extends Tool {
     }
     setPrimaryColor(color: string): void {
         this.primaryColor = color;
+    }
+    setSecondaryColor(color: string): void {
+        this.secondaryColor = color;
     }
     setLineWidth(width: number): void {
         this.lineWidth = width;

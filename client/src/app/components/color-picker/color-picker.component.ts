@@ -24,12 +24,14 @@ export class ColorPickerComponent implements OnInit {
         this.addColor(this.color);
         this.setOpacity();
         this.tools.setColor(this.color + this.opacity, this.isPrimaryColor);
+        if (!this.isPrimaryColor)
+            console.log(this.tools.currentTool.secondaryColor);
     }
     cancelChanges(): void {
-        //    if (this.isPrimaryColor)
-        this.color = this.tools.currentTool.primaryColor.slice(0, 7);
-        //else
-        // this.color = this.tools.currentTool.secondaryColor.slice(0, 7);
+        if (this.isPrimaryColor)
+            this.color = this.tools.currentTool.primaryColor.slice(0, 7);
+        else
+            this.color = this.tools.currentTool.secondaryColor.slice(0, 7);
 
         const input = document.querySelector('#opacityValue') as HTMLInputElement;
         input.value = ((parseInt(this.opacity, 16) / 255) * 100).toString();
