@@ -147,7 +147,7 @@ export class EllipseService extends Tool {
             ctx.strokeStyle = this.secondaryColor;
             ctx.ellipse(centerx, centery, radiusX, radiusY, 0, 0, 2 * Math.PI);
 
-            if(width>this.lineWidth*2 && height>this.lineWidth*2){ 
+            if(Math.abs(width)>this.lineWidth*2&& Math.abs(height)>this.lineWidth*2){ 
             switch (this.ellipseStyle) {
                 case 0:
                     ctx.stroke();
