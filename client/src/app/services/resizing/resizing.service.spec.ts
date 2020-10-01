@@ -5,7 +5,6 @@ import { ResizingService } from './resizing.service';
 
 describe('ResizingService', () => {
     let service: ResizingService;
-<<<<<<< HEAD
     let canvasStub: HTMLCanvasElement;
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
@@ -99,18 +98,6 @@ it('should set resizeHeight to resizedHeight if smaller than minSize', () => {
   expect(service.resizedHeight).toEqual(250);
 });
 
-it('should set resizeHeight and resizedWidth to minSize if smaller than minSize', () => {
-  let canvas = document.createElement('canvas');
-  canvas.width = 100;
-  canvas.height = 100;
-  let div = document.createElement('div') as HTMLDivElement;
-  let rect = {top: 200, left:200} as any;
-  spyOn(div, 'getBoundingClientRect').and.returnValue(rect);
-  let event = {pageX:300, pageY: 300} as MouseEvent;
-  service.resizeFromBottomRight(event,div, canvas);
-  expect(service.resizedHeight).toEqual(250);
-  expect(service.resizedWidth).toEqual(250);
-});
 
 it('should set resizeHeight and resizedWidth to givenSize if bigger than minSize', () => {
   let canvas = document.createElement('canvas');
@@ -240,17 +227,4 @@ it('should not call clearCanvas if it has not been resized when  drawCanvas is C
   expect(drawServiceSpy.clearCanvas).not.toHaveBeenCalled();
 });
 
-
-
-=======
-
-    beforeEach(() => {
-        TestBed.configureTestingModule({});
-        service = TestBed.inject(ResizingService);
-    });
-
-    it('should be created', () => {
-        expect(service).toBeTruthy();
-    });
->>>>>>> ceebf4f6d07b9368ceed89d93090cebe83142624
 });
