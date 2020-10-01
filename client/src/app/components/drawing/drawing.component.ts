@@ -55,8 +55,8 @@ export class DrawingComponent implements AfterViewInit {
 
     @HostListener('window:mousemove', ['$event'])
     resize(event: MouseEvent): void {
-        event.stopPropagation();
         if (this.resizer.resizing) {
+            console.log("resizing");
             this.previewCanvas.nativeElement.style.borderBottom = 'dotted #000000 1px';
             this.previewCanvas.nativeElement.style.borderRight = 'dotted #000000 1px';
             this.resizer.resize(event, this.previewCanvas.nativeElement);
@@ -65,7 +65,6 @@ export class DrawingComponent implements AfterViewInit {
     @HostListener('window:mouseup', ['$event'])
     stopResize(event: MouseEvent): void {
         if (this.resizer.resizing) {
-            event.stopPropagation();
             this.resizer.stopResize(event, this.baseCanvas.nativeElement);
             this.previewCanvas.nativeElement.style.borderBottom = '2px solid #000000';
             this.previewCanvas.nativeElement.style.borderRight = '2px solid #000000';
@@ -83,7 +82,9 @@ export class DrawingComponent implements AfterViewInit {
 
     @HostListener('mousedown', ['$event'])
     onMouseDown(event: MouseEvent): void {
-        this.tools.currentTool.onMouseDown(event);
+        if (!this.resizer.resizing) {
+            this.tools.currentTool.onMouseDown(event);
+        }
     }
 
     @HostListener('mouseenter', ['$event'])
@@ -92,7 +93,9 @@ export class DrawingComponent implements AfterViewInit {
         if (t.className === 'resizer right' || t.className === 'resizer bottom-right' || t.className === 'resizer bottom') {
             return;
         }
-        this.tools.currentTool.onMouseEnter(event);
+        if (!this.resizer.resizing) {
+            this.tools.currentTool.onMouseEnter(event);
+        }
     }
 
     @HostListener('dblclick', ['$event'])
@@ -110,7 +113,7 @@ export class DrawingComponent implements AfterViewInit {
     }
     @HostListener('document:mouseup', ['$event'])
     onMouseUp(event: MouseEvent): void {
-        if (this.mouseFired) {
+        if (this.mouseFired && !this.resizer.isMaximazed) {
             // after a mousedown in resizer i ignore mouseup and then ignore mouseclick
             return;
         }

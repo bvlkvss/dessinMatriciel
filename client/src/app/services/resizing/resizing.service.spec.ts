@@ -3,14 +3,14 @@ import { TestBed } from '@angular/core/testing';
 import { ResizingService } from './resizing.service';
 
 describe('ResizingService', () => {
-  let service: ResizingService;
+    let service: ResizingService;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({});
-    service = TestBed.inject(ResizingService);
-  });
+    beforeEach(() => {
+        TestBed.configureTestingModule({});
+        service = TestBed.inject(ResizingService);
+    });
 
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
+    it('should be created', () => {
+        expect(service).toBeTruthy();
+    });
 });

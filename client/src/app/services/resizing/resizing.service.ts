@@ -9,6 +9,7 @@ export class ResizingService {
     currentResizer: string;
     resizing: boolean = false;
     hasBeenResized: boolean = false;
+    isMaximazed: boolean = false;
     resizedWidth: number;
     resizedHeight: number;
     constructor(private drawingService: DrawingService) { }
@@ -28,6 +29,7 @@ export class ResizingService {
         const calculatedWidth = event.pageX - div.getBoundingClientRect().left;
         const winWidht = window.innerWidth || document.body.clientWidth;
         if (calculatedWidth >= winWidht * PROPORTION_SIZE) {
+            this.isMaximazed = true;
             return;
         }
         if (calculatedWidth >= MIN_SIZE) {
@@ -37,11 +39,13 @@ export class ResizingService {
             this.resizedWidth = MIN_SIZE;
             preview.width = this.resizedWidth;
         }
+        this.isMaximazed = false;
     }
     resizeFromBottom(event: MouseEvent, div: HTMLDivElement, preview: HTMLCanvasElement): void {
         const calculatedHeight = event.pageY - div.getBoundingClientRect().top;
         const winHeight = window.innerHeight || document.body.clientHeight;
         if (calculatedHeight >= winHeight * PROPORTION_SIZE) {
+            this.isMaximazed = true;
             return;
         }
         if (calculatedHeight >= MIN_SIZE) {
@@ -50,6 +54,7 @@ export class ResizingService {
         } else {
             this.resizedHeight = MIN_SIZE;
         }
+        this.isMaximazed = false;
     }
     resizeFromBottomRight(event: MouseEvent, div: HTMLDivElement, preview: HTMLCanvasElement): void {
         const calculatedWidth = event.pageX - div.getBoundingClientRect().left;
@@ -59,11 +64,12 @@ export class ResizingService {
             height: window.innerHeight || document.body.clientHeight,
         };
         if (calculatedWidth >= size.width * PROPORTION_SIZE || calculatedHeight >= size.height * PROPORTION_SIZE) {
+            this.isMaximazed = true;
             return;
         }
         if (calculatedWidth >= MIN_SIZE && calculatedHeight >= MIN_SIZE) {
-            this.resizedWidth = event.pageX - div.getBoundingClientRect().left;
-            this.resizedHeight = event.pageY - div.getBoundingClientRect().top;
+            this.resizedWidth = calculatedWidth;
+            this.resizedHeight = calculatedHeight;
             preview.width = this.resizedWidth;
             preview.height = this.resizedHeight;
         } else if (calculatedWidth >= MIN_SIZE) {
@@ -71,6 +77,7 @@ export class ResizingService {
         } else if (calculatedHeight >= MIN_SIZE) {
             this.resizeFromBottom(event, div, preview);
         }
+        this.isMaximazed = false;
     }
 
     resize(event: MouseEvent, preview: HTMLCanvasElement): void {
