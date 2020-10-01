@@ -95,7 +95,6 @@ export class ColorPickerComponent implements OnInit {
 
     setColorFromInput(): void {
         const input = document.querySelector('.text') as HTMLInputElement;
-        console.log(input.value);
         if (input.value > 'ffffff') input.value = 'ffffff';
         else if (input.value < '000000') input.value = '000000';
         this.color = '#' + input.value;

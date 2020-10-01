@@ -11,7 +11,7 @@ import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.ser
     templateUrl: './attributebar.component.html',
     styleUrls: ['./attributebar.component.scss'],
 })
-export class AttributebarComponent implements OnInit, OnChanges {
+export class AttributebarComponent implements OnInit {
     widthValue: string;
     junctionWidth: string = '1';
     idStyleRectangle: number = 2;
@@ -20,9 +20,6 @@ export class AttributebarComponent implements OnInit, OnChanges {
     private showContainer: boolean = false;
     private lastTool: Tool = this.tools.currentTool;
 
-    ngOnChanges(): void {
-        this.restoreValues();
-    }
     ngOnInit(): void {
         this.widthValue = this.tools.currentTool.lineWidth.toString();
     }

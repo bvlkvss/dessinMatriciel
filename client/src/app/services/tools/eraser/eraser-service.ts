@@ -66,7 +66,6 @@ export class EraserService extends Tool {
             this.lineWidth = thickness;
         } else {
             this.lineWidth = MINIMUM_ERASER_SIZE;
-            console.log('Minimum eraser size is 5 px');
         }
     }
 

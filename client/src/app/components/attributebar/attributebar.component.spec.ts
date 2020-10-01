@@ -47,13 +47,7 @@ describe('AttributebarComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    it('if change occur ngOnChanges should call restoreValues', () => {
-        let restoreValuesSpy = spyOn(component, 'restoreValues');
-        (component as any).junctionWidth = 5;
-        component.ngOnChanges();
-        fixture.detectChanges();
-        expect(restoreValuesSpy).toHaveBeenCalled();
-    });
+  
 
     it('should call getComputedStyle when calling change Style if both id are correct', () => {
         let style_ = { borderColor: 'blue', backgroundColor: 'blue', borderStyle: 'dashed', borderWidth: '2' } as any;

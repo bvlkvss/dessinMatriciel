@@ -76,7 +76,6 @@ export class RectangleService extends Tool {
     }
 
     onMouseEnter(event: MouseEvent): void {
-        console.log('mouseenter rectangle');
         this.isOut = false;
     }
 
@@ -91,12 +90,10 @@ export class RectangleService extends Tool {
 
         this.mouseDown = false;
         this.toSquare = false;
-        console.log(this.mouseDown);
     }
 
     onMouseMove(event: MouseEvent): void {
         if (this.mouseDown) {
-            console.log('mousemove rectangle');
             this.currentPos = this.getPositionFromMouse(event);
 
             // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
