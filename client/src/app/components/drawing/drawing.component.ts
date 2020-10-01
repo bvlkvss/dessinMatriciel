@@ -91,9 +91,7 @@ export class DrawingComponent implements AfterViewInit {
         if (t.className === 'resizer right' || t.className === 'resizer bottom-right' || t.className === 'resizer bottom') {
             return;
         }
-        if (!this.resizer.resizing) {
-            this.tools.currentTool.onMouseEnter(event);
-        }
+        this.tools.currentTool.onMouseEnter(event);
     }
 
     @HostListener('dblclick', ['$event'])
@@ -112,7 +110,7 @@ export class DrawingComponent implements AfterViewInit {
     @HostListener('document:mouseup', ['$event'])
     onMouseUp(event: MouseEvent): void {
         if (this.mouseFired) {
-            this.mouseFired = false;
+            //after a mousedown in resizer i ignore mouseup and then ignore mouseclick 
             return;
         }
         this.tools.currentTool.onMouseUp(event);
