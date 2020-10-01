@@ -39,7 +39,7 @@ export class BrushService extends Tool {
         this.lineWidth = 1;
         this.image.src = '../../../assets/b0.png';
 
-        this.toolAttributes = ["texture", "lineWidth"];
+        this.toolAttributes = ['texture', 'lineWidth'];
     }
     setTexture(id: number): void {
         this.image.src = '../../../assets/b' + id + '.png';
@@ -60,10 +60,6 @@ export class BrushService extends Tool {
             this.mouseDownCoord = this.getPositionFromMouse(event);
         }
     }
-
-    getImage(): HTMLImageElement {
-        return this.image;
-    }
     onMouseUp(event: MouseEvent): void {
         if (this.mouseDown && !this.isOut) {
             this.currentPos = this.getPositionFromMouse(event);
@@ -72,12 +68,10 @@ export class BrushService extends Tool {
         this.mouseDown = false;
     }
     onMouseEnter(event: MouseEvent): void {
-
         if (this.mouseDown) {
             this.mouseDownCoord = this.getPositionFromMouse(event);
         }
         this.isOut = false;
-
     }
     onMouseMove(event: MouseEvent): void {
         if (this.mouseDown && !this.isOut) {
@@ -87,7 +81,6 @@ export class BrushService extends Tool {
         }
     }
     private drawLine(ctx: CanvasRenderingContext2D): void {
-
         ctx.beginPath();
         const dist = this.distanceBetween2Points(this.mouseDownCoord, this.currentPos);
         const angle = this.angleBetween2Points(this.mouseDownCoord, this.currentPos);
@@ -113,12 +106,8 @@ export class BrushService extends Tool {
         this.isOut = true;
     }
 
-    getColor(): Color {
-        return this.color;
-    }
-
     changeColor(imageData: ImageData): void {
-        this.color = this.hexToColor(this.primaryColor);;
+        this.color = this.hexToColor(this.primaryColor);
 
         for (let j = 0; j < imageData.data.length; j += BYTE_SIZE) {
             imageData.data[j] = this.color.red; // Invert Red
@@ -130,17 +119,20 @@ export class BrushService extends Tool {
 
     makeBaseImage(): HTMLCanvasElement {
         const tempCanvas = document.createElement('canvas');
+        
         this.image.height = 250;
         this.image.width = 250;
+        
         tempCanvas.width = this.image.width / IMAGE_SIZE_DIVIDER;
         tempCanvas.height = this.image.height / IMAGE_SIZE_DIVIDER;
-        const tempCtx = tempCanvas.getContext('2d');
-        if (tempCtx) {
-            tempCtx.drawImage(this.image, 0, 0, this.image.width / IMAGE_SIZE_DIVIDER, this.image.height / IMAGE_SIZE_DIVIDER);
-            const data = tempCtx.getImageData(0, 0, this.image.width, this.image.height);
-            this.changeColor(data);
-            tempCtx.putImageData(data, 0, 0);
-        }
+        
+        const tempCtx = tempCanvas.getContext('2d') as CanvasRenderingContext2D;
+        tempCtx.drawImage(this.image, 0, 0, this.image.width / IMAGE_SIZE_DIVIDER, this.image.height / IMAGE_SIZE_DIVIDER);
+        
+        const data = tempCtx.getImageData(0, 0, this.image.width, this.image.height);
+        this.changeColor(data);
+        tempCtx.putImageData(data, 0, 0);
+        
         return tempCanvas;
     }
     private distanceBetween2Points(point1: Vec2, point2: Vec2): number {
@@ -149,5 +141,4 @@ export class BrushService extends Tool {
     private angleBetween2Points(point1: Vec2, point2: Vec2): number {
         return Math.atan2(point2.x - point1.x, point2.y - point1.y);
     }
-
 }

@@ -55,7 +55,6 @@ export class UserGuideComponent {
     }
 
     static displayUserGuide():void{
-        console.log("DISPLAY USER GUIDE");
         let userGuide = document.getElementById("background") as HTMLElement;
         userGuide.style.display = "block";
     }

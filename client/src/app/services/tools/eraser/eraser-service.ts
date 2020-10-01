@@ -37,6 +37,7 @@ export class EraserService extends Tool {
         if (this.mouseDown) this.clearLine(this.drawingService.baseCtx, this.pathData);
         this.clearPath();
     }
+
     onMouseEnter(event: MouseEvent): void {
         this.clearPath();
     }
@@ -66,10 +67,6 @@ export class EraserService extends Tool {
             this.lineWidth = MINIMUM_ERASER_SIZE;
             console.log('Minimum eraser size is 5 px');
         }
-    }
-
-    getEraserThickness(): number {
-        return this.lineWidth
     }
 
     private clearLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {

@@ -13,17 +13,19 @@ describe('EraserService', () => {
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
     let clearLineSpy: jasmine.Spy<any>;
+    let clearPathSpy: jasmine.Spy<any>;
 
     beforeEach(() => {
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
-        drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
+        drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas',]);
 
         TestBed.configureTestingModule({
             providers: [{ provide: DrawingService, useValue: drawServiceSpy }],
         });
         service = TestBed.inject(EraserService);
         clearLineSpy = spyOn<any>(service, 'clearLine').and.callThrough();
+        clearPathSpy = spyOn<any>(service, 'clearPath').and.callThrough();
 
         // Configuration du spy du service
         // tslint:disable:no-string-literal
@@ -95,31 +97,48 @@ describe('EraserService', () => {
         expect(clearLineSpy).not.toHaveBeenCalled();
     });
 
+    it(' onMouseOut should not call clearLine if mouse was not already down', () => {
+        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDown = false;
+
+        service.onMouseOut(mouseEvent);
+        expect(clearLineSpy).not.toHaveBeenCalled();
+        expect(drawServiceSpy.clearCanvas).not.toHaveBeenCalled();
+    });
+
+    it(' onMouseOut should  call clearLine if mouse was already down', () => {
+        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDown = true;
+
+        service.onMouseOut(mouseEvent);
+        expect(clearLineSpy).toHaveBeenCalled();
+        expect(drawServiceSpy.clearCanvas).not.toHaveBeenCalled();
+    });
+
+    it(' onMouseEnter should  call clearPath', () => {
+        service.onMouseEnter(mouseEvent);
+        expect(clearPathSpy).toHaveBeenCalled();
+    });
+
+    it('should set lineWidth to the given value if it is greater than 5px', () => {
+        let lineWidth = 6;
+        service.setLineWidth(lineWidth);
+        expect(service.lineWidth).toEqual(lineWidth);
+    });
+
+    it('should set lineWidth to 5px  if it is less than 5px', () => {
+        let lineWidth = 3;
+        service.setLineWidth(lineWidth);
+        expect(service.lineWidth).toEqual(5);
+    });
+
     it('should erase a pixel if mouse is pressed and not moved', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = true;
         service.onMouseUp(mouseEvent);
         expect(clearLineSpy).toHaveBeenCalled();
     });
-
-    it('setEraserThickness should set eraser thickness to correct value', () => {
-        // tslint:disable-next-line:no-magic-numbers
-        service.setEraserThickness(6);
-        // tslint:disable-next-line:prefer-const
-        let thickness = service.getEraserThickness();
-        // tslint:disable-next-line:no-magic-numbers
-        expect(thickness).toEqual(6);
-    });
-
-    it('setEraserThickness should not set eraser thickness to value less than 5', () => {
-        // tslint:disable-next-line:no-magic-numbers
-        service.setEraserThickness(3);
-        // tslint:disable-next-line:prefer-const
-        let thickness = service.getEraserThickness();
-        // tslint:disable-next-line:no-magic-numbers
-        expect(thickness).not.toEqual(3);
-    });
-
+    
     // Exemple de test d'intégration qui est quand même utile
     it(' should change the pixel of the canvas ', () => {
         mouseEvent = { offsetX: 0, offsetY: 0, button: 1 } as MouseEvent;

@@ -103,10 +103,6 @@ export class EllipseService extends Tool {
             this.toSquare = false;
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.drawEllipse(this.drawingService.previewCtx, this.mouseDownCoord, this.currentPos, this.toSquare);
-            if (!this.mouseDown) {
-                // if shift key is still down while mouse is up, the shift event clears the preview
-                this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            }
         }
     }
 

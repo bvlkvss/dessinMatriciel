@@ -7,7 +7,6 @@ import { LineService } from '@app/services/tools/line/line.service';
 import { PencilService } from '@app/services/tools/pencil/pencil-service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle.service';
 
-
 const OPACITY_DIVIDER = 100.0;
 @Injectable({
     providedIn: 'root',
@@ -25,14 +24,14 @@ export class ToolsManagerService {
         lineService: LineService,
     ) {
         this.tools = new Map<string, Tool>([
-            ["pencil", pencilService],
-            ["brush", brushService],
-            ["rectangle", rectangleService],
-            ["eraser", eraserService],
-            ["ellipse", ellipseService],
-            ["line", lineService]
+            ['pencil', pencilService],
+            ['brush', brushService],
+            ['rectangle', rectangleService],
+            ['eraser', eraserService],
+            ['ellipse', ellipseService],
+            ['line', lineService],
         ]);
-        this.currentTool = this.tools.get("pencil") as Tool;
+        this.currentTool = this.tools.get('pencil') as Tool;
     }
 
     setTools(name: string): void {
@@ -56,29 +55,26 @@ export class ToolsManagerService {
             this.tools.forEach((element) => {
                 element.setPrimaryColor(color);
             });
-        else this.tools.forEach((element) => {
-            element.setSecondaryColor(color);
-        });
-
+        else
+            this.tools.forEach((element) => {
+                element.setSecondaryColor(color);
+            });
     }
     setRectangleStyle(id: number): void {
-        let rectangle = this.currentTool as RectangleService;
+        const rectangle = this.currentTool as RectangleService;
         rectangle.setStyle(id);
-
     }
 
     setEllipseStyle(id: number): void {
-        let ellipse = this.currentTool as EllipseService;
+        const ellipse = this.currentTool as EllipseService;
         ellipse.setStyle(id);
-
     }
     setJunctionWidth(id: number): void {
-        let line = this.currentTool as LineService;
+        const line = this.currentTool as LineService;
         line.setJunctionWidth(id);
-
     }
     setJunctionState(isChecked: boolean): void {
-        let line = this.currentTool as LineService;
+        const line = this.currentTool as LineService;
         line.setJunctionState(isChecked);
     }
 }

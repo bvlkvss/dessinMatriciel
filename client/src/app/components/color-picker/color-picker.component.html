@@ -13,7 +13,12 @@
         <div class="container">
             <p class="header">Last colors :</p>
             <div *ngFor="let i of lastColors" class="color-container">
-                <button (click)="color = i" class="lastColors" [ngStyle]="{ 'background-color': i }"></button>
+                <button
+                    oncontextmenu="return false;"
+                    (mouseup)="setColorOnClick($event,i)"
+                    class="lastColors"
+                    [ngStyle]="{ 'background-color': i }"
+                ></button>
             </div>
         </div>
     </div>

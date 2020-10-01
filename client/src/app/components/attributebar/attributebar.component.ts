@@ -26,9 +26,11 @@ export class AttributebarComponent implements OnInit, OnChanges {
     ngOnInit(): void {
         this.widthValue = this.tools.currentTool.lineWidth.toString();
     }
+
     changeStyle(styleToChangeId: string, styleId: number): void {
         const shapeStyle = document.querySelector('#style' + styleId) as HTMLElement;
         const currentStyle = document.querySelector('#' + styleToChangeId) as HTMLElement;
+
         if (shapeStyle && currentStyle) {
             currentStyle.style.borderColor = window.getComputedStyle(shapeStyle).borderColor;
             currentStyle.style.backgroundColor = window.getComputedStyle(shapeStyle).backgroundColor;
@@ -110,6 +112,7 @@ export class AttributebarComponent implements OnInit, OnChanges {
         let inputToUpdate = document.querySelector('.textInput') as HTMLInputElement;
         inputToUpdate.value = input.value + 'px';
     }
+    
     toggleList(id: string): void {
         this.showContainer = !this.showContainer;
         let container = document.querySelector('#' + id) as HTMLElement;

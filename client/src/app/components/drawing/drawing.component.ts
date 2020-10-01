@@ -28,16 +28,17 @@ export class DrawingComponent implements AfterViewInit {
     ngOnInit(): void {
         this.drawingService.resizeCanvas();
     }
+
     ngAfterViewInit(): void {
         this.keyBindings
             .set('c', this.tools.getTools().get('pencil') as Tool)
             .set('w', this.tools.getTools().get('brush') as Tool)
             .set('e', this.tools.getTools().get('eraser') as Tool)
+            .set('1', this.tools.getTools().get('rectangle') as Tool)
             .set('2', this.tools.getTools().get('ellipse') as Tool)
             .set('l', this.tools.getTools().get('line') as Tool);
         this.baseCtx = this.baseCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.previewCtx = this.previewCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
-
         this.drawingService.baseCtx = this.baseCtx;
         this.drawingService.previewCtx = this.previewCtx;
         this.drawingService.canvas = this.baseCanvas.nativeElement;
@@ -125,7 +126,7 @@ export class DrawingComponent implements AfterViewInit {
     }
 
     @HostListener('document:keyup', ['$event'])
-    KeyUp(event: KeyboardEvent): void {
+    onKeyUp(event: KeyboardEvent): void {
         this.tools.currentTool.onKeyUp(event);
     }
 

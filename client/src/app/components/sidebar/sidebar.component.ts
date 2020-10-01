@@ -1,4 +1,4 @@
-import { Component /*, ElementRef*/ } from '@angular/core';
+import { Component} from '@angular/core';
 import { UserGuideComponent } from '@app/components/user-guide/user-guide.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
@@ -9,10 +9,9 @@ import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.ser
     styleUrls: ['./sidebar.component.scss'],
 })
 export class SidebarComponent {
-    constructor(private tools: ToolsManagerService, protected drawingService: DrawingService/*, private elRef: ElementRef*/) { }
+    constructor(private tools: ToolsManagerService, protected drawingService: DrawingService) { }
 
     attributeBarIsActive: boolean = false;
-
     displayPalette(toolName: string): void {
         if (!this.attributeBarIsActive) {
             this.attributeBarIsActive = true;
@@ -26,6 +25,7 @@ export class SidebarComponent {
             }
         }
     }
+
     toggleAttributeBar(classname: string): void {
         document.querySelectorAll('#attribute').forEach((item) => {
             item.setAttribute('class', classname);
@@ -33,6 +33,7 @@ export class SidebarComponent {
         });
         console.log(document.querySelectorAll('app-color-picker'));
     }
+
     toggleColorPalette(colorpickerId: string): void {
         if (colorpickerId === "primaryColorPicker") {
             if (document.querySelector("#primaryColorPicker")?.getAttribute("style") === "display:block")

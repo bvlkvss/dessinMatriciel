@@ -13,6 +13,7 @@ describe('PencilService', () => {
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
     let drawLineSpy: jasmine.Spy<any>;
+    let clearPathSpy: jasmine.Spy<any>;
 
     beforeEach(() => {
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
@@ -24,7 +25,7 @@ describe('PencilService', () => {
         });
         service = TestBed.inject(PencilService);
         drawLineSpy = spyOn<any>(service, 'drawLine').and.callThrough();
-
+        clearPathSpy = spyOn<any>(service, 'clearPath').and.callThrough();
         // Configuration du spy du service
         // tslint:disable:no-string-literal
         service['drawingService'].baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
@@ -95,6 +96,29 @@ describe('PencilService', () => {
         expect(drawLineSpy).not.toHaveBeenCalled();
     });
 
+    it(' onMouseOut should not call clearLine if mouse was not already down', () => {
+        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDown = false;
+
+        service.onMouseOut(mouseEvent);
+        expect(drawLineSpy).not.toHaveBeenCalled();
+        expect(drawServiceSpy.clearCanvas).not.toHaveBeenCalled();
+    });
+
+    it(' onMouseOut should  call clearLine if mouse was already down', () => {
+        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDown = true;
+
+        service.onMouseOut(mouseEvent);
+        expect(drawLineSpy).toHaveBeenCalled();
+        expect(drawServiceSpy.clearCanvas).not.toHaveBeenCalled();
+    });
+
+    it(' onMouseEnter should  call clearPath', () => {
+        service.onMouseEnter(mouseEvent);
+        expect(clearPathSpy).toHaveBeenCalled();
+    });
+
     it('should draw a pixel if mouse is pressed and not moved', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = true;
@@ -102,13 +126,18 @@ describe('PencilService', () => {
         expect(drawLineSpy).toHaveBeenCalled();
     });
 
-    it('setPencilThickness should set pencil thickness to correct value', () => {
+    it('setLineWidth should set lineWidth to correct value', () => {
         // tslint:disable-next-line:no-magic-numbers
-        service.setPencilThickness(3);
-        // tslint:disable-next-line:prefer-const
-        let thickness = service.getPencilThickness();
+        service.setLineWidth(3);
         // tslint:disable-next-line:no-magic-numbers
-        expect(thickness).toEqual(3);
+        expect(service.lineWidth).toEqual(3);
+    });
+
+    it('setPrimaryColor should set primaryColor to correct value', () => {
+        // tslint:disable-next-line:no-magic-numbers
+        service.setPrimaryColor('#ababab');
+        // tslint:disable-next-line:no-magic-numbers
+        expect(service.primaryColor).toEqual('#ababab');
     });
 
     // Exemple de test d'intégration qui est quand même utile

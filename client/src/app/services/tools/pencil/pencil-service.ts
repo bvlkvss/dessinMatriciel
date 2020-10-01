@@ -20,8 +20,6 @@ export enum MouseButton {
 })
 export class PencilService extends Tool {
     private pathData: Vec2[];
-    private pencilThickness: number = 6;
-
     constructor(drawingService: DrawingService) {
         super(drawingService);
 
@@ -44,7 +42,6 @@ export class PencilService extends Tool {
         this.clearPath();
     }
     onMouseEnter(event: MouseEvent): void {
-        // this.drawLine(this.drawingService.baseCtx, this.pathData);
         this.clearPath();
     }
 
@@ -68,21 +65,12 @@ export class PencilService extends Tool {
             this.drawLine(this.drawingService.previewCtx, this.pathData);
         }
     }
+
     setPrimaryColor(color: string): void {
         this.primaryColor = color;
     }
-    setSecondaryColor(color: string): void {
-        this.secondaryColor = color;
-    }
     setLineWidth(width: number): void {
         this.lineWidth = width;
-    }
-    setPencilThickness(thickness: number): void {
-        this.pencilThickness = thickness;
-    }
-
-    getPencilThickness(): number {
-        return this.pencilThickness;
     }
 
     private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
