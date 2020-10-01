@@ -31,7 +31,8 @@ export class RectangleService extends Tool {
         this.toolAttributes = ['strokeWidth', 'rectangleStyle'];
         this.rectangleStyle = 2;
         this.lineWidth = 1;
-        this.secondaryColor = '#ff0000';
+        this.primaryColor = "#000000";
+        this.secondaryColor = "#000000";
     }
 
     setStyle(id: number): void {
@@ -83,7 +84,6 @@ export class RectangleService extends Tool {
     }
 
     onMouseUp(event: MouseEvent): void {
-        console.log('mouseup rectangle');
         if (this.mouseDown) {
             let mousePosition = this.getPositionFromMouse(event);
             if (this.isOut) mousePosition = this.mouseOutCoord;

@@ -15,7 +15,7 @@ export class AttributebarComponent implements OnInit, OnChanges {
     widthValue: string;
     junctionWidth: string = '1';
     idStyleRectangle: number = 2;
-    idStyleBrush: number = 0;
+    idStyleBrush: number = 1;
     constructor(private tools: ToolsManagerService) { }
     private showContainer: boolean = false;
     private lastTool: Tool = this.tools.currentTool;
@@ -112,7 +112,7 @@ export class AttributebarComponent implements OnInit, OnChanges {
         let inputToUpdate = document.querySelector('.textInput') as HTMLInputElement;
         inputToUpdate.value = input.value + 'px';
     }
-    
+
     toggleList(id: string): void {
         this.showContainer = !this.showContainer;
         let container = document.querySelector('#' + id) as HTMLElement;

@@ -12,17 +12,19 @@ export class SidebarComponent implements OnChanges {
     constructor(private tools: ToolsManagerService, protected drawingService: DrawingService) { }
     @Input() primaryColor: string = this.tools.currentTool.primaryColor.slice(0, 7);
     @Input() secondaryColor: string = this.tools.currentTool.secondaryColor.slice(0, 7);
-
+    isRevertClicked: boolean = false;
     attributeBarIsActive: boolean = false;
     ngOnChanges(changes: SimpleChanges): void {
-        let primColorDiv = document.querySelector(".color-box1") as HTMLElement;
-        let secondColorDiv = document.querySelector(".color-box2") as HTMLElement;
-        primColorDiv.style.backgroundColor = this.primaryColor;
-        secondColorDiv.style.backgroundColor = this.secondaryColor;
+        if (!this.isRevertClicked) {
+            let primColorDiv = document.querySelector(".color-box1") as HTMLElement;
+            let secondColorDiv = document.querySelector(".color-box2") as HTMLElement;
+            primColorDiv.style.backgroundColor = this.primaryColor;
+            secondColorDiv.style.backgroundColor = this.secondaryColor;
+        }
+        this.isRevertClicked = false;
 
     }
     displayPalette(toolName: string): void {
-        console.log(this.primaryColor);
         if (!this.attributeBarIsActive) {
             this.attributeBarIsActive = true;
             this.togglecanvas('drawing-container-open');
@@ -41,7 +43,6 @@ export class SidebarComponent implements OnChanges {
             item.setAttribute('class', classname);
 
         });
-        console.log(document.querySelectorAll('app-color-picker'));
     }
 
     toggleColorPalette(colorpickerId: string): void {
@@ -77,6 +78,7 @@ export class SidebarComponent implements OnChanges {
         document.getElementById(name)?.setAttribute('class', "active");
     }
     revertColors(): void {
+        this.isRevertClicked = true;
         let primColorDiv = document.querySelector(".color-box1") as HTMLElement;
         let secondColorDiv = document.querySelector(".color-box2") as HTMLElement;
         let tmp: string = this.tools.currentTool.primaryColor;

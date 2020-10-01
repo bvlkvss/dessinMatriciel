@@ -50,7 +50,6 @@ export class ColorPaletteComponent implements AfterViewInit, OnChanges {
 
             this.ctx.fillStyle = blackGrad;
             this.ctx.fillRect(0, 0, width, height);
-            console.log("okkkk");
         }
         if (this.selectedPosition) {
             this.ctx.strokeStyle = 'white';
