@@ -6,62 +6,26 @@ import { Component } from '@angular/core';
     styleUrls: ['./user-guide.component.css'],
 })
 export class UserGuideComponent {
-    openTab(id:string):void {
-        let j;
-        let tabcontent;
-        tabcontent = document.getElementsByClassName("tabcontent");
-        for (j = 0; j < tabcontent.length; j++) {
-            let tabElement = tabcontent[j] as HTMLElement;
-            tabElement.style.display = "none";
-        }
-        let y = document.getElementById(id) as HTMLElement;
-        y.style.display = "block";
-
-
-        // set active elements
-        let i;
-        let options = document.getElementsByTagName("li")
-        for (i = 0; i < options.length; i++) {
-            if(options[i].id==="#"+id){
-                options[i].setAttribute('class', "active");
-            } else{
-                options[i].setAttribute('class', "tablinks");
-            }
+    openTab(id: string): void {
+        let outilDiv = document.getElementById('Outils') as HTMLElement;
+        let diversDiv = document.getElementById('Divers') as HTMLElement;
+        if (id == 'Outils'){
+        diversDiv.style.display = 'none';
+        if(outilDiv.style.display == 'none') outilDiv.style.display = 'block';
+        }else {
+            outilDiv.style.display = 'none';
+            if(diversDiv.style.display == 'none') diversDiv.style.display = 'block';
         }
     }
 
-    showTools():void {
-        let element = document.getElementById("#tools");
-    
-        if(element?.className =="dropDown-open"){
-            element?.setAttribute('class'," ");
-            element?.setAttribute('class',"dropDown");
-        }   else{
-            element?.setAttribute('class'," ");
-            element?.setAttribute('class',"dropDown-open");
-        }
+    static displayUserGuide(): void {
+        let userGuide = document.getElementById('background') as HTMLElement;
+        userGuide.style.display = 'block';
     }
 
-    showOther(tab:string):void {
-        let element = document.getElementById("#other");
-
-        if(element?.className =="dropDown-open"){
-            element?.setAttribute('class'," ");
-            element?.setAttribute('class',"dropDown");
-        }   else{
-            element?.setAttribute('class'," ");
-            element?.setAttribute('class',"dropDown-open");
-        }
-    }
-
-    static displayUserGuide():void{
-        let userGuide = document.getElementById("background") as HTMLElement;
-        userGuide.style.display = "block";
-    }
-
-    closeUserGuide():void{
-        console.log("CLOSE USER GUIDE");
-        let userGuide = document.getElementById("background") as HTMLElement;
-        userGuide.style.display = "none";
+    closeUserGuide(): void {
+        console.log('CLOSE USER GUIDE');
+        let userGuide = document.getElementById('background') as HTMLElement;
+        userGuide.style.display = 'none';
     }
 }

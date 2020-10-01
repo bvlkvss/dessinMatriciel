@@ -20,17 +20,17 @@ describe('UserGuideComponent', () => {
     it('should create', () => {
         expect(component).toBeTruthy();
     });
-/*
+
     it('should open Divers div when i call openTab with divers as argument', () => {
         component.openTab("Divers");
         let x = document.getElementById("Divers") as HTMLElement;
         expect(x.style.display).toEqual("block");
     });
 
-    it('should close Divers div when i call openTab with Dessiner as argument', () => {
-        component.openTab("Dessiner");
-        let x = document.getElementById("Divers") as HTMLElement;
-        expect(x.style.display).toEqual("none");
+    it('should open Outils div when i call openTab with Outils as argument', () => {
+        component.openTab("Outils");
+        let x = document.getElementById("Outils") as HTMLElement;
+        expect(x.style.display).toEqual("block");
     });
 
     it('should set Background style to block when i call DisplayUserGuide', () => {
@@ -43,5 +43,5 @@ describe('UserGuideComponent', () => {
         component.closeUserGuide();
         let x = document.getElementById("background") as HTMLElement;
         expect(x.style.display).toEqual("none");
-    });*/
+    });
 });
