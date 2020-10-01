@@ -12,10 +12,12 @@ export enum MouseButton {
     Back = 3,
     Forward = 4,
 }
-const BYTE_SIZE = 4;
+const RGBA_NUMBER_OF_COMPONENTS = 4;
 const IMAGE_SIZE_DIVIDER = 3;
 const MOUSE_POSITION_OFFSET_DIVIDER = 10;
 const IMAGES_PER_POINT = 5;
+const MAX_EIGHT_BIT_NB = 255;
+const BASE_SIZE = 250;
 
 // TODO : Déplacer ça dans un fichier séparé accessible par tous
 
@@ -30,7 +32,7 @@ const IMAGES_PER_POINT = 5;
 export class BrushService extends Tool {
     private image: HTMLImageElement;
     imageId: number;
-    private color: Color = { red: 0, green: 0, blue: 0, opacity: 255 };
+    private color: Color = { red: 0, green: 0, blue: 0, opacity: MAX_EIGHT_BIT_NB };
     constructor(drawingService: DrawingService) {
         super(drawingService);
         this.primaryColor = '0000000';
@@ -88,7 +90,7 @@ export class BrushService extends Tool {
         do {
             const x = this.mouseDownCoord.x + Math.sin(angle) * i - this.image.width / MOUSE_POSITION_OFFSET_DIVIDER;
             const y = this.mouseDownCoord.y + Math.cos(angle) * i - this.image.height / MOUSE_POSITION_OFFSET_DIVIDER;
-            ctx.globalAlpha = this.color.opacity / 255;
+            ctx.globalAlpha = this.color.opacity / MAX_EIGHT_BIT_NB;
             ctx.drawImage(image, x, y, this.lineWidth, this.lineWidth);
             i += IMAGES_PER_POINT;
         } while (i < dist);
@@ -107,7 +109,7 @@ export class BrushService extends Tool {
     changeColor(imageData: ImageData): void {
         this.color = this.hexToColor(this.primaryColor);
 
-        for (let j = 0; j < imageData.data.length; j += BYTE_SIZE) {
+        for (let j = 0; j < imageData.data.length; j += RGBA_NUMBER_OF_COMPONENTS) {
             imageData.data[j] = this.color.red; // Invert Red
             imageData.data[j + 1] = this.color.green; // Invert Green
             imageData.data[j + 2] = this.color.blue; // Invert Blue
@@ -118,8 +120,8 @@ export class BrushService extends Tool {
     makeBaseImage(): HTMLCanvasElement {
         const tempCanvas = document.createElement('canvas');
 
-        this.image.height = 250;
-        this.image.width = 250;
+        this.image.height = BASE_SIZE;
+        this.image.width = BASE_SIZE;
 
         tempCanvas.width = this.image.width / IMAGE_SIZE_DIVIDER;
         tempCanvas.height = this.image.height / IMAGE_SIZE_DIVIDER;
