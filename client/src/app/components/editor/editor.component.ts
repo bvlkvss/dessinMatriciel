@@ -5,4 +5,7 @@ import { Component } from '@angular/core';
     templateUrl: './editor.component.html',
     styleUrls: ['./editor.component.scss'],
 })
-export class EditorComponent {}
+export class EditorComponent {
+    lastColors: string[] = new Array<string>();
+
+}

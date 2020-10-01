@@ -12,15 +12,13 @@ export class ColorPickerComponent implements OnInit {
     color: string;
     @Input() isPrimaryColor: boolean = true;
     opacity: string;
-    lastColors: string[] = new Array<string>();
+    @Input() lastColors: string[];
     constructor(private tools: ToolsManagerService) {
         this.opacity = 'ff';
         this.color = '#000000';
-
     }
     // tslint:disable-next-line:no-empty
     ngOnInit(): void {
-        //this.setColor();
     }
     acceptChanges(): void {
         this.addColor(this.color);
@@ -28,7 +26,11 @@ export class ColorPickerComponent implements OnInit {
         this.tools.setColor(this.color + this.opacity, this.isPrimaryColor);
     }
     cancelChanges(): void {
+        //    if (this.isPrimaryColor)
         this.color = this.tools.currentTool.primaryColor.slice(0, 7);
+        //else
+        // this.color = this.tools.currentTool.secondaryColor.slice(0, 7);
+
         const input = document.querySelector('#opacityValue') as HTMLInputElement;
         input.value = ((parseInt(this.opacity, 16) / 255) * 100).toString();
 
@@ -40,13 +42,11 @@ export class ColorPickerComponent implements OnInit {
         else if (input.value === '') input.value = '100';
         const integerValue = Math.round((input.valueAsNumber * 255) / 100);
         this.opacity = integerValue.toString(16);
-        // this.setColor(); // to udpate the 8 digits hex
     }
 
     setColorFromInput(): void {
         const input = document.querySelector('.text') as HTMLInputElement;
         this.color = '#' + input.value;
-        //   this.tools.setColor('#' + input.value + this.opacity);
     }
     addColor(color: string): void {
         if (!this.lastColors.find((element) => element === color)) {
