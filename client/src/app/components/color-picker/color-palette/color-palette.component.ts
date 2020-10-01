@@ -1,3 +1,13 @@
+/****************************************************************************************
+ * this code was inspired from :
+ *
+ *    Title: color-picker Component with Angular
+ *    Author: Lukas Marx
+ *    Date: 2018
+ *    Availability: https://malcoded.com/posts/angular-color-picker/
+ *
+ ***************************************************************************************/
+
 import { AfterViewInit, Component, ElementRef, EventEmitter, HostListener, Input, OnChanges, Output, SimpleChanges, ViewChild } from '@angular/core';
 
 const STARTING_ARC_RADIUS = 10;
@@ -50,7 +60,7 @@ export class ColorPaletteComponent implements AfterViewInit, OnChanges {
 
             this.ctx.fillStyle = blackGrad;
             this.ctx.fillRect(0, 0, width, height);
-            console.log("okkkk");
+            console.log('okkkk');
         }
         if (this.selectedPosition) {
             this.ctx.strokeStyle = 'white';
@@ -59,7 +69,6 @@ export class ColorPaletteComponent implements AfterViewInit, OnChanges {
             this.ctx.arc(this.selectedPosition.x, this.selectedPosition.y, STARTING_ARC_RADIUS, 0, 2 * Math.PI);
             this.ctx.lineWidth = STARTING_LINE_WIDTH;
             this.ctx.stroke();
-
         }
     }
 

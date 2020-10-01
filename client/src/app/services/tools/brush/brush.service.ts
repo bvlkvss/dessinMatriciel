@@ -43,7 +43,6 @@ export class BrushService extends Tool {
     }
     setTexture(id: number): void {
         this.image.src = '../../../assets/b' + id + '.png';
-
     }
     setPrimaryColor(color: string): void {
         this.primaryColor = color;
@@ -113,26 +112,26 @@ export class BrushService extends Tool {
             imageData.data[j] = this.color.red; // Invert Red
             imageData.data[j + 1] = this.color.green; // Invert Green
             imageData.data[j + 2] = this.color.blue; // Invert Blue
-            //imageData.data[j + 3] = this.color.opacity;//working but it transfrom texture to square
+            // imageData.data[j + 3] = this.color.opacity;//working but it transfrom texture to square
         }
     }
 
     makeBaseImage(): HTMLCanvasElement {
         const tempCanvas = document.createElement('canvas');
-        
+
         this.image.height = 250;
         this.image.width = 250;
-        
+
         tempCanvas.width = this.image.width / IMAGE_SIZE_DIVIDER;
         tempCanvas.height = this.image.height / IMAGE_SIZE_DIVIDER;
-        
+
         const tempCtx = tempCanvas.getContext('2d') as CanvasRenderingContext2D;
         tempCtx.drawImage(this.image, 0, 0, this.image.width / IMAGE_SIZE_DIVIDER, this.image.height / IMAGE_SIZE_DIVIDER);
-        
+
         const data = tempCtx.getImageData(0, 0, this.image.width, this.image.height);
         this.changeColor(data);
         tempCtx.putImageData(data, 0, 0);
-        
+
         return tempCanvas;
     }
     private distanceBetween2Points(point1: Vec2, point2: Vec2): number {

@@ -111,7 +111,7 @@ export class DrawingComponent implements AfterViewInit {
     @HostListener('document:mouseup', ['$event'])
     onMouseUp(event: MouseEvent): void {
         if (this.mouseFired) {
-            //after a mousedown in resizer i ignore mouseup and then ignore mouseclick 
+            // after a mousedown in resizer i ignore mouseup and then ignore mouseclick
             return;
         }
         this.tools.currentTool.onMouseUp(event);

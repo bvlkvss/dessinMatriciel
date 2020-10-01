@@ -1,3 +1,13 @@
+/****************************************************************************************
+ * this code was inspired from :
+ *
+ *    Title: color-picker Component with Angular
+ *    Author: Lukas Marx
+ *    Date: 2018
+ *    Availability: https://malcoded.com/posts/angular-color-picker/
+ *
+ ***************************************************************************************/
+
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { Vec2 } from '@app/classes/vec2';
 import { ColorPaletteComponent } from '@app/components/color-picker/color-palette/color-palette.component';

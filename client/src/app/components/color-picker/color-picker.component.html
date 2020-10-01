@@ -1,3 +1,15 @@
+<!--
+ /****************************************************************************************
+ * this html was inspired from :
+ *
+ *    Title: color-picker Component with Angular
+ *    Author: Lukas Marx
+ *    Date: 2018
+ *    Availability: https://malcoded.com/posts/angular-color-picker/
+ *
+ ***************************************************************************************/
+-->
+
 <div class="colorpicker">
     <div class="input-wrapper">
         <p *ngIf="isPrimaryColor" id="primaryColor" class="header">Primary color</p>
@@ -15,7 +27,7 @@
             <div *ngFor="let i of lastColors" class="color-container">
                 <button
                     oncontextmenu="return false;"
-                    (mouseup)="setColorOnClick($event,i)"
+                    (mouseup)="setColorOnClick($event, i)"
                     class="lastColors"
                     [ngStyle]="{ 'background-color': i }"
                 ></button>

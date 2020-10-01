@@ -1,9 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 const MIN_SIZE = 250;
-const DEFAULT_WIDTH = 1000;
-const DEFAULT_HEIGHT = 800;
+const PROPORTION_SIZE = 0.95;
 @Injectable({
     providedIn: 'root',
 })
@@ -13,7 +11,6 @@ export class ResizingService {
     hasBeenResized: boolean = false;
     resizedWidth: number;
     resizedHeight: number;
-    oldResolution: Vec2 = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
     constructor(private drawingService: DrawingService) { }
 
     initResizing(event: MouseEvent): void {
@@ -28,8 +25,13 @@ export class ResizingService {
         }
     }
     resizeFromRight(event: MouseEvent, div: HTMLDivElement, preview: HTMLCanvasElement): void {
-        if (event.pageX - div.getBoundingClientRect().left >= MIN_SIZE) {
-            this.resizedWidth = event.pageX - div.getBoundingClientRect().left;
+        const calculatedWidth = event.pageX - div.getBoundingClientRect().left;
+        const winWidht = window.innerWidth || document.body.clientWidth;
+        if (calculatedWidth >= winWidht * PROPORTION_SIZE) {
+            return;
+        }
+        if (calculatedWidth >= MIN_SIZE) {
+            this.resizedWidth = calculatedWidth;
             preview.width = this.resizedWidth;
         } else {
             this.resizedWidth = MIN_SIZE;
@@ -37,24 +39,37 @@ export class ResizingService {
         }
     }
     resizeFromBottom(event: MouseEvent, div: HTMLDivElement, preview: HTMLCanvasElement): void {
-        if (event.pageY - div.getBoundingClientRect().top >= MIN_SIZE) {
-            this.resizedHeight = event.pageY - div.getBoundingClientRect().top;
+        const calculatedHeight = event.pageY - div.getBoundingClientRect().top;
+        const winHeight = window.innerHeight || document.body.clientHeight;
+        if (calculatedHeight >= winHeight * PROPORTION_SIZE) {
+            return;
+        }
+        if (calculatedHeight >= MIN_SIZE) {
+            this.resizedHeight = calculatedHeight;
             preview.height = this.resizedHeight;
         } else {
             this.resizedHeight = MIN_SIZE;
         }
     }
     resizeFromBottomRight(event: MouseEvent, div: HTMLDivElement, preview: HTMLCanvasElement): void {
-        if (event.pageX - div.getBoundingClientRect().left >= MIN_SIZE && event.pageY - div.getBoundingClientRect().top >= MIN_SIZE) {
+        const calculatedWidth = event.pageX - div.getBoundingClientRect().left;
+        const calculatedHeight = event.pageY - div.getBoundingClientRect().top;
+        const size = {
+            width: window.innerWidth || document.body.clientWidth,
+            height: window.innerHeight || document.body.clientHeight,
+        };
+        if (calculatedWidth >= size.width * PROPORTION_SIZE || calculatedHeight >= size.height * PROPORTION_SIZE) {
+            return;
+        }
+        if (calculatedWidth >= MIN_SIZE && calculatedHeight >= MIN_SIZE) {
             this.resizedWidth = event.pageX - div.getBoundingClientRect().left;
             this.resizedHeight = event.pageY - div.getBoundingClientRect().top;
             preview.width = this.resizedWidth;
             preview.height = this.resizedHeight;
-        } else {
-            this.resizedWidth = MIN_SIZE;
-            this.resizedHeight = MIN_SIZE;
-            preview.width = this.resizedWidth;
-            preview.height = this.resizedHeight;
+        } else if (calculatedWidth >= MIN_SIZE) {
+            this.resizeFromRight(event, div, preview);
+        } else if (calculatedHeight >= MIN_SIZE) {
+            this.resizeFromBottom(event, div, preview);
         }
     }
 
@@ -79,8 +94,6 @@ export class ResizingService {
     stopResize(event: MouseEvent, base: HTMLCanvasElement): void {
         const temp = this.saveCanvas();
         if (this.resizing) {
-            this.oldResolution.x = base.width;
-            this.oldResolution.y = base.height;
             base.width = this.resizedWidth;
             base.height = this.resizedHeight;
             this.resizing = false;
