@@ -30,6 +30,7 @@ export class DrawingService {
     }
     clearCanvas(context: CanvasRenderingContext2D): void {
         context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        context.canvas.style.cursor = 'crosshair';
     }
     restoreCanvasState(): void {
         this.baseCtx.restore();

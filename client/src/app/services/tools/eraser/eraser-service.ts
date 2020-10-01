@@ -72,6 +72,7 @@ export class EraserService extends Tool {
     private clearLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.lineWidth = this.lineWidth;
         ctx.lineCap = 'round';
+        ctx.canvas.style.cursor = 'url("../../../assets/whiteSquare.png"), auto';
         ctx.beginPath();
         ctx.strokeStyle = 'rgba(255,255,255)';
         for (const point of path) {
