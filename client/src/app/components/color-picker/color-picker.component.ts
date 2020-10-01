@@ -4,7 +4,6 @@ import { ColorPaletteComponent } from '@app/components/color-picker/color-palett
 import { ColorSliderComponent } from '@app/components/color-picker/color-slider/color-slider.component';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
 
-
 // tslint:disable:no-magic-numbers
 @Component({
     selector: 'app-color-picker',
@@ -16,53 +15,51 @@ export class ColorPickerComponent implements OnInit {
     color: string;
     @Input() isPrimaryColor: boolean = true;
     opacity: string;
-    @ViewChild("palette") colorPalette: ColorPaletteComponent;
-    @ViewChild("slider") colorSlider: ColorSliderComponent;
+    @ViewChild('palette') colorPalette: ColorPaletteComponent;
+    @ViewChild('slider') colorSlider: ColorSliderComponent;
     private selectedPositionSlider: number;
     private selectedPositionPalette: Vec2;
     @Input() lastColors: string[];
     constructor(private tools: ToolsManagerService) {
         this.opacity = 'ff';
         this.color = '#000000';
-
     }
     ngAfterViewInit() {
         this.selectedPositionPalette = this.colorPalette.selectedPosition;
         this.selectedPositionSlider = this.colorSlider.selectedHeight;
-
     }
 
     // tslint:disable-next-line:no-empty
-    ngOnInit(): void {
-    }
+    ngOnInit(): void { }
     acceptChanges(): void {
         this.addColor(this.color);
         this.selectedPositionSlider = this.colorSlider.selectedHeight;
         this.selectedPositionPalette = this.colorPalette.selectedPosition;
         this.setOpacity();
         this.tools.setColor(this.color + this.opacity, this.isPrimaryColor);
-
+    }
+    setColorOnClick(event: MouseEvent, color: string): void {
+        this.color = color;
+        if (event.button === 0) {
+            this.tools.setColor(this.color + this.opacity, true);
+        } else if (event.button === 2) {
+            this.tools.setColor(this.color + this.opacity, false);
+        }
     }
     cancelChanges(): void {
-        if (this.isPrimaryColor)
-            this.color = this.tools.currentTool.primaryColor.slice(0, 7);
-        else
-            this.color = this.tools.currentTool.secondaryColor.slice(0, 7);
+        if (this.isPrimaryColor) this.color = this.tools.currentTool.primaryColor.slice(0, 7);
+        else this.color = this.tools.currentTool.secondaryColor.slice(0, 7);
         const input = document.querySelector('#opacityValue') as HTMLInputElement;
         input.value = ((parseInt(this.opacity, 16) / 255) * 100).toString();
-        if (this.colorSlider.selectedHeight != this.selectedPositionSlider) {
+        if (this.colorSlider.selectedHeight !== this.selectedPositionSlider) {
             this.colorSlider.selectedHeight = this.selectedPositionSlider;
             this.colorSlider.draw();
             this.colorSlider.color.emit(this.color);
         }
-        if (this.colorPalette.selectedPosition != this.selectedPositionPalette) {
+        if (this.colorPalette.selectedPosition !== this.selectedPositionPalette) {
             this.colorPalette.selectedPosition = this.selectedPositionPalette;
             this.colorPalette.draw();
-
         }
-
-
-
     }
     setOpacity(): void {
         const input = document.querySelector('#opacityValue') as HTMLInputElement;
