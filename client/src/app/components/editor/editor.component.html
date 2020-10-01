@@ -1,6 +1,10 @@
 <div id="background-vue">
     <div class="container">
-        <app-sidebar style="z-index: 1"></app-sidebar>
+        <app-sidebar
+            [primaryColor]="currentTool.primaryColor.slice(0, 7)"
+            [secondaryColor]="currentTool.secondaryColor.slice(0, 7)"
+            style="z-index: 1"
+        ></app-sidebar>
         <app-attributebar id="attributeBar"></app-attributebar>
 
         <div id="drawing-div" class="drawing-container">

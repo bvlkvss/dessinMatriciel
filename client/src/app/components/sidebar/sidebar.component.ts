@@ -1,4 +1,4 @@
-import { Component} from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { UserGuideComponent } from '@app/components/user-guide/user-guide.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
@@ -8,11 +8,21 @@ import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.ser
     templateUrl: './sidebar.component.html',
     styleUrls: ['./sidebar.component.scss'],
 })
-export class SidebarComponent {
+export class SidebarComponent implements OnChanges {
     constructor(private tools: ToolsManagerService, protected drawingService: DrawingService) { }
+    @Input() primaryColor: string = this.tools.currentTool.primaryColor.slice(0, 7);
+    @Input() secondaryColor: string = this.tools.currentTool.secondaryColor.slice(0, 7);
 
     attributeBarIsActive: boolean = false;
+    ngOnChanges(changes: SimpleChanges): void {
+        let primColorDiv = document.querySelector(".color-box1") as HTMLElement;
+        let secondColorDiv = document.querySelector(".color-box2") as HTMLElement;
+        primColorDiv.style.backgroundColor = this.primaryColor;
+        secondColorDiv.style.backgroundColor = this.secondaryColor;
+
+    }
     displayPalette(toolName: string): void {
+        console.log(this.primaryColor);
         if (!this.attributeBarIsActive) {
             this.attributeBarIsActive = true;
             this.togglecanvas('drawing-container-open');
