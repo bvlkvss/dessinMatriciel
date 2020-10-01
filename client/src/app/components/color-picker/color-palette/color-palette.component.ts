@@ -50,15 +50,16 @@ export class ColorPaletteComponent implements AfterViewInit, OnChanges {
 
             this.ctx.fillStyle = blackGrad;
             this.ctx.fillRect(0, 0, width, height);
+            console.log("okkkk");
+        }
+        if (this.selectedPosition) {
+            this.ctx.strokeStyle = 'white';
+            this.ctx.fillStyle = 'white';
+            this.ctx.beginPath();
+            this.ctx.arc(this.selectedPosition.x, this.selectedPosition.y, STARTING_ARC_RADIUS, 0, 2 * Math.PI);
+            this.ctx.lineWidth = STARTING_LINE_WIDTH;
+            this.ctx.stroke();
 
-            if (this.selectedPosition) {
-                this.ctx.strokeStyle = 'white';
-                this.ctx.fillStyle = 'white';
-                this.ctx.beginPath();
-                this.ctx.arc(this.selectedPosition.x, this.selectedPosition.y, STARTING_ARC_RADIUS, 0, 2 * Math.PI);
-                this.ctx.lineWidth = STARTING_LINE_WIDTH;
-                this.ctx.stroke();
-            }
         }
     }
 
@@ -78,7 +79,6 @@ export class ColorPaletteComponent implements AfterViewInit, OnChanges {
     }
 
     onMouseDown(evt: MouseEvent): void {
-        console.log('haha');
         this.mousedown = true;
         this.selectedPosition = { x: evt.offsetX, y: evt.offsetY };
         this.draw();

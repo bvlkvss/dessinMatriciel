@@ -7,8 +7,8 @@
     </div>
     <div id="pickerContainer">
         <div class="color-wrapper">
-            <app-color-palette [hue]="hue" (color)="color = $event"></app-color-palette>
-            <app-color-slider (color)="hue = $event"></app-color-slider>
+            <app-color-palette #palette [hue]="hue" (color)="color = $event"></app-color-palette>
+            <app-color-slider #slider (color)="hue = $event"></app-color-slider>
         </div>
         <div class="container">
             <p class="header">Last colors :</p>

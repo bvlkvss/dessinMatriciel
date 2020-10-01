@@ -1,5 +1,9 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Vec2 } from '@app/classes/vec2';
+import { ColorPaletteComponent } from '@app/components/color-picker/color-palette/color-palette.component';
+import { ColorSliderComponent } from '@app/components/color-picker/color-slider/color-slider.component';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
+
 
 // tslint:disable:no-magic-numbers
 @Component({
@@ -12,29 +16,52 @@ export class ColorPickerComponent implements OnInit {
     color: string;
     @Input() isPrimaryColor: boolean = true;
     opacity: string;
+    @ViewChild("palette") colorPalette: ColorPaletteComponent;
+    @ViewChild("slider") colorSlider: ColorSliderComponent;
+    private selectedPositionSlider: number;
+    private selectedPositionPalette: Vec2;
     @Input() lastColors: string[];
     constructor(private tools: ToolsManagerService) {
         this.opacity = 'ff';
         this.color = '#000000';
+
     }
+    ngAfterViewInit() {
+        this.selectedPositionPalette = this.colorPalette.selectedPosition;
+        this.selectedPositionSlider = this.colorSlider.selectedHeight;
+
+    }
+
     // tslint:disable-next-line:no-empty
     ngOnInit(): void {
     }
     acceptChanges(): void {
         this.addColor(this.color);
+        this.selectedPositionSlider = this.colorSlider.selectedHeight;
+        this.selectedPositionPalette = this.colorPalette.selectedPosition;
         this.setOpacity();
         this.tools.setColor(this.color + this.opacity, this.isPrimaryColor);
-        if (!this.isPrimaryColor)
-            console.log(this.tools.currentTool.secondaryColor);
+
     }
     cancelChanges(): void {
         if (this.isPrimaryColor)
             this.color = this.tools.currentTool.primaryColor.slice(0, 7);
         else
             this.color = this.tools.currentTool.secondaryColor.slice(0, 7);
-
         const input = document.querySelector('#opacityValue') as HTMLInputElement;
         input.value = ((parseInt(this.opacity, 16) / 255) * 100).toString();
+        if (this.colorSlider.selectedHeight != this.selectedPositionSlider) {
+            this.colorSlider.selectedHeight = this.selectedPositionSlider;
+            this.colorSlider.draw();
+            this.colorSlider.color.emit(this.color);
+        }
+        if (this.colorPalette.selectedPosition != this.selectedPositionPalette) {
+            this.colorPalette.selectedPosition = this.selectedPositionPalette;
+            this.colorPalette.draw();
+
+        }
+
+
 
     }
     setOpacity(): void {
