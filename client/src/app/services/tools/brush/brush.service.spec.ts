@@ -1,3 +1,4 @@
+/* tslint:disable */
 import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Vec2 } from '@app/classes/vec2';
@@ -5,8 +6,6 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { delay } from 'rxjs/operators';
 import { BrushService } from './brush.service';
 
-// tslint:disable:no-magic-numbers
-// tslint:disable:no-any
 describe('BrushService', () => {
     let service: BrushService;
     let mouseEvent: MouseEvent;
@@ -43,8 +42,7 @@ describe('BrushService', () => {
         changeColorSpy = spyOn<any>(service, 'changeColor').and.callThrough();
         getPositionSpy = spyOn<any>(service, 'getPositionFromMouse').and.callThrough();
 
-        // tslint:disable:no-string-literal
-        service['drawingService'].baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
+        service['drawingService'].baseCtx = baseCtxStub;
         service['drawingService'].previewCtx = previewCtxStub;
     });
 
@@ -171,8 +169,8 @@ describe('BrushService', () => {
     });
 
     it('should change color to #ababab when setPrimaryColor is called with #ababab as paramater', () => {
-        service.setPrimaryColor("#ababab");
-        let color = (service as any).primaryColor
+        service.setPrimaryColor('#ababab');
+        let color = (service as any).primaryColor;
         expect(color).toEqual('#ababab');
     });
 });

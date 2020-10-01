@@ -1,3 +1,4 @@
+/* tslint:disable */
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ColorSliderComponent } from './color-slider.component';
 
@@ -55,17 +56,17 @@ describe('ColorSliderComponent', () => {
     });
 
     it('getColoratPosition should return a color string equivalent to right color', () => {
-        let imgData = (component as any).ctx.getImageData(0,0,1,1);
+        let imgData = (component as any).ctx.getImageData(0, 0, 1, 1);
         imgData.data[0] = 255;
         imgData.data[1] = 255;
         imgData.data[2] = 255;
         (component as any).ctx.putImageData(imgData, 0, 0);
-        let color = component.getColorAtPosition(0,0);
+        let color = component.getColorAtPosition(0, 0);
         expect(color).toEqual('#ffffff');
     });
 
     it('emitColor should call emit', () => {
-        component.emitColor(0,0);
+        component.emitColor(0, 0);
         expect(emitSpy).toHaveBeenCalled();
     });
 
@@ -74,7 +75,7 @@ describe('ColorSliderComponent', () => {
             offsetX: 25,
             offsetY: 25,
             button: 0,
-        } as MouseEvent
+        } as MouseEvent;
         component.onMouseDown(mouseEvent);
         expect((component as any).mousedown).toBe(true);
         expect((component as any).selectedHeight).toEqual(mouseEvent.offsetY);
@@ -85,20 +86,19 @@ describe('ColorSliderComponent', () => {
             offsetX: 25,
             offsetY: 25,
             button: 0,
-        } as MouseEvent
+        } as MouseEvent;
         (component as any).mousedown = true;
         component.onMouseMove(mouseEvent);
         expect((component as any).mousedown).toBe(true);
         expect((component as any).selectedHeight).toEqual(mouseEvent.offsetY);
     });
-    
 
     it('onMouseMove should not do anything if mousedown is false', () => {
         let mouseEvent = {
             offsetX: 25,
             offsetY: 25,
             button: 0,
-        } as MouseEvent
+        } as MouseEvent;
         (component as any).mousedown = false;
         component.onMouseMove(mouseEvent);
         expect((component as any).mousedown).not.toBe(true);

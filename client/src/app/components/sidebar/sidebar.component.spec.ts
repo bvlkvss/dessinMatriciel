@@ -1,3 +1,4 @@
+/* tslint:disable */
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ComponentFixtureAutoDetect } from '@angular/core/testing';
 import { SidebarComponent } from './sidebar.component';
@@ -14,7 +15,7 @@ import { UserGuideComponent } from '../user-guide/user-guide.component';
 
 describe('SidebarComponent', () => {
     let component: SidebarComponent;
-    let fixture: ComponentFixture<SidebarComponent>
+    let fixture: ComponentFixture<SidebarComponent>;
     let toolManagerStub: ToolsManagerService;
     let pencilStub: PencilService;
     let brushStub: BrushService;
@@ -35,7 +36,11 @@ describe('SidebarComponent', () => {
         toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub);
         TestBed.configureTestingModule({
             declarations: [SidebarComponent],
-            providers: [{ provide: ToolsManagerService, useValue: toolManagerStub}, {provide: DrawingService, useValue: drawServiceMock }, { provide: ComponentFixtureAutoDetect, useValue: true }],
+            providers: [
+                { provide: ToolsManagerService, useValue: toolManagerStub },
+                { provide: DrawingService, useValue: drawServiceMock },
+                { provide: ComponentFixtureAutoDetect, useValue: true },
+            ],
         }).compileComponents();
     }));
 
@@ -52,26 +57,25 @@ describe('SidebarComponent', () => {
     it('should call togglecanvas when displayPalette is called and set attribute bar to true', () => {
         component.attributeBarIsActive = false;
         let togglecanvasSpy = spyOn(component, 'togglecanvas');
-        component.displayPalette("brush");
+        component.displayPalette('brush');
         expect(component.attributeBarIsActive).toEqual(true);
         expect(togglecanvasSpy).toHaveBeenCalled();
     });
 
-
     it('should call togglecanvas when displayPalette is called and set attribute bar to false if currentTool is given name', () => {
         component.attributeBarIsActive = true;
-        (component as any).tools.currentTool = (component as any).tools.getTools().get("brush")
+        (component as any).tools.currentTool = (component as any).tools.getTools().get('brush');
         let togglecanvasSpy = spyOn(component, 'togglecanvas');
-        component.displayPalette("brush");
+        component.displayPalette('brush');
         expect(component.attributeBarIsActive).toEqual(false);
         expect(togglecanvasSpy).toHaveBeenCalled();
     });
 
     it('should not call togglecanvas when displayPalette is called and  attribute bar is false if currentTool is not given name', () => {
         component.attributeBarIsActive = true;
-        (component as any).tools.currentTool = (component as any).tools.getTools().get("rectangle")
+        (component as any).tools.currentTool = (component as any).tools.getTools().get('rectangle');
         let togglecanvasSpy = spyOn(component, 'togglecanvas');
-        component.displayPalette("brush");
+        component.displayPalette('brush');
         expect(component.attributeBarIsActive).toEqual(true);
         expect(togglecanvasSpy).not.toHaveBeenCalled();
     });
@@ -96,38 +100,37 @@ describe('SidebarComponent', () => {
 
     it('should call restoreCanvasState when changeTools is called', () => {
         let restoreCanvasStateSpy = spyOn(drawServiceMock, 'restoreCanvasState');
-        component.changeTools("brush");
+        component.changeTools('brush');
         expect(restoreCanvasStateSpy).toHaveBeenCalled();
     });
 
     it('should set element to none if primaryColor was not given as attribute to toggleColorPalette', () => {
         var dummyElement = document.createElement('div');
-        dummyElement.id = "primaryColorPicker";
+        dummyElement.id = 'primaryColorPicker';
         document.querySelector = jasmine.createSpy('HTML Element').and.returnValue(dummyElement);
-        component.toggleColorPalette("dummyPalette");
-        expect(dummyElement.style.display).toEqual("none");
+        component.toggleColorPalette('dummyPalette');
+        expect(dummyElement.style.display).toEqual('none');
     });
 
     it('should set element to none if primaryColor was  given as attribute to toggleColorPalette', () => {
         var dummyElement = document.createElement('div');
-        dummyElement.id = "primaryColorPicker";
+        dummyElement.id = 'primaryColorPicker';
         document.querySelector = jasmine.createSpy('HTML Element').and.returnValue(dummyElement);
-        component.toggleColorPalette("primaryColorPicker");
-        expect(dummyElement.style.display).toEqual("none");
+        component.toggleColorPalette('primaryColorPicker');
+        expect(dummyElement.style.display).toEqual('none');
     });
 
     it('should set class name when togglecanvas is called', () => {
         var dummyElement = document.createElement('div');
         document.getElementById = jasmine.createSpy('HTML Element').and.returnValue(dummyElement);
-        component.togglecanvas("dummyClassName");
-        expect(dummyElement.className).toEqual("dummyClassName");
+        component.togglecanvas('dummyClassName');
+        expect(dummyElement.className).toEqual('dummyClassName');
     });
 
     it('should set primaryColor to secondaryColor when revertColor is called', () => {
-        toolManagerStub.currentTool.primaryColor = "#aabbccdd";
-        toolManagerStub.currentTool.secondaryColor = "#bbaabbaa";
+        toolManagerStub.currentTool.primaryColor = '#aabbccdd';
+        toolManagerStub.currentTool.secondaryColor = '#bbaabbaa';
         component.revertColors();
-        expect(toolManagerStub.currentTool.primaryColor).toEqual("#bbaabbaa");
+        expect(toolManagerStub.currentTool.primaryColor).toEqual('#bbaabbaa');
     });
-   
 });

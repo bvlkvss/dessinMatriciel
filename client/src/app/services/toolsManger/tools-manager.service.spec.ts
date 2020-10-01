@@ -1,3 +1,4 @@
+/* tslint:disable */
 import { TestBed } from '@angular/core/testing';
 import { Tool } from '@app/classes/tool';
 import { EllipseService } from '../tools/ellipse/ellipse.service';
@@ -18,52 +19,48 @@ describe('ToolsManagerService', () => {
     });
 
     it('should call setPrimaryColor when setColor is called and is Primary is true', () => {
-        let setPrimaryColorSpy = spyOn(service.currentTool, "setPrimaryColor");
-        service.setColor("#ababab",true);
+        let setPrimaryColorSpy = spyOn(service.currentTool, 'setPrimaryColor');
+        service.setColor('#ababab', true);
         expect(setPrimaryColorSpy).toHaveBeenCalled();
     });
 
     it('should call setSecondaryColor when setColor is called and is Primary is false', () => {
-        let setPrimaryColorSpy = spyOn(service.currentTool, "setPrimaryColor");
-        let setSecondaryColor = spyOn(service.currentTool, "setSecondaryColor");
-        service.setColor("#ababab",false);
+        let setPrimaryColorSpy = spyOn(service.currentTool, 'setPrimaryColor');
+        let setSecondaryColor = spyOn(service.currentTool, 'setSecondaryColor');
+        service.setColor('#ababab', false);
         expect(setSecondaryColor).toHaveBeenCalled();
         expect(setPrimaryColorSpy).not.toHaveBeenCalled();
     });
 
     it('should call rectangle setStyle when setRectangleStyle is called', () => {
-        service.currentTool = service.getTools().get("rectangle") as Tool;
-        let setStyleSpy = spyOn(service.currentTool as RectangleService, "setStyle");
-        
+        service.currentTool = service.getTools().get('rectangle') as Tool;
+        let setStyleSpy = spyOn(service.currentTool as RectangleService, 'setStyle');
+
         service.setRectangleStyle(1);
         expect(setStyleSpy).toHaveBeenCalled();
-        
     });
 
     it('should call ellipse setStyle when setEllipseStyle is called', () => {
-        service.currentTool = service.getTools().get("ellipse") as Tool;
-        let setStyleSpy = spyOn(service.currentTool as EllipseService, "setStyle");
-        
+        service.currentTool = service.getTools().get('ellipse') as Tool;
+        let setStyleSpy = spyOn(service.currentTool as EllipseService, 'setStyle');
+
         service.setEllipseStyle(1);
         expect(setStyleSpy).toHaveBeenCalled();
-        
     });
 
     it('should call line setJunctionWidth when setJunctionWidth is called', () => {
-        service.currentTool = service.getTools().get("line") as Tool;
-        let setJunctionWidthSpy = spyOn(service.currentTool as LineService, "setJunctionWidth");
-        
+        service.currentTool = service.getTools().get('line') as Tool;
+        let setJunctionWidthSpy = spyOn(service.currentTool as LineService, 'setJunctionWidth');
+
         service.setJunctionWidth(1);
-        expect(setJunctionWidthSpy).toHaveBeenCalled(); 
+        expect(setJunctionWidthSpy).toHaveBeenCalled();
     });
 
     it('should call line setJunctionState when setJunctionState is called', () => {
-        service.currentTool = service.getTools().get("line") as Tool;
-        let setJunctionStateSpy = spyOn(service.currentTool as LineService, "setJunctionState");
-        
-        service.setJunctionState(true);
-        expect(setJunctionStateSpy).toHaveBeenCalled(); 
-    });
+        service.currentTool = service.getTools().get('line') as Tool;
+        let setJunctionStateSpy = spyOn(service.currentTool as LineService, 'setJunctionState');
 
-    
+        service.setJunctionState(true);
+        expect(setJunctionStateSpy).toHaveBeenCalled();
+    });
 });

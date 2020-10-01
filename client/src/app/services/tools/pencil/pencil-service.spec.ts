@@ -1,10 +1,10 @@
+/* tslint:disable */
 import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { PencilService } from './pencil-service';
 
-// tslint:disable:no-any
 describe('PencilService', () => {
     let service: PencilService;
     let mouseEvent: MouseEvent;
@@ -26,9 +26,7 @@ describe('PencilService', () => {
         service = TestBed.inject(PencilService);
         drawLineSpy = spyOn<any>(service, 'drawLine').and.callThrough();
         clearPathSpy = spyOn<any>(service, 'clearPath').and.callThrough();
-        // Configuration du spy du service
-        // tslint:disable:no-string-literal
-        service['drawingService'].baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
+        service['drawingService'].baseCtx = baseCtxStub;
         service['drawingService'].previewCtx = previewCtxStub;
 
         mouseEvent = {
@@ -57,7 +55,7 @@ describe('PencilService', () => {
         const mouseEventRClick = {
             offsetX: 25,
             offsetY: 25,
-            button: 1, // TODO: Avoir ceci dans un enum accessible
+            button: 1,
         } as MouseEvent;
         service.onMouseDown(mouseEventRClick);
         expect(service.mouseDown).toEqual(false);
@@ -127,26 +125,23 @@ describe('PencilService', () => {
     });
 
     it('setLineWidth should set lineWidth to correct value', () => {
-        // tslint:disable-next-line:no-magic-numbers
         service.setLineWidth(3);
-        // tslint:disable-next-line:no-magic-numbers
+
         expect(service.lineWidth).toEqual(3);
     });
 
     it('setPrimaryColor should set primaryColor to correct value', () => {
-        // tslint:disable-next-line:no-magic-numbers
         service.setPrimaryColor('#ababab');
-        // tslint:disable-next-line:no-magic-numbers
+
         expect(service.primaryColor).toEqual('#ababab');
     });
 
-    // Exemple de test d'intégration qui est quand même utile
     it(' should change the pixel of the canvas ', () => {
         mouseEvent = { offsetX: 0, offsetY: 0, button: 1 } as MouseEvent;
         service.onMouseDown(mouseEvent);
         mouseEvent = { offsetX: 1, offsetY: 0, button: 1 } as MouseEvent;
         service.onMouseUp(mouseEvent);
-        // Premier pixel seulement
+
         const imageData: ImageData = baseCtxStub.getImageData(0, 0, 1, 1);
         expect(imageData.data[0]).toEqual(0); // R
         expect(imageData.data[1]).toEqual(0); // G

@@ -1,3 +1,4 @@
+/* tslint:disable */
 import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { DrawingService } from './drawing.service';
@@ -54,20 +55,20 @@ describe('DrawingService', () => {
     });
 
     it('resizeCanvas should set canvasSize to 250X250 if width and height are less than 500', () => {
-        let element = {clientWidth: 300, clientHeight:300} as HTMLElement;
-        let element2 = {clientWidth: 300, clientHeight:700} as HTMLElement;
+        let element = { clientWidth: 300, clientHeight: 300 } as HTMLElement;
+        let element2 = { clientWidth: 300, clientHeight: 700 } as HTMLElement;
         let elementArray = [element, element2] as any;
         spyOn(document, 'querySelectorAll').and.returnValue(elementArray);
-        service.resizeCanvas()
+        service.resizeCanvas();
         expect(service.canvasSize.x).toEqual(250);
     });
 
     it('resizeCanvas should set canvasSize.x to 350  if workspace width is 750', () => {
-        let element = {clientWidth: 750, clientHeight:700} as HTMLElement;
-        let element2 = {clientWidth: 300, clientHeight:700} as HTMLElement;
+        let element = { clientWidth: 750, clientHeight: 700 } as HTMLElement;
+        let element2 = { clientWidth: 300, clientHeight: 700 } as HTMLElement;
         let elementArray = [element, element2] as any;
         spyOn(document, 'querySelectorAll').and.returnValue(elementArray);
-        service.resizeCanvas()
+        service.resizeCanvas();
         expect(service.canvasSize.x).toEqual(350);
     });
 });

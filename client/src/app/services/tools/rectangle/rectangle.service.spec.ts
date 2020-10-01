@@ -1,10 +1,10 @@
+/* tslint:disable */
 import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { RectangleService } from './rectangle.service';
 
-// tslint:disable:no-any
 describe('RectangleService', () => {
     let service: RectangleService;
     let mouseEvent: MouseEvent;
@@ -16,7 +16,7 @@ describe('RectangleService', () => {
     let drawRectangleSpy: jasmine.Spy<any>;
 
     beforeEach(() => {
-        canvasStub = canvasTestHelper.canvas
+        canvasStub = canvasTestHelper.canvas;
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
         drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
@@ -27,16 +27,14 @@ describe('RectangleService', () => {
         service = TestBed.inject(RectangleService);
         drawRectangleSpy = spyOn<any>(service, 'drawRectangle').and.callThrough();
 
-        // Configuration du spy du service
-        // tslint:disable:no-string-literal
-        service['drawingService'].canvas = canvasStub; 
-        service['drawingService'].baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
+        service['drawingService'].canvas = canvasStub;
+        service['drawingService'].baseCtx = baseCtxStub;
         service['drawingService'].previewCtx = previewCtxStub;
         service['drawingService'].canvas.width = canvasStub.width;
-        service['drawingService'].canvas.height = canvasStub.height; 
-        service['drawingService'].baseCtx.canvas.width = baseCtxStub.canvas.width; // Jasmine doesnt copy properties with underlying data
+        service['drawingService'].canvas.height = canvasStub.height;
+        service['drawingService'].baseCtx.canvas.width = baseCtxStub.canvas.width;
         service['drawingService'].previewCtx.canvas.width = previewCtxStub.canvas.width;
-        service['drawingService'].baseCtx.canvas.height = baseCtxStub.canvas.height; // Jasmine doesnt copy properties with underlying data
+        service['drawingService'].baseCtx.canvas.height = baseCtxStub.canvas.height;
         service['drawingService'].previewCtx.canvas.height = previewCtxStub.canvas.height;
 
         mouseEvent = {
@@ -51,7 +49,7 @@ describe('RectangleService', () => {
     });
 
     it('style should be set to assigned value when setStyle is called', () => {
-        service.setStyle(2)
+        service.setStyle(2);
         expect(service.rectangleStyle).toEqual(2);
     });
 
@@ -70,16 +68,15 @@ describe('RectangleService', () => {
         const mouseEventRClick = {
             offsetX: 25,
             offsetY: 25,
-            button: 1, // TODO: Avoir ceci dans un enum accessible
+            button: 1,
         } as MouseEvent;
         service.onMouseDown(mouseEventRClick);
         expect(service.mouseDown).toEqual(false);
     });
 
     it('setLineWidth should set lineWidth to correct value', () => {
-        // tslint:disable-next-line:no-magic-numbers
         service.setLineWidth(3);
-        // tslint:disable-next-line:no-magic-numbers
+
         expect(service.lineWidth).toEqual(3);
     });
 
@@ -96,7 +93,7 @@ describe('RectangleService', () => {
     });
 
     it('onMouseOut should  set isOut to true if mouse is  down', () => {
-        service.mouseDownCoord = {x:6, y:20};
+        service.mouseDownCoord = { x: 6, y: 20 };
         service.mouseDown = true;
         service.isOut = false;
         service.onMouseOut(mouseEvent);
@@ -110,7 +107,7 @@ describe('RectangleService', () => {
     });
 
     it('onMouseOut should call drawRectangle if mouseDown is true', () => {
-        service.mouseDownCoord = {x:6, y:20};
+        service.mouseDownCoord = { x: 6, y: 20 };
         service.rectangleStyle = 1;
         service.mouseDown = true;
         service.onMouseOut(mouseEvent);
@@ -118,7 +115,7 @@ describe('RectangleService', () => {
     });
 
     it('onMouseOut should set x to 100 if more than 100', () => {
-        service.mouseDownCoord = {x:6, y:20};
+        service.mouseDownCoord = { x: 6, y: 20 };
         service.rectangleStyle = 2;
         let mouseOutEvent = {
             offsetX: 103,
@@ -131,7 +128,7 @@ describe('RectangleService', () => {
     });
 
     it('onMouseOut should set x to 0 if less than 0', () => {
-        service.mouseDownCoord = {x:6, y:20};
+        service.mouseDownCoord = { x: 6, y: 20 };
         service.rectangleStyle = 0;
         let mouseOutEvent = {
             offsetX: -2,
@@ -144,7 +141,7 @@ describe('RectangleService', () => {
     });
 
     it('onMouseOut should set y to 100 if more than 100', () => {
-        service.mouseDownCoord = {x:6, y:20};
+        service.mouseDownCoord = { x: 6, y: 20 };
         let mouseOutEvent = {
             offsetX: 25,
             offsetY: 102,
@@ -156,7 +153,7 @@ describe('RectangleService', () => {
     });
 
     it('onMouseOut should set y to 0 if less than 0', () => {
-        service.mouseDownCoord = {x:6, y:20};
+        service.mouseDownCoord = { x: 6, y: 20 };
         let mouseOutEvent = {
             offsetX: 25,
             offsetY: -2,
@@ -179,15 +176,15 @@ describe('RectangleService', () => {
     });
 
     it('onMouseUp should  call drawRectangle if mouse is down', () => {
-        service.mouseDownCoord = {x:6, y:20};
+        service.mouseDownCoord = { x: 6, y: 20 };
         service.mouseDown = true;
         service.onMouseUp(mouseEvent);
         expect(drawRectangleSpy).toHaveBeenCalled();
     });
 
     it('if mouse is out onMouseUp should  call drawRectangle with mouseOutCoords', () => {
-        service.mouseDownCoord = {x:6, y:20};
-        service.mouseOutCoord = {x:102, y:20};
+        service.mouseDownCoord = { x: 6, y: 20 };
+        service.mouseOutCoord = { x: 102, y: 20 };
         service.mouseDown = true;
         service.isOut = true;
         service.onMouseUp(mouseEvent);
@@ -195,14 +192,14 @@ describe('RectangleService', () => {
     });
 
     it('onMouseMove should  not call drawRectangle if mouse is not down', () => {
-        service.mouseDownCoord = {x:6, y:20};
+        service.mouseDownCoord = { x: 6, y: 20 };
         service.mouseDown = false;
         service.onMouseMove(mouseEvent);
         expect(drawRectangleSpy).not.toHaveBeenCalled();
     });
 
     it('onMouseMove should  call drawRectangle if mouse is down', () => {
-        service.mouseDownCoord = {x:6, y:20};
+        service.mouseDownCoord = { x: 6, y: 20 };
         service.mouseDown = true;
         service.onMouseMove(mouseEvent);
         expect(drawRectangleSpy).toHaveBeenCalled();
@@ -212,7 +209,7 @@ describe('RectangleService', () => {
         service.mouseDown = false;
         const event = new KeyboardEvent('document:keydown', {
             key: 'z',
-            shiftKey:false,
+            shiftKey: false,
         });
         service.onKeyUp(event);
         expect(drawRectangleSpy).not.toHaveBeenCalled();
@@ -222,19 +219,19 @@ describe('RectangleService', () => {
         service.mouseDown = true;
         const event = new KeyboardEvent('document:keydown', {
             key: 'Shift',
-            shiftKey:true,
+            shiftKey: true,
         });
         service.onKeyUp(event);
         expect(drawRectangleSpy).not.toHaveBeenCalled();
     });
 
     it('onKeyUp should call drawRectangle if shift is not pressed and mouseDown is true', () => {
-        service.mouseDownCoord = {x:6, y:20};
-        service.currentPos = {x:8, y:42};
+        service.mouseDownCoord = { x: 6, y: 20 };
+        service.currentPos = { x: 8, y: 42 };
         service.mouseDown = true;
         const event = new KeyboardEvent('document:keydown', {
             key: 'z',
-            shiftKey:false,
+            shiftKey: false,
         });
 
         service.onKeyUp(event);
@@ -246,7 +243,7 @@ describe('RectangleService', () => {
         service.toSquare = false;
         const event = new KeyboardEvent('document:keydown', {
             key: 'Shift',
-            shiftKey:true,
+            shiftKey: true,
         });
 
         service.onKeyDown(event);
@@ -254,12 +251,12 @@ describe('RectangleService', () => {
     });
 
     it('shift onKeyDown should not set toSquare to true if mouse is down but shift is not pressed', () => {
-        service.mouseDownCoord = {x:6, y:20};
+        service.mouseDownCoord = { x: 6, y: 20 };
         service.mouseDown = true;
         service.toSquare = false;
         const event = new KeyboardEvent('document:keydown', {
             key: 'z',
-            shiftKey:false,
+            shiftKey: false,
         });
 
         service.onKeyDown(event);
@@ -267,13 +264,13 @@ describe('RectangleService', () => {
     });
 
     it('shift onKeyDown should set toSquare to true if mouse is down and shift is  pressed', () => {
-        service.mouseDownCoord = {x:6, y:20};
-        service.currentPos = {x:20, y:22};
+        service.mouseDownCoord = { x: 6, y: 20 };
+        service.currentPos = { x: 20, y: 22 };
         service.mouseDown = true;
         service.toSquare = false;
         const event = new KeyboardEvent('document:keydown', {
             key: 'Shift',
-            shiftKey:true,
+            shiftKey: true,
         });
 
         service.onKeyDown(event);
@@ -281,13 +278,13 @@ describe('RectangleService', () => {
     });
 
     it('shift onKeyDown should call drawRectangle and toSquare should be true if mouse is down and shift is  pressed', () => {
-        service.mouseDownCoord = {x:6, y:20};
-        service.currentPos = {x:20, y:54};
+        service.mouseDownCoord = { x: 6, y: 20 };
+        service.currentPos = { x: 20, y: 54 };
         service.mouseDown = true;
         service.toSquare = false;
         const event = new KeyboardEvent('document:keydown', {
             key: 'Shift',
-            shiftKey:true,
+            shiftKey: true,
         });
 
         service.onKeyDown(event);

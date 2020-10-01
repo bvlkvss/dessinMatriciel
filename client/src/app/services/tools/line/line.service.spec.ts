@@ -1,3 +1,4 @@
+/* tslint:disable */
 import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Vec2 } from '@app/classes/vec2';
@@ -33,16 +34,14 @@ describe('LineService', () => {
         drawLinesSpy = spyOn<any>(service, 'drawLines').and.callThrough();
         pushSpy = spyOn<any>((service as any).pathData, 'push').and.callThrough();
         popSpy = spyOn<any>((service as any).pathData, 'pop').and.callThrough();
-        // Configuration du spy du service
-        // tslint:disable:no-string-literal
         service['drawingService'].canvas = canvasStub;
-        service['drawingService'].baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
+        service['drawingService'].baseCtx = baseCtxStub;
         service['drawingService'].previewCtx = previewCtxStub;
         service['drawingService'].canvas.width = canvasStub.width;
         service['drawingService'].canvas.height = canvasStub.height;
-        service['drawingService'].baseCtx.canvas.width = baseCtxStub.canvas.width; // Jasmine doesnt copy properties with underlying data
+        service['drawingService'].baseCtx.canvas.width = baseCtxStub.canvas.width;
         service['drawingService'].previewCtx.canvas.width = previewCtxStub.canvas.width;
-        service['drawingService'].baseCtx.canvas.height = baseCtxStub.canvas.height; // Jasmine doesnt copy properties with underlying data
+        service['drawingService'].baseCtx.canvas.height = baseCtxStub.canvas.height;
         service['drawingService'].previewCtx.canvas.height = previewCtxStub.canvas.height;
 
         mouseEvent = {
@@ -189,13 +188,13 @@ describe('LineService', () => {
     });
 
     it('onKeyDown should call drawLine and drawLines if not dblClick and shift is pressed', () => {
-      let point =  {x:0, y:0} as Vec2;
-      let point2 = {x:5, y:6} as Vec2;
-      let point3 = {x:9, y:17} as Vec2;
-      (service as any).pathData.push(point);
-      (service as any).pathData.push(point2);
-      service.currentPos = point3;  
-      const event = new KeyboardEvent('document:keydown', {
+        let point = { x: 0, y: 0 } as Vec2;
+        let point2 = { x: 5, y: 6 } as Vec2;
+        let point3 = { x: 9, y: 17 } as Vec2;
+        (service as any).pathData.push(point);
+        (service as any).pathData.push(point2);
+        service.currentPos = point3;
+        const event = new KeyboardEvent('document:keydown', {
             key: 'Shift',
             shiftKey: true,
         });
@@ -208,13 +207,13 @@ describe('LineService', () => {
     });
 
     it('onKeyDown should call drawLine and drawLines if not dblClick and shift is pressed with last x > current x and last y > current y', () => {
-      let point =  {x:0, y:0} as Vec2;
-      let point2 = {x:5, y:12} as Vec2;
-      let point3 = {x:3, y:8} as Vec2;
-      (service as any).pathData.push(point);
-      (service as any).pathData.push(point2);
-      service.currentPos = point3;  
-      const event = new KeyboardEvent('document:keydown', {
+        let point = { x: 0, y: 0 } as Vec2;
+        let point2 = { x: 5, y: 12 } as Vec2;
+        let point3 = { x: 3, y: 8 } as Vec2;
+        (service as any).pathData.push(point);
+        (service as any).pathData.push(point2);
+        service.currentPos = point3;
+        const event = new KeyboardEvent('document:keydown', {
             key: 'Shift',
             shiftKey: true,
         });
@@ -227,13 +226,13 @@ describe('LineService', () => {
     });
 
     it('onKeyDown should call drawLine and drawLines if not dblClick and shift is pressed with last x > current x and ', () => {
-      let point =  {x:0, y:0} as Vec2;
-      let point2 = {x:5, y:6} as Vec2;
-      let point3 = {x:3, y:8} as Vec2;
-      (service as any).pathData.push(point);
-      (service as any).pathData.push(point2);
-      service.currentPos = point3;  
-      const event = new KeyboardEvent('document:keydown', {
+        let point = { x: 0, y: 0 } as Vec2;
+        let point2 = { x: 5, y: 6 } as Vec2;
+        let point3 = { x: 3, y: 8 } as Vec2;
+        (service as any).pathData.push(point);
+        (service as any).pathData.push(point2);
+        service.currentPos = point3;
+        const event = new KeyboardEvent('document:keydown', {
             key: 'Shift',
             shiftKey: true,
         });
@@ -278,13 +277,13 @@ describe('LineService', () => {
     });
 
     it('onKeyUp should  call drawLine and drawLines if shift key is not pressed and not dblClick', () => {
-      let point =  {x:0, y:0} as Vec2;
-      let point2 = {x:5, y:6} as Vec2;
-      let point3 = {x:9, y:2} as Vec2;
-      (service as any).pathData.push(point);
-      (service as any).pathData.push(point2);
-      (service as any).pathData.push(point3);
-      service.currentPos = point3;
+        let point = { x: 0, y: 0 } as Vec2;
+        let point2 = { x: 5, y: 6 } as Vec2;
+        let point3 = { x: 9, y: 2 } as Vec2;
+        (service as any).pathData.push(point);
+        (service as any).pathData.push(point2);
+        (service as any).pathData.push(point3);
+        service.currentPos = point3;
 
         const event = new KeyboardEvent('document:keydown', {
             key: 'z',
@@ -297,14 +296,14 @@ describe('LineService', () => {
     });
 
     it('onKeyUp should  call drawLine and drawLines if shift key is not pressed and not dblClick', () => {
-      let point =  {x:0, y:0} as Vec2;
-      let point2 = {x:5, y:6} as Vec2;
-      let point3 = {x:9, y:2} as Vec2;
-      (service as any).pathData.push(point);
-      (service as any).pathData.push(point2);
-      (service as any).pathData.push(point3);
-      service.currentPos = point3;
-      
+        let point = { x: 0, y: 0 } as Vec2;
+        let point2 = { x: 5, y: 6 } as Vec2;
+        let point3 = { x: 9, y: 2 } as Vec2;
+        (service as any).pathData.push(point);
+        (service as any).pathData.push(point2);
+        (service as any).pathData.push(point3);
+        service.currentPos = point3;
+
         const event = new KeyboardEvent('document:keydown', {
             key: 'z',
             shiftKey: false,

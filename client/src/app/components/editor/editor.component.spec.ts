@@ -1,3 +1,4 @@
+/* tslint:disable */
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { delay } from 'rxjs/operators';
 import { EditorComponent } from './editor.component';
