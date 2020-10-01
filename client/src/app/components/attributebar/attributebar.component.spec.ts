@@ -1,3 +1,4 @@
+/* tslint:disable */
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MockDrawingService } from '@app/components/drawing/drawing.component.spec';
 import { AttributebarComponent } from './attributebar.component';
@@ -187,61 +188,58 @@ describe('AttributebarComponent', () => {
     });
 
     it('should set background to gray when calling setJunctionState and checkbox is false', () => {
-      let _style = {background:"white"};
-      let slider =  {style: _style} as HTMLElement;
-      spyOn(document, "querySelector").and.returnValue(slider);
-      component.setJunctionState();
-      expect(slider.style.background).toEqual('gray');
-  });
+        let _style = { background: 'white' };
+        let slider = { style: _style } as HTMLElement;
+        spyOn(document, 'querySelector').and.returnValue(slider);
+        component.setJunctionState();
+        expect(slider.style.background).toEqual('gray');
+    });
 
-  it('should set idStyleBrush to given value when setTexture is called', () => {
-    let image =  {src: ''} as HTMLImageElement;
-    spyOn(document, "querySelector").and.returnValue(image);
-    component.setTexture(5);
-    expect(component.idStyleBrush).toEqual(5);
-  });
+    it('should set idStyleBrush to given value when setTexture is called', () => {
+        let image = { src: '' } as HTMLImageElement;
+        spyOn(document, 'querySelector').and.returnValue(image);
+        component.setTexture(5);
+        expect(component.idStyleBrush).toEqual(5);
+    });
 
-  it('should call change style with ellipse as argument when calling setShapeStyle and isEllipse is true', () => {
-    
-    let changeStyleSpy = spyOn(component, "changeStyle");
-    let idStyle = 1;
-    component.setShapeStyle(idStyle, true);
-    expect(changeStyleSpy).toHaveBeenCalledWith('currentEllipseStyle', idStyle);
-    expect(component.idStyleRectangle).toEqual(idStyle);
-  });
+    it('should call change style with ellipse as argument when calling setShapeStyle and isEllipse is true', () => {
+        let changeStyleSpy = spyOn(component, 'changeStyle');
+        let idStyle = 1;
+        component.setShapeStyle(idStyle, true);
+        expect(changeStyleSpy).toHaveBeenCalledWith('currentEllipseStyle', idStyle);
+        expect(component.idStyleRectangle).toEqual(idStyle);
+    });
 
-  it('should call change style with rectangle as argument when calling setShapeStyle and isEllipse is false', () => {
-    
-    let changeStyleSpy = spyOn(component, "changeStyle");
-    let idStyle = 1;
-    component.setShapeStyle(idStyle, false);
-    expect(changeStyleSpy).toHaveBeenCalledWith('currentRectangleStyle', idStyle);
-    expect(component.idStyleRectangle).toEqual(idStyle);
-  });
+    it('should call change style with rectangle as argument when calling setShapeStyle and isEllipse is false', () => {
+        let changeStyleSpy = spyOn(component, 'changeStyle');
+        let idStyle = 1;
+        component.setShapeStyle(idStyle, false);
+        expect(changeStyleSpy).toHaveBeenCalledWith('currentRectangleStyle', idStyle);
+        expect(component.idStyleRectangle).toEqual(idStyle);
+    });
 
-  it('should call querySelector when updateTextInput is called', () => {
-    let querySelectorSpy = spyOn(document, "querySelector").and.returnValue({value:'x'} as HTMLInputElement);
-      component.updateTextInput();
-      expect(querySelectorSpy).toHaveBeenCalled();
-  });
+    it('should call querySelector when updateTextInput is called', () => {
+        let querySelectorSpy = spyOn(document, 'querySelector').and.returnValue({ value: 'x' } as HTMLInputElement);
+        component.updateTextInput();
+        expect(querySelectorSpy).toHaveBeenCalled();
+    });
 
-  it('should call querySelector when toggleList is called', () => {
-    let child = {innerHTML: "sss"} as any;
-    let sibling = {innerHTML: "sss", lastChild:child} as any;
-    let _style = {display:"block"};
-    let querySelectorSpy = spyOn(document, "querySelector").and.returnValue({id:'3', style:_style, previousSibling:sibling} as HTMLElement);
-      component.toggleList('5');
-      expect(querySelectorSpy).toHaveBeenCalled()
-  });
+    it('should call querySelector when toggleList is called', () => {
+        let child = { innerHTML: 'sss' } as any;
+        let sibling = { innerHTML: 'sss', lastChild: child } as any;
+        let _style = { display: 'block' };
+        let querySelectorSpy = spyOn(document, 'querySelector').and.returnValue({ id: '3', style: _style, previousSibling: sibling } as HTMLElement);
+        component.toggleList('5');
+        expect(querySelectorSpy).toHaveBeenCalled();
+    });
 
-
-  it('should change display to none when toggleList is called and showContainer was false', () => {
-    let child = {innerHTML: "sss"} as any;
-    let sibling = {innerHTML: "sss", lastChild:child} as any;
-    let _style = {display:"block"};
-    let querySelectorSpy = spyOn(document, "querySelector").and.returnValue({id:'3', style:_style, previousSibling:sibling} as HTMLElement);
-    (component as any).showContainer = true
-      component.toggleList('5');
-      expect(querySelectorSpy).toHaveBeenCalled();
-  });
+    it('should change display to none when toggleList is called and showContainer was false', () => {
+        let child = { innerHTML: 'sss' } as any;
+        let sibling = { innerHTML: 'sss', lastChild: child } as any;
+        let _style = { display: 'block' };
+        let querySelectorSpy = spyOn(document, 'querySelector').and.returnValue({ id: '3', style: _style, previousSibling: sibling } as HTMLElement);
+        (component as any).showContainer = true;
+        component.toggleList('5');
+        expect(querySelectorSpy).toHaveBeenCalled();
+    });
 });

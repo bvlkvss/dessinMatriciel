@@ -1,3 +1,4 @@
+/* tslint:disable */
 import { SimpleChange } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ColorPaletteComponent } from './color-palette.component';
@@ -40,34 +41,34 @@ describe('ColorPaletteComponent', () => {
     });
 
     it('if selectedPosition is defined draw should not call stroke', () => {
-        (component as any).selectedPosition = {x:0 , y:0};
+        (component as any).selectedPosition = { x: 0, y: 0 };
         component.draw();
         expect(strokeSpy).toHaveBeenCalled();
     });
 
     it('if hue does not change ngOnChanges should not do anything', () => {
-        (component as any).selectedPosition = {x:0 , y:0};
-         component.ngOnChanges({selectedPosition: new SimpleChange(null, (component as any).selectedPosition, true)});
-         fixture.detectChanges();
-         expect(emitSpy).not.toHaveBeenCalled();
-     });
+        (component as any).selectedPosition = { x: 0, y: 0 };
+        component.ngOnChanges({ selectedPosition: new SimpleChange(null, (component as any).selectedPosition, true) });
+        fixture.detectChanges();
+        expect(emitSpy).not.toHaveBeenCalled();
+    });
 
     it('if hue changes and position exists it should call emit', () => {
-       (component as any).hue = "#ffffff";
-       (component as any).selectedPosition = {x:0 , y:0};
-        component.ngOnChanges({hue: new SimpleChange(null, (component as any).hue, true)});
+        (component as any).hue = '#ffffff';
+        (component as any).selectedPosition = { x: 0, y: 0 };
+        component.ngOnChanges({ hue: new SimpleChange(null, (component as any).hue, true) });
         fixture.detectChanges();
         expect(emitSpy).toHaveBeenCalled();
     });
 
     it('if hue changes and position does not exists it should not call emit', () => {
-        (component as any).hue = "#ffffff";
-         component.ngOnChanges({hue: new SimpleChange(null, (component as any).hue, true)});
-         fixture.detectChanges();
-         expect(emitSpy).not.toHaveBeenCalled();
-     });
+        (component as any).hue = '#ffffff';
+        component.ngOnChanges({ hue: new SimpleChange(null, (component as any).hue, true) });
+        fixture.detectChanges();
+        expect(emitSpy).not.toHaveBeenCalled();
+    });
 
-     it(' mouseUp should set mouseDown to false', () => {
+    it(' mouseUp should set mouseDown to false', () => {
         const event = {} as MouseEvent;
         component.onMouseUp(event);
         expect((component as any).mousedown).toBe(false);
@@ -85,19 +86,18 @@ describe('ColorPaletteComponent', () => {
         expect(hex).toEqual('06');
     });
 
-
     it('getColoratPosition should return a color string equivalent to right color', () => {
-        let imgData = (component as any).ctx.getImageData(0,0,1,1);
+        let imgData = (component as any).ctx.getImageData(0, 0, 1, 1);
         imgData.data[0] = 255;
         imgData.data[1] = 255;
         imgData.data[2] = 255;
         (component as any).ctx.putImageData(imgData, 0, 0);
-        let color = component.getColorAtPosition(0,0);
+        let color = component.getColorAtPosition(0, 0);
         expect(color).toEqual('#ffffff');
     });
 
     it('emitColor should call emit', () => {
-        component.emitColor(0,0);
+        component.emitColor(0, 0);
         expect(emitSpy).toHaveBeenCalled();
     });
 
@@ -106,10 +106,10 @@ describe('ColorPaletteComponent', () => {
             offsetX: 25,
             offsetY: 25,
             button: 0,
-        } as MouseEvent
+        } as MouseEvent;
         component.onMouseDown(mouseEvent);
         expect((component as any).mousedown).toBe(true);
-        expect((component as any).selectedPosition).toEqual({x:mouseEvent.offsetX, y:mouseEvent.offsetY});
+        expect((component as any).selectedPosition).toEqual({ x: mouseEvent.offsetX, y: mouseEvent.offsetY });
     });
 
     it('onMouseMove should work if mouseDown is true', () => {
@@ -117,23 +117,22 @@ describe('ColorPaletteComponent', () => {
             offsetX: 25,
             offsetY: 25,
             button: 0,
-        } as MouseEvent
+        } as MouseEvent;
         (component as any).mousedown = true;
         component.onMouseMove(mouseEvent);
         expect((component as any).mousedown).toBe(true);
-        expect((component as any).selectedPosition).toEqual({x:mouseEvent.offsetX, y:mouseEvent.offsetY});
+        expect((component as any).selectedPosition).toEqual({ x: mouseEvent.offsetX, y: mouseEvent.offsetY });
     });
-    
 
     it('onMouseMove should not do anything if mousedown is false', () => {
         let mouseEvent = {
             offsetX: 25,
             offsetY: 25,
             button: 0,
-        } as MouseEvent
+        } as MouseEvent;
         (component as any).mousedown = false;
         component.onMouseMove(mouseEvent);
         expect((component as any).mousedown).not.toBe(true);
-        expect((component as any).selectedPosition).not.toEqual({x:mouseEvent.offsetX, y:mouseEvent.offsetY});
+        expect((component as any).selectedPosition).not.toEqual({ x: mouseEvent.offsetX, y: mouseEvent.offsetY });
     });
 });

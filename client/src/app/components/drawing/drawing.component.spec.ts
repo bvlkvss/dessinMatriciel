@@ -1,3 +1,4 @@
+/* tslint:disable */
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Tool } from '@app/classes/tool';
 import { DrawingComponent } from '@app/components/drawing/drawing.component';
@@ -11,16 +12,16 @@ import { PencilService } from '@app/services/tools/pencil/pencil-service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle.service';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
 
-export class MockDrawingService extends DrawingService{
-    resizeCanvas():void {
-        console.log("RESIZE CANVAS CALLED")
+export class MockDrawingService extends DrawingService {
+    resizeCanvas(): void {
+        console.log('RESIZE CANVAS CALLED');
     }
 }
 
-class MockResizingService extends ResizingService{
-   initResizing(event: MouseEvent){
-       console.log("INIT RESIZING CALLED")
-   }
+class MockResizingService extends ResizingService {
+    initResizing(event: MouseEvent) {
+        console.log('INIT RESIZING CALLED');
+    }
 }
 
 describe('DrawingComponent', () => {
@@ -35,7 +36,7 @@ describe('DrawingComponent', () => {
     let lineStub: LineService;
     let drawServiceMock: MockDrawingService;
     let resizingServiceMock: MockResizingService;
-    
+
     beforeEach(async(() => {
         drawServiceMock = new MockDrawingService();
         resizingServiceMock = new MockResizingService(drawServiceMock);
@@ -55,8 +56,6 @@ describe('DrawingComponent', () => {
                 { provide: ResizingService, useValue: resizingServiceMock },
             ],
         }).compileComponents();
-        
-       
     }));
 
     beforeEach(() => {
@@ -107,8 +106,8 @@ describe('DrawingComponent', () => {
     });
 
     it(" should call the tool's mouse out when receiving a mouse out event", () => {
-        let target_ = {className:"target"}
-        let event = {target:target_} as any;
+        let target_ = { className: 'target' };
+        let event = { target: target_ } as any;
         let onMouseOutSpy = spyOn<any>((component as any).tools.currentTool, 'onMouseOut').and.callThrough();
         component.onMouseOut(event);
         expect(onMouseOutSpy).toHaveBeenCalled();
@@ -128,7 +127,7 @@ describe('DrawingComponent', () => {
             key: 'w',
         });
         component.onKeyDown(event);
-        expect(toolManagerStub.currentTool).toEqual(toolManagerStub.getTools().get("brush") as Tool);
+        expect(toolManagerStub.currentTool).toEqual(toolManagerStub.getTools().get('brush') as Tool);
     });
 
     it('on key e pressed current tool should change to eraser ', () => {
@@ -136,7 +135,7 @@ describe('DrawingComponent', () => {
             key: 'e',
         });
         component.onKeyDown(event);
-        expect(toolManagerStub.currentTool).toEqual(toolManagerStub.getTools().get("eraser") as Tool);
+        expect(toolManagerStub.currentTool).toEqual(toolManagerStub.getTools().get('eraser') as Tool);
     });
 
     it('on key c pressed current tool should change to pencil ', () => {
@@ -144,7 +143,7 @@ describe('DrawingComponent', () => {
             key: 'c',
         });
         component.onKeyDown(event);
-        expect(toolManagerStub.currentTool).toEqual(toolManagerStub.getTools().get("pencil") as Tool);
+        expect(toolManagerStub.currentTool).toEqual(toolManagerStub.getTools().get('pencil') as Tool);
     });
 
     it('on key 1 pressed current tool should change to rectangle ', () => {
@@ -152,22 +151,22 @@ describe('DrawingComponent', () => {
             key: '1',
         });
         component.onKeyDown(event);
-        expect(toolManagerStub.currentTool).toEqual(toolManagerStub.getTools().get("rectangle") as Tool);
+        expect(toolManagerStub.currentTool).toEqual(toolManagerStub.getTools().get('rectangle') as Tool);
     });
-    
+
     it('on key 2 pressed current tool should change to ellipse ', () => {
         const event = new KeyboardEvent('document:keydown', {
             key: '2',
         });
         component.onKeyDown(event);
-        expect(toolManagerStub.currentTool).toEqual(toolManagerStub.getTools().get("ellipse") as Tool);
+        expect(toolManagerStub.currentTool).toEqual(toolManagerStub.getTools().get('ellipse') as Tool);
     });
     it('on key l pressed current tool should change to line ', () => {
         const event = new KeyboardEvent('document:keydown', {
             key: 'l',
         });
         component.onKeyDown(event);
-        expect(toolManagerStub.currentTool).toEqual(toolManagerStub.getTools().get("line") as Tool);
+        expect(toolManagerStub.currentTool).toEqual(toolManagerStub.getTools().get('line') as Tool);
     });
 
     it('on another key down, current tool should call tool on key down', () => {
@@ -183,7 +182,7 @@ describe('DrawingComponent', () => {
     it('should call initResizing when initResizing is called', () => {
         let event = {} as MouseEvent;
         event = jasmine.createSpyObj('event', ['preventDefault', 'stopPropagation']);
-        let initResizingSpy = spyOn<any>(resizingServiceMock, 'initResizing')
+        let initResizingSpy = spyOn<any>(resizingServiceMock, 'initResizing');
         component.initResizing(event);
         expect(initResizingSpy).toHaveBeenCalled();
     });
@@ -191,7 +190,7 @@ describe('DrawingComponent', () => {
     it('should call resize when resize is called and resize is true', () => {
         let event = {} as MouseEvent;
         event = jasmine.createSpyObj('event', ['preventDefault', 'stopPropagation']);
-        let resizeSpy = spyOn<any>(resizingServiceMock, 'resize')
+        let resizeSpy = spyOn<any>(resizingServiceMock, 'resize');
         resizingServiceMock.resizing = true;
         component.resize(event);
         expect(resizeSpy).toHaveBeenCalled();
@@ -200,7 +199,7 @@ describe('DrawingComponent', () => {
     it('should not call resize when resize is called and resize is false', () => {
         let event = {} as MouseEvent;
         event = jasmine.createSpyObj('event', ['preventDefault', 'stopPropagation']);
-        let resizeSpy = spyOn<any>(resizingServiceMock, 'resize')
+        let resizeSpy = spyOn<any>(resizingServiceMock, 'resize');
         resizingServiceMock.resizing = false;
         component.resize(event);
         expect(resizeSpy).not.toHaveBeenCalled();
@@ -209,7 +208,7 @@ describe('DrawingComponent', () => {
     it('should  call stopResize when stopResizing is called and resize is true', () => {
         let event = {} as MouseEvent;
         event = jasmine.createSpyObj('event', ['preventDefault', 'stopPropagation']);
-        let stopResizingSpy = spyOn<any>(resizingServiceMock, 'stopResize')
+        let stopResizingSpy = spyOn<any>(resizingServiceMock, 'stopResize');
         resizingServiceMock.resizing = true;
         component.stopResize(event);
         expect(stopResizingSpy).toHaveBeenCalled();
@@ -218,25 +217,24 @@ describe('DrawingComponent', () => {
     it('should not call stopResize when stopResizing is called and resize is false', () => {
         let event = {} as MouseEvent;
         event = jasmine.createSpyObj('event', ['preventDefault', 'stopPropagation']);
-        let stopResizingSpy = spyOn<any>(resizingServiceMock, 'stopResize')
+        let stopResizingSpy = spyOn<any>(resizingServiceMock, 'stopResize');
         resizingServiceMock.resizing = false;
         component.stopResize(event);
         expect(stopResizingSpy).not.toHaveBeenCalled();
     });
 
     it('should call tool.onMouseMove when onMouseMove is called', () => {
-        let target_ = {className:"target"}
-        let event = {target:target_} as any;
-        let onMouseMoveSpy = spyOn<any>((component as any).tools.currentTool, 'onMouseMove')
+        let target_ = { className: 'target' };
+        let event = { target: target_ } as any;
+        let onMouseMoveSpy = spyOn<any>((component as any).tools.currentTool, 'onMouseMove');
         component.onMouseMove(event);
         expect(onMouseMoveSpy).toHaveBeenCalled();
     });
 
-
     it('should not call tool.onMouseMove when onMouseMove is called if resizing', () => {
-        let target_ = {className:"resizer right"}
-        let event = {target:target_} as any;
-        let onMouseMoveSpy = spyOn<any>((component as any).tools.currentTool, 'onMouseMove')
+        let target_ = { className: 'resizer right' };
+        let event = { target: target_ } as any;
+        let onMouseMoveSpy = spyOn<any>((component as any).tools.currentTool, 'onMouseMove');
         component.onMouseMove(event);
         expect(onMouseMoveSpy).not.toHaveBeenCalled();
     });
@@ -250,16 +248,16 @@ describe('DrawingComponent', () => {
     });
 
     it('should not call tool.onMouseEnter when onMouseEnter is called if resizing is true ', () => {
-        let target_ = {className:"resizer right"}
-        let event = {target:target_} as any;
+        let target_ = { className: 'resizer right' };
+        let event = { target: target_ } as any;
         let onMouseEnterSpy = spyOn<any>(toolManagerStub.currentTool, 'onMouseEnter').and.callThrough();
         component.onMouseEnter(event);
         expect(onMouseEnterSpy).not.toHaveBeenCalled();
     });
 
     it('should call tool.onMouseEnter when onMouseEnter is called if resizing is false ', () => {
-        let target_ = {className:"not resize"}
-        let event = {target:target_} as any;
+        let target_ = { className: 'not resize' };
+        let event = { target: target_ } as any;
         let onMouseEnterSpy = spyOn<any>(toolManagerStub.currentTool, 'onMouseEnter').and.callThrough();
         component.onMouseEnter(event);
         expect(onMouseEnterSpy).toHaveBeenCalled();
@@ -293,7 +291,7 @@ describe('DrawingComponent', () => {
         let event = {} as MouseEvent;
         event = jasmine.createSpyObj('event', ['preventDefault', 'stopPropagation']);
         let onMouseUpSpy = spyOn<any>((component as any).tools.currentTool, 'onMouseUp');
-        
+
         component.onMouseUp(event);
         expect(onMouseUpSpy).toHaveBeenCalled();
     });
@@ -306,10 +304,9 @@ describe('DrawingComponent', () => {
         expect(onMouseUpSpy).not.toHaveBeenCalled();
     });
 
-
     it('should not call tool.onMouseOut when onMouseOut is called and resizing is true ', () => {
-        let target_ = {className:"resizer right"}
-        let event = {target:target_} as any;
+        let target_ = { className: 'resizer right' };
+        let event = { target: target_ } as any;
         let onMouseOutSpy = spyOn<any>((component as any).tools.currentTool, 'onMouseOut').and.callThrough();
         component.onMouseOut(event);
         expect(onMouseOutSpy).not.toHaveBeenCalled();
@@ -324,11 +321,12 @@ describe('DrawingComponent', () => {
     });
 
     it('should call newDrawing when ctrl-O is pressed', () => {
-        let event = {key:"o",
-                    ctrlKey:true,
-                    preventDefault:jasmine.createSpy() as any,
-                    stopPropagation:jasmine.createSpy() as any
-                    } as KeyboardEvent;
+        let event = {
+            key: 'o',
+            ctrlKey: true,
+            preventDefault: jasmine.createSpy() as any,
+            stopPropagation: jasmine.createSpy() as any,
+        } as KeyboardEvent;
         let newDrawingSpy = spyOn<any>(drawServiceMock, 'newDrawing');
         component.onkeyDownWindow(event);
         expect(newDrawingSpy).toHaveBeenCalled();
@@ -342,9 +340,7 @@ describe('DrawingComponent', () => {
     });
 
     it('should not call onKeyDown when ctrl-O is pressed', () => {
-        let event = {key:"o",
-                    ctrlKey:true,
-                    } as KeyboardEvent;
+        let event = { key: 'o', ctrlKey: true } as KeyboardEvent;
         let onKeyDownSpy = spyOn<any>((component as any).tools.currentTool, 'onKeyDown');
         component.onKeyDown(event);
         expect(onKeyDownSpy).not.toHaveBeenCalled();

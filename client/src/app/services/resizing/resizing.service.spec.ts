@@ -1,3 +1,4 @@
+/* tslint:disable */
 import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -41,190 +42,186 @@ describe('ResizingService', () => {
     });
 
     it('should not set resizing to true when initResizing is called if mouseEvent is not leftClick', () => {
-      service.resizing = false;
-      function dummyFunction() {}
-      let mouseEvent = { button: 1, target: { className: 'lala' }, preventDefault: dummyFunction } as any;
-      service.initResizing(mouseEvent);
-      expect(service.resizing).toEqual(false);
-  });
+        service.resizing = false;
+        function dummyFunction() {}
+        let mouseEvent = { button: 1, target: { className: 'lala' }, preventDefault: dummyFunction } as any;
+        service.initResizing(mouseEvent);
+        expect(service.resizing).toEqual(false);
+    });
 
+    it('should set resizeWidth to minWidth if smaller than minSize', () => {
+        let canvas = document.createElement('canvas');
+        canvas.width = 100;
+        canvas.height = 100;
+        let div = document.createElement('div') as HTMLDivElement;
+        let rect = { left: 200 } as any;
+        spyOn(div, 'getBoundingClientRect').and.returnValue(rect);
+        let event = { pageX: 300 } as MouseEvent;
+        service.resizeFromRight(event, div, canvas);
+        expect(service.resizedWidth).toEqual(250);
+    });
 
-  it('should set resizeWidth to minWidth if smaller than minSize', () => {
-    let canvas = document.createElement('canvas');
-    canvas.width = 100;
-    canvas.height = 100;
-    let div = document.createElement('div') as HTMLDivElement;
-    let rect = {left: 200} as any;
-    spyOn(div, 'getBoundingClientRect').and.returnValue(rect);
-    let event = {pageX: 300} as MouseEvent;
-    service.resizeFromRight(event,div, canvas);
-    expect(service.resizedWidth).toEqual(250);
-});
+    it('should set resizeWidth to resizedWidth if bigger than minSize', () => {
+        let canvas = document.createElement('canvas');
+        canvas.width = 100;
+        canvas.height = 100;
+        let div = document.createElement('div') as HTMLDivElement;
+        let rect = { left: 200 } as any;
+        spyOn(div, 'getBoundingClientRect').and.returnValue(rect);
+        let event = { pageX: 700 } as MouseEvent;
+        service.resizeFromRight(event, div, canvas);
+        expect(service.resizedWidth).toEqual(500);
+    });
 
-it('should set resizeWidth to resizedWidth if bigger than minSize', () => {
-  let canvas = document.createElement('canvas');
-  canvas.width = 100;
-  canvas.height = 100;
-  let div = document.createElement('div') as HTMLDivElement;
-  let rect = {left: 200} as any;
-  spyOn(div, 'getBoundingClientRect').and.returnValue(rect);
-  let event = {pageX: 700} as MouseEvent;
-  service.resizeFromRight(event,div, canvas);
-  expect(service.resizedWidth).toEqual(500);
-});
+    it('should set resizeHeight to resizedHeight if bigger than minSize', () => {
+        let canvas = document.createElement('canvas');
+        canvas.width = 100;
+        canvas.height = 100;
+        let div = document.createElement('div') as HTMLDivElement;
+        let rect = { top: 200 } as any;
+        spyOn(div, 'getBoundingClientRect').and.returnValue(rect);
+        let event = { pageY: 700 } as MouseEvent;
+        service.resizeFromBottom(event, div, canvas);
+        expect(service.resizedHeight).toEqual(500);
+    });
 
+    it('should set resizeHeight to resizedHeight if smaller than minSize', () => {
+        let canvas = document.createElement('canvas');
+        canvas.width = 100;
+        canvas.height = 100;
+        let div = document.createElement('div') as HTMLDivElement;
+        let rect = { top: 200 } as any;
+        spyOn(div, 'getBoundingClientRect').and.returnValue(rect);
+        let event = { pageY: 300 } as MouseEvent;
+        service.resizeFromBottom(event, div, canvas);
+        expect(service.resizedHeight).toEqual(250);
+    });
 
-it('should set resizeHeight to resizedHeight if bigger than minSize', () => {
-  let canvas = document.createElement('canvas');
-  canvas.width = 100;
-  canvas.height = 100;
-  let div = document.createElement('div') as HTMLDivElement;
-  let rect = {top: 200} as any;
-  spyOn(div, 'getBoundingClientRect').and.returnValue(rect);
-  let event = {pageY: 700} as MouseEvent;
-  service.resizeFromBottom(event,div, canvas);
-  expect(service.resizedHeight).toEqual(500);
-});
+    it('should set resizeHeight and resizedWidth to givenSize if bigger than minSize', () => {
+        let canvas = document.createElement('canvas');
+        canvas.width = 100;
+        canvas.height = 100;
+        let div = document.createElement('div') as HTMLDivElement;
+        let rect = { top: 200, left: 200 } as any;
+        spyOn(div, 'getBoundingClientRect').and.returnValue(rect);
+        let event = { pageX: 700, pageY: 700 } as MouseEvent;
+        service.resizeFromBottomRight(event, div, canvas);
+        expect(service.resizedHeight).toEqual(500);
+        expect(service.resizedWidth).toEqual(500);
+    });
 
-it('should set resizeHeight to resizedHeight if smaller than minSize', () => {
-  let canvas = document.createElement('canvas');
-  canvas.width = 100;
-  canvas.height = 100;
-  let div = document.createElement('div') as HTMLDivElement;
-  let rect = {top: 200} as any;
-  spyOn(div, 'getBoundingClientRect').and.returnValue(rect);
-  let event = {pageY: 300} as MouseEvent;
-  service.resizeFromBottom(event,div, canvas);
-  expect(service.resizedHeight).toEqual(250);
-});
+    it('should call resizerRight if current is resizerRight when calling resize', () => {
+        let canvas = document.createElement('canvas');
+        canvas.width = 100;
+        canvas.height = 100;
 
+        let div = document.createElement('div') as HTMLDivElement;
+        document.querySelector = jasmine.createSpy('HTML div element').and.returnValue(div);
+        let resizerRightSpy = spyOn(service, 'resizeFromRight');
+        let event = { button: 0, pageX: 700, pageY: 700 } as MouseEvent;
+        service.currentResizer = 'resizer right';
+        service.resizing = true;
+        service.resize(event, canvas);
+        expect(resizerRightSpy).toHaveBeenCalled();
+    });
 
-it('should set resizeHeight and resizedWidth to givenSize if bigger than minSize', () => {
-  let canvas = document.createElement('canvas');
-  canvas.width = 100;
-  canvas.height = 100;
-  let div = document.createElement('div') as HTMLDivElement;
-  let rect = {top: 200, left:200} as any;
-  spyOn(div, 'getBoundingClientRect').and.returnValue(rect);
-  let event = {pageX:700, pageY: 700} as MouseEvent;
-  service.resizeFromBottomRight(event,div, canvas);
-  expect(service.resizedHeight).toEqual(500);
-  expect(service.resizedWidth).toEqual(500);
-});
+    it('should call resizerBottomRight if current is resizerBottomRight when calling resize', () => {
+        let canvas = document.createElement('canvas');
+        canvas.width = 100;
+        canvas.height = 100;
 
-it('should call resizerRight if current is resizerRight when calling resize', () => {
-  let canvas = document.createElement('canvas');
-  canvas.width = 100;
-  canvas.height = 100;
+        let div = document.createElement('div') as HTMLDivElement;
+        document.querySelector = jasmine.createSpy('HTML div element').and.returnValue(div);
+        let resizerBottomRightSpy = spyOn(service, 'resizeFromBottomRight');
+        let event = { button: 0, pageX: 700, pageY: 700 } as MouseEvent;
+        service.currentResizer = 'resizer bottom-right';
+        service.resizing = true;
+        service.resize(event, canvas);
+        expect(resizerBottomRightSpy).toHaveBeenCalled();
+    });
 
-  let div = document.createElement('div') as HTMLDivElement;
-  document.querySelector = jasmine.createSpy("HTML div element").and.returnValue(div);
-  let resizerRightSpy = spyOn(service, "resizeFromRight");
-  let event = {button:0, pageX:700, pageY: 700} as MouseEvent;
-  service.currentResizer = "resizer right";
-  service.resizing = true;
-  service.resize(event, canvas);
-  expect(resizerRightSpy).toHaveBeenCalled();
-});
+    it('should call resizerBottom if current is resizerBottom when calling resize', () => {
+        let canvas = document.createElement('canvas');
+        canvas.width = 100;
+        canvas.height = 100;
 
-it('should call resizerBottomRight if current is resizerBottomRight when calling resize', () => {
-  let canvas = document.createElement('canvas');
-  canvas.width = 100;
-  canvas.height = 100;
+        let div = document.createElement('div') as HTMLDivElement;
+        document.querySelector = jasmine.createSpy('HTML div element').and.returnValue(div);
+        let resizerBottomSpy = spyOn(service, 'resizeFromBottom');
+        let event = { button: 0, pageX: 700, pageY: 700 } as MouseEvent;
+        service.currentResizer = 'resizer bottom';
+        service.resizing = true;
+        service.resize(event, canvas);
+        expect(resizerBottomSpy).toHaveBeenCalled();
+    });
 
-  let div = document.createElement('div') as HTMLDivElement;
-  document.querySelector = jasmine.createSpy("HTML div element").and.returnValue(div);
-  let resizerBottomRightSpy = spyOn(service, "resizeFromBottomRight");
-  let event = {button:0, pageX:700, pageY: 700} as MouseEvent;
-  service.currentResizer = "resizer bottom-right";
-  service.resizing = true;
-  service.resize(event, canvas);
-  expect(resizerBottomRightSpy).toHaveBeenCalled();
-});
+    it('should not call resizerBottom if current is resizerBottom when calling resize and resizing is false', () => {
+        let canvas = document.createElement('canvas');
+        canvas.width = 100;
+        canvas.height = 100;
 
-it('should call resizerBottom if current is resizerBottom when calling resize', () => {
-  let canvas = document.createElement('canvas');
-  canvas.width = 100;
-  canvas.height = 100;
+        let div = document.createElement('div') as HTMLDivElement;
+        document.querySelector = jasmine.createSpy('HTML div element').and.returnValue(div);
+        let resizerBottomSpy = spyOn(service, 'resizeFromBottom');
+        let event = { button: 0, pageX: 700, pageY: 700 } as MouseEvent;
+        service.currentResizer = 'resizer bottom';
+        service.resizing = false;
+        service.resize(event, canvas);
+        expect(resizerBottomSpy).not.toHaveBeenCalled();
+    });
 
-  let div = document.createElement('div') as HTMLDivElement;
-  document.querySelector = jasmine.createSpy("HTML div element").and.returnValue(div);
-  let resizerBottomSpy = spyOn(service, "resizeFromBottom");
-  let event = {button:0, pageX:700, pageY: 700} as MouseEvent;
-  service.currentResizer = "resizer bottom";
-  service.resizing = true;
-  service.resize(event, canvas);
-  expect(resizerBottomSpy).toHaveBeenCalled();
-});
+    it('should not call resizerBottom if current is resizerBottom when calling resize and resizing is true but is not a mouse left click', () => {
+        let canvas = document.createElement('canvas');
+        canvas.width = 100;
+        canvas.height = 100;
 
-it('should not call resizerBottom if current is resizerBottom when calling resize and resizing is false', () => {
-  let canvas = document.createElement('canvas');
-  canvas.width = 100;
-  canvas.height = 100;
+        let div = document.createElement('div') as HTMLDivElement;
+        document.querySelector = jasmine.createSpy('HTML div element').and.returnValue(div);
+        let resizerBottomSpy = spyOn(service, 'resizeFromBottom');
+        let event = { button: 1, pageX: 700, pageY: 700 } as MouseEvent;
+        service.currentResizer = 'resizer bottom';
+        service.resizing = true;
+        service.resize(event, canvas);
+        expect(resizerBottomSpy).not.toHaveBeenCalled();
+    });
 
-  let div = document.createElement('div') as HTMLDivElement;
-  document.querySelector = jasmine.createSpy("HTML div element").and.returnValue(div);
-  let resizerBottomSpy = spyOn(service, "resizeFromBottom");
-  let event = {button:0, pageX:700, pageY: 700} as MouseEvent;
-  service.currentResizer = "resizer bottom";
-  service.resizing = false;
-  service.resize(event, canvas);
-  expect(resizerBottomSpy).not.toHaveBeenCalled();
-});
+    it('should call drawCanvas when stopResize is called', () => {
+        let canvas = document.createElement('canvas');
+        canvas.width = 100;
+        canvas.height = 100;
+        let event = { button: 1, pageX: 700, pageY: 700 } as MouseEvent;
+        let drawCanvasSpy = spyOn(service, 'drawCanvas');
+        service.stopResize(event, canvas);
+        expect(drawCanvasSpy).toHaveBeenCalled();
+    });
 
-it('should not call resizerBottom if current is resizerBottom when calling resize and resizing is true but is not a mouse left click', () => {
-  let canvas = document.createElement('canvas');
-  canvas.width = 100;
-  canvas.height = 100;
+    it('should set resizing to false if resizing is true when stopResize is called', () => {
+        let canvas = document.createElement('canvas');
+        canvas.width = 100;
+        canvas.height = 100;
+        let event = { button: 1, pageX: 700, pageY: 700 } as MouseEvent;
+        let drawCanvasSpy = spyOn(service, 'drawCanvas');
+        service.resizing = true;
+        service.stopResize(event, canvas);
+        expect(drawCanvasSpy).toHaveBeenCalled();
+        expect(service.resizing).toEqual(false);
+    });
 
-  let div = document.createElement('div') as HTMLDivElement;
-  document.querySelector = jasmine.createSpy("HTML div element").and.returnValue(div);
-  let resizerBottomSpy = spyOn(service, "resizeFromBottom");
-  let event = {button:1, pageX:700, pageY: 700} as MouseEvent;
-  service.currentResizer = "resizer bottom";
-  service.resizing = true;
-  service.resize(event, canvas);
-  expect(resizerBottomSpy).not.toHaveBeenCalled();
-});
+    it('should call clearCanvas if it has been resized when  drawCanvas is Called', () => {
+        let canvas = document.createElement('canvas');
+        canvas.width = 100;
+        canvas.height = 100;
+        service.hasBeenResized = true;
+        service.drawCanvas(canvas);
+        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
+    });
 
-it('should call drawCanvas when stopResize is called', () => {
-  let canvas = document.createElement('canvas');
-  canvas.width = 100;
-  canvas.height = 100;
-  let event = {button:1, pageX:700, pageY: 700} as MouseEvent;
-  let drawCanvasSpy = spyOn(service, 'drawCanvas');
-  service.stopResize(event, canvas);
-  expect(drawCanvasSpy).toHaveBeenCalled();
-});
-
-it('should set resizing to false if resizing is true when stopResize is called', () => {
-  let canvas = document.createElement('canvas');
-  canvas.width = 100;
-  canvas.height = 100;
-  let event = {button:1, pageX:700, pageY: 700} as MouseEvent;
-  let drawCanvasSpy = spyOn(service, 'drawCanvas');
-  service.resizing = true;
-  service.stopResize(event, canvas);
-  expect(drawCanvasSpy).toHaveBeenCalled();
-  expect(service.resizing).toEqual(false);
-});
-
-it('should call clearCanvas if it has been resized when  drawCanvas is Called', () => {
-  let canvas = document.createElement('canvas');
-  canvas.width = 100;
-  canvas.height = 100;
-  service.hasBeenResized = true;
-  service.drawCanvas(canvas);
-  expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
-});
-
-it('should not call clearCanvas if it has not been resized when  drawCanvas is Called', () => {
-  let canvas = document.createElement('canvas');
-  canvas.width = 100;
-  canvas.height = 100;
-  service.hasBeenResized = false;
-  service.drawCanvas(canvas);
-  expect(drawServiceSpy.clearCanvas).not.toHaveBeenCalled();
-});
-
+    it('should not call clearCanvas if it has not been resized when  drawCanvas is Called', () => {
+        let canvas = document.createElement('canvas');
+        canvas.width = 100;
+        canvas.height = 100;
+        service.hasBeenResized = false;
+        service.drawCanvas(canvas);
+        expect(drawServiceSpy.clearCanvas).not.toHaveBeenCalled();
+    });
 });
