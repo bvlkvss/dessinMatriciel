@@ -21,7 +21,7 @@ export class EraserService extends Tool {
     constructor(drawingService: DrawingService) {
         super(drawingService);
         this.toolAttributes = ['eraserWidth'];
-        this.lineWidth = 5;
+        this.lineWidth = MINIMUM_ERASER_SIZE;
         this.clearPath();
     }
 
@@ -33,6 +33,7 @@ export class EraserService extends Tool {
             this.pathData.push(this.mouseDownCoord);
         }
     }
+
     onMouseOut(event: MouseEvent): void {
         if (this.mouseDown) this.clearLine(this.drawingService.baseCtx, this.pathData);
         this.clearPath();

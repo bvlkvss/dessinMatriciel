@@ -5,14 +5,14 @@ const PROPORTION_SIZE = 0.95;
 @Injectable({
     providedIn: 'root',
 })
-export class  ResizingService {
+export class ResizingService {
     currentResizer: string;
     resizing: boolean = false;
     hasBeenResized: boolean = false;
     isMaximazed: boolean = false;
     resizedWidth: number;
     resizedHeight: number;
-    constructor(private drawingService: DrawingService) { }
+    constructor(private drawingService: DrawingService) {}
 
     initResizing(event: MouseEvent): void {
         if (event.button === 0) {
@@ -25,6 +25,7 @@ export class  ResizingService {
             this.hasBeenResized = true;
         }
     }
+
     resizeFromRight(event: MouseEvent, div: HTMLDivElement, preview: HTMLCanvasElement): void {
         const calculatedWidth = event.pageX - div.getBoundingClientRect().left;
         const winWidht = window.innerWidth || document.body.clientWidth;
@@ -39,8 +40,10 @@ export class  ResizingService {
             this.resizedWidth = MIN_SIZE;
             preview.width = this.resizedWidth;
         }
+
         this.isMaximazed = false;
     }
+
     resizeFromBottom(event: MouseEvent, div: HTMLDivElement, preview: HTMLCanvasElement): void {
         const calculatedHeight = event.pageY - div.getBoundingClientRect().top;
         const winHeight = window.innerHeight || document.body.clientHeight;
@@ -54,8 +57,10 @@ export class  ResizingService {
         } else {
             this.resizedHeight = MIN_SIZE;
         }
+
         this.isMaximazed = false;
     }
+
     resizeFromBottomRight(event: MouseEvent, div: HTMLDivElement, preview: HTMLCanvasElement): void {
         const calculatedWidth = event.pageX - div.getBoundingClientRect().left;
         const calculatedHeight = event.pageY - div.getBoundingClientRect().top;
@@ -77,6 +82,7 @@ export class  ResizingService {
         } else if (calculatedHeight >= MIN_SIZE) {
             this.resizeFromBottom(event, div, preview);
         }
+
         this.isMaximazed = false;
     }
 
@@ -94,6 +100,7 @@ export class  ResizingService {
                     this.resizeFromBottomRight(event, t, preview);
                     break;
             }
+
             t.style.width = this.resizedWidth + 'px';
             t.style.height = this.resizedHeight + 'px';
         }
@@ -106,15 +113,17 @@ export class  ResizingService {
             base.height = this.resizedHeight;
             this.resizing = false;
         }
+
         this.drawCanvas(temp);
     }
+
     saveCanvas(): HTMLCanvasElement {
         const temp = document.createElement('canvas') as HTMLCanvasElement;
         temp.width = this.resizedWidth;
         temp.height = this.resizedHeight;
         const tempCtx = temp.getContext('2d') as CanvasRenderingContext2D;
         tempCtx.drawImage(this.drawingService.canvas, 0, 0, this.resizedWidth, this.resizedHeight, 0, 0, temp.width, temp.height);
-        
+
         return temp;
     }
 
@@ -122,6 +131,7 @@ export class  ResizingService {
         if (this.hasBeenResized) {
             this.drawingService.clearCanvas(this.drawingService.baseCtx);
         }
+
         this.drawingService.baseCtx.drawImage(save, 0, 0);
     }
 }
