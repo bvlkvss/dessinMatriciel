@@ -2,8 +2,6 @@ import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-
-// TODO : Déplacer ça dans un fichier séparé accessible par tous
 export enum MouseButton {
     Left = 0,
     Middle = 1,
@@ -31,8 +29,8 @@ export class RectangleService extends Tool {
         this.toolAttributes = ['strokeWidth', 'rectangleStyle'];
         this.rectangleStyle = 2;
         this.lineWidth = 1;
-        this.primaryColor = "#000000";
-        this.secondaryColor = "#000000";
+        this.primaryColor = '#000000';
+        this.secondaryColor = '#000000';
     }
 
     setStyle(id: number): void {
@@ -58,7 +56,6 @@ export class RectangleService extends Tool {
         this.secondaryColor = color;
     }
     onMouseOut(event: MouseEvent): void {
-
         if (this.mouseDown) {
             this.isOut = true;
 
@@ -79,7 +76,6 @@ export class RectangleService extends Tool {
     }
 
     onMouseEnter(event: MouseEvent): void {
-        console.log('mouseenter rectangle');
         this.isOut = false;
     }
 
@@ -94,12 +90,10 @@ export class RectangleService extends Tool {
 
         this.mouseDown = false;
         this.toSquare = false;
-        console.log(this.mouseDown);
     }
 
     onMouseMove(event: MouseEvent): void {
         if (this.mouseDown) {
-            console.log('mousemove rectangle');
             this.currentPos = this.getPositionFromMouse(event);
 
             // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris

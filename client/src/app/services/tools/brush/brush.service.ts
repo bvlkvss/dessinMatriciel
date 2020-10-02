@@ -18,6 +18,7 @@ const MOUSE_POSITION_OFFSET_DIVIDER = 10;
 const IMAGES_PER_POINT = 5;
 const MAX_EIGHT_BIT_NB = 255;
 const BASE_SIZE = 250;
+const MINIMUM_BRUSH_SIZE = 10;
 
 // TODO : Déplacer ça dans un fichier séparé accessible par tous
 
@@ -37,7 +38,8 @@ export class BrushService extends Tool {
         super(drawingService);
         this.primaryColor = '0000000';
         this.image = new Image();
-        this.lineWidth = 1;
+        this.imageId = 1;
+        this.lineWidth = MINIMUM_BRUSH_SIZE;
         this.image.src = '../../../assets/b1.png';
 
         this.toolAttributes = ['texture', 'lineWidth'];

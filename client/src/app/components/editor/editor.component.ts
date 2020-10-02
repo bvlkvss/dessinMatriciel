@@ -8,11 +8,7 @@ import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.ser
     styleUrls: ['./editor.component.scss'],
 })
 export class EditorComponent {
-    constructor(private tools: ToolsManagerService) {
-
-    }
+    constructor(private tools: ToolsManagerService) {}
     lastColors: string[] = new Array<string>();
     currentTool: Tool = this.tools.currentTool;
-
-
 }

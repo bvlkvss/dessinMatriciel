@@ -28,9 +28,6 @@ export class ColorSliderComponent implements AfterViewInit {
     private mousedown: boolean = false;
     selectedHeight: number;
 
-    /*tslint:disable-next-line:no-empty*/
-    constructor() {}
-
     draw(): void {
         const width = this.canvas.nativeElement.width;
         const height = this.canvas.nativeElement.height;
@@ -70,7 +67,6 @@ export class ColorSliderComponent implements AfterViewInit {
     onMouseUp(evt: MouseEvent): void {
         this.mousedown = false;
     }
-
 
     rgbToHex(rgb: number): string {
         let hex = Number(rgb).toString(16);
