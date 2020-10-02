@@ -162,7 +162,7 @@ describe('ColorPickerComponent', () => {
         expect(drawSpy).toHaveBeenCalled();
     });
 
-    it('color should match input', () => {
+    it('color should match input when setColorFromInput is called', () => {
         let input = document.querySelector('.text') as HTMLInputElement;
         input.value = 'aaaaaa';
         let color = (component as any).colorSlider.color;
@@ -171,12 +171,12 @@ describe('ColorPickerComponent', () => {
         expect(component.color).toEqual('#aaaaaa');
     });
 
-    it('input should be ffffff if more than that', () => {
+    it('input should be 000000 if not a hex when setColorFromInput is called', () => {
         let input = document.querySelector('.text') as HTMLInputElement;
         input.value = 'gggggg';
         let color = (component as any).colorSlider.color;
         spyOn(color , 'emit');
         component.setColorFromInput();
-        expect(component.color).toEqual('#ffffff');
+        expect(component.color).toEqual('#000000');
     });
 });
