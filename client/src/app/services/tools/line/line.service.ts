@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-//import { Color } from '@app/classes/color';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -62,16 +61,17 @@ export class LineService extends Tool {
     }
 
     onDblClick(event: MouseEvent): void {
-        //  click is triggred twice when calling doubleClick so, it push twice the last point
+        // le event click est lance deux fois quand on appel doubleClick ce qui fait que le point est push deux fois
         let lastPoint: Vec2 = this.pathData[this.pathData.length - 1];
         this.isDoubleClicked = true;
 
-        // check if the distance  between the new point and last one is less than 20
+        // On verifie que si la distance entre le nouveau point et le dernier point est moins de 20
         if (this.distanceBetween2Points(lastPoint, this.pathData[this.pathData.length - 3]) <= 20) {
             this.pathData.pop();
             this.pathData[this.pathData.length - 2] = lastPoint;
         }
-        // if distance is more than 20, we need to push back the last point
+
+        // si la distance est moins de 20 on push back le dernier point
         else this.pathData.push(lastPoint);
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
 
