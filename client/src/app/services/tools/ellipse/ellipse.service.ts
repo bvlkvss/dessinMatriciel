@@ -28,7 +28,7 @@ export class EllipseService extends Tool {
         super(drawingService);
         this.lineWidth = 1;
         this.ellipseStyle = 2;
-        this.toolAttributes = ['ellipseStyle', 'lineWidth'];
+        this.toolAttributes = ['ellipseStyle', 'strokeWidth'];
     }
 
     onMouseDown(event: MouseEvent): void {

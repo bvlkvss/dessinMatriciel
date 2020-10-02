@@ -23,7 +23,7 @@
     width: 80%;
     height: 7px;
     position: relative;
-    left: -30px;
+    left: -18px;
     bottom: 6px;
     border-radius: 5px;
     background-color: white;
@@ -43,12 +43,18 @@
     background: rgb(230, 205, 205);
     cursor: pointer;
 }
-
+#label {
+    position: relative;
+    bottom: 60px;
+    left: 93%;
+    color: white;
+    font-family: Hack, monospace;
+}
 .textInput {
     position: relative;
-    width: 40px;
+    width: 27px;
     bottom: 40px;
-    left: 83%;
+    left: 80%;
     font-size: 14px;
     color: whitesmoke;
     background-color: rgb(48, 46, 64);
