@@ -1,0 +1,187 @@
+#background {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: none;
+    z-index: 1;
+}
+
+h1 {
+    margin: 0;
+    padding : 15px;
+    text-align: left;
+    background-color: rgb(64,61,85);
+}
+
+.topBar {
+    position: relative;
+    align-items: center;
+    width: 100%;
+    height: 70px;
+    color: rgb(99,196,235);
+    font-family: exo, ubuntu, "segoe ui", helvetica, arial, sans-serif;
+    text-align: center;
+}
+
+.topBar button{
+    right: 5px;
+    top: 5px;
+    position: absolute;
+    background-color: rgba(255, 0, 0, 0.836);
+    border-radius: 90%;
+    border: none;
+    height: 20px;
+    width: 20px;
+    font-family: exo, ubuntu, "segoe ui", helvetica, arial, sans-serif;
+    cursor: pointer;
+    font-weight: 1700;
+    user-select: none;
+
+}
+
+.tab {
+    position: absolute;
+    top: 72px;
+    overflow: hidden;
+    border-right: 1px solid #ccc;
+    background-color: #f1f1f1;
+    width: 120px;
+    height: 100%;
+}
+
+.userGuide {
+    margin: auto;
+    width: 60%;
+    height: 70%;
+    position: absolute;
+    left: 0;
+    right: 0;
+    text-align: center;
+    border: 5px;
+    background-color: white;
+    top: 50%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+    overflow-y: scroll !important;
+    display: flex;
+
+}
+
+.tabcontent {
+    position: absolute;
+    text-align: left;
+    top:72px;
+    left: 121px;
+    background-color: white;
+    display: none;
+    padding: 6px 12px;
+    border-top: none;
+    font-family: Arial, sans-serif;
+}
+
+.button {
+    background-color: blue;
+    margin-top: 10px;
+    margin-left: 5px;
+    text-align: center;
+    font-size: 16px;
+    padding: 15px 30px;
+    color: white;
+    font-weight: bold;
+}
+
+.button:hover {
+    background-color: white;
+    border-color: blue;
+    color: blue;
+    border: 2px solid;
+}
+
+.options {
+    font-family: Monaco;
+}
+
+
+/* Style the tab */
+/* Style the buttons inside the tab */
+
+.tab button {
+    background-color: inherit;
+    text-align: left;
+    float: left;
+    width: 100%;
+    border: none;
+    border-bottom:1px solid lightgray;
+    outline: none;
+    cursor: pointer;
+    padding: 14px 16px;
+    transition: 0.3s;
+    font-size: 17px;
+}
+
+li{
+    list-style-type: none;
+    font-family: Arial;
+    font-size: 15px;
+    border-bottom:1px solid lightgray;
+}
+
+li:hover{
+    color: rgb(99,196,235);
+    transition: 3ms;
+}
+
+ul {
+    padding-left: 20px;
+}
+
+.dropDown{
+    display: none;
+}
+
+.dropDown-open{
+    display: block;
+}    
+
+.tablinks{
+    background-color: inherit;
+    text-align: left;
+    float: left;
+    width: 100%;
+    outline: none;
+    cursor: pointer;
+    padding: 10px 10px;
+    transition: 0.3s;
+}
+
+.active {
+    color: rgb(99,196,235);
+    background-color: inherit;
+    text-align: left;
+    float: left;
+    width: 100%;
+    outline: none;
+    cursor: pointer;
+    padding: 10px 10px;
+    transition: 0.3s;
+}
+
+.tab button:hover {
+    background-color: #ddd;
+}
+
+p, h3, h4, button{
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.demo{
+    border-radius: 15px;
+    width:320px;
+    height:240px;
+    border: 1px solid lightgray;
+}
+
+.close{
+    
+}

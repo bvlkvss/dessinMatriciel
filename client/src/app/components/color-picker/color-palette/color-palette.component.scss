@@ -1,0 +1,27 @@
+/****************************************************************************************
+ * some of these CSS were inspired from :
+ *
+ *    Title: color-picker Component with Angular
+ *    Author: Lukas Marx
+ *    Date: 2018
+ *    Availability: https://malcoded.com/posts/angular-color-picker/
+ *
+ ***************************************************************************************/
+
+:host {
+    width: 200px;
+    height: 175px;
+    display: block;
+    margin-top: 7px;
+    margin-left: 7px;
+    border-width: 2px;
+}
+
+.color-palette:hover {
+    cursor: pointer;
+}
+
+.color-palette {
+    border: gray;
+    border-style: double;
+}

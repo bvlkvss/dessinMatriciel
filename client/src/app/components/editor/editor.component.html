@@ -1,6 +1,16 @@
-<div class="container">
-    <app-sidebar></app-sidebar>
-    <div class="drawing-container">
-        <app-drawing class="drawing" tabindex="0"></app-drawing>
+<div id="background-vue">
+    <div class="container">
+        <app-sidebar
+            [primaryColor]="currentTool.primaryColor.slice(0, 7)"
+            [secondaryColor]="currentTool.secondaryColor.slice(0, 7)"
+            style="z-index: 1"
+        ></app-sidebar>
+        <app-attributebar id="attributeBar"></app-attributebar>
+
+        <div id="drawing-div" class="drawing-container">
+            <app-drawing class="drawing" tabindex="0"></app-drawing>
+        </div>
+        <app-color-picker [isPrimaryColor]="true" [lastColors]="lastColors" style="display: none" id="primaryColorPicker"></app-color-picker>
+        <app-color-picker [isPrimaryColor]="false" [lastColors]="lastColors" style="display: none" id="secondaryColorPicker"></app-color-picker>
     </div>
 </div>

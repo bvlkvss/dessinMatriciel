@@ -1,0 +1,242 @@
+/****************************************************************************************
+ * some of these CSS were inspired from :
+ *
+ *    Title: color-picker Component with Angular
+ *    Author: Lukas Marx
+ *    Date: 2018
+ *    Availability: https://malcoded.com/posts/angular-color-picker/
+ *
+ ***************************************************************************************/
+
+
+.colorpicker {
+    display: block;
+    position: relative;
+    left: 38.7px;
+    top: 27%;
+    height: 64%;
+    width: 100%;
+    background-color: #302e40;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+#colorpicker-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgb(93, 95, 110);
+    transition: all 0.3s ease;
+}
+
+.color-wrapper {
+    display: flex;
+    height: auto;
+    width: auto;
+}
+
+.color-container {
+    display: inline-block;
+    margin: 2px;
+}
+.lastColors {
+    outline: none;
+    height: 20px;
+    width: 20px;
+    border-radius: 5px;
+    border: 0.5px solid gray; 
+    
+}
+.lastColors:focus {
+    transform: rotate3d(0, 0, 1, 135deg) scale(1.25);
+    transition: border-radius 0.5s ease-out 0s, transform 0.5s ease-out 0s, fake 0ms ease 0s;
+    transform: rotate3d(0, 0, 1, 135deg) scale(1.25);
+    transform-origin: 50% 50%;
+    border-radius: 50%;
+    height: 20px;
+    width: 20px;
+    border: 2.5px solid gray; /* Green */
+}
+.input-wrapper {
+    margin-top: 1px;
+    display: block;
+    border-radius: 1px;
+    outline: none;
+    padding: 8px;
+    height: 52px;
+    justify-content: center;
+    -webkit-box-shadow: inset 0px 64px 59px -71px rgba(255, 255, 255, 0.2);
+    -moz-box-shadow: inset 0px 64px 59px -71px rgba(255, 255, 255, 0.2);
+    box-shadow: inset 0px 64px 59px -71px rgba(255, 255, 255, 0.2);
+}
+.primaryColor-open {
+    display: block;
+}
+.color-div {
+    position: relative;
+    bottom: 15px;
+    left: 14px;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 1px solid rgb(220, 220, 220);
+}
+#label {
+    position: relative;
+    bottom: 44px;
+    font-size: 20px;
+    left: 20%;
+    color: white;
+    font-family: Hack, monospace;
+}
+.text {
+    outline: none;
+    margin: none;
+    color: white;
+    position: relative;
+    bottom: 45px;
+    left: 46px;
+    width: 28%;
+    font-size: 18px;
+    height: 28px;
+    border: none;
+    background-color: #302e40;
+    font: Helvetica;
+}
+.slider {
+    -webkit-appearance: none;
+    width: 80%;
+    height: 7px;
+    position: relative;
+    left: 10px;
+    bottom: 6px;
+    border-radius: 5px;
+    background-color: white;
+    outline: none;
+    opacity: 0.98;
+    -webkit-transition: 0.2s;
+    transition: opacity 0.2s;
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.3);
+
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background: rgb(230, 205, 205);
+    cursor: pointer;
+}
+
+.header {
+    position: relative;
+    color: white;
+    bottom: 20px;
+    width: auto;
+    font-size: 19px;
+    font-family: Helvetica;
+    height: 0px;
+    left: 6%;
+}
+#primaryColor {
+    bottom: 25px;
+}
+.buttons {
+    color: #fff;
+    text-transform: uppercase;
+    text-decoration: none;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    width: 90px;
+    border-radius: 5px;
+    display: inline-block;
+    border: none;
+    top: 0px;
+    font-size: 13px;
+    font-family: Helvetica;
+    margin-right: 35px;
+    position: relative;
+    left: 20px;
+    transition: all 0.1s ease 0s;
+}
+#cancel {
+    background: gray;
+    &:hover {
+        background-color: rgba(189, 45, 45, 0.726);
+    }
+}
+#accept {
+    background: rgb(201, 201, 201);
+    opacity: 0.98;
+    &:hover {
+        background-color: rgba(63, 230, 77, 0.644);
+    }
+}
+.buttons:hover {
+    letter-spacing: 1px;
+    -webkit-box-shadow: 0px 5px 40px -10px rgba(0, 0, 0, 0.57);
+    -moz-box-shadow: 0px 5px 40px -10px rgba(0, 0, 0, 0.57);
+    box-shadow: 5px 40px -10px rgba(0, 0, 0, 0.57);
+    transition: all 0.4s ease 0s;
+}
+.container {
+    padding: 5px;
+    position: relative;
+    margin-bottom: 2px;
+    height: 60px;
+}
+
+.effect{
+    -webkit-box-shadow: inset 0px 64px 59px -71px rgba(255, 255, 255, 0.2);
+    -moz-box-shadow: inset 0px 64px 59px -71px rgba(255, 255, 255, 0.2);
+    box-shadow: inset 0px 64px 59px -71px rgba(255, 255, 255, 0.2);
+}
+
+#pickerContainer {
+    width: 100%;
+    -webkit-box-shadow: inset 0px 64px 59px -71px rgba(255, 255, 255, 0.2);
+    -moz-box-shadow: inset 0px 64px 59px -71px rgba(255, 255, 255, 0.2);
+    box-shadow: inset 0px 64px 59px -71px rgba(255, 255, 255, 0.2);
+    margin-bottom: 5px;
+}
+#buttonsContainer {
+    padding: 0px;
+    padding-top: 10px;
+    position: relative;
+
+    -webkit-box-shadow: inset 0px 64px 59px -71px rgba(255, 255, 255, 0.2);
+    -moz-box-shadow: inset 0px 64px 59px -71px rgba(255, 255, 255, 0.2);
+    box-shadow: inset 0px 64px 59px -71px rgba(255, 255, 255, 0.2);
+    height: 60px;
+}
+.arrow-left {
+    top: 75px;
+    left: -10px;
+    position: absolute;
+    width: 0; 
+    height: 0; 
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent; 
+    border-right:10px solid #797979; 
+}
+
+.closeButton {
+    cursor: pointer;
+    border-bottom-right-radius:5px;
+    border-top-right-radius:5px;
+    top: 15px;
+    right:-27px;
+    position: absolute;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-right: 5px;
+    width: 20px; 
+    height: 25px; 
+    background-color: #797979;
+    border: 1px solid #797979;
+    z-index: 0;
+}
+

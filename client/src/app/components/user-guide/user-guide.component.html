@@ -1,0 +1,48 @@
+<div id="background">
+    <div class="userGuide">
+        <div class="topBar">
+            <button class="close" (click)="closeUserGuide()">x</button>
+            <h1>Guide d'utilisation</h1>
+
+        </div>
+
+        <div class="tab">
+            <button (click)="openTab('Outils') ">Dessiner</button>
+            <button (click)="openTab( 'Divers') ">Divers</button>
+        </div>
+
+        <div id="Outils" style=" display: block; " class="tabcontent ">
+            <div id=" Pencil ">
+                <h2>Crayon</h2>
+                <p>Le crayon permet de dessiner un trait uni sur la surface de dessin</p>
+                <div class="demo ">
+                    <img width="320 " height="240 " src="../../../assets/crayon.gif ">
+                </div>
+            </div>
+            <div id="Brush ">
+                <h2>Pinceau</h2>
+                <p>Le pinceau permet de dessiner un train d'une texture définie sur la surface de dessin </p>
+                <div class="demo ">
+                    <img width="320 " height="240 " src="../../../assets/pinceau.gif ">
+                </div>
+            </div>
+            <div id="Rectangle ">
+                <h2>Rectangle</h2>
+                <p>Le rectangle permet de dessiner un rectangle ou un carré en pesant sur la touche shift</p>
+                <div class="demo ">
+                    <img width="320 " height="240 " src="../../../assets/rectangle.gif ">
+                </div>
+            </div>
+        </div>
+
+
+
+        <div id="Divers" class="tabcontent ">
+            <h2>Créer un dessin</h2>
+            <p>En cliquant sur le bouton "Créer un dessin ", vous ouvrirez un nouvel éditeur dans le quel vous pourrez laisser aller votre créativité!</p>
+            <div class="demo ">
+                <img width="320 " height="240 " src="../../../assets/CreerUnDessin.png ">
+            </div>
+        </div>
+    </div>
+</div>

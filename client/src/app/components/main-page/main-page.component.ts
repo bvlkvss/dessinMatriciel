@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { UserGuideComponent } from '@app/components/user-guide/user-guide.component';
 import { IndexService } from '@app/services/index/index.service';
 import { Message } from '@common/communication/message';
 import { BehaviorSubject } from 'rxjs';
@@ -10,7 +11,7 @@ import { map } from 'rxjs/operators';
     styleUrls: ['./main-page.component.scss'],
 })
 export class MainPageComponent {
-    readonly title: string = 'LOG2990';
+    readonly title: string = 'PolyDessin2';
     message: BehaviorSubject<string> = new BehaviorSubject<string>('');
 
     constructor(private basicService: IndexService) {}
@@ -34,5 +35,9 @@ export class MainPageComponent {
                 }),
             )
             .subscribe(this.message);
+    }
+
+    openUserGuide(): void {
+        UserGuideComponent.displayUserGuide();
     }
 }

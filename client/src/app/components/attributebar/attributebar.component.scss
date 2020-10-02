@@ -1,0 +1,317 @@
+#attribute {
+    height: 100%;
+    width: 265px;
+    background-color: rgb(48, 46, 64);
+    left: -282.6px;
+    position: relative;
+    padding-top: 11px;
+    -webkit-box-shadow: inset 5px 5px 25px -20px rgba(0, 0, 0, 0.64);
+    -moz-box-shadow: inset 5px 5px 25px -20px rgba(0, 0, 0, 0.64);
+    box-shadow: inset 5px 5px 25px -20px rgba(0, 0, 0, 0.64);
+    transition: all 0.6s ease;
+}
+.attribute-open {
+    position: relative;
+    flex: 1 1 auto;
+    -webkit-transform: translateX(325px);
+    transform: translate(325px);
+    transition: all 0.6s ease;
+}
+
+.size-slider {
+    -webkit-appearance: none;
+    width: 80%;
+    height: 7px;
+    position: relative;
+    left: -18px;
+    bottom: 6px;
+    border-radius: 5px;
+    background-color: white;
+    outline: none;
+    opacity: 0.98;
+    -webkit-transition: 0.2s;
+    transition: opacity 0.2s;
+}
+
+.size-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.3);
+
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background: rgb(202, 202, 202);
+    cursor: pointer;
+}
+#label {
+    position: relative;
+    bottom: 60px;
+    left: 93%;
+    color: white;
+    font-family: Hack, monospace;
+}
+
+.textInput {
+    position: relative;
+    width: 41px;
+    bottom: 40px;
+    left: 74%;
+    font-size: 14px;
+    color: rgb(255, 255, 255);
+    background-color: rgb(48, 46, 64);
+    border: none;
+}
+#lineWidthcontainer {
+    padding: 5px;
+    position: relative;
+    margin-bottom: 2px;
+
+    -webkit-box-shadow: inset 0px 64px 59px -71px rgba(255, 255, 255, 0.2);
+    -moz-box-shadow: inset 0px 64px 59px -71px rgba(255, 255, 255, 0.2);
+    box-shadow: inset 0px 64px 59px -71px rgba(255, 255, 255, 0.2);
+    height: 60px;
+}
+#header {
+    position: relative;
+    color: white;
+    bottom: 20px;
+    width: auto;
+    font-size: 19px;
+    font-family: Arial, Helvetica, sans-serif;
+    height: 0px;
+    left: 6%;
+}
+#headerImage {
+    left: 23%;
+}
+#isJunction {
+    position: relative;
+    left: 6%;
+    top: 36%;
+    height: 30px;
+    width: 30px;
+    border-radius: 100%;
+}
+.header {
+    position: absolute;
+    color: white;
+    width: auto;
+    font-size: 19px;
+    font-family: Arial, Helvetica, sans-serif;
+    height: 0px;
+}
+#junctionHeader {
+    left: 9%;
+}
+#headerStyle {
+    top: 10px;
+    left: 30%;
+}
+.material-icons {
+    user-select: none;
+}
+#colorContainer {
+    position: relative;
+    top: 0;
+    height: 50px;
+}
+.shapeStyle {
+    width: 45px;
+    height: 30px;
+    position: relative;
+
+    left: 20px;
+    top: 10px;
+    margin-right: 30px;
+    background-color: white;
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+.color-div {
+    border-radius: 50%;
+    position: relative;
+    top: 25px;
+}
+#currentImage {
+    position: relative;
+    width: 50px;
+    height: 50px;
+    right: 11px;
+
+    &:hover {
+        cursor: pointer;
+    }
+}
+#imageTexture {
+    position: relative;
+    height: 50px;
+    top: 10px;
+    width: 40px;
+    margin-right: 20px;
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+#icon {
+    font-size: 30px;
+    position: fixed;
+    color: white;
+    left: 220px;
+    top: 100px;
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+#style2 {
+    background-color: white;
+    border-color: white;
+    border-width: 4px;
+    border-style: solid;
+}
+#style0 {
+    border-color: white;
+    border-width: 4px;
+    border-style: solid;
+
+    background-color: transparent;
+}
+#style1 {
+    border-color: rgb(0, 0, 0);
+    border-width: 4px;
+    border-style: solid;
+
+    background-color: rgb(255, 255, 255);
+}
+#textureContainer {
+    display: none;
+    position: relative;
+    height: 120px;
+    padding-left: 10px;
+    width: 100%;
+    -webkit-box-shadow: inset 0px 64px 59px -71px rgba(255, 255, 255, 0.1);
+    -moz-box-shadow: inset 0px 64px 59px -71px rgba(255, 255, 255, 0.1);
+    box-shadow: inset 0px 64px 59px -71px rgba(255, 255, 255, 0.1);
+}
+#styleContainer {
+    display: none;
+    height: 70px;
+    -webkit-box-shadow: inset 0px 64px 59px -71px rgba(255, 255, 255, 0.1);
+    -moz-box-shadow: inset 0px 64px 59px -71px rgba(255, 255, 255, 0.1);
+    box-shadow: inset 0px 64px 59px -71px rgba(255, 255, 255, 0.1);
+}
+#buttonContainer {
+    -webkit-box-shadow: inset 0px 64px 59px -71px rgba(255, 255, 255, 0.1);
+    -moz-box-shadow: inset 0px 64px 59px -71px rgba(255, 255, 255, 0.1);
+    box-shadow: inset 0px 64px 59px -71px rgba(255, 255, 255, 0.1);
+    height: 80px;
+    width: 272px;
+    display: table-cell;
+}
+#currentRectangleStyle {
+    position: absolute;
+    top: 20px;
+    left: 17px;
+    border-color: white;
+    border-width: 4px;
+    border-style: solid;
+    background-color: white;
+}
+#currentEllipseStyle {
+    position: absolute;
+    top: 20px;
+    left: 17px;
+    border-color: white;
+    border-width: 4px;
+    border-radius: 50%;
+    border-style: solid;
+    background-color: white;
+}
+#currentImageContainer {
+    padding: 5px;
+    margin-bottom: 5px;
+    display: flex;
+    border: white 2px;
+    position: relative;
+    padding-left: 15px;
+    -webkit-box-shadow: inset 0px 64px 59px -71px rgba(255, 255, 255, 0.1);
+    -moz-box-shadow: inset 0px 64px 59px -71px rgba(255, 255, 255, 0.1);
+    box-shadow: inset 0px 64px 59px -71px rgba(255, 255, 255, 0.1);
+    height: 60px;
+    width: auto;
+}
+
+.sliderJunction {
+    width: 50px;
+    height: 10px;
+    background: green;
+    margin: 20px auto;
+    position: relative;
+    opacity: 0.98;
+    border-radius: 50px;
+    top: 7px;
+    left: 30%;
+
+    label {
+        width: 16px;
+        height: 16px;
+        position: absolute;
+        top: -3px;
+        left: -3px;
+        cursor: pointer;
+        background: rgb(255, 255, 255);
+        border-radius: 50px;
+        box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.3);
+        transition: all 0.4s ease;
+    }
+    input[type='checkbox'] {
+        visibility: hidden;
+        &:checked + label {
+            left: 37px;
+        }
+        input[type='checkbox']:not(:checked) {
+            background: gray;
+        }
+    }
+}
+.buttons {
+    color: #fff;
+    text-transform: uppercase;
+    text-decoration: none;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    width: 90px;
+    border-radius: 5px;
+    display: inline-block;
+    border: none;
+    top: 0px;
+    font-size: 13px;
+    font-family: Helvetica;
+    margin-right: 35px;
+    position: relative;
+    left: 20px;
+    transition: all 0.1s ease 0s;
+}
+#cancel {
+    background: gray;
+    &:hover {
+        background-color: rgba(189, 45, 45, 0.726);
+    }
+}
+#accept {
+    background: rgb(201, 201, 201);
+    opacity: 0.98;
+    &:hover {
+        background-color: rgba(63, 230, 77, 0.644);
+    }
+}
+.buttons:hover {
+    letter-spacing: 1px;
+    -webkit-box-shadow: 0px 5px 40px -10px rgba(0, 0, 0, 0.57);
+    -moz-box-shadow: 0px 5px 40px -10px rgba(0, 0, 0, 0.57);
+    box-shadow: 5px 40px -10px rgba(0, 0, 0, 0.57);
+    transition: all 0.4s ease 0s;
+}
