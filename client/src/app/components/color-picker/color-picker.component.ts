@@ -8,7 +8,7 @@
  *
  ***************************************************************************************/
 
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, Input, ViewChild } from '@angular/core';
 import { Vec2 } from '@app/classes/vec2';
 import { ColorPaletteComponent } from '@app/components/color-picker/color-palette/color-palette.component';
 import { ColorSliderComponent } from '@app/components/color-picker/color-slider/color-slider.component';
@@ -20,7 +20,7 @@ import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.ser
     templateUrl: './color-picker.component.html',
     styleUrls: ['./color-picker.component.scss'],
 })
-export class ColorPickerComponent implements OnInit {
+export class ColorPickerComponent implements AfterViewInit {
     hue: string;
     color: string;
     @Input() isPrimaryColor: boolean = true;
@@ -33,15 +33,17 @@ export class ColorPickerComponent implements OnInit {
     private isPrime: boolean;
     private onLasts: boolean;
     @Input() lastColors: string[];
+
     constructor(private tools: ToolsManagerService) {
         this.opacity = 'ff';
         this.color = '#000000';
     }
-    ngAfterViewInit() {
+
+    ngAfterViewInit(): void {
         this.selectedPositionPalette = this.colorPalette.selectedPosition;
         this.selectedPositionSlider = this.colorSlider.selectedHeight;
     }
-    ngOnInit(): void { }
+
     acceptChanges(): void {
         this.addColor(this.color);
         if (this.onInput) {
@@ -85,6 +87,7 @@ export class ColorPickerComponent implements OnInit {
             this.colorSlider.draw();
         }
     }
+
     setOpacity(): void {
         const input = document.querySelector('#opacityValue') as HTMLInputElement;
         if (input.valueAsNumber >= 100) input.value = '100';

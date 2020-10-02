@@ -3,4 +3,4 @@ export interface Color {
     green: number;
     blue: number;
     opacity: number;
-} 
+}

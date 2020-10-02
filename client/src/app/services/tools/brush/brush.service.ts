@@ -38,7 +38,7 @@ export class BrushService extends Tool {
         this.primaryColor = '0000000';
         this.image = new Image();
         this.imageId = 1;
-        this.lineWidth = 10;
+        this.lineWidth = 1;
         this.image.src = '../../../assets/b1.png';
 
         this.toolAttributes = ['texture', 'lineWidth'];

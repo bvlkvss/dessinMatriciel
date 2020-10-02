@@ -1,4 +1,4 @@
-import { Component, OnChanges, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { BrushService } from '@app/services/tools/brush/brush.service';
 import { EllipseService } from '@app/services/tools/ellipse/ellipse.service';
@@ -16,7 +16,7 @@ export class AttributebarComponent implements OnInit {
     junctionWidth: string = '1';
     idStyleRectangle: number = 2;
     idStyleBrush: number = 1;
-    constructor(private tools: ToolsManagerService) { }
+    constructor(private tools: ToolsManagerService) {}
     private showContainer: boolean = false;
     private lastTool: Tool = this.tools.currentTool;
 
@@ -52,14 +52,14 @@ export class AttributebarComponent implements OnInit {
             case this.tools.getTools().get('line'):
                 currentTool = this.tools.currentTool as LineService;
                 this.junctionWidth = currentTool.junctionWidth.toString();
-                let inputValue = document.getElementById('sliderJunction') as HTMLInputElement;
+                const inputValue = document.getElementById('sliderJunction') as HTMLInputElement;
                 if (inputValue) inputValue.checked = currentTool.withJunction;
                 break;
 
             case this.tools.getTools().get('brush'):
-                let brush = this.tools.currentTool as BrushService;
+                const brush = this.tools.currentTool as BrushService;
                 brush.setTexture(brush.imageId);
-                let currentImage = document.querySelector('#currentImage') as HTMLImageElement;
+                const currentImage = document.querySelector('#currentImage') as HTMLImageElement;
                 if (currentImage) currentImage.src = '../../../assets/b' + brush.imageId + '.svg';
         }
     }
@@ -79,7 +79,7 @@ export class AttributebarComponent implements OnInit {
                 this.tools.setJunctionState(inputValue.checked);
                 break;
             case this.tools.getTools().get('brush'):
-                let brush = this.tools.currentTool as BrushService;
+                const brush = this.tools.currentTool as BrushService;
                 brush.imageId = this.idStyleBrush;
                 brush.setTexture(this.idStyleBrush);
                 break;
@@ -99,33 +99,32 @@ export class AttributebarComponent implements OnInit {
         this.junctionWidth = input;
     }
     setJunctionState(): void {
-        let checkBox = document.querySelector('#sliderJunction') as HTMLInputElement;
-        let slider = document.querySelector('.sliderJunction') as HTMLElement;
+        const checkBox = document.querySelector('#sliderJunction') as HTMLInputElement;
+        const slider = document.querySelector('.sliderJunction') as HTMLElement;
         if (checkBox.checked) slider.style.background = 'white';
         else slider.style.background = 'gray';
     }
     updateTextInput(): void {
-        let input = document.querySelector('.size-slider') as HTMLInputElement;
-        let inputToUpdate = document.querySelector('.textInput') as HTMLInputElement;
+        const input = document.querySelector('.size-slider') as HTMLInputElement;
+        const inputToUpdate = document.querySelector('.textInput') as HTMLInputElement;
         inputToUpdate.value = input.value + 'px';
     }
 
     toggleList(id: string): void {
         this.showContainer = !this.showContainer;
-        let container = document.querySelector('#' + id) as HTMLElement;
-        let icon = container.previousSibling?.lastChild as HTMLElement;
+        const container = document.querySelector('#' + id) as HTMLElement;
+        const icon = container.previousSibling?.lastChild as HTMLElement;
         if (this.showContainer) {
             if (container.id === 'styleContainer') container.style.display = 'flex';
             else container.style.display = 'table-cell';
             icon.innerHTML = 'expand_less';
-
         } else {
             container.style.display = 'none';
             icon.innerHTML = 'expand_more';
         }
     }
     setTexture(id: number): void {
-        let currentImage = document.querySelector('#currentImage') as HTMLImageElement;
+        const currentImage = document.querySelector('#currentImage') as HTMLImageElement;
         currentImage.src = '../../../assets/b' + id + '.svg';
         this.idStyleBrush = id;
     }
