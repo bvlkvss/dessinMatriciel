@@ -117,4 +117,7 @@ export class ColorPickerComponent implements OnInit {
             }
         }
     }
+    closePalette(): void{
+        document.getElementById('closeButton');
+    }
 }

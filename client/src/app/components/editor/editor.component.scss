@@ -42,6 +42,7 @@
     width: min-content;
     outline: none;
 }
+
 #attributeBar {
     top: -8px;
     display: flex;
@@ -52,3 +53,16 @@
     z-index: -4;
     position: absolute;
 }
+
+#primaryColorPicker{
+    position: absolute;
+    top: 260px;
+    left: 20px;
+}
+
+#secondaryColorPicker{
+    position: absolute;
+    top: 345px;
+    left: 20px;
+}
+

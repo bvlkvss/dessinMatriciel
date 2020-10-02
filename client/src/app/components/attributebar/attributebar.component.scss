@@ -40,7 +40,7 @@
     width: 15px;
     height: 15px;
     border-radius: 50%;
-    background: rgb(230, 205, 205);
+    background: rgb(202, 202, 202);
     cursor: pointer;
 }
 
@@ -50,7 +50,7 @@
     bottom: 40px;
     left: 83%;
     font-size: 14px;
-    color: whitesmoke;
+    color: rgb(255, 255, 255);
     background-color: rgb(48, 46, 64);
     border: none;
 }
@@ -70,7 +70,7 @@
     bottom: 20px;
     width: auto;
     font-size: 19px;
-    font-family: Hack, monospace;
+    font-family: Arial, Helvetica, sans-serif;
     height: 0px;
     left: 6%;
 }
@@ -90,7 +90,7 @@
     color: white;
     width: auto;
     font-size: 19px;
-    font-family: Hack, monospace;
+    font-family: Arial, Helvetica, sans-serif;
     height: 0px;
 }
 #junctionHeader {
@@ -173,11 +173,11 @@
     background-color: transparent;
 }
 #style1 {
-    border-color: whitesmoke;
+    border-color: rgb(0, 0, 0);
     border-width: 4px;
     border-style: solid;
 
-    background-color: rgb(224, 191, 191);
+    background-color: rgb(255, 255, 255);
 }
 #textureContainer {
     display: none;
@@ -240,7 +240,7 @@
 .sliderJunction {
     width: 50px;
     height: 10px;
-    background: white;
+    background: green;
     margin: 20px auto;
     position: relative;
     opacity: 0.98;
@@ -270,22 +270,23 @@
         }
     }
 }
-.buttons {
+.buttons { 
     color: #fff;
     text-transform: uppercase;
     text-decoration: none;
-    padding: 15px;
+    padding-top: 15px;
+    padding-bottom: 15px;
     width: 90px;
     border-radius: 5px;
     display: inline-block;
     border: none;
-    top: 10px;
-    font-size: 17px;
-    font-family: Hack, monospace;
+    top: 0px;
+    font-size: 13px;
+    font-family: Helvetica;
     margin-right: 35px;
     position: relative;
     left: 20px;
-    transition: all 0.4s ease 0s;
+    transition: all 0.1s ease 0s;
 }
 #cancel {
     background: gray;

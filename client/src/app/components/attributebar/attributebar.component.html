@@ -4,7 +4,7 @@
 
 <div id="attribute">
     <div id="lineWidthcontainer" *ngIf="checkIfContainAttribute('lineWidth')">
-        <p id="header" for="volume">Line Width</p>
+        <p id="header" for="volume">Epaisseur</p>
         <input
             class="textInput"
             type="text"
@@ -17,7 +17,7 @@
         <input class="size-slider" type="range" (change)="setLineWidth($event.target.value)" [value]="widthValue" min="1" max="100" />
     </div>
     <div id="lineWidthcontainer" *ngIf="checkIfContainAttribute('eraserWidth')">
-        <p id="header" for="volume">eraser Width</p>
+        <p id="header" for="volume">Epaisseur Efface</p>
         <input
             class="textInput"
             type="text"
@@ -48,7 +48,7 @@
         </div>
     </div>
     <div id="lineWidthcontainer" *ngIf="checkIfContainAttribute('junctionWidth')">
-        <p id="header" for="volume">Junction diameter</p>
+        <p id="header" for="volume">Taille Jonction </p>
         <input
             class="textInput"
             type="text"
@@ -61,7 +61,7 @@
         <input class="size-slider" type="range" (change)="setJunctionWidth($event.target.value)" [value]="junctionWidth" min="1" max="100" />
     </div>
     <div id="lineWidthcontainer" *ngIf="checkIfContainAttribute('strokeWidth')">
-        <p id="header" for="volume">Stroke Width</p>
+        <p id="header" for="volume">Epaisseur Contour</p>
         <input
             class="textInput"
             type="text"
@@ -75,7 +75,7 @@
     </div>
 
     <div id="lineWidthcontainer" *ngIf="checkIfContainAttribute('junction')">
-        <p id="junctionHeader" class="header">Junction point</p>
+        <p id="junctionHeader" class="header">Point De Jonction</p>
         <div class="sliderJunction">
             <input type="checkbox" id="sliderJunction" (input)="setJunctionState()" name="check" checked />
             <label for="sliderJunction"></label>
@@ -107,7 +107,7 @@
         </div>
     </div>
     <div id="buttonContainer">
-        <button id="accept" (click)="acceptChanges()" class="buttons">Accept</button>
-        <button id="cancel" (click)="restoreValues()" class="buttons">Cancel</button>
+        <button id="accept" (click)="acceptChanges()" class="buttons">Accepter</button>
+        <button id="cancel" (click)="restoreValues()" class="buttons">Annuler</button>
     </div>
 </div>

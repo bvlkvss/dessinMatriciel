@@ -104,7 +104,7 @@ export class AttributebarComponent implements OnInit, OnChanges {
     setJunctionState(): void {
         let checkBox = document.querySelector('#sliderJunction') as HTMLInputElement;
         let slider = document.querySelector('.sliderJunction') as HTMLElement;
-        if (checkBox.checked) slider.style.background = 'white';
+        if (checkBox.checked) slider.style.background = 'green';
         else slider.style.background = 'gray';
     }
     updateTextInput(): void {
