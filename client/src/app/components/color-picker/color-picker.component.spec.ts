@@ -1,7 +1,9 @@
 /* tslint:disable */
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { delay } from 'rxjs/operators';
+import { ColorPaletteComponent } from './color-palette/color-palette.component';
 import { ColorPickerComponent } from './color-picker.component';
+import { ColorSliderComponent } from './color-slider/color-slider.component';
 
 describe('ColorPickerComponent', () => {
     let component: ColorPickerComponent;
@@ -10,7 +12,7 @@ describe('ColorPickerComponent', () => {
     beforeEach(async(() => {
         delay(1000);
         TestBed.configureTestingModule({
-            declarations: [ColorPickerComponent],
+            declarations: [ColorPickerComponent, ColorPaletteComponent, ColorSliderComponent],
         }).compileComponents();
         fixture = TestBed.createComponent(ColorPickerComponent);
         component = fixture.componentInstance;
@@ -52,14 +54,6 @@ describe('ColorPickerComponent', () => {
         expect(component.opacity).toEqual('80');
     });
 
-    it('color should match input', () => {
-        let input = document.querySelector('.text') as HTMLInputElement;
-        input.value = 'aaaaaa';
-        input.dispatchEvent(new Event('input'));
-        component.setColorFromInput();
-        expect(component.color).toEqual('#aaaaaa');
-    });
-
     it('addColor should do nothing if color was already there', () => {
         let colors = ['#aabbcc', '#abbabb', '#aabacc', '#abbbbb', '#cccccc', '#dddddd', '#000000', '#111111', '#ffffff', '#eeeeee'] as Array<string>;
         component.lastColors = colors;
@@ -92,22 +86,18 @@ describe('ColorPickerComponent', () => {
         expect(component.color).toEqual('#ababab');
     });
 
-    it('setColor on click should set the primary color on leftClick', () => {
-        let mouseEvent = { button: 0 } as MouseEvent;
-        component.color = '#bababa';
-        let setColorSpy = spyOn((component as any).tools, 'setColor');
+    it('setColor on click should set on prime if left click', () => {
+        let mouseEvent = {button:0} as MouseEvent;
+        (component as any).isPrime = false;
         component.setColorOnClick(mouseEvent, '#ababab');
-        expect(component.color).toEqual('#ababab');
-        expect(setColorSpy).toHaveBeenCalledWith(component.color + component.opacity, true);
+        expect((component as any).isPrime).toEqual(true);
     });
 
-    it('setColor on click should set the secondary color on right', () => {
-        let mouseEvent = { button: 2 } as MouseEvent;
-        component.color = '#bababa';
-        let setColorSpy = spyOn((component as any).tools, 'setColor');
+    it('setColor on click should set on prime to false if right click', () => {
+        let mouseEvent = {button:2} as MouseEvent;
+        (component as any).isPrime = true;
         component.setColorOnClick(mouseEvent, '#ababab');
-        expect(component.color).toEqual('#ababab');
-        expect(setColorSpy).toHaveBeenCalledWith(component.color + component.opacity, false);
+        expect((component as any).isPrime).toEqual(false);
     });
 
     it('accept changes should call setColor addColor and setOpacity', () => {
@@ -120,6 +110,24 @@ describe('ColorPickerComponent', () => {
         expect(addColorSpy).toHaveBeenCalled();
     });
 
+    it('accept should set onInput to false when it is true', () => {
+        (component as any).onInput = true;
+        spyOn(component, 'addColor');
+        spyOn(component, 'setOpacity');
+        spyOn((component as any).tools, 'setColor');
+        component.acceptChanges();
+        expect((component as any).onInput).toEqual(false);
+    });
+
+    it('accept should set onLasts to false when it is true', () => {
+        (component as any).onLasts = true;
+        spyOn(component, 'addColor');
+        spyOn(component, 'setOpacity');
+        spyOn((component as any).tools, 'setColor');
+        component.acceptChanges();
+        expect((component as any).onLasts).toEqual(false);
+    });
+
     it('cancel changes should set color to primary color if isPrimary color is true', () => {
         component.isPrimaryColor = true;
         component.cancelChanges();
@@ -130,5 +138,45 @@ describe('ColorPickerComponent', () => {
         component.isPrimaryColor = true;
         component.cancelChanges();
         expect(component.color).toEqual((component as any).tools.currentTool.secondaryColor.slice(0, 7));
+    });
+
+    it('cancel changes should call draw if selected position is not the same', () => {
+        component.isPrimaryColor = true;
+        (component as any).selectedPositionPalette = {x:0,y:0};
+        (component as any).colorPalette.selectedPosition= {x:0,y:1};
+        let color = (component as any).colorPalette.color
+        spyOn(color , 'emit');
+        let drawSpy = spyOn((component as any).colorPalette, 'draw')
+        component.cancelChanges();
+        expect(drawSpy).toHaveBeenCalled();
+    });
+
+    it('cancel changes should call draw if selected height is not the same', () => {
+        component.isPrimaryColor = true;
+        (component as any).selectedPositionPalette = {x:0,y:0};
+        (component as any).colorPalette.selectedHeight= {x:0,y:1};
+        let color = (component as any).colorPalette.color
+        spyOn(color , 'emit');
+        let drawSpy = spyOn((component as any).colorPalette, 'draw')
+        component.cancelChanges();
+        expect(drawSpy).toHaveBeenCalled();
+    });
+
+    it('color should match input', () => {
+        let input = document.querySelector('.text') as HTMLInputElement;
+        input.value = 'aaaaaa';
+        let color = (component as any).colorSlider.color;
+        spyOn(color , 'emit');
+        component.setColorFromInput();
+        expect(component.color).toEqual('#aaaaaa');
+    });
+
+    it('input should be ffffff if more than that', () => {
+        let input = document.querySelector('.text') as HTMLInputElement;
+        input.value = 'gggggg';
+        let color = (component as any).colorSlider.color;
+        spyOn(color , 'emit');
+        component.setColorFromInput();
+        expect(component.color).toEqual('#ffffff');
     });
 });
