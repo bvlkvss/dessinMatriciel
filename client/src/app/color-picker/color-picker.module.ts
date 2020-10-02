@@ -9,7 +9,4 @@ import { ColorSliderComponent } from '@app/components/color-picker/color-slider/
     declarations: [ColorPickerComponent, ColorSliderComponent, ColorPaletteComponent],
     exports: [ColorPickerComponent],
 })
-export class ColorPickerModule {
-
-
-}
+export class ColorPickerModule {}

@@ -83,7 +83,14 @@
     border-radius: 50%;
     border: 1px solid rgb(220, 220, 220);
 }
-
+#label {
+    position: relative;
+    bottom: 44px;
+    font-size: 20px;
+    left: 20%;
+    color: white;
+    font-family: Hack, monospace;
+}
 .text {
     outline: none;
     margin: none;
@@ -91,7 +98,7 @@
     position: relative;
     bottom: 45px;
     left: 46px;
-    width: 50%;
+    width: 28%;
     font-size: 18px;
     height: 28px;
     border: none;

@@ -23,6 +23,7 @@
         <p *ngIf="!isPrimaryColor" id="primaryColor" class="header">Couleur Secondaire</p>
         <div class="color-div" [ngStyle]="{ 'background-color': color || 'white' }"></div>
         <input class="text" maxlength="6" (change)="setColorFromInput()" [value]="color.slice(1, 7)" />
+        <label id="label">#</label>
     </div>
     <div id="pickerContainer">
         <div class="color-wrapper">

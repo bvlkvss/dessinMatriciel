@@ -11,7 +11,7 @@ export enum MouseButton {
     Forward = 4,
 }
 
-export enum RectangleStyle {
+export enum EllipseStyle {
     Empty = 0,
     Filled_contour = 2,
     Filled = 1,
@@ -23,19 +23,14 @@ export class EllipseService extends Tool {
     toSquare: boolean = false;
     isOut: boolean = false;
     currentPos: Vec2;
-    ellipseStyle: number;
+    ellipseStyle: EllipseStyle;
     constructor(drawingService: DrawingService) {
         super(drawingService);
         this.lineWidth = 1;
         this.ellipseStyle = 2;
-        this.toolAttributes = ['ellipseStyle', 'lineWidth'];
+        this.toolAttributes = ['ellipseStyle', 'strokeWidth'];
     }
-    setStyle(id: number): void {
-        this.ellipseStyle = id;
-    }
-    setSecondaryColor(color: string): void {
-        this.secondaryColor = color;
-    }
+
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseDown) {
@@ -43,15 +38,7 @@ export class EllipseService extends Tool {
         }
     }
 
-    setLineWidth(width: number): void {
-        this.lineWidth = width;
-    }
-    setPrimaryColor(color: string): void {
-        this.primaryColor = color;
-    }
-
     onMouseOut(event: MouseEvent): void {
-
         if (this.mouseDown) {
             this.isOut = true;
 
@@ -114,7 +101,22 @@ export class EllipseService extends Tool {
         }
     }
 
-    // tslint:disable:cyclomatic-complexity
+    setStyle(style: number): void {
+        this.ellipseStyle = style;
+    }
+
+    setSecondaryColor(color: string): void {
+        this.secondaryColor = color;
+    }
+
+    setLineWidth(width: number): void {
+        this.lineWidth = width;
+    }
+
+    setPrimaryColor(color: string): void {
+        this.primaryColor = color;
+    }
+
     private drawEllipse(ctx: CanvasRenderingContext2D, startPos: Vec2, currentPos: Vec2, toSquare: boolean, preview: boolean = true): void {
         let width = currentPos.x - startPos.x;
         let height = currentPos.y - startPos.y;
@@ -130,9 +132,11 @@ export class EllipseService extends Tool {
 
             const centerx = this.mouseDownCoord.x + width / 2;
             const centery = this.mouseDownCoord.y + height / 2;
-            if(this.ellipseStyle==2){
-                this.lineWidth=0;
+
+            if (this.ellipseStyle === EllipseStyle.Filled_contour) {
+                this.lineWidth = 0;
             }
+
             const radiusX = Math.abs(Math.abs(width / 2) - this.lineWidth / 2 - 1);
             const radiusY = Math.abs(Math.abs(height / 2) - this.lineWidth / 2 - 1);
 
@@ -143,21 +147,22 @@ export class EllipseService extends Tool {
             ctx.strokeStyle = this.secondaryColor;
             ctx.ellipse(centerx, centery, radiusX, radiusY, 0, 0, 2 * Math.PI);
 
-            if(Math.abs(width)>this.lineWidth*2&& Math.abs(height)>this.lineWidth*2){ 
-            switch (this.ellipseStyle) {
-                case 0:
-                    ctx.stroke();
-                    break;
-                case 1:
-                    ctx.stroke();
-                    ctx.fill();
-                    break;
-                case 2:
-                    ctx.fill();
-                    break;
+            if (Math.abs(width) > this.lineWidth * 2 && Math.abs(height) > this.lineWidth * 2) {
+                switch (this.ellipseStyle) {
+                    case 0:
+                        ctx.stroke();
+                        break;
+                    case 1:
+                        ctx.stroke();
+                        ctx.fill();
+                        break;
+                    case 2:
+                        ctx.fill();
+                        break;
+                }
+                ctx.closePath();
             }
-            ctx.closePath();
-        }
+
             if (preview) {
                 ctx.beginPath();
                 ctx.setLineDash([5, 15]);
