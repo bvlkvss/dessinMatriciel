@@ -1,9 +1,12 @@
 import { Injectable } from '@angular/core';
-//import { Color } from '@app/classes/color';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 
+const LINE_MIN_DISTANCE = 20;
+const ANGLE_VALUE = 45;
+const ALLIGNEMENT_ANGLE = Math.PI * ANGLE_VALUE;
+const PI_ANGLE = 180;
 // TODO : Déplacer ça dans un fichier séparé accessible par tous
 export enum MouseButton {
     Left = 0,
@@ -62,24 +65,30 @@ export class LineService extends Tool {
     }
 
     onDblClick(event: MouseEvent): void {
-        //  click is triggred twice when calling doubleClick so, it push twice the last point
-        let lastPoint: Vec2 = this.pathData[this.pathData.length - 1];
+        const lastPoint: Vec2 = this.pathData[this.pathData.length - 1];
         this.isDoubleClicked = true;
+        // tslint:disable:no-magic-numbers
 
-        // check if the distance  between the new point and last one is less than 20
-        if (this.distanceBetween2Points(lastPoint, this.pathData[this.pathData.length - 3]) <= 20) {
+        // check if the distance between the new point and last one is less than 20
+        if (!this.toAllign && this.distanceBetween2Points(lastPoint, this.pathData[this.pathData.length - 3]) <= LINE_MIN_DISTANCE) {
             this.pathData.pop();
             this.pathData[this.pathData.length - 2] = lastPoint;
         }
+        // check if the distance between allignement point and last one is less than 20 and draw the allignement point
+        else if (this.toAllign) {
+            this.toAllign = false;
+            if (this.distanceBetween2Points(lastPoint, this.allignementPoint) <= LINE_MIN_DISTANCE) {
+                this.pathData.pop();
+                this.drawLine(this.drawingService.baseCtx, this.pathData[this.pathData.length - 1], this.allignementPoint);
+            } else {
+                this.drawLine(this.drawingService.baseCtx, this.pathData[this.pathData.length - 1], this.allignementPoint);
+            }
+        }
         // if distance is more than 20, we need to push back the last point
         else this.pathData.push(lastPoint);
-        this.drawingService.clearCanvas(this.drawingService.previewCtx);
 
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.drawLines(this.drawingService.baseCtx);
-        if (this.toAllign) {
-            this.toAllign = false;
-            this.drawLine(this.drawingService.baseCtx, this.pathData[this.pathData.length - 1], this.allignementPoint);
-        }
         this.mouseDown = false;
         this.clearPath();
     }
@@ -144,7 +153,7 @@ export class LineService extends Tool {
         }
     }
 
-    private drawJunction(ctx: CanvasRenderingContext2D, centerPoint: Vec2) {
+    private drawJunction(ctx: CanvasRenderingContext2D, centerPoint: Vec2): void {
         ctx.beginPath();
         ctx.arc(centerPoint.x, centerPoint.y, this.junctionWidth, 0, 2 * Math.PI);
         ctx.fill();
@@ -152,40 +161,35 @@ export class LineService extends Tool {
     }
 
     private findNewPointForAngle(beginPoint: Vec2, endPoint: Vec2): Vec2 {
-        let currentAngle: number = this.angleBetween2Points(beginPoint, endPoint);
-        let distance: number = this.distanceBetween2Points(beginPoint, endPoint);
-        let closestAngle: number = (Math.round(currentAngle / ((Math.PI * 45) / 180)) * Math.PI * 45) / 180;
-        let xDistance: number = distance * Math.cos(closestAngle);
-        let yDistance: number = distance * Math.sin(closestAngle);
+        const currentAngle: number = this.angleBetween2Points(beginPoint, endPoint);
+        const distance: number = this.distanceBetween2Points(beginPoint, endPoint);
+        const closestAngle: number = (Math.round(currentAngle / (ALLIGNEMENT_ANGLE / PI_ANGLE)) * ALLIGNEMENT_ANGLE) / PI_ANGLE;
+        const xDistance: number = distance * Math.cos(closestAngle);
+        const yDistance: number = distance * Math.sin(closestAngle);
         return { x: beginPoint.x + xDistance, y: beginPoint.y - yDistance };
     }
 
     private angleBetween2Points(lastPoint: Vec2, currentPoint: Vec2): number {
-        //moitie droite
-        //adjacent
-        let adjacent = this.distanceBetween2Points(lastPoint, { x: currentPoint.x, y: lastPoint.y });
-        //hypothenus
-        let hypothenus = this.distanceBetween2Points(lastPoint, currentPoint);
+        const adjacent = this.distanceBetween2Points(lastPoint, { x: currentPoint.x, y: lastPoint.y });
+        const hypothenus = this.distanceBetween2Points(lastPoint, currentPoint);
 
         let angle = Math.acos(adjacent / hypothenus);
+
+        // convert the angle value to always be positive depending on the cirle quadrant it is on
         if (lastPoint.x < currentPoint.x) {
-            //cadran 1
-            //cadran 4
+            // first circle quadrant --nothing to add--
+
+            // fourth circle quadrant
             if (lastPoint.y < currentPoint.y) {
-                //2pi - l'angle
                 angle = 2 * Math.PI - angle;
             }
-        }
-        //moitie gauche
-        else {
-            //cadran 2
+        } else {
+            // second circle quadrant
             if (lastPoint.y > currentPoint.y) {
-                //pi - l'angle
                 angle = Math.PI - angle;
             }
-            //cadran 3
+            // third cirle quadrant
             else {
-                //pi + la'angle
                 angle = Math.PI + angle;
             }
         }
