@@ -1,7 +1,7 @@
 import { Color } from '@app/classes/color';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-
+const DEFAULT_COLOR = '#000000';
 // Ceci est justifié vu qu'on a des fonctions qui seront gérés par les classes enfant
 // tslint:disable:no-empty
 export abstract class Tool {
@@ -16,8 +16,8 @@ export abstract class Tool {
     width: number;
     height: number;
     opacity: number;
-    primaryColor: string = '#000000'; // by default black
-    secondaryColor: string = '#000000'; //  by default black
+    primaryColor: string = DEFAULT_COLOR;
+    secondaryColor: string = DEFAULT_COLOR;
 
     constructor(protected drawingService: DrawingService) {}
 
