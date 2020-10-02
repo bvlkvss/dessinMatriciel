@@ -14,7 +14,13 @@ import { ColorPaletteComponent } from '@app/components/color-picker/color-palett
 import { ColorSliderComponent } from '@app/components/color-picker/color-slider/color-slider.component';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
 
-// tslint:disable:no-magic-numbers
+const DEFAULT_OPACITY = 'ff';
+const DEFAULT_COLOR = '#000000';
+const COLOR_STRING_LENGTH = 7;
+const MAX_COLOR_VALUE = 255;
+const PERCENTAGE_DIVIDER = 100;
+const MAX_SAVED_COLORS = 10;
+
 @Component({
     selector: 'app-color-picker',
     templateUrl: './color-picker.component.html',
@@ -35,8 +41,8 @@ export class ColorPickerComponent implements AfterViewInit {
     @Input() lastColors: string[];
 
     constructor(private tools: ToolsManagerService) {
-        this.opacity = 'ff';
-        this.color = '#000000';
+        this.opacity = DEFAULT_OPACITY;
+        this.color = DEFAULT_COLOR;
     }
 
     ngAfterViewInit(): void {
@@ -72,10 +78,11 @@ export class ColorPickerComponent implements AfterViewInit {
     }
 
     cancelChanges(): void {
-        if (this.isPrimaryColor) this.color = this.tools.currentTool.primaryColor.slice(0, 7);
-        else this.color = this.tools.currentTool.secondaryColor.slice(0, 7);
+        if (this.isPrimaryColor) this.color = this.tools.currentTool.primaryColor.slice(0, COLOR_STRING_LENGTH);
+        else this.color = this.tools.currentTool.secondaryColor.slice(0, COLOR_STRING_LENGTH);
         const input = document.querySelector('#opacityValue') as HTMLInputElement;
-        input.value = ((parseInt(this.opacity, 16) / 255) * 100).toString();
+        input.value = ((parseInt(this.opacity, 16) / MAX_COLOR_VALUE) * 100).toString();
+
         if (this.colorPalette.selectedPosition !== this.selectedPositionPalette) {
             this.colorPalette.selectedPosition = this.selectedPositionPalette;
             this.colorPalette.color.emit(this.color);
@@ -90,9 +97,9 @@ export class ColorPickerComponent implements AfterViewInit {
 
     setOpacity(): void {
         const input = document.querySelector('#opacityValue') as HTMLInputElement;
-        if (input.valueAsNumber >= 100) input.value = '100';
+        if (input.valueAsNumber >= PERCENTAGE_DIVIDER) input.value = '100';
         else if (input.valueAsNumber <= 0) input.value = '0';
-        const integerValue = Math.round((input.valueAsNumber * 255) / 100);
+        const integerValue = Math.round((input.valueAsNumber * MAX_COLOR_VALUE) / PERCENTAGE_DIVIDER);
         this.opacity = integerValue.toString(16);
     }
 
@@ -107,7 +114,7 @@ export class ColorPickerComponent implements AfterViewInit {
 
     addColor(color: string): void {
         if (!this.lastColors.find((element) => element === color)) {
-            if (this.lastColors.length < 10) {
+            if (this.lastColors.length < MAX_SAVED_COLORS) {
                 this.lastColors.push(color);
             } else {
                 const tmp = this.lastColors;

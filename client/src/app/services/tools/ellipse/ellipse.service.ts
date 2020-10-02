@@ -2,7 +2,9 @@ import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-// tslint:disable:no-magic-numbers
+
+const LINE_DASH_SEGMENT_START = 5;
+const LINE_DASH_SEGMENT_END = 15;
 export enum MouseButton {
     Left = 0,
     Middle = 1,
@@ -165,7 +167,7 @@ export class EllipseService extends Tool {
 
             if (preview) {
                 ctx.beginPath();
-                ctx.setLineDash([5, 15]);
+                ctx.setLineDash([LINE_DASH_SEGMENT_START, LINE_DASH_SEGMENT_END]);
                 ctx.lineWidth = 2;
                 ctx.strokeStyle = 'grey';
                 ctx.rect(startPos.x, startPos.y, width, height);
