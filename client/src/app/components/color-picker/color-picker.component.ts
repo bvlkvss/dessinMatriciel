@@ -103,12 +103,16 @@ export class ColorPickerComponent implements AfterViewInit {
         this.opacity = integerValue.toString(16);
     }
 
+    isHex(str: string): boolean {
+        const testValue: number = parseInt(str, 16);
+        return testValue.toString(16) === str.toLowerCase();
+    }
     setColorFromInput(): void {
         const input = document.querySelector('.text') as HTMLInputElement;
-        if (input.value > 'ffffff') input.value = 'ffffff';
-        else if (input.value < '000000') input.value = '000000';
+        if (!this.isHex(input.value)) {
+            input.value = '000000';
+        }
         this.color = '#' + input.value;
-        this.colorSlider.color.emit(this.color);
         this.onInput = true;
     }
 

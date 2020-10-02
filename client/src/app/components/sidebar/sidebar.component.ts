@@ -87,8 +87,8 @@ export class SidebarComponent implements OnChanges {
         const secondColorDiv = document.querySelector('.color-box2') as HTMLElement;
         const tmpPrimaryColor: string = this.tools.currentTool.primaryColor;
         const tmpSecondaryColor: string = this.tools.currentTool.secondaryColor;
-        this.tools.currentTool.primaryColor = tmpPrimaryColor;
-        this.tools.currentTool.secondaryColor = tmpSecondaryColor;
+        this.tools.currentTool.primaryColor = tmpSecondaryColor;
+        this.tools.currentTool.secondaryColor = tmpPrimaryColor;
         primColorDiv.style.backgroundColor = this.tools.currentTool.primaryColor;
         secondColorDiv.style.backgroundColor = this.tools.currentTool.secondaryColor;
     }

@@ -81,6 +81,7 @@ export class LineService extends Tool {
                 this.pathData.pop();
                 this.drawLine(this.drawingService.baseCtx, this.pathData[this.pathData.length - 1], this.allignementPoint);
             } else {
+                this.drawLine(this.drawingService.baseCtx, this.pathData[this.pathData.length - 2], lastPoint);
                 this.drawLine(this.drawingService.baseCtx, this.pathData[this.pathData.length - 1], this.allignementPoint);
             }
         }
