@@ -165,7 +165,7 @@ describe('BrushService', () => {
     it('should change image to b3 id when setTexture is called with 3 as id', () => {
         service.setTexture(3);
         let src = (service as any).image.src;
-        expect(src).toEqual('http://localhost:9876/assets/b3.png');
+        expect(src).toContain('assets/b3.png');
     });
 
     it('should change color to #ababab when setPrimaryColor is called with #ababab as paramater', () => {
