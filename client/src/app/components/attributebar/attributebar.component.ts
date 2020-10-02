@@ -35,6 +35,7 @@ export class AttributebarComponent implements OnInit {
             currentStyle.style.borderWidth = window.getComputedStyle(shapeStyle).borderWidth;
         }
     }
+
     restoreValues(): void {
         let currentTool;
         if (this.tools.currentTool.lineWidth) this.widthValue = this.tools.currentTool.lineWidth.toString();
@@ -63,6 +64,7 @@ export class AttributebarComponent implements OnInit {
                 if (currentImage) currentImage.src = '../../../assets/b' + brush.imageId + '.svg';
         }
     }
+
     acceptChanges(): void {
         let inputValue;
         this.tools.setLineWidth(Number(this.widthValue));
@@ -85,6 +87,7 @@ export class AttributebarComponent implements OnInit {
                 break;
         }
     }
+
     checkIfContainAttribute(attribute: string): boolean {
         if (this.lastTool !== this.tools.currentTool) {
             this.lastTool = this.tools.currentTool;
@@ -92,18 +95,22 @@ export class AttributebarComponent implements OnInit {
         }
         return this.tools.currentTool.toolAttributes.includes(attribute);
     }
+
     setLineWidth(input: string): void {
         this.widthValue = input;
     }
+
     setJunctionWidth(input: string): void {
         this.junctionWidth = input;
     }
+
     setJunctionState(): void {
         const checkBox = document.querySelector('#sliderJunction') as HTMLInputElement;
         const slider = document.querySelector('.sliderJunction') as HTMLElement;
         if (checkBox.checked) slider.style.background = 'white';
         else slider.style.background = 'gray';
     }
+
     updateTextInput(): void {
         const input = document.querySelector('.size-slider') as HTMLInputElement;
         const inputToUpdate = document.querySelector('.textInput') as HTMLInputElement;
@@ -123,6 +130,7 @@ export class AttributebarComponent implements OnInit {
             icon.innerHTML = 'expand_more';
         }
     }
+
     setTexture(id: number): void {
         const currentImage = document.querySelector('#currentImage') as HTMLImageElement;
         currentImage.src = '../../../assets/b' + id + '.svg';
