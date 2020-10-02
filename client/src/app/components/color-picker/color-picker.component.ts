@@ -119,7 +119,7 @@ export class ColorPickerComponent implements AfterViewInit {
             }
         }
     }
-    closePalette(): void{
+    closePalette(): void {
         document.getElementById('closeButton');
     }
 }
