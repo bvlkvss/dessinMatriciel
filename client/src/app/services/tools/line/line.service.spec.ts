@@ -122,15 +122,38 @@ describe('LineService', () => {
         expect(pushSpy).toHaveBeenCalled();
     });
 
-    it('onDblClick should call push and drawLine if distance is more than 20 and toAllign ', () => {
+    it('onDblClick should call drawLine if distance is more than 20 and toAllign and set toAllign to false ', () => {
         (service as any).allignementPoint = { x: 4, y: 5 } as Vec2;
         service.toAllign = true;
         let distanceSpy = spyOn<any>(service, 'distanceBetween2Points').and.returnValue(30);
         service.onDblClick(mouseEvent);
         expect(service.isDoubleClicked).toBe(true);
         expect(distanceSpy).toHaveBeenCalled();
-        expect(pushSpy).toHaveBeenCalled();
         expect(drawLineSpy).toHaveBeenCalled();
+        expect(popSpy).not.toHaveBeenCalled();
+        expect(service.toAllign).toEqual(false);
+    });
+
+    it('onDblClick should call drawLine and pop if distance is less than 20 and toAllign and set toAllign to false ', () => {
+        (service as any).allignementPoint = { x: 4, y: 5 } as Vec2;
+        service.toAllign = true;
+        let distanceSpy = spyOn<any>(service, 'distanceBetween2Points').and.returnValue(10);
+        service.onDblClick(mouseEvent);
+        expect(service.isDoubleClicked).toBe(true);
+        expect(distanceSpy).toHaveBeenCalled();
+        expect(drawLineSpy).toHaveBeenCalled();
+        expect(popSpy).toHaveBeenCalled();
+        expect(service.toAllign).toEqual(false);
+    });
+
+    it('onDblClick should not call drawLine if distance is less than 20 and toAllign ', () => {
+        (service as any).allignementPoint = { x: 4, y: 5 } as Vec2;
+        service.toAllign = false;
+        let distanceSpy = spyOn<any>(service, 'distanceBetween2Points').and.returnValue(30);
+        service.onDblClick(mouseEvent);
+        expect(service.isDoubleClicked).toBe(true);
+        expect(distanceSpy).toHaveBeenCalled();
+        expect(drawLineSpy).not.toHaveBeenCalled();
     });
 
     it('onMouseMove should not call drawLine or drawLines if mouse is not down ', () => {
