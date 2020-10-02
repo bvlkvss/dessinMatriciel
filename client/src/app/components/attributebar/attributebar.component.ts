@@ -5,7 +5,7 @@ import { EllipseService } from '@app/services/tools/ellipse/ellipse.service';
 import { LineService } from '@app/services/tools/line/line.service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle.service';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
-
+const MAX_WIDTH_VALUE = 100;
 @Component({
     selector: 'app-attributebar',
     templateUrl: './attributebar.component.html',
@@ -67,6 +67,7 @@ export class AttributebarComponent implements OnInit {
 
     acceptChanges(): void {
         let inputValue;
+        if (Number(this.widthValue) > MAX_WIDTH_VALUE) this.widthValue = '100';
         this.tools.setLineWidth(Number(this.widthValue));
         switch (this.tools.currentTool) {
             case this.tools.getTools().get('rectangle'):

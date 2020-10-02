@@ -50,11 +50,12 @@
     color: white;
     font-family: Hack, monospace;
 }
+
 .textInput {
     position: relative;
-    width: 27px;
+    width: 41px;
     bottom: 40px;
-    left: 80%;
+    left: 74%;
     font-size: 14px;
     color: rgb(255, 255, 255);
     background-color: rgb(48, 46, 64);
@@ -276,7 +277,7 @@
         }
     }
 }
-.buttons { 
+.buttons {
     color: #fff;
     text-transform: uppercase;
     text-decoration: none;
