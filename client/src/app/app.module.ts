@@ -10,10 +10,13 @@ import { EditorComponent } from './components/editor/editor.component';
 import { MainPageComponent } from './components/main-page/main-page.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { UserGuideComponent } from './components/user-guide/user-guide.component';
+import { ExportComponent } from './components/export/export.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatDialogModule } from '@angular/material/dialog';
 
 @NgModule({
-    declarations: [AppComponent, EditorComponent, SidebarComponent, DrawingComponent, MainPageComponent, UserGuideComponent, AttributebarComponent],
-    imports: [BrowserModule, HttpClientModule, AppRoutingModule, ColorPickerModule],
+    declarations: [AppComponent, EditorComponent, SidebarComponent, DrawingComponent, MainPageComponent, UserGuideComponent, AttributebarComponent, ExportComponent],
+    imports: [BrowserModule, HttpClientModule, AppRoutingModule, ColorPickerModule, BrowserAnimationsModule, MatDialogModule],
     providers: [],
     bootstrap: [AppComponent],
 })

@@ -1,62 +1,68 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
-    </head>
 
-    <body>
-        <div class="container2">
-            <div id="#icons" class="icon-bar">
-                <a id="pencil" class="active" (click)="displayPalette('pencil')" (click)="changeTools('pencil')">
-                    <i class="material-icons">gesture</i>
-                    <span class="slidingtxt"> Crayon (C)</span>
-                </a>
-                <a id="brush" (click)="displayPalette('brush')" (click)="changeTools('brush')">
-                    <i class="material-icons">brush</i>
-                    <span class="slidingtxt"> Pinceau (W)</span>
-                </a>
-                <a id="rectangle" (click)="displayPalette('rectangle')" (click)="changeTools('rectangle')">
-                    <i class="material-icons">crop_16_9</i>
-                    <span class="slidingtxt"> Rectangle (1)</span>
-                </a>
-                <a id="ellipse" (click)="displayPalette('ellipse')" (click)="changeTools('ellipse')">
-                    <i class="material-icons">panorama_fish_eye</i>
-                    <span class="slidingtxt"> Ellipse (X)</span>
-                </a>
-                <a id="line" (click)="displayPalette('line')" (click)="changeTools('line')">
-                    <i class="material-icons">architecture</i>
-                    <span class="slidingtxt"> Ligne (L)</span>
-                </a>
-                <a id="eraser" (click)="displayPalette('eraser')" (click)="changeTools('eraser')">
-                    <i class="material-icons">remove_circle_outline</i>
-                    <span class="slidingtxt"> Efface (E)</span>
-                </a>
-            </div>
+<head>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+</head>
 
-            <div class="color-bar ">
-                <a (click)="toggleColorPalette('primaryColorPicker')" class="color-box1"> 
-                </a>
-                <a class="tooltip">
-                    <i (click)="revertColors()"class="material-icons change">swap_vert</i>
-                </a>
-                <a (click)="toggleColorPalette('secondaryColorPicker')" class="color-box2">
-                </a>
-            </div>
-
-            <div class="icon-bar2">
-                <a class="tooltip" (click)="newDrawing()">
-                    <i class="material-icons">add</i>
-                    <span class="tooltiptext">Nouveau Dessin</span>
-                </a>
-                <a class="tooltip" (click)="openUserGuide()">
-                    <i class="material-icons">help_center</i>
-                    <span class="tooltiptext">Guide D'utilisateur</span>
-                </a>
-                <a class="tooltip" (click)="warningMessage()">
-                    <i class="material-icons">house</i>
-                    <span class="tooltiptext">Menu Principal</span>
-                </a>
-            </div>
+<body>
+    <div class="container2">
+        <div id="#icons" class="icon-bar">
+            <a id="pencil" class="active" (click)="displayPalette('pencil')" (click)="changeTools('pencil')">
+                <i class="material-icons">gesture</i>
+                <span class="slidingtxt"> Crayon (C)</span>
+            </a>
+            <a id="brush" (click)="displayPalette('brush')" (click)="changeTools('brush')">
+                <i class="material-icons">brush</i>
+                <span class="slidingtxt"> Pinceau (W)</span>
+            </a>
+            <a id="rectangle" (click)="displayPalette('rectangle')" (click)="changeTools('rectangle')">
+                <i class="material-icons">crop_16_9</i>
+                <span class="slidingtxt"> Rectangle (1)</span>
+            </a>
+            <a id="ellipse" (click)="displayPalette('ellipse')" (click)="changeTools('ellipse')">
+                <i class="material-icons">panorama_fish_eye</i>
+                <span class="slidingtxt"> Ellipse (X)</span>
+            </a>
+            <a id="line" (click)="displayPalette('line')" (click)="changeTools('line')">
+                <i class="material-icons">architecture</i>
+                <span class="slidingtxt"> Ligne (L)</span>
+            </a>
+            <a id="eraser" (click)="displayPalette('eraser')" (click)="changeTools('eraser')">
+                <i class="material-icons">remove_circle_outline</i>
+                <span class="slidingtxt"> Efface (E)</span>
+            </a>
         </div>
-    </body>
+
+        <div class="color-bar ">
+            <a (click)="toggleColorPalette('primaryColorPicker')" class="color-box1">
+            </a>
+            <a class="tooltip">
+                <i (click)="revertColors()" class="material-icons change">swap_vert</i>
+            </a>
+            <a (click)="toggleColorPalette('secondaryColorPicker')" class="color-box2">
+            </a>
+        </div>
+
+        <div class="icon-bar2">
+            <a class="tooltip" (click)="newDrawing()">
+                <i class="material-icons">add</i>
+                <span class="tooltiptext">Nouveau Dessin</span>
+            </a>
+            <a class="tooltip" (click)="openUserGuide()">
+                <i class="material-icons">help_center</i>
+                <span class="tooltiptext">Guide D'utilisateur</span>
+            </a>
+            <a class="tooltip" (click)="openExportDialog()">
+                <i class="material-icons">save_alt</i>
+                <span class="tooltiptext">Exporter le dessin</span>
+            </a>
+            <a class="tooltip" (click)="warningMessage()">
+                <i class="material-icons">house</i>
+                <span class="tooltiptext">Menu Principal</span>
+            </a>
+        </div>
+    </div>
+</body>
+
 </html>
