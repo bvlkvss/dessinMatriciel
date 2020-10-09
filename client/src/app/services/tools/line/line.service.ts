@@ -135,7 +135,8 @@ export class LineService extends Tool {
 
     private drawLine(ctx: CanvasRenderingContext2D, startPoint: Vec2, endPoint: Vec2): void {
         if (startPoint && endPoint) {
-            ctx.fillStyle = this.primaryColor;
+            ctx.strokeStyle = this.primaryColor;
+            ctx.fillStyle = this.secondaryColor;
             ctx.lineWidth = this.lineWidth;
             ctx.beginPath();
             ctx.moveTo(startPoint.x, startPoint.y);

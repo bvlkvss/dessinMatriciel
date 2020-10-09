@@ -38,7 +38,6 @@ export class BrushService extends Tool {
         super(drawingService);
         this.primaryColor = '0000000';
         this.image = new Image();
-        this.imageId = 1;
         this.lineWidth = MINIMUM_BRUSH_SIZE;
         this.image.src = '../../../assets/b1.png';
 

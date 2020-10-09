@@ -1,7 +1,6 @@
 /* tslint:disable */
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MockDrawingService } from '@app/components/drawing/drawing.component.spec';
-import { AttributebarComponent } from './attributebar.component';
 import { BrushService } from '@app/services/tools/brush/brush.service';
 import { EllipseService } from '@app/services/tools/ellipse/ellipse.service';
 import { EraserService } from '@app/services/tools/eraser/eraser-service';
@@ -9,6 +8,7 @@ import { LineService } from '@app/services/tools/line/line.service';
 import { PencilService } from '@app/services/tools/pencil/pencil-service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle.service';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
+import { AttributebarComponent } from './attributebar.component';
 
 describe('AttributebarComponent', () => {
     let component: AttributebarComponent;
@@ -47,7 +47,7 @@ describe('AttributebarComponent', () => {
         expect(component).toBeTruthy();
     });
 
-  
+
 
     it('should call getComputedStyle when calling change Style if both id are correct', () => {
         let style_ = { borderColor: 'blue', backgroundColor: 'blue', borderStyle: 'dashed', borderWidth: '2' } as any;

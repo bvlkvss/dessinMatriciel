@@ -18,7 +18,7 @@
 
     <div *ngIf="checkIfContainAttribute('texture')">
         <div id="currentImageContainer">
-            <img id="currentImage" src="../../../assets/b1.svg" />
+            <img id="currentImage" [src]="currentTexture" />
             <p class="header" id="headerImage">Texture</p>
             <i class="material-icons" (click)="toggleList($event.target.parentElement.nextSibling.id)" id="icon">expand_more</i>
         </div>
@@ -57,7 +57,7 @@
     <div id="lineWidthcontainer" *ngIf="checkIfContainAttribute('junction')">
         <p id="junctionHeader" class="header">Point De Jonction</p>
         <div class="sliderJunction">
-            <input type="checkbox" id="sliderJunction" (input)="setJunctionState()" name="check" checked />
+            <input type="checkbox" id="sliderJunction" (change)="setJunctionState($event.target.checked)" name="check" checked />
             <label for="sliderJunction"></label>
         </div>
     </div>
@@ -85,9 +85,5 @@
             <div (click)="setShapeStyle(0, true)" class="shapeStyle" style="border-radius: 50%" id="style0"></div>
             <div (click)="setShapeStyle(1, true)" class="shapeStyle" style="border-radius: 50%" id="style1"></div>
         </div>
-    </div>
-    <div id="buttonContainer">
-        <button id="accept" (click)="acceptChanges()" class="buttons">Accepter</button>
-        <button id="cancel" (click)="restoreValues()" class="buttons">Annuler</button>
     </div>
 </div>

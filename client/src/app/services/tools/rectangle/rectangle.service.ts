@@ -131,8 +131,8 @@ export class RectangleService extends Tool {
         ctx.beginPath();
         ctx.setLineDash([0, 0]);
 
-        ctx.fillStyle = this.secondaryColor;
-        ctx.strokeStyle = this.primaryColor;
+        ctx.fillStyle = this.primaryColor;
+        ctx.strokeStyle = this.secondaryColor;
         ctx.lineWidth = this.lineWidth;
 
         switch (this.rectangleStyle) {
