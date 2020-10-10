@@ -17,13 +17,13 @@ h1 {
     -ms-transform: translateY(-50%);
     transform: translateY(-50%);
     overflow-y: scroll !important;
-    display: flex;
+    display: block;
 }
 
 .topBar {
     position: relative;
     align-items: center;
-    width: 100%;
+    width: 100px;
     //height: 70px;
     top: 0px;
     color: rgb(99, 196, 235);
@@ -31,10 +31,10 @@ h1 {
     text-align: center;
 }
 
-.topBar button {
+.close {
     right: 5px;
     top: 5px;
-    position: absolute;
+    position: relative;
     background-color: rgba(255, 0, 0, 0.836);
     border-radius: 90%;
     border: none;
@@ -44,4 +44,50 @@ h1 {
     cursor: pointer;
     font-weight: 1700;
     user-select: none;
+    display: block;
+}
+
+#filtres {
+    position: absolute;
+    flex-direction: column;
+    top: 100px;
+    left: 20px;
+    background-color: rgba(150, 150, 150, 0.7);
+    padding: 15px;
+    border-radius: 20px;
+    z-index: 0;
+}
+
+#format {
+    position: absolute;
+    flex-direction: column;
+    top: 100px;
+    left: 200px;
+    background-color: rgba(150, 150, 150, 0.7);
+    padding: 15px;
+    border-radius: 20px;
+    z-index: 0;
+}
+
+.demo {
+    display: block;
+    border-radius: 15px;
+    width: 200px;
+    height: 180px;
+    border: 1px solid lightgray;
+    position: absolute;
+    right: 10px;
+}
+
+.chooseName {
+    position: absolute;
+    bottom: 75px;
+    right: 100px;
+}
+
+.confirmation {
+    position: absolute;
+    bottom: 0px;
+    left: 300px;
+    padding: 14px 16px;
 }

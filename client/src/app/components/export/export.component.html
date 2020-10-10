@@ -1,41 +1,40 @@
-<mat-dialog-content>
-    <div class="export">
-        <div class="topbar">
-            <button class="close">x</button>
-            <h1>Exporter un dessin</h1>
-        </div>
-        <div id="filtres">
-            <p>Choisir un filtre:</p>
-            <input type="radio" id="filter1" name="filter" value="filter1">
-            <label for="filter1">Filtre 1</label><br>
-            <input type="radio" id="filter2" name="filter" value="filter2">
-            <label for="filter2">Filtre 2</label><br>
-            <input type="radio" id="filter3" name="filter" value="filter3">
-            <label for="filter3">Filtre 3</label><br>
-            <input type="radio" id="filter4" name="filter" value="filter4">
-            <label for="filter4">Filtre 4</label><br>
-            <input type="radio" id="filter5" name="filter" value="filter5">
-            <label for="filter5">Filtre 5</label><br>
-        </div>
-        <div id="format">
-            <p>Choisir un format (JPEG ou PNG)</p>
-            <input type="radio" id="jpeg" name="format" value="jpeg">
-            <label for="jpeg">JPEG</label><br>
-            <input type="radio" id="png" name="filter" value="png">
-            <label for="png">PNG 2</label><br>
-        </div>
-        <div id="name">
-            <p>Choisir un nom pour votre image</p>
-            <input type="text" id="name" name="name" required size="50">
-            <label for="name">Nom</label><br>
-        </div>
-        <div class="demo ">
-            <img width="320 " height="240 " src="">
-        </div>
+<mat-dialog-content class="export">
+    <div class="topbar">
+        <button class="close">x</button>
+        <h1>Exporter un dessin</h1>
+    </div>
+    <div id="filtres">
+        <p>Choisir un filtre:</p>
+        <input type="radio" id="filter1" name="filter" value="filter1">
+        <label for="filter1">Filtre 1</label><br>
+        <input type="radio" id="filter2" name="filter" value="filter2">
+        <label for="filter2">Filtre 2</label><br>
+        <input type="radio" id="filter3" name="filter" value="filter3">
+        <label for="filter3">Filtre 3</label><br>
+        <input type="radio" id="filter4" name="filter" value="filter4">
+        <label for="filter4">Filtre 4</label><br>
+        <input type="radio" id="filter5" name="filter" value="filter5">
+        <label for="filter5">Filtre 5</label><br>
+    </div>
+    <div id="format">
+        <p>Choisir un format (JPEG ou PNG)</p>
+        <input type="radio" id="jpeg" name="format" value="jpeg">
+        <label for="jpeg">JPEG</label><br>
+        <input type="radio" id="png" name="format" value="png">
+        <label for="png">PNG</label><br>
+    </div>
+    <div class="chooseName">
+        <p>Choisir un nom pour votre image</p>
+        <label for="name">Nom: </label>
+        <input type="text" id="name" name="name" required size="50">
 
-        <div class="confirmation">
-            <button class="confirm">Confirm</button>
-            <button class="cancel">Cancel</button>
-        </div>
+    </div>
+    <div class="demo ">
+        <img width="200 " height="180 " src="">
+    </div>
+
+    <div class="confirmation">
+        <button class="confirm">Confirm</button>
+        <button class="cancel">Cancel</button>
     </div>
 </mat-dialog-content>
