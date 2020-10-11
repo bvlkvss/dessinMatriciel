@@ -13,7 +13,7 @@ export class AttributebarComponent implements OnInit {
     junctionWidth: string = '1';
     idStyleRectangle: number = 2;
     idStyleBrush: number = 1;
-    currentTexture: string = "../../../assets/b1.svg";
+    currentTexture: string = '../../../assets/b1.svg';
     constructor(private tools: ToolsManagerService) { }
     private showContainer: boolean = false;
     private lastTool: Tool = this.tools.currentTool;
@@ -38,7 +38,12 @@ export class AttributebarComponent implements OnInit {
         if (this.tools.currentTool.lineWidth) this.widthValue = this.tools.currentTool.lineWidth.toString();
     }
 
-
+    validate(event: KeyboardEvent): void {
+        const WIDTH_ALLOWED_CHARS_REGEXP = /[0-9\/]+/;
+        if (event.key !== 'Backspace' && event.key !== 'Enter' && !WIDTH_ALLOWED_CHARS_REGEXP.test(event.key)) {
+            event.preventDefault();
+        }
+    }
 
     checkIfContainAttribute(attribute: string): boolean {
         if (this.lastTool !== this.tools.currentTool) {
@@ -57,15 +62,11 @@ export class AttributebarComponent implements OnInit {
     setJunctionWidth(input: string): void {
         this.junctionWidth = input;
         this.tools.setJunctionWidth(Number(this.junctionWidth));
-
     }
 
     setJunctionState(checkBoxValue: boolean): void {
         this.tools.setJunctionState(checkBoxValue);
-
     }
-
-
 
     toggleList(id: string): void {
         this.showContainer = !this.showContainer;
@@ -87,18 +88,14 @@ export class AttributebarComponent implements OnInit {
         this.currentTexture = '../../../assets/b' + id + '.svg';
     }
 
-
     setShapeStyle(idStyle: number, isEllipse: boolean): void {
         this.idStyleRectangle = idStyle;
         if (isEllipse) {
             this.changeStyle('currentEllipseStyle', idStyle);
             this.tools.setEllipseStyle(this.idStyleRectangle);
-
-        }
-        else {
+        } else {
             this.changeStyle('currentRectangleStyle', idStyle);
             this.tools.setRectangleStyle(this.idStyleRectangle);
-
         }
     }
 }

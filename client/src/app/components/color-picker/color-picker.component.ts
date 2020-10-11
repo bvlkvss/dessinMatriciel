@@ -35,15 +35,11 @@ export class ColorPickerComponent implements AfterViewInit {
         this.color = DEFAULT_COLOR;
     }
 
-    ngAfterViewInit(): void {
-    }
-
+    ngAfterViewInit(): void {}
 
     setColor(): void {
         const stringValue: string = Math.round((this.opacity * MAX_COLOR_VALUE) / PERCENTAGE_DIVIDER).toString(16);
         this.tools.setColor(this.color + stringValue, this.isPrimaryColor);
-
-
     }
     setColorOnClick(event: MouseEvent, color: string): void {
         this.color = color;
@@ -56,20 +52,17 @@ export class ColorPickerComponent implements AfterViewInit {
         this.tools.setColor(this.color + stringValue, this.isPrime);
     }
 
-
-
     setOpacity(inputValue: number): void {
         this.opacity = inputValue;
-        if (inputValue >= PERCENTAGE_DIVIDER) this.opacity = 100;
+        if (inputValue >= PERCENTAGE_DIVIDER) this.opacity = DEFAULT_OPACITY;
         else if (inputValue <= 0) this.opacity = 0;
         this.setColor();
-
     }
 
     isHex(str: string): boolean {
-        const testValue: number = parseInt(str, 16);
-        return testValue.toString(16) === str.toLowerCase();
+        return str.match(/^[a-f0-9]{6}$/i) !== null;
     }
+
     setColorFromInput(color: string): void {
         let tmpColor: string = color;
         if (!this.isHex(color)) {
