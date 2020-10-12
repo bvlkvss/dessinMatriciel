@@ -32,6 +32,7 @@ export class PencilService extends Tool {
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseDown) {
+            this.invoker.ClearRedo();
             this.clearPath();
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.pathData.push(this.mouseDownCoord);
@@ -78,7 +79,7 @@ export class PencilService extends Tool {
         this.lineWidth = width;
     }
 
-    private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
+    drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.setLineDash([0, 0]);
         ctx.lineWidth = this.lineWidth;
         ctx.lineCap = 'round';

@@ -63,6 +63,7 @@ export class BrushService extends Tool {
             this.currentPos = this.getPositionFromMouse(event);
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.pathData.push(this.mouseDownCoord);
+            this.invoker.ClearRedo();
         }
     }
     onMouseUp(event: MouseEvent): void {

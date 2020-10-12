@@ -39,6 +39,7 @@ export class EllipseService extends Tool {
         this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseDown) {
             this.mouseDownCoord = this.getPositionFromMouse(event);
+            this.invoker.ClearRedo();
         }
     }
 

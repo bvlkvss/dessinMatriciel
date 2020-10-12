@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Command } from '@app/classes/command';
+import { DrawingService } from '@app/services/drawing/drawing.service';
 
 @Injectable({
     providedIn: 'root',
@@ -8,13 +9,12 @@ export class UndoRedoService {
     private undoStack: Command[] = [];
     private redoStack: Command[] = [];
 
+    constructor(protected drawingService: DrawingService) { }
     addToUndo(cmd: Command): void {
         if (cmd) {
-            console.log(this.undoStack);
             this.undoStack.push(cmd);
         }
     }
-
     addToRedo(cmd: Command): void {
         if (cmd) {
             this.redoStack.push(cmd);
@@ -23,18 +23,26 @@ export class UndoRedoService {
 
     undoLast(): void {
         const lastUndo = this.undoStack.pop();
-        console.log(this.undoStack);
         if (lastUndo) {
             if (lastUndo.isResize) {
                 lastUndo.unexecute();
             }
             this.redoStack.push(lastUndo);
+            this.drawingService.clearCanvas(this.drawingService.baseCtx);
+            this.executeAll();
+        }
+    }
+    redoPrev(): void {
+        const firstRedo = this.redoStack.pop();
+        if (firstRedo) {
+            this.undoStack.push(firstRedo);
+            this.drawingService.clearCanvas(this.drawingService.baseCtx);
             this.executeAll();
         }
     }
 
     ClearRedo(): void {
-        while (this.redoStack.pop());
+        this.redoStack = [];
     }
 
     executeAll(): void {

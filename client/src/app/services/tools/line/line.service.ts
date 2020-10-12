@@ -60,6 +60,7 @@ export class LineService extends Tool {
         this.mouseDown = event.button === MouseButton.Left;
 
         if (this.mouseDown && !this.toAllign) {
+            this.invoker.ClearRedo();
             this.keyOnEscape = false;
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.pathData.push(this.mouseDownCoord);
