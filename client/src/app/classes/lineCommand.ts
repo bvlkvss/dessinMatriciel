@@ -23,5 +23,5 @@ export class LineCommand implements Command {
             }
         }
     }
-    unexecute(): void { }
+    unexecute(): void {}
 }
