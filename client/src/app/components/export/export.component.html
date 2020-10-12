@@ -1,6 +1,6 @@
 <mat-dialog-content class="export">
     <div class="topbar">
-        <button class="close">x</button>
+        <button class="close" (click)="closeDialog()">x</button>
         <h1>Exporter un dessin</h1>
     </div>
     <div id="filtres">
@@ -35,6 +35,6 @@
 
     <div class="confirmation">
         <button class="confirm">Confirm</button>
-        <button class="cancel">Cancel</button>
+        <button class="cancel" (click)="closeDialog()">Cancel</button>
     </div>
 </mat-dialog-content>
