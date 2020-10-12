@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { ResizeCommand } from '../../classes/resizeCommand';
+import { UndoRedoService } from '../undo-redo/undo-redo.service';
 const MIN_SIZE = 250;
 const PROPORTION_SIZE = 0.95;
 @Injectable({
@@ -12,7 +14,8 @@ export class ResizingService {
     isMaximazed: boolean = false;
     resizedWidth: number;
     resizedHeight: number;
-    constructor(private drawingService: DrawingService) {}
+    cmd: ResizeCommand;
+    constructor(private drawingService: DrawingService, protected invoker: UndoRedoService) { }
 
     initResizing(event: MouseEvent): void {
         if (event.button === 0) {
@@ -23,6 +26,7 @@ export class ResizingService {
             this.resizedHeight = this.drawingService.canvas.height;
             this.resizing = true;
             this.hasBeenResized = true;
+            this.cmd = new ResizeCommand(this.resizedWidth, this.resizedHeight, this, this.drawingService);
         }
     }
 
@@ -88,6 +92,9 @@ export class ResizingService {
 
     resize(event: MouseEvent, preview: HTMLCanvasElement): void {
         const t = document.querySelector('#canvas-container') as HTMLDivElement;
+        if (!this.cmd.preview) {
+            this.cmd.setPreview(preview);
+        }
         if (this.resizing && event.button === 0) {
             switch (this.currentResizer) {
                 case 'resizer right':
@@ -109,6 +116,8 @@ export class ResizingService {
     stopResize(event: MouseEvent, base: HTMLCanvasElement): void {
         const temp = this.saveCanvas();
         if (this.resizing) {
+            this.cmd.setnewSize(this.resizedWidth, this.resizedHeight);
+            this.invoker.addToUndo(this.cmd);
             base.width = this.resizedWidth;
             base.height = this.resizedHeight;
             this.resizing = false;

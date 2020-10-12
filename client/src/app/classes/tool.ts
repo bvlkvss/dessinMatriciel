@@ -19,24 +19,24 @@ export abstract class Tool {
     primaryColor: string = DEFAULT_COLOR;
     secondaryColor: string = DEFAULT_COLOR;
 
-    constructor(protected drawingService: DrawingService) {}
+    constructor(protected drawingService: DrawingService) { }
 
     setMouseDown(bool: boolean): void {
         this.mouseDown = bool;
     }
 
-    onClick(event: MouseEvent): void {}
-    onMouseDown(event: MouseEvent): void {}
-    onDblClick(event: MouseEvent): void {}
-    onMouseUp(event: MouseEvent): void {}
-    onMouseOut(event: MouseEvent): void {}
-    onMouseEnter(event: MouseEvent): void {}
-    onKeyDown(event: KeyboardEvent): void {}
-    onMouseMove(event: MouseEvent): void {}
-    onKeyUp(event: KeyboardEvent): void {}
-    setPrimaryColor(color: string): void {}
-    setSecondaryColor(color: string): void {}
-    setLineWidth(value: number): void {}
+    onClick(event: MouseEvent): void { }
+    onMouseDown(event: MouseEvent): void { }
+    onDblClick(event: MouseEvent): void { }
+    onMouseUp(event: MouseEvent): void { }
+    onMouseOut(event: MouseEvent): void { }
+    onMouseEnter(event: MouseEvent): void { }
+    onKeyDown(event: KeyboardEvent): void { }
+    onMouseMove(event: MouseEvent): void { }
+    onKeyUp(event: KeyboardEvent): void { }
+    setPrimaryColor(color: string): void { }
+    setSecondaryColor(color: string): void { }
+    setLineWidth(value: number): void { }
 
     getPositionFromMouse(event: MouseEvent): Vec2 {
         return { x: event.offsetX, y: event.offsetY };
