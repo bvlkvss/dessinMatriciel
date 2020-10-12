@@ -1,5 +1,5 @@
-import { DrawingService } from '../services/drawing/drawing.service';
-import { ResizingService } from '../services/resizing/resizing.service';
+import { DrawingService } from '@app/services/drawing/drawing.service';
+import { ResizingService } from '@app/services/resizing/resizing.service';
 import { Command } from './command';
 
 export class ResizeCommand implements Command {

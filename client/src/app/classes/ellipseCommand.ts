@@ -1,6 +1,5 @@
+import { DrawingService } from '@app/services/drawing/drawing.service';
 import { EllipseService } from '@app/services/tools/ellipse/ellipse.service';
-// tslint:disable-next-line:no-relative-imports
-import { DrawingService } from '../services/drawing/drawing.service';
 import { Command } from './command';
 import { Vec2 } from './vec2';
 
@@ -19,5 +18,5 @@ export class EllipseCommand implements Command {
         this.tool.ellipseStyle = this.style;
         this.tool.drawEllipse(this.drawingService.baseCtx, this.startPos, this.endPos, false, false);
     }
-    unexecute(): void { }
+    unexecute(): void {}
 }
