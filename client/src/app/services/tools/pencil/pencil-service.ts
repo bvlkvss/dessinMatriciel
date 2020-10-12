@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { PencilCommand } from '../../../classes/pencilCommand';
+import { UndoRedoService } from '../../undo-redo/undo-redo.service';
 
 // TODO : Déplacer ça dans un fichier séparé accessible par tous
 export enum MouseButton {
@@ -19,7 +21,7 @@ const DEFAULT_PENCIL_WIDTH = 1;
 export class PencilService extends Tool {
     private pathData: Vec2[];
 
-    constructor(drawingService: DrawingService) {
+    constructor(drawingService: DrawingService, protected invoker: UndoRedoService) {
         super(drawingService);
 
         this.toolAttributes = ['lineWidth'];
@@ -50,6 +52,8 @@ export class PencilService extends Tool {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
 
             this.drawLine(this.drawingService.baseCtx, this.pathData);
+            const cmd = new PencilCommand(this.pathData, this, this.drawingService) as PencilCommand;
+            this.invoker.addToUndo(cmd);
         }
         this.mouseDown = false;
         this.clearPath();

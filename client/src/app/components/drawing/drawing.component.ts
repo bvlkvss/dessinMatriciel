@@ -3,6 +3,7 @@ import { Tool } from '@app/classes/tool';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ResizingService } from '@app/services/resizing/resizing.service';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
+import { UndoRedoService } from '../../services/undo-redo/undo-redo.service';
 
 // TODO : Avoir un fichier séparé pour les constantes ?
 
@@ -22,7 +23,12 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     private previewCtx: CanvasRenderingContext2D;
     private mouseFired: boolean;
 
-    constructor(private drawingService: DrawingService, private tools: ToolsManagerService, private resizer: ResizingService) {}
+    constructor(
+        private drawingService: DrawingService,
+        private tools: ToolsManagerService,
+        private resizer: ResizingService,
+        private invoker: UndoRedoService,
+    ) { }
 
     ngOnInit(): void {
         this.drawingService.resizeCanvas();
@@ -149,6 +155,9 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         } else if (this.keyBindings.has(event.key)) {
             this.drawingService.restoreCanvasState();
             this.tools.currentTool = this.keyBindings.get(event.key) as Tool;
+        } else if (event.key === 'z') {
+            this.drawingService.clearCanvas(this.baseCtx);
+            this.invoker.undoLast();
         } else this.tools.currentTool.onKeyDown(event);
     }
 
