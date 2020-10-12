@@ -137,8 +137,8 @@ export class EllipseService extends Tool {
                 }
             }
 
-            const centerx = this.mouseDownCoord.x + width / 2;
-            const centery = this.mouseDownCoord.y + height / 2;
+            const centerx = startPos.x + width / 2;
+            const centery = startPos.y + height / 2;
 
             if (this.ellipseStyle === EllipseStyle.Filled_contour) {
                 this.lineWidth = 0;

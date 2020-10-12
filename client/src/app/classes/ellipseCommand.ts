@@ -18,5 +18,5 @@ export class EllipseCommand implements Command {
         this.tool.ellipseStyle = this.style;
         this.tool.drawEllipse(this.drawingService.baseCtx, this.startPos, this.endPos, false, false);
     }
-    unexecute(): void {}
+    unexecute(): void { }
 }
