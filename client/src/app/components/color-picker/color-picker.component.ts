@@ -35,6 +35,7 @@ export class ColorPickerComponent implements AfterViewInit {
         this.color = DEFAULT_COLOR;
     }
 
+    /*tslint:disable-next-line:no-empty*/
     ngAfterViewInit(): void {}
 
     setColor(): void {

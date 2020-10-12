@@ -14,7 +14,7 @@ export class AttributebarComponent implements OnInit {
     idStyleRectangle: number = 2;
     idStyleBrush: number = 1;
     currentTexture: string = '../../../assets/b1.svg';
-    constructor(private tools: ToolsManagerService) { }
+    constructor(private tools: ToolsManagerService) {}
     private showContainer: boolean = false;
     private lastTool: Tool = this.tools.currentTool;
 
