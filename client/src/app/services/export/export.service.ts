@@ -7,8 +7,7 @@ import { DrawingService } from '../drawing/drawing.service'
 export class ExportService {
     constructor(private drawingService: DrawingService){}
 
-    setFilter(inputFilter:string, inputType:string):void{
-        let image = this.createImageToExport(inputType);
+    setFilter(image:HTMLImageElement, inputFilter:string):HTMLImageElement{
         switch (inputFilter){
             case "Flou":
                 image.style.filter = 'blur(5px)';
@@ -29,10 +28,15 @@ export class ExportService {
             case "Inversement des couleurs":
                 image.style.filter = 'hue-rotate(90deg)';
                 break;
+
+            case "Aucun filtre":
+                image.style.filter = 'none';
+                break;
         }
+        return image;
     }
     
-    private createImageToExport(type:string):HTMLImageElement {
+    createImageToExport(type:string):HTMLImageElement {
         let canvas = this.drawingService.canvas;
         let image = new Image(canvas.width, canvas.height);
         image.src = canvas.toDataURL('image/'+type);

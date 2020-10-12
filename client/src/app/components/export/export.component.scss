@@ -50,6 +50,7 @@
     #filtres {
         position: absolute;
         flex-direction: column;
+        width: 120px;
         top: 100px;
         left: 20px;
         background-color: rgba(150, 150, 150, 0.7);
@@ -67,7 +68,7 @@
         position: absolute;
         flex-direction: column;
         top: 100px;
-        left: 200px;
+        left: 220px;
         background-color: rgba(150, 150, 150, 0.7);
         padding: 15px;
         border-radius: 20px;

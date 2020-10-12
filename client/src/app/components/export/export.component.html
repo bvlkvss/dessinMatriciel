@@ -5,36 +5,38 @@
     </div>
     <div id="filtres">
         <p>Choisir un filtre:</p>
-        <input type="radio" id="filter1" name="filter" value="filter1">
-        <label for="filter1">Filtre 1</label><br>
-        <input type="radio" id="filter2" name="filter" value="filter2">
-        <label for="filter2">Filtre 2</label><br>
-        <input type="radio" id="filter3" name="filter" value="filter3">
-        <label for="filter3">Filtre 3</label><br>
-        <input type="radio" id="filter4" name="filter" value="filter4">
-        <label for="filter4">Filtre 4</label><br>
-        <input type="radio" id="filter5" name="filter" value="filter5">
-        <label for="filter5">Filtre 5</label><br>
+        <input type="radio" id="filter1" name="filter" value="Flou" (click)="setImageFilter('Flou')">
+        <label for="filter1">Flou</label><br>
+        <input type="radio" id="filter2" name="filter" value="Noir et Blanc" (click)="setImageFilter('Noir et Blanc')">
+        <label for="filter2">Noir et Blanc</label><br>
+        <input type="radio" id="filter3" name="filter" value="Lumineux" (click)="setImageFilter('Lumineux')">
+        <label for="filter3">Lumineux</label><br>
+        <input type="radio" id="filter4" name="filter" value="Contraste" (click)="setImageFilter('Contraste')">
+        <label for="filter4">Contraste</label><br>
+        <input type="radio" id="filter5" name="filter" value="Inversement des couleurs" (click)="setImageFilter('Inversement des couleurs')">
+        <label for="filter5">Inversement de couleurs</label><br>
+        <input type="radio" id="filter6" name="filter" value="Aucun filtre" checked (click)="setImageFilter('Aucun filtre')">
+        <label for="filter5">Aucun Filtre</label><br>
     </div>
     <div id="format">
         <p>Choisir un format (JPEG ou PNG)</p>
-        <input type="radio" id="jpeg" name="format" value="jpeg">
+        <input type="radio" id="jpeg" name="format" value="jpeg" checked (click)="setImageType('jpeg')">
         <label for="jpeg">JPEG</label><br>
-        <input type="radio" id="png" name="format" value="png">
-        <label for="png">PNG</label><br>
+        <input type="radio" id="png" name="format" value="png" (click)="setImageType('jpeg')">
+        <label for="png ">PNG</label><br>
     </div>
-    <div class="chooseName">
+    <div class="chooseName ">
         <p>Choisir un nom pour votre image</p>
-        <label for="name">Nom: </label>
-        <input type="text" id="name" name="name" required size="50">
+        <label for="name ">Nom: </label>
+        <input type="text " id="name " name="name " required size="50 ">
 
     </div>
     <div class="demo ">
-        <img width="200 " height="180 " src="">
+        <img width="200 " height="180 " src={{image.src}} #demo>
     </div>
 
-    <div class="confirmation">
-        <button class="confirm">Confirm</button>
-        <button class="cancel" (click)="closeDialog()">Cancel</button>
+    <div class=" confirmation ">
+        <button class="confirm ">Confirm</button>
+        <button class="cancel " (click)="closeDialog() ">Cancel</button>
     </div>
 </mat-dialog-content>
