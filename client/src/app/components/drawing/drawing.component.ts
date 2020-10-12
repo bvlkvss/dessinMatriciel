@@ -140,11 +140,20 @@ export class DrawingComponent implements AfterViewInit, OnInit {
 
     @HostListener('window:keydown', ['$event'])
     onkeyDownWindow(event: KeyboardEvent): void {
+        console.log(event.shiftKey, ';', event.key);
         if (event.ctrlKey && event.key === 'o') {
             event.preventDefault();
             event.stopPropagation();
             this.drawingService.newDrawing();
             this.drawingService.resizeCanvas();
+        } else if (event.ctrlKey && event.shiftKey && (event.key === 'z' || event.key === 'Z')) {
+            console.log('yep', event.key);
+            event.preventDefault();
+            this.invoker.redoPrev();
+        } else if (event.ctrlKey && event.key === 'z') {
+            console.log('yep');
+            event.preventDefault();
+            this.invoker.undoLast();
         }
     }
 
@@ -155,9 +164,6 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         } else if (this.keyBindings.has(event.key)) {
             this.drawingService.restoreCanvasState();
             this.tools.currentTool = this.keyBindings.get(event.key) as Tool;
-        } else if (event.key === 'z') {
-            this.drawingService.clearCanvas(this.baseCtx);
-            this.invoker.undoLast();
         } else this.tools.currentTool.onKeyDown(event);
     }
 

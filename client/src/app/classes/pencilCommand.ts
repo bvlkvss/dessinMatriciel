@@ -1,7 +1,7 @@
-import { PencilService } from '..services/tools/pencil/pencil-service';
 import { DrawingService } from '../services/drawing/drawing.service';
 import { Command } from './command';
 import { Vec2 } from './vec2';
+import { PencilService } from '@app/services/tools/pencil/pencil-service';
 
 export class PencilCommand implements Command {
     private pathData: Vec2[] = [];
