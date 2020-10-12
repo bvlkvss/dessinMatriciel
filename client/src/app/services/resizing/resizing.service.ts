@@ -27,6 +27,8 @@ export class ResizingService {
             this.resizing = true;
             this.hasBeenResized = true;
             this.cmd = new ResizeCommand(this.resizedWidth, this.resizedHeight, this, this.drawingService);
+            const tmp = this.saveCanvas();
+            this.cmd.saveOldCanvas(tmp);
         }
     }
 

@@ -7,6 +7,7 @@ export class ResizeCommand implements Command {
     private oldHeight: number;
     private newWidth: number;
     private newHeight: number;
+    private oldCanvas: HTMLCanvasElement;
     isResize: boolean = true;
     preview: HTMLCanvasElement;
     canvasContainer: HTMLDivElement;
@@ -16,13 +17,20 @@ export class ResizeCommand implements Command {
         this.oldHeight = oldH;
         this.canvasContainer = document.querySelector('#canvas-container') as HTMLDivElement;
     }
+
     setnewSize(newW: number, newH: number): void {
         this.newWidth = newW;
         this.newHeight = newH;
     }
+
     setPreview(preview: HTMLCanvasElement): void {
         this.preview = preview;
     }
+
+    saveOldCanvas(canvas: HTMLCanvasElement): void {
+        this.oldCanvas = canvas;
+    }
+
     execute(): void {
         const tmp = this.tool.saveCanvas();
         this.drawingService.canvas.height = this.preview.height = this.newHeight;
@@ -33,11 +41,10 @@ export class ResizeCommand implements Command {
     }
     // for resize unexecute is nessecary
     unexecute(): void {
-        const tmp = this.tool.saveCanvas();
         this.drawingService.canvas.height = this.preview.height = this.oldHeight;
         this.drawingService.canvas.width = this.preview.width = this.oldWidth;
         this.canvasContainer.style.width = this.oldWidth + 'px';
         this.canvasContainer.style.height = this.oldHeight + 'px';
-        this.tool.drawCanvas(tmp);
+        this.tool.drawCanvas(this.oldCanvas);
     }
 }

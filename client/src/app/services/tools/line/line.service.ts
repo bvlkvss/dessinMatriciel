@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
+import { LineCommand } from '@app/classes/lineCommand';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { LineCommand } from '../../../classes/lineCommand';
-import { UndoRedoService } from '../../undo-redo/undo-redo.service';
+import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
 const LINE_MIN_DISTANCE = 20;
 const ANGLE_VALUE = 45;
