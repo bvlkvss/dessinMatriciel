@@ -24,6 +24,9 @@ export class RectangleService extends Tool {
     isOut: boolean = false;
     currentPos: Vec2;
     rectangleStyle: RectangleStyle;
+    lineDash: boolean;
+    width: number;
+    height:number;
     constructor(drawingService: DrawingService) {
         super(drawingService);
         this.toolAttributes = ['strokeWidth', 'rectangleStyle'];
@@ -31,6 +34,7 @@ export class RectangleService extends Tool {
         this.lineWidth = 1;
         this.primaryColor = '#000000';
         this.secondaryColor = '#000000';
+        this.lineDash=false;
     }
 
     setStyle(id: number): void {
@@ -40,7 +44,6 @@ export class RectangleService extends Tool {
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseDown) {
-            console.log(event.offsetX, ';', event.offsetY);
             this.mouseDownCoord = this.getPositionFromMouse(event);
         }
     }
@@ -118,7 +121,7 @@ export class RectangleService extends Tool {
         }
     }
 
-    private drawRectangle(ctx: CanvasRenderingContext2D, startPos: Vec2, currentPos: Vec2, toSquare: boolean): void {
+    drawRectangle(ctx: CanvasRenderingContext2D, startPos: Vec2, currentPos: Vec2, toSquare: boolean): void {
         let width = currentPos.x - startPos.x;
         let height = currentPos.y - startPos.y;
         if (toSquare) {
@@ -128,8 +131,14 @@ export class RectangleService extends Tool {
                 height = width * Math.sign(width) * Math.sign(height);
             }
         }
+        this.width=width;
+        this.height=height;
         ctx.beginPath();
-        ctx.setLineDash([0, 0]);
+        if(!this.lineDash)
+            ctx.setLineDash([0, 0]);
+        
+        else
+            ctx.setLineDash([5, 15]);
 
         ctx.fillStyle = this.primaryColor;
         ctx.strokeStyle = this.secondaryColor;
