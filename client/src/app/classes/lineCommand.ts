@@ -1,7 +1,5 @@
-// tslint:disable-next-line:no-relative-imports
-import { DrawingService } from '../services/drawing/drawing.service';
-// tslint:disable-next-line:no-relative-imports
-import { LineService } from '../services/tools/line/line.service';
+import { DrawingService } from '@app/services/drawing/drawing.service';
+import { LineService } from '@app/services/tools/line/line.service';
 import { Command } from './command';
 import { Vec2 } from './vec2';
 

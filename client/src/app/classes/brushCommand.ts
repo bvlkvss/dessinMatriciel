@@ -1,5 +1,5 @@
+import { DrawingService } from '@app/services/drawing/drawing.service';
 import { BrushService } from '@app/services/tools/brush/brush.service';
-import { DrawingService } from '../services/drawing/drawing.service';
 import { Command } from './command';
 import { Vec2 } from './vec2';
 

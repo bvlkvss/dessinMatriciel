@@ -1,7 +1,7 @@
-import { DrawingService } from '../services/drawing/drawing.service';
+import { DrawingService } from '@app/services/drawing/drawing.service';
+import { PencilService } from '@app/services/tools/pencil/pencil-service';
 import { Command } from './command';
 import { Vec2 } from './vec2';
-import { PencilService } from '@app/services/tools/pencil/pencil-service';
 
 export class PencilCommand implements Command {
     private pathData: Vec2[] = [];
@@ -15,5 +15,5 @@ export class PencilCommand implements Command {
     execute(): void {
         this.tool.drawLine(this.drawingService.baseCtx, this.pathData);
     }
-    unexecute(): void { }
+    unexecute(): void {}
 }

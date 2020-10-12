@@ -1,6 +1,5 @@
-// tslint:disable-next-line:no-relative-imports
+import { DrawingService } from '@app/services/drawing/drawing.service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle.service';
-import { DrawingService } from '../services/drawing/drawing.service';
 import { Command } from './command';
 import { Vec2 } from './vec2';
 
