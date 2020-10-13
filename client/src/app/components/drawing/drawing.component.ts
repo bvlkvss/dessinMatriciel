@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { Tool } from '@app/classes/tool';
+import { ExportComponent } from '@app/components/export/export.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ResizingService } from '@app/services/resizing/resizing.service';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
@@ -134,7 +135,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
 
     @HostListener('window:keydown', ['$event'])
     onkeyDownWindow(event: KeyboardEvent): void {
-        if (event.ctrlKey && event.key === 'o') {
+        if (event.ctrlKey && event.key === 'o' && !ExportComponent.isExportOpen) {
             event.preventDefault();
             event.stopPropagation();
             this.drawingService.newDrawing();
@@ -144,7 +145,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
 
     @HostListener('keydown', ['$event'])
     onKeyDown(event: KeyboardEvent): void {
-        if (event.ctrlKey && event.key === 'o') {
+        if ((event.ctrlKey && event.key === 'o') || ExportComponent.isExportOpen) {
             return;
         } else if (this.keyBindings.has(event.key)) {
             this.drawingService.restoreCanvasState();

@@ -1,9 +1,9 @@
 import { Component, HostListener, Input, OnChanges } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { ExportComponent } from '@app/components/export/export.component';
 import { UserGuideComponent } from '@app/components/user-guide/user-guide.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
-import { ExportComponent } from '@app/components/export/export.component';
-import { MatDialog } from '@angular/material/dialog';
 
 const COLOR_STRING_LENGTH = 7;
 
@@ -30,7 +30,10 @@ export class SidebarComponent implements OnChanges {
     }
 
     openExportDialog(): void {
-        if (this.dialog.openDialogs.length == 0) this.dialog.open(ExportComponent);
+        if (this.dialog.openDialogs.length === 0) {
+            this.dialog.open(ExportComponent);
+            ExportComponent.isExportOpen = true;
+        }
     }
 
     displayPalette(toolName: string): void {
