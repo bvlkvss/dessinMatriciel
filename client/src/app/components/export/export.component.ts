@@ -14,7 +14,7 @@ export class ExportComponent {
     private type: string;
     private filter: string;
     private name: string;
-    private image: HTMLImageElement;
+    image: HTMLImageElement;
 
     constructor(private exportService: ExportService, protected drawingService: DrawingService, private dialogRef: MatDialogRef<ExportComponent>) {
         this.filter = 'Flou';
