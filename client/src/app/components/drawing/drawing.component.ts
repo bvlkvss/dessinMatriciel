@@ -28,7 +28,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         private tools: ToolsManagerService,
         private resizer: ResizingService,
         private invoker: UndoRedoService,
-    ) { }
+    ) {}
 
     ngOnInit(): void {
         this.drawingService.resizeCanvas();
