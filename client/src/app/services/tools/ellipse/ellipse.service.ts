@@ -73,7 +73,6 @@ export class EllipseService extends Tool {
             if (this.isOut) mousePosition = this.mouseOutCoord;
             this.drawEllipse(this.drawingService.baseCtx, this.mouseDownCoord, mousePosition, this.toSquare, false);
             const cmd = new EllipseCommand(this.mouseDownCoord, mousePosition, this.ellipseStyle, this, this.drawingService) as EllipseCommand;
-            console.log(cmd);
             this.invoker.addToUndo(cmd);
         }
         this.drawingService.clearCanvas(this.drawingService.previewCtx);

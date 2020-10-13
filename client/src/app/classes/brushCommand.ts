@@ -9,16 +9,24 @@ const MAX_EIGHT_BIT_NB = 255;
 
 export class BrushCommand implements Command {
     private pathData: Vec2[] = [];
+    primaryColor: string;
+    secondaryColor: string;
+    opacity: number;
     isResize: boolean = false;
 
     constructor(pathData: Vec2[], protected tool: BrushService, protected drawingService: DrawingService) {
+        this.primaryColor = this.tool.primaryColor;
+        this.secondaryColor = this.tool.secondaryColor;
+        this.opacity = this.tool.opacity;
         for (const point of pathData) {
             this.pathData.push(point);
         }
     }
-    //not finish gonna comme back after
-
+    // maybe i will add some methode
     execute(): void {
+        this.tool.primaryColor = this.primaryColor;
+        this.tool.secondaryColor = this.secondaryColor;
+        this.tool.opacity = this.opacity;
         for (let i = 0; i < this.pathData.length; i++) {
             if (i !== this.pathData.length - 1 && i !== 0) {
                 this.drawingService.baseCtx.beginPath();
