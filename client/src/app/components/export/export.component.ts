@@ -17,10 +17,13 @@ export class ExportComponent {
     image: HTMLImageElement;
 
     constructor(private exportService: ExportService, protected drawingService: DrawingService, private dialogRef: MatDialogRef<ExportComponent>) {
-        this.filter = 'Flou';
+        this.filter = 'none';
         this.type = 'jpeg';
         this.name = 'MonDessin';
         this.image = this.exportService.createBaseImage();
+        this.dialogRef.afterClosed().subscribe(() => {
+            ExportComponent.isExportOpen = false;
+        });
     }
 
     onConfirm(): void {
@@ -49,7 +52,6 @@ export class ExportComponent {
 
     closeDialog(): void {
         this.dialogRef.close(true);
-        ExportComponent.isExportOpen = false;
     }
 
     private setPreviewFilter(): void {

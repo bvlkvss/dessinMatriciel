@@ -6,6 +6,7 @@ import { MockDrawingService } from '@app/components/drawing/drawing.component.sp
 import { ExportService } from '@app/services/export/export.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MatDialogRef } from '@angular/material/dialog';
+import { of } from 'rxjs';
 
 class MockExportService extends ExportService {
     createBaseImage():HTMLImageElement {
@@ -19,11 +20,10 @@ describe('ExportComponent', () => {
     let exportServiceStub: MockExportService;
     let drawServiceMock: MockDrawingService;
     let matDialogRefSpy: jasmine.SpyObj<MatDialogRef<ExportComponent>>;
-
     beforeEach(async(() => {
         drawServiceMock = new MockDrawingService();
         exportServiceStub = new MockExportService(drawServiceMock);
-        matDialogRefSpy = jasmine.createSpyObj('MatDialogRef<ExportComponent>', ['close', 'open']);
+        matDialogRefSpy = jasmine.createSpyObj({ afterClosed : of({subscribe:jasmine.createSpy}), close: null });
         TestBed.configureTestingModule({
             declarations: [ExportComponent],
             providers: [
@@ -80,10 +80,8 @@ describe('ExportComponent', () => {
         expect(setPreviewFilterSpy).toHaveBeenCalled();
     });
 
-    it('should close dialog and set isOpened to false when closeDialog is called', () => {
-        ExportComponent.isExportOpen = true;
+    it('should close dialog when closeDialog is called', () => {
         component.closeDialog();
-        expect(ExportComponent.isExportOpen).toEqual(false);
         expect(matDialogRefSpy.close).toHaveBeenCalled();
     });
 
