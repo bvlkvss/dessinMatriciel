@@ -60,6 +60,7 @@ export class BrushService extends Tool {
         this.isOut = false;
         this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseDown) {
+            this.invoker.setIsAllowed(false);
             this.currentPos = this.getPositionFromMouse(event);
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.pathData.push(this.mouseDownCoord);
@@ -72,6 +73,7 @@ export class BrushService extends Tool {
             this.pathData.push(this.currentPos);
             const cmd = new BrushCommand(this.pathData, this, this.drawingService) as BrushCommand;
             this.invoker.addToUndo(cmd);
+            this.invoker.setIsAllowed(true);
             this.pathData = [];
             this.drawLine(this.drawingService.baseCtx);
         }

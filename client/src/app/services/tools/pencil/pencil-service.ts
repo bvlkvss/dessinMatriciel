@@ -33,6 +33,7 @@ export class PencilService extends Tool {
         this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseDown) {
             this.invoker.ClearRedo();
+            this.invoker.setIsAllowed(false);
             this.clearPath();
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.pathData.push(this.mouseDownCoord);
@@ -55,6 +56,7 @@ export class PencilService extends Tool {
             this.drawLine(this.drawingService.baseCtx, this.pathData);
             const cmd = new PencilCommand(this.pathData, this, this.drawingService) as PencilCommand;
             this.invoker.addToUndo(cmd);
+            this.invoker.setIsAllowed(true);
         }
         this.mouseDown = false;
         this.clearPath();

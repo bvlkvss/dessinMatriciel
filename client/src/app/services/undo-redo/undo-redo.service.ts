@@ -8,6 +8,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 export class UndoRedoService {
     private undoStack: Command[] = [];
     private redoStack: Command[] = [];
+    private isAllowed: boolean;
 
     constructor(protected drawingService: DrawingService) { }
     addToUndo(cmd: Command): void {
@@ -20,24 +21,34 @@ export class UndoRedoService {
             this.redoStack.push(cmd);
         }
     }
+    setIsAllowed(bool: boolean): void {
+        this.isAllowed = bool;
+    }
+    getIsAllowed(): boolean {
+        return this.isAllowed;
+    }
 
     undoLast(): void {
-        const lastUndo = this.undoStack.pop();
-        if (lastUndo) {
-            if (lastUndo.isResize) {
-                lastUndo.unexecute();
+        if (this.isAllowed) {
+            const lastUndo = this.undoStack.pop();
+            if (lastUndo) {
+                if (lastUndo.isResize) {
+                    lastUndo.unexecute();
+                }
+                this.redoStack.push(lastUndo);
+                this.drawingService.clearCanvas(this.drawingService.baseCtx);
+                this.executeAll();
             }
-            this.redoStack.push(lastUndo);
-            this.drawingService.clearCanvas(this.drawingService.baseCtx);
-            this.executeAll();
         }
     }
     redoPrev(): void {
-        const firstRedo = this.redoStack.pop();
-        if (firstRedo) {
-            this.undoStack.push(firstRedo);
-            this.drawingService.clearCanvas(this.drawingService.baseCtx);
-            this.executeAll();
+        if (this.isAllowed) {
+            const firstRedo = this.redoStack.pop();
+            if (firstRedo) {
+                this.undoStack.push(firstRedo);
+                this.drawingService.clearCanvas(this.drawingService.baseCtx);
+                this.executeAll();
+            }
         }
     }
 

@@ -39,6 +39,7 @@ export class EllipseService extends Tool {
         this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseDown) {
             this.mouseDownCoord = this.getPositionFromMouse(event);
+            this.invoker.setIsAllowed(false);
             this.invoker.ClearRedo();
         }
     }
@@ -74,6 +75,7 @@ export class EllipseService extends Tool {
             this.drawEllipse(this.drawingService.baseCtx, this.mouseDownCoord, mousePosition, this.toSquare, false);
             const cmd = new EllipseCommand(this.mouseDownCoord, mousePosition, this.ellipseStyle, this, this.drawingService) as EllipseCommand;
             this.invoker.addToUndo(cmd);
+            this.invoker.setIsAllowed(true);
         }
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
 

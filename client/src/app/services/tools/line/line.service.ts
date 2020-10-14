@@ -61,6 +61,7 @@ export class LineService extends Tool {
 
         if (this.mouseDown && !this.toAllign) {
             this.invoker.ClearRedo();
+            this.invoker.setIsAllowed(false);
             this.keyOnEscape = false;
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.pathData.push(this.mouseDownCoord);
@@ -95,6 +96,7 @@ export class LineService extends Tool {
         this.drawLines(this.drawingService.baseCtx);
         const cmd = new LineCommand(this.pathData, this.withJunction, this, this.drawingService) as LineCommand;
         this.invoker.addToUndo(cmd);
+        this.invoker.setIsAllowed(true);
         this.mouseDown = false;
         this.clearPath();
     }

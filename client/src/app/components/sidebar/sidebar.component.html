@@ -31,16 +31,20 @@
                     <i class="material-icons">remove_circle_outline</i>
                     <span class="slidingtxt"> Efface (E)</span>
                 </a>
+                <a id="undo" (click)="undo()">
+                    <i class="material-icons">undo</i>
+                </a>
+                <a id="redo" (click)="redo()">
+                    <i class="material-icons">undo</i>
+                </a>
             </div>
 
-            <div class="color-bar ">
-                <a (click)="toggleColorPalette('primaryColorPicker')" class="color-box1"> 
-                </a>
+            <div class="color-bar">
+                <a (click)="toggleColorPalette('primaryColorPicker')" class="color-box1"> </a>
                 <a class="tooltip">
-                    <i (click)="revertColors()"class="material-icons change">swap_vert</i>
+                    <i (click)="revertColors()" class="material-icons change">swap_vert</i>
                 </a>
-                <a (click)="toggleColorPalette('secondaryColorPicker')" class="color-box2">
-                </a>
+                <a (click)="toggleColorPalette('secondaryColorPicker')" class="color-box2"> </a>
             </div>
 
             <div class="icon-bar2">

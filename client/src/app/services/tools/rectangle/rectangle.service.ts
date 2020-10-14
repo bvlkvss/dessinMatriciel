@@ -43,6 +43,7 @@ export class RectangleService extends Tool {
         this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseDown) {
             this.invoker.ClearRedo();
+            this.invoker.setIsAllowed(false);
             console.log(event.offsetX, ';', event.offsetY);
             this.mouseDownCoord = this.getPositionFromMouse(event);
         }
@@ -90,6 +91,7 @@ export class RectangleService extends Tool {
             const cmd = new RectangleCommand(this.mouseDownCoord, mousePosition, this.rectangleStyle, this, this.drawingService) as RectangleCommand;
             console.log(cmd);
             this.invoker.addToUndo(cmd);
+            this.invoker.setIsAllowed(true);
         }
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
 
