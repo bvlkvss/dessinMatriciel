@@ -42,6 +42,11 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         this.drawingService.baseCtx = this.baseCtx;
         this.drawingService.previewCtx = this.previewCtx;
         this.drawingService.canvas = this.baseCanvas.nativeElement;
+        this.baseCtx.beginPath();
+        this.baseCtx.fillStyle="white";
+        this.baseCtx.rect(0,0,this.baseCanvas.nativeElement.width,this.baseCanvas.nativeElement.height);
+        this.baseCtx.fill();
+        this.baseCtx.closePath();
         this.mouseFired = false;
         this.baseCtx.save();
         this.previewCtx.save();

@@ -122,8 +122,8 @@ export class ResizingService {
         temp.width = this.resizedWidth;
         temp.height = this.resizedHeight;
         const tempCtx = temp.getContext('2d') as CanvasRenderingContext2D;
-        tempCtx.drawImage(this.drawingService.canvas, 0, 0, this.resizedWidth, this.resizedHeight, 0, 0, temp.width, temp.height);
-
+        tempCtx.drawImage(this.drawingService.baseCtx.canvas, 0, 0, this.resizedWidth, this.resizedHeight, 0, 0, temp.width, temp.height);
+        console.log(temp.height);
         return temp;
     }
 
