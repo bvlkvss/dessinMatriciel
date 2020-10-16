@@ -50,6 +50,7 @@ export class PaintBucketService extends Tool {
 
     private fillNonContiguousArea(position:Vec2):ImageData{
         let startingColor:Color = this.getActualColor(position);
+        console.log(startingColor.red+" "+startingColor.green);
         let canvas:HTMLCanvasElement = this.drawingService.canvas;
         let ctx:CanvasRenderingContext2D = this.drawingService.baseCtx;
         let imageData = ctx.getImageData(0,0,canvas.width,canvas.height);
@@ -61,7 +62,7 @@ export class PaintBucketService extends Tool {
         return imageData;
     }
 
-   /* private fillContiguousArea(position:Vec2):ImageData{
+    private fillContiguousArea(position:Vec2):ImageData{
         let startingColor:Color = this.getActualColor(position);
         let pixelStack = [position];
         let newPosition:Vec2
@@ -109,7 +110,7 @@ export class PaintBucketService extends Tool {
         }
         return imageData;
     }
-*/
+
     private areColorsMatching(color:Color, imageData:ImageData, position:number):boolean{
         let pixelRed = imageData.data[position];
         let pixelGreen = imageData.data[position+1];
