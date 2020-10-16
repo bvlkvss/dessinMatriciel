@@ -3,14 +3,15 @@ import { PencilService } from '@app/services/tools/pencil/pencil-service';
 import { Command } from './command';
 import { Vec2 } from './vec2';
 
-export class PencilCommand implements Command {
+export class PencilCommand extends Command {
     private pathData: Vec2[] = [];
-    primaryColor: string;
-    secondaryColor: string;
-    opacity: number;
+    private primaryColor: string;
+    private secondaryColor: string;
+    private opacity: number;
     isResize: boolean = false;
 
     constructor(pathData: Vec2[], protected tool: PencilService, protected drawingService: DrawingService) {
+        super();
         this.primaryColor = this.tool.primaryColor;
         this.secondaryColor = this.tool.secondaryColor;
         this.opacity = this.tool.opacity;
@@ -23,8 +24,5 @@ export class PencilCommand implements Command {
         this.tool.secondaryColor = this.secondaryColor;
         this.tool.opacity = this.opacity;
         this.tool.drawLine(this.drawingService.baseCtx, this.pathData);
-    }
-    unexecute(): void {
-        throw new Error('This methdode is not Implimented');
     }
 }

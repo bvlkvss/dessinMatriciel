@@ -1,8 +1,7 @@
 /* tslint:disable */
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { ComponentFixtureAutoDetect } from '@angular/core/testing';
-import { SidebarComponent } from './sidebar.component';
+import { async, ComponentFixture, ComponentFixtureAutoDetect, TestBed } from '@angular/core/testing';
 import { MockDrawingService } from '@app/components/drawing/drawing.component.spec';
+import { DrawingService } from '@app/services/drawing/drawing.service';
 import { BrushService } from '@app/services/tools/brush/brush.service';
 import { EllipseService } from '@app/services/tools/ellipse/ellipse.service';
 import { EraserService } from '@app/services/tools/eraser/eraser-service';
@@ -10,8 +9,9 @@ import { LineService } from '@app/services/tools/line/line.service';
 import { PencilService } from '@app/services/tools/pencil/pencil-service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle.service';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
-import { DrawingService } from '@app/services/drawing/drawing.service';
+import { MockUndoRedoService } from '../attributebar/attributebar.component.spec';
 import { UserGuideComponent } from '../user-guide/user-guide.component';
+import { SidebarComponent } from './sidebar.component';
 
 describe('SidebarComponent', () => {
     let component: SidebarComponent;
@@ -24,14 +24,16 @@ describe('SidebarComponent', () => {
     let ellipseStub: EllipseService;
     let lineStub: LineService;
     let drawServiceMock: MockDrawingService;
+    let UndoRedoServiceMock: MockUndoRedoService;
 
     beforeEach(async(() => {
         drawServiceMock = new MockDrawingService();
-        pencilStub = new PencilService(drawServiceMock);
-        brushStub = new BrushService(drawServiceMock);
-        rectangleStub = new RectangleService(drawServiceMock);
-        lineStub = new LineService(drawServiceMock);
-        ellipseStub = new EllipseService(drawServiceMock);
+        UndoRedoServiceMock = new MockUndoRedoService(drawServiceMock);
+        pencilStub = new PencilService(drawServiceMock, UndoRedoServiceMock);
+        brushStub = new BrushService(drawServiceMock, UndoRedoServiceMock);
+        rectangleStub = new RectangleService(drawServiceMock, UndoRedoServiceMock);
+        lineStub = new LineService(drawServiceMock, UndoRedoServiceMock);
+        ellipseStub = new EllipseService(drawServiceMock, UndoRedoServiceMock);
         eraserStub = new EraserService(drawServiceMock);
         toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub);
         TestBed.configureTestingModule({

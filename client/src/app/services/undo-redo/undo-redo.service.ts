@@ -11,6 +11,15 @@ export class UndoRedoService {
     private isAllowed: boolean;
 
     constructor(protected drawingService: DrawingService) { }
+    onKeyDown(event: KeyboardEvent): void {
+        if (this.isAllowed) {
+            if (event.ctrlKey && event.shiftKey && (event.key === 'z' || event.key === 'Z')) {
+                this.redoPrev();
+            } else if (event.ctrlKey && event.key === 'z') {
+                this.undoLast();
+            }
+        }
+    }
     addToUndo(cmd: Command): void {
         if (cmd) {
             this.undoStack.push(cmd);
@@ -21,6 +30,12 @@ export class UndoRedoService {
             this.redoStack.push(cmd);
         }
     }
+    getRedo(): Command[] {
+        return this.redoStack;
+    }
+    getUndo(): Command[] {
+        return this.undoStack;
+    }
     setIsAllowed(bool: boolean): void {
         this.isAllowed = bool;
     }
@@ -29,31 +44,30 @@ export class UndoRedoService {
     }
 
     undoLast(): void {
-        if (this.isAllowed) {
-            const lastUndo = this.undoStack.pop();
-            if (lastUndo) {
-                if (lastUndo.isResize) {
-                    lastUndo.unexecute();
-                }
-                this.redoStack.push(lastUndo);
-                this.drawingService.clearCanvas(this.drawingService.baseCtx);
-                this.executeAll();
+        const lastUndo = this.undoStack.pop();
+        if (lastUndo) {
+            if (lastUndo.isResize) {
+                lastUndo.unexecute();
             }
+            this.redoStack.push(lastUndo);
+            this.drawingService.clearCanvas(this.drawingService.baseCtx);
+            this.executeAll();
         }
     }
     redoPrev(): void {
-        if (this.isAllowed) {
-            const firstRedo = this.redoStack.pop();
-            if (firstRedo) {
-                this.undoStack.push(firstRedo);
-                this.drawingService.clearCanvas(this.drawingService.baseCtx);
-                this.executeAll();
-            }
+        const firstRedo = this.redoStack.pop();
+        if (firstRedo) {
+            this.undoStack.push(firstRedo);
+            this.drawingService.clearCanvas(this.drawingService.baseCtx);
+            this.executeAll();
         }
     }
 
     ClearRedo(): void {
         this.redoStack = [];
+    }
+    ClearUndo(): void {
+        this.undoStack = [];
     }
 
     executeAll(): void {

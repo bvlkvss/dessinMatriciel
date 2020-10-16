@@ -95,7 +95,7 @@ export class ResizingService {
 
     resize(event: MouseEvent, preview: HTMLCanvasElement): void {
         const t = document.querySelector('#canvas-container') as HTMLDivElement;
-        if (!this.cmd.preview) {
+        if (this.cmd && !this.cmd.preview) {
             this.cmd.setPreview(preview);
         }
         if (this.resizing && event.button === 0) {
@@ -119,14 +119,15 @@ export class ResizingService {
     stopResize(event: MouseEvent, base: HTMLCanvasElement): void {
         const temp = this.saveCanvas();
         if (this.resizing) {
-            this.cmd.setnewSize(this.resizedWidth, this.resizedHeight);
+            if (this.cmd) {
+                this.cmd.setnewSize(this.resizedWidth, this.resizedHeight);
+            }
             this.invoker.addToUndo(this.cmd);
             base.width = this.resizedWidth;
             base.height = this.resizedHeight;
             this.resizing = false;
             this.invoker.setIsAllowed(true);
         }
-
         this.drawCanvas(temp);
     }
 

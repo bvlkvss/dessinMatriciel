@@ -28,7 +28,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         private tools: ToolsManagerService,
         private resizer: ResizingService,
         private invoker: UndoRedoService,
-    ) {}
+    ) { }
 
     ngOnInit(): void {
         this.drawingService.resizeCanvas();
@@ -146,14 +146,8 @@ export class DrawingComponent implements AfterViewInit, OnInit {
             event.stopPropagation();
             this.drawingService.newDrawing();
             this.drawingService.resizeCanvas();
-        } else if (event.ctrlKey && event.shiftKey && (event.key === 'z' || event.key === 'Z')) {
-            console.log('yep', event.key);
-            event.preventDefault();
-            this.invoker.redoPrev();
-        } else if (event.ctrlKey && event.key === 'z') {
-            console.log('yep');
-            event.preventDefault();
-            this.invoker.undoLast();
+        } else if (event.ctrlKey || (event.ctrlKey && event.shiftKey && (event.key === 'z' || event.key === 'Z'))) {
+            this.invoker.onKeyDown(event);
         }
     }
 
