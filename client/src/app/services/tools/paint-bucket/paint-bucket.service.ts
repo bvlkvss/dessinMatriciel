@@ -13,9 +13,6 @@ export enum MouseButton {
     Forward = 4,
 }
 const RGBA_NUMBER_OF_COMPONENTS = 4;
-const MAX_EIGHT_BIT_NB = 255;
-const BASE_SIZE = 250;
-const MINIMUM_BRUSH_SIZE = 10;
 
 @Injectable({
     providedIn: 'root',
@@ -23,7 +20,7 @@ const MINIMUM_BRUSH_SIZE = 10;
 export class PaintBucketService extends Tool {
     constructor(drawingService: DrawingService) {
         super(drawingService);
-        // this.toolAttributes = ['texture', 'lineWidth'];
+        this.toolAttributes = [];
     }
 
     onMouseDown(event: MouseEvent): void {
@@ -38,6 +35,8 @@ export class PaintBucketService extends Tool {
     onMouseUp(event: MouseEvent): void {
         if (this.mouseDown && !this.isOut) {
             this.currentPos = this.getPositionFromMouse(event);
+            let newImageData:ImageData = this.fillNonContiguousArea(this.mouseDownCoord);
+            this.drawingService.baseCtx.putImageData(newImageData,0,0);
         }
         this.mouseDown = false;
     }
@@ -49,7 +48,20 @@ export class PaintBucketService extends Tool {
         this.isOut = false;
     }
 
-    fillContiguousArea(position:Vec2):ImageData{
+    private fillNonContiguousArea(position:Vec2):ImageData{
+        let startingColor:Color = this.getActualColor(position);
+        let canvas:HTMLCanvasElement = this.drawingService.canvas;
+        let ctx:CanvasRenderingContext2D = this.drawingService.baseCtx;
+        let imageData = ctx.getImageData(0,0,canvas.width,canvas.height);
+        for (let i = 0; i<imageData.data.length; i+=4){
+            if(this.areColorsMatching(startingColor, imageData, i)){
+                this.fillPixel(imageData, i);
+            }
+        }
+        return imageData;
+    }
+
+   /* private fillContiguousArea(position:Vec2):ImageData{
         let startingColor:Color = this.getActualColor(position);
         let pixelStack = [position];
         let newPosition:Vec2
@@ -58,8 +70,9 @@ export class PaintBucketService extends Tool {
         let ctx:CanvasRenderingContext2D = this.drawingService.baseCtx;
         let imageData = ctx.getImageData(0,0,canvas.width,canvas.height);
         while(pixelStack.length){
-           newPosition = pixelStack.pop();
+           newPosition = pixelStack.pop() as Vec2;
            pixelPosition = (newPosition.y*canvas.width + newPosition.x) *  RGBA_NUMBER_OF_COMPONENTS;
+
            while(newPosition.y-- >= 0 && this.areColorsMatching(startingColor, imageData, pixelPosition)){
                pixelPosition -= canvas.width * RGBA_NUMBER_OF_COMPONENTS;
            } 
@@ -96,13 +109,12 @@ export class PaintBucketService extends Tool {
         }
         return imageData;
     }
-
+*/
     private areColorsMatching(color:Color, imageData:ImageData, position:number):boolean{
-        let pixelRed = imageData[position];
-        let pixelGreen = imageData[position+1];
-        let pixelBlue = imageData[position+2];
-        
-        return (pixelRed === color.red && pixelGreen === color.blue && pixelBlue === color.blue);
+        let pixelRed = imageData.data[position];
+        let pixelGreen = imageData.data[position+1];
+        let pixelBlue = imageData.data[position+2];
+        return (pixelRed === color.red && pixelGreen === color.green && pixelBlue === color.blue);
     }
 
     private fillPixel(imageData:ImageData, position:number):void{
