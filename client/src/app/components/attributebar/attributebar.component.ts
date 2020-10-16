@@ -13,6 +13,7 @@ export class AttributebarComponent implements OnInit {
     junctionWidth: string = '1';
     idStyleRectangle: number = 2;
     idStyleBrush: number = 1;
+    tolerance: string = '0';
     currentTexture: string = '../../../assets/b1.svg';
     constructor(private tools: ToolsManagerService) {}
     private showContainer: boolean = false;
@@ -66,6 +67,12 @@ export class AttributebarComponent implements OnInit {
 
     setJunctionState(checkBoxValue: boolean): void {
         this.tools.setJunctionState(checkBoxValue);
+    }
+
+    setTolerance(input: string): void {
+        this.tolerance = input;
+        if (Number(this.tolerance) > MAX_WIDTH_VALUE) this.tolerance = '100';
+        this.tools.setBucketTolerance(Number(this.tolerance));
     }
 
     toggleList(id: string): void {

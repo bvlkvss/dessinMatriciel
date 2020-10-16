@@ -13,6 +13,7 @@ import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.ser
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { UserGuideComponent } from '../user-guide/user-guide.component';
 import { MatDialog } from '@angular/material/dialog';
+import { PaintBucketService } from '@app/services/tools/paint-bucket/paint-bucket.service';
 
 describe('SidebarComponent', () => {
     let component: SidebarComponent;
@@ -25,6 +26,7 @@ describe('SidebarComponent', () => {
     let ellipseStub: EllipseService;
     let lineStub: LineService;
     let drawServiceMock: MockDrawingService;
+    let paintBucketStub: PaintBucketService;
     let matDialogSpy: jasmine.SpyObj<MatDialog>;
 
     beforeEach(async(() => {
@@ -35,7 +37,8 @@ describe('SidebarComponent', () => {
         lineStub = new LineService(drawServiceMock);
         ellipseStub = new EllipseService(drawServiceMock);
         eraserStub = new EraserService(drawServiceMock);
-        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub);
+
+        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub, paintBucketStub);
         matDialogSpy = jasmine.createSpyObj('MatDialog', ['open']);
         TestBed.configureTestingModule({
             declarations: [SidebarComponent],

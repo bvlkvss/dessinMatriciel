@@ -129,6 +129,12 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         this.tools.currentTool.onMouseOut(event);
     }
 
+    @HostListener('contextmenu', ['$event'])
+    onRightClick(event: MouseEvent): void {
+        event.preventDefault();
+        this.tools.currentTool.onRightClick(event);
+    }
+
     @HostListener('document:keyup', ['$event'])
     onKeyUp(event: KeyboardEvent): void {
         this.tools.currentTool.onKeyUp(event);
