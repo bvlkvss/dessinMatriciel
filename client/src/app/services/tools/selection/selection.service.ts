@@ -29,6 +29,7 @@ export class SelectionService extends Tool {
     selectionWidth:number;
     selectionHeight:number;
     selectionData: HTMLCanvasElement;
+    currenthandle: number;
 
     constructor(drawingService: DrawingService) {
         super(drawingService);
@@ -51,9 +52,15 @@ export class SelectionService extends Tool {
       this.mouseDown = event.button === MouseButton.Left;
       if (this.mouseDown) {
         this.mouseDownCoord = this.getPositionFromMouse(event);
-
         
-        if (this.selectionActivated &&this.mouseDownCoord.x>=this.selectionStartPoint.x&&this.mouseDownCoord.x<=this.selectionEndPoint.x
+        
+        if (this.selectionActivated){
+        
+        if(this.mouseDownOnHandle(this.mouseDownCoord)!=-1){
+          this.currenthandle=this.mouseDownOnHandle(this.mouseDownCoord);
+          return;
+        }
+        else if(this.mouseDownCoord.x>=this.selectionStartPoint.x&&this.mouseDownCoord.x<=this.selectionEndPoint.x
           &&this.mouseDownCoord.y>=this.selectionStartPoint.y 
           &&  this.mouseDownCoord.y<=this.selectionEndPoint.y
           ){
@@ -64,7 +71,7 @@ export class SelectionService extends Tool {
             this.offsetY=this.mouseDownCoord.y-this.selectionStartPoint.y;
             return;
           }
-        
+        }
           this.selectionStartPoint=this.getPositionFromMouse(event);
           this.rectangleService.onMouseDown(event);
           
@@ -106,6 +113,7 @@ export class SelectionService extends Tool {
       4   5
       6 7 8
     */
+   console.log("start point before on mouse up", this.selectionStartPoint);
 
    this.rectangleService.mouseDown = false;
    this.mouseDownInsideSelection=false;
@@ -136,15 +144,59 @@ export class SelectionService extends Tool {
 
     }
     this.selectionActivated=true;
-
+    this.mouseDown=false;
   }
 
   onMouseMove(event: MouseEvent): void {
     
     this.currentPos = this.getPositionFromMouse(event);
 
+    if(this.selectionActivated&&this.mouseDown){
+
+    switch(this.currenthandle){
+      case 1:
+        console.log("start point before", this.selectionStartPoint);
+        console.log("curr point before", this.currentPos);
+        this.selectionStartPoint=this.currentPos;
+        console.log("start point after", this.selectionStartPoint);
+
+        break;
+      case 2:
+        this.selectionStartPoint.y=this.currentPos.y;
+        break;
+      case 3:
+        this.selectionStartPoint.y=this.currentPos.y;
+        this.selectionEndPoint.x=this.currentPos.x;
+        break;
+      case 4:
+        console.log("start point before", this.selectionStartPoint);
+        console.log("curr point before", this.currentPos);
+
+        this.selectionStartPoint.x=this.currentPos.x;
+        console.log("start point after", this.selectionStartPoint);
+
+        break;
+      case 5:
+        this.selectionEndPoint.x=this.currentPos.x;
+        break;
+      case 6:
+        this.selectionStartPoint.x=this.currentPos.x;
+        this.selectionEndPoint.y=this.currentPos.y;
+        break;
+      case 7:
+        this.selectionEndPoint.y=this.currentPos.y;
+        break;
+      case 8:
+        this.selectionEndPoint=this.currentPos;
+        break;
+
+    }
+    this.drawingService.clearCanvas(this.drawingService.previewCtx);
+    this.rectangleService.drawRectangle(this.drawingService.previewCtx,this.selectionStartPoint,this.selectionEndPoint,false);
+    return;
+  }
     
-    if (this.mouseDownInsideSelection){
+  if (this.mouseDownInsideSelection){
       
 
       this.drawingService.clearCanvas(this.drawingService.previewCtx);
@@ -208,6 +260,23 @@ export class SelectionService extends Tool {
     this.resizingHandles.push({x:this.rectangleService.mouseDownCoord.x+width/2-3,y:this.rectangleService.mouseDownCoord.y+height-3})
     //8
     this.resizingHandles.push({x:this.rectangleService.mouseDownCoord.x+width-3,y:this.rectangleService.mouseDownCoord.y+height-3})
+
+  }
+
+  mouseDownOnHandle(mousedownpos: Vec2){
+
+
+    for(let i=0;i<this.resizingHandles.length;i++){
+
+      if(mousedownpos.x>=this.resizingHandles[i].x && mousedownpos.x<=this.resizingHandles[i].x+6
+        && mousedownpos.y>=this.resizingHandles[i].y && mousedownpos.y<=this.resizingHandles[i].y+6){
+          console.log("mouse down on handle: ",i+1);
+          return i+1;
+        }
+
+    }
+    //mouse not on any handle
+    return -1;
 
   }
 
