@@ -245,21 +245,21 @@ export class SelectionService extends Tool {
     */
   
     //1
-    this.resizingHandles.push({x:this.rectangleService.mouseDownCoord.x-3, y:this.rectangleService.mouseDownCoord.y-3});
+    this.resizingHandles.push({x:this.selectionStartPoint.x-3, y:this.selectionStartPoint.y-3});
     //2
-    this.resizingHandles.push({x:this.rectangleService.mouseDownCoord.x+width/2 -3,y:this.rectangleService.mouseDownCoord.y-3})
+    this.resizingHandles.push({x:this.selectionStartPoint.x+width/2 -3,y:this.selectionStartPoint.y-3})
     //3
-    this.resizingHandles.push({x:this.rectangleService.mouseDownCoord.x+width-3,y:this.rectangleService.mouseDownCoord.y-3})
+    this.resizingHandles.push({x:this.selectionStartPoint.x+width-3,y:this.selectionStartPoint.y-3})
     //4
-    this.resizingHandles.push({x:this.rectangleService.mouseDownCoord.x-3,y:this.rectangleService.mouseDownCoord.y+height/2-3})
+    this.resizingHandles.push({x:this.selectionStartPoint.x-3,y:this.selectionStartPoint.y+height/2-3})
     //5
-    this.resizingHandles.push({x:this.rectangleService.mouseDownCoord.x+width-3,y:this.rectangleService.mouseDownCoord.y-3+height/2})
+    this.resizingHandles.push({x:this.selectionStartPoint.x+width-3,y:this.selectionStartPoint.y-3+height/2})
     //6
-    this.resizingHandles.push({x:this.rectangleService.mouseDownCoord.x-3,y:this.rectangleService.mouseDownCoord.y-3+height})
+    this.resizingHandles.push({x:this.selectionStartPoint.x-3,y:this.selectionStartPoint.y-3+height})
     //7
-    this.resizingHandles.push({x:this.rectangleService.mouseDownCoord.x+width/2-3,y:this.rectangleService.mouseDownCoord.y+height-3})
+    this.resizingHandles.push({x:this.selectionStartPoint.x+width/2-3,y:this.selectionStartPoint.y+height-3})
     //8
-    this.resizingHandles.push({x:this.rectangleService.mouseDownCoord.x+width-3,y:this.rectangleService.mouseDownCoord.y+height-3})
+    this.resizingHandles.push({x:this.selectionStartPoint.x+width-3,y:this.selectionStartPoint.y+height-3})
 
   }
 
