@@ -1,3 +1,4 @@
+import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ResizingService } from '@app/services/resizing/resizing.service';
 import { Command } from './command';
@@ -25,6 +26,18 @@ export class ResizeCommand implements Command {
 
     setPreview(preview: HTMLCanvasElement): void {
         this.preview = preview;
+    }
+
+    getnewSize(): Vec2 {
+        return { x: this.newWidth, y: this.newHeight } as Vec2;
+    }
+
+    getoldSize(): Vec2 {
+        return { x: this.oldWidth, y: this.oldHeight } as Vec2;
+    }
+
+    getOldCanvas(): HTMLCanvasElement {
+        return this.oldCanvas;
     }
 
     saveOldCanvas(canvas: HTMLCanvasElement): void {

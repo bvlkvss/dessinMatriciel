@@ -15,7 +15,7 @@ export class ResizingService {
     resizedWidth: number;
     resizedHeight: number;
     cmd: ResizeCommand;
-    constructor(private drawingService: DrawingService, protected invoker: UndoRedoService) { }
+    constructor(private drawingService: DrawingService, protected invoker: UndoRedoService) {}
 
     initResizing(event: MouseEvent): void {
         if (event.button === 0) {
@@ -137,15 +137,15 @@ export class ResizingService {
         temp.height = this.resizedHeight;
         const tempCtx = temp.getContext('2d') as CanvasRenderingContext2D;
         tempCtx.drawImage(this.drawingService.canvas, 0, 0, this.resizedWidth, this.resizedHeight, 0, 0, temp.width, temp.height);
-
         return temp;
     }
 
     drawCanvas(save: HTMLCanvasElement): void {
-        if (this.hasBeenResized) {
-            this.drawingService.clearCanvas(this.drawingService.baseCtx);
+        if (save) {
+            if (this.hasBeenResized) {
+                this.drawingService.clearCanvas(this.drawingService.baseCtx);
+            }
+            this.drawingService.baseCtx.drawImage(save, 0, 0);
         }
-
-        this.drawingService.baseCtx.drawImage(save, 0, 0);
     }
 }

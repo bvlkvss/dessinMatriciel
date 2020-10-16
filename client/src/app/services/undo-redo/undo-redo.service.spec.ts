@@ -2,6 +2,7 @@
 import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { LineCommand } from '@app/classes/lineCommand';
+import { ResizeCommand } from '@app/classes/resizeCommand';
 import { Vec2 } from '@app/classes/vec2';
 import { MockDrawingService } from '@app/components/drawing/drawing.component.spec';
 //import { ResizingService } from '@app/services/resizing/resizing.service';
@@ -12,6 +13,7 @@ import { PencilCommand } from '../../classes/pencilCommand';
 import { RectangleCommand } from '../../classes/rectangleCommand';
 //import { ResizeCommand } from '../../classes/resizeCommand';
 import { DrawingService } from '../drawing/drawing.service';
+import { ResizingService } from '../resizing/resizing.service';
 import { BrushService } from '../tools/brush/brush.service';
 import { EllipseService } from '../tools/ellipse/ellipse.service';
 import { LineService } from '../tools/line/line.service';
@@ -30,14 +32,14 @@ describe('UndoRedoService', () => {
   let BrushCommandStub: BrushCommand;
   let ellipseCommandStub: EllipseCommand;
   let lineCommandStub: LineCommand;
-  //let ResizeCommandStub: ResizeCommand;
+  let ResizeCommandStub: ResizeCommand;
   let pathData: Vec2[] = [{ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 2, y: 1 }, { x: 2, y: 2 }, { x: 1, y: 3 }];
   let pencilStub: PencilService;
   let brushStub: BrushService;
   let rectangleStub: RectangleService;
   let ellipseStub: EllipseService;
   let lineStub: LineService;
-  //let resizeStub: ResizingService;
+  let resizeStub: ResizingService;
   let canvasStub: HTMLCanvasElement;
   let baseCtxStub: CanvasRenderingContext2D;
   let previewCtxStub: CanvasRenderingContext2D;
@@ -72,14 +74,17 @@ describe('UndoRedoService', () => {
     lineCommandStub = new LineCommand(pathData, false, lineStub, DrawingServiceMock);
     ellipseStub = new EllipseService(DrawingServiceMock, service);
     ellipseCommandStub = new EllipseCommand(pathData[2], pathData[4], 0, ellipseStub, DrawingServiceMock);
-    //resizeStub = new ResizingService(DrawingServiceMock, service);
-    //ResizeCommandStub = new ResizeCommand(baseCtxStub.canvas.width, baseCtxStub.canvas.height, resizeStub, DrawingServiceMock);
-
-
+    resizeStub = new ResizingService(DrawingServiceMock, service);
+    resizeStub.resizedWidth = canvasTestHelper.canvas.width;
+    resizeStub.resizedHeight = canvasTestHelper.canvas.height;
+    ResizeCommandStub = new ResizeCommand(baseCtxStub.canvas.width, baseCtxStub.canvas.height, resizeStub, DrawingServiceMock);
+    ResizeCommandStub.setPreview(canvasTestHelper.drawCanvas);
+    ResizeCommandStub.setnewSize(100, 100);
 
     undoLastSpy = spyOn<any>(service, 'undoLast').and.callThrough();
     redoPrevSpy = spyOn<any>(service, 'redoPrev').and.callThrough();
     executeAllSpy = spyOn<any>(service, 'executeAll').and.callThrough();
+
 
     shortCutRedo = {
       key: 'z',
@@ -198,13 +203,16 @@ describe('UndoRedoService', () => {
 
   it('shoud call execute of each Command in stack', () => {
     service.setIsAllowed(true);
+    const tmp2 = document.createElement('canvas') as HTMLCanvasElement;
+    tmp2.width = 420;
+    tmp2.height = 69;
+    spyOn(resizeStub, 'saveCanvas').and.returnValue(tmp2);
     service.addToUndo(PencilCommandStub);
     service.addToUndo(rectangleCommandStub);
     service.addToUndo(ellipseCommandStub);
     service.addToUndo(lineCommandStub);
     service.addToUndo(BrushCommandStub);
-    //service.addToUndo(ResizeCommandStub);
-    while (!DrawingServiceMock.canvas) { };
+    service.addToUndo(ResizeCommandStub);
     let execute = [] as jasmine.Spy<any>[];
     for (let cmd of service.getUndo()) {
       execute.push(spyOn(cmd, 'execute').and.callThrough());
@@ -221,6 +229,42 @@ describe('UndoRedoService', () => {
     let execute = spyOn(BrushCommandStub, 'drawLineCommand').and.callThrough();
     service.executeAll();
     expect(execute).toHaveBeenCalled();
+  });
+
+  it('undoLAst should call unexecute of resizeCommand', () => {
+    service.setIsAllowed(true);
+    service.addToUndo(ResizeCommandStub);
+    let execute = spyOn(ResizeCommandStub, 'unexecute').and.callThrough();
+    service.undoLast();
+    expect(execute).toHaveBeenCalled();
+  });
+
+  it('setPrevien should change preview', () => {
+    const tmp = ResizeCommandStub.preview as HTMLCanvasElement;
+    const tmp2 = document.createElement('canvas') as HTMLCanvasElement;
+    tmp2.width = 420;
+    tmp2.height = 69;
+    ResizeCommandStub.setPreview(tmp2);
+    expect(ResizeCommandStub.preview !== tmp && ResizeCommandStub.preview === tmp2).toBeTruthy;
+  });
+
+  it('setnewSize should update newWIdht and newHeight', () => {
+    ResizeCommandStub.setnewSize(50, 50);
+    const tmp = ResizeCommandStub.getnewSize() as Vec2;
+    expect(tmp.x === 50 && tmp.y === 50).toBeTruthy();
+  });
+
+  it('getOldsize should be 100x100', () => {
+    const tmp = ResizeCommandStub.getoldSize() as Vec2;
+    expect(tmp.x === 100 && tmp.y === 100).toBeTruthy();
+  });
+
+  it('saveOldCanvas shoudl save the canvas into this.oldcanvas', () => {
+    const tmp2 = document.createElement('canvas') as HTMLCanvasElement;
+    tmp2.width = 420;
+    tmp2.height = 69;
+    ResizeCommandStub.saveOldCanvas(tmp2);
+    expect(ResizeCommandStub.getOldCanvas() === tmp2).toBeTruthy();
   });
 
 });
