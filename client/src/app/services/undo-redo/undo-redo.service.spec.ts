@@ -1,10 +1,12 @@
 /* tslint:disable */
 import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
+import { EraserCommand } from '@app/classes/eraserCommand';
 import { LineCommand } from '@app/classes/lineCommand';
 import { ResizeCommand } from '@app/classes/resizeCommand';
 import { Vec2 } from '@app/classes/vec2';
 import { MockDrawingService } from '@app/components/drawing/drawing.component.spec';
+import { EraserService } from '@app/services/tools/eraser/eraser-service';
 //import { ResizingService } from '@app/services/resizing/resizing.service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle.service';
 import { BrushCommand } from '../../classes/brushCommand';
@@ -32,6 +34,7 @@ describe('UndoRedoService', () => {
   let BrushCommandStub: BrushCommand;
   let ellipseCommandStub: EllipseCommand;
   let lineCommandStub: LineCommand;
+  let eraserCommandStub: EraserCommand;
   let ResizeCommandStub: ResizeCommand;
   let pathData: Vec2[] = [{ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 2, y: 1 }, { x: 2, y: 2 }, { x: 1, y: 3 }];
   let pencilStub: PencilService;
@@ -39,6 +42,7 @@ describe('UndoRedoService', () => {
   let rectangleStub: RectangleService;
   let ellipseStub: EllipseService;
   let lineStub: LineService;
+  let eraserStub: EraserService;
   let resizeStub: ResizingService;
   let canvasStub: HTMLCanvasElement;
   let baseCtxStub: CanvasRenderingContext2D;
@@ -80,6 +84,8 @@ describe('UndoRedoService', () => {
     ResizeCommandStub = new ResizeCommand(baseCtxStub.canvas.width, baseCtxStub.canvas.height, resizeStub, DrawingServiceMock);
     ResizeCommandStub.setPreview(canvasTestHelper.drawCanvas);
     ResizeCommandStub.setnewSize(100, 100);
+    eraserStub = new EraserService(DrawingServiceMock, service);
+    eraserCommandStub = new EraserCommand(pathData, eraserStub, DrawingServiceMock);
 
     undoLastSpy = spyOn<any>(service, 'undoLast').and.callThrough();
     redoPrevSpy = spyOn<any>(service, 'redoPrev').and.callThrough();
@@ -101,6 +107,16 @@ describe('UndoRedoService', () => {
 
   it('should be created', () => {
     expect(service).toBeTruthy();
+  });
+
+  it('setisAllowed should set isAllowed to the write value', () => {
+    service.setIsAllowed(true);
+    expect(service.getIsAllowed() === true);
+  });
+
+  it('setisAllowed should set isAllowed to the write value', () => {
+    service.setIsAllowed(false);
+    expect(service.getIsAllowed() === false);
   });
 
   it('should call undoLast if shortcut ctrl+z is pressed and undo-redo is allowed', () => {
@@ -213,6 +229,7 @@ describe('UndoRedoService', () => {
     service.addToUndo(lineCommandStub);
     service.addToUndo(BrushCommandStub);
     service.addToUndo(ResizeCommandStub);
+    service.addToUndo(eraserCommandStub);
     let execute = [] as jasmine.Spy<any>[];
     for (let cmd of service.getUndo()) {
       execute.push(spyOn(cmd, 'execute').and.callThrough());
@@ -265,6 +282,18 @@ describe('UndoRedoService', () => {
     tmp2.height = 69;
     ResizeCommandStub.saveOldCanvas(tmp2);
     expect(ResizeCommandStub.getOldCanvas() === tmp2).toBeTruthy();
+  });
+
+  it('clearUndo empty undo stack ', () => {
+    service.addToUndo(PencilCommandStub);
+    service.addToUndo(rectangleCommandStub);
+    service.addToUndo(ellipseCommandStub);
+    service.addToUndo(lineCommandStub);
+    service.addToUndo(BrushCommandStub);
+    service.addToUndo(ResizeCommandStub);
+    service.addToUndo(eraserCommandStub);
+    service.ClearUndo();
+    expect(service.getUndo().length === 0);
   });
 
 });

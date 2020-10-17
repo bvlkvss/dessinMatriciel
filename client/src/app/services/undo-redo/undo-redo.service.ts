@@ -10,7 +10,7 @@ export class UndoRedoService {
     private redoStack: Command[] = [];
     private isAllowed: boolean;
 
-    constructor(protected drawingService: DrawingService) { }
+    constructor(protected drawingService: DrawingService) {}
     onKeyDown(event: KeyboardEvent): void {
         if (this.isAllowed) {
             if (event.ctrlKey && event.shiftKey && (event.key === 'z' || event.key === 'Z')) {
@@ -24,6 +24,7 @@ export class UndoRedoService {
         if (cmd) {
             this.undoStack.push(cmd);
         }
+        console.log(this.undoStack);
     }
     addToRedo(cmd: Command): void {
         if (cmd) {
@@ -39,6 +40,7 @@ export class UndoRedoService {
     setIsAllowed(bool: boolean): void {
         this.isAllowed = bool;
     }
+
     getIsAllowed(): boolean {
         return this.isAllowed;
     }

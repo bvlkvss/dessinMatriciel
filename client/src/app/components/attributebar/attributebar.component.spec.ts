@@ -41,7 +41,7 @@ describe('AttributebarComponent', () => {
         rectangleStub = new RectangleService(drawServiceMock, UndoRedoServiceMock);
         lineStub = new LineService(drawServiceMock, UndoRedoServiceMock);
         ellipseStub = new EllipseService(drawServiceMock, UndoRedoServiceMock);
-        eraserStub = new EraserService(drawServiceMock);
+        eraserStub = new EraserService(drawServiceMock, UndoRedoServiceMock);
         toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub);
         TestBed.configureTestingModule({
             declarations: [AttributebarComponent],
