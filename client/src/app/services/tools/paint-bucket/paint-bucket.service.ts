@@ -45,7 +45,6 @@ export class PaintBucketService extends Tool {
 
     setTolerance(tolerance: number): void {
         if (tolerance >= MIN_TOLERANCE && tolerance <= MAX_TOLERANCE) this.tolerance = tolerance;
-        console.log(this.tolerance);
     }
 
     private fillNonContiguousArea(position: Vec2): ImageData {
