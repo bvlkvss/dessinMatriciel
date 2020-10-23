@@ -9,6 +9,7 @@ import { LineService } from '@app/services/tools/line/line.service';
 import { PencilService } from '@app/services/tools/pencil/pencil-service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle.service';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
+import { PolygonService } from "@app/services/tools/polygon/polygon.service";
 
 describe('AttributebarComponent', () => {
     let component: AttributebarComponent;
@@ -21,6 +22,7 @@ describe('AttributebarComponent', () => {
     let ellipseStub: EllipseService;
     let lineStub: LineService;
     let drawServiceMock: MockDrawingService;
+    let polygonStub: PolygonService;
 
     beforeEach(async(() => {
         drawServiceMock = new MockDrawingService();
@@ -30,7 +32,8 @@ describe('AttributebarComponent', () => {
         lineStub = new LineService(drawServiceMock);
         ellipseStub = new EllipseService(drawServiceMock);
         eraserStub = new EraserService(drawServiceMock);
-        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub);
+        polygonStub = new PolygonService(drawServiceMock);
+        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub,polygonStub);
         TestBed.configureTestingModule({
             declarations: [AttributebarComponent],
             providers: [{ provide: ToolsManagerService, useValue: toolManagerStub }],
@@ -89,6 +92,15 @@ describe('AttributebarComponent', () => {
         expect(changeStyleSpy).toHaveBeenCalled();
     });
 
+
+    //pour polygon 
+    it('should call changeStyle when calling restoreValues and currentTool is a polygon', () => {
+        (component as any).tools.currentTool = (component as any).tools.getTools().get('polygon');
+        let changeStyleSpy = spyOn(component, 'changeStyle');
+        component.restoreValues();
+        expect(changeStyleSpy).toHaveBeenCalled();
+    });
+
     it('should call setTexture when calling restoreValues and currentTool is a brush', () => {
         (component as any).tools.currentTool = (component as any).tools.getTools().get('brush');
         let setTextureSpy = spyOn((component as any).tools.currentTool as BrushService, 'setTexture');
@@ -125,6 +137,14 @@ describe('AttributebarComponent', () => {
         component.acceptChanges();
 
         expect(setEllipseStyleSpy).toHaveBeenCalled();
+    });
+
+    //pour polygon
+    it('should call setPolygonStyle when calling acceptChanges and currentTool is a polygon', () => {
+        (component as any).tools.currentTool = (component as any).tools.getTools().get('polygon');
+        let setPolygonStyle = spyOn(toolManagerStub, 'setPolygonStyle');
+        component.acceptChanges();
+        expect(setPolygonStyle).toHaveBeenCalled();
     });
 
     it('should call setJunctionWidth when calling acceptChanges and currentTool is a line', () => {

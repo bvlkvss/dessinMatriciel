@@ -11,6 +11,7 @@ import { LineService } from '@app/services/tools/line/line.service';
 import { PencilService } from '@app/services/tools/pencil/pencil-service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle.service';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
+import { PolygonService } from "@app/services/tools/polygon/polygon.service";
 
 export class MockDrawingService extends DrawingService {
     resizeCanvas(): void {
@@ -36,6 +37,7 @@ describe('DrawingComponent', () => {
     let lineStub: LineService;
     let drawServiceMock: MockDrawingService;
     let resizingServiceMock: MockResizingService;
+    let polygonStub: PolygonService;
 
     beforeEach(async(() => {
         drawServiceMock = new MockDrawingService();
@@ -46,7 +48,8 @@ describe('DrawingComponent', () => {
         lineStub = new LineService(drawServiceMock);
         ellipseStub = new EllipseService(drawServiceMock);
         eraserStub = new EraserService(drawServiceMock);
-        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub);
+        polygonStub= new PolygonService(drawServiceMock);  //ajout de yassine
+        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub,polygonStub);
 
         TestBed.configureTestingModule({
             declarations: [DrawingComponent],
@@ -167,6 +170,14 @@ describe('DrawingComponent', () => {
         });
         component.onKeyDown(event);
         expect(toolManagerStub.currentTool).toEqual(toolManagerStub.getTools().get('line') as Tool);
+    });
+
+    it('on key 3 pressed current tool should change to polygon ', () => {
+        const event = new KeyboardEvent('document:keydown', {
+            key: '3',
+        });
+        component.onKeyDown(event);
+        expect(toolManagerStub.currentTool).toEqual(toolManagerStub.getTools().get('polygon') as Tool);
     });
 
     it('on another key down, current tool should call tool on key down', () => {

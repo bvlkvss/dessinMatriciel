@@ -230,6 +230,25 @@
     border-style: solid;
     background-color: white;
 }
+#currentPolygonStyle {
+    position: absolute;
+    top: 20px;
+    left: 17px;
+    border-color: white;
+    border-width: 4px;
+    border-style: solid;
+    background-color: white;
+}
+#numberOfSidesContainer{
+    position: absolute;
+    top: 20px;
+    left: 17px;
+    border-color: brown;
+    border-width: 4px;
+    border-style: solid;
+    background-color:brown;
+}
+
 #currentImageContainer {
     padding: 5px;
     margin-bottom: 5px;

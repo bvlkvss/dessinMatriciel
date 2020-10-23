@@ -6,6 +6,7 @@ import { EraserService } from '@app/services/tools/eraser/eraser-service';
 import { LineService } from '@app/services/tools/line/line.service';
 import { PencilService } from '@app/services/tools/pencil/pencil-service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle.service';
+import { PolygonService } from "@app/services/tools/polygon/polygon.service";
 
 @Injectable({
     providedIn: 'root',
@@ -21,6 +22,7 @@ export class ToolsManagerService {
         eraserService: EraserService,
         ellipseService: EllipseService,
         lineService: LineService,
+        polygonService: PolygonService,
     ) {
         this.tools = new Map<string, Tool>([
             ['pencil', pencilService],
@@ -29,6 +31,7 @@ export class ToolsManagerService {
             ['eraser', eraserService],
             ['ellipse', ellipseService],
             ['line', lineService],
+            ['polygon',polygonService],
         ]);
         this.currentTool = this.tools.get('pencil') as Tool;
     }
@@ -65,6 +68,12 @@ export class ToolsManagerService {
         const ellipse = this.currentTool as EllipseService;
         ellipse.setStyle(id);
     }
+
+    setPolygonStyle(id: number): void {
+        const polygon = this.currentTool as PolygonService;
+        polygon.setStyle(id);
+    }
+
     setJunctionWidth(id: number): void {
         const line = this.currentTool as LineService;
         line.setJunctionWidth(id);

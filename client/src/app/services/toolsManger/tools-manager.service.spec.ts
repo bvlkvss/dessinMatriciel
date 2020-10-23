@@ -3,6 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { Tool } from '@app/classes/tool';
 import { EllipseService } from '../tools/ellipse/ellipse.service';
 import { LineService } from '../tools/line/line.service';
+import { PolygonService } from '../tools/polygon/polygon.service';
 import { RectangleService } from '../tools/rectangle/rectangle.service';
 import { ToolsManagerService } from './tools-manager.service';
 
@@ -47,6 +48,18 @@ describe('ToolsManagerService', () => {
         service.setEllipseStyle(1);
         expect(setStyleSpy).toHaveBeenCalled();
     });
+
+
+    //changement de style du polygon
+    it('should call polygon setStyle when setPolygonStyle is called', () => {
+        service.currentTool = service.getTools().get('polygon') as Tool;
+        let setStyleSpy = spyOn(service.currentTool as PolygonService, 'setStyle');
+
+        service.setPolygonStyle(1);
+        expect(setStyleSpy).toHaveBeenCalled();
+    });
+
+
 
     it('should call line setJunctionWidth when setJunctionWidth is called', () => {
         service.currentTool = service.getTools().get('line') as Tool;

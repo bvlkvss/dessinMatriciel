@@ -12,6 +12,7 @@ import { RectangleService } from '@app/services/tools/rectangle/rectangle.servic
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { UserGuideComponent } from '../user-guide/user-guide.component';
+import { PolygonService } from '@app/services/tools/polygon/polygon.service';
 
 describe('SidebarComponent', () => {
     let component: SidebarComponent;
@@ -24,6 +25,7 @@ describe('SidebarComponent', () => {
     let ellipseStub: EllipseService;
     let lineStub: LineService;
     let drawServiceMock: MockDrawingService;
+    let polygonStub: PolygonService;
 
     beforeEach(async(() => {
         drawServiceMock = new MockDrawingService();
@@ -33,7 +35,9 @@ describe('SidebarComponent', () => {
         lineStub = new LineService(drawServiceMock);
         ellipseStub = new EllipseService(drawServiceMock);
         eraserStub = new EraserService(drawServiceMock);
-        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub);
+        polygonStub = new PolygonService(drawServiceMock); // ajout
+
+        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub,polygonStub);
         TestBed.configureTestingModule({
             declarations: [SidebarComponent],
             providers: [

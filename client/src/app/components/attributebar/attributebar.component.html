@@ -86,6 +86,23 @@
             <div (click)="setShapeStyle(1, true)" class="shapeStyle" style="border-radius: 50%" id="style1"></div>
         </div>
     </div>
+
+    <div *ngIf= "checkIfContainAttribute('polygonStyle')">
+        <div id="currentImageContainer">
+            <p class="header" id="headerStyle">Style</p>
+            <div class="shapeStyle" id="currentPolygonStyle"></div>
+            <i (click)="toggleList($event.target.parentElement.nextSibling.id)" class="material-icons" id="icon">expand_more</i>
+        </div>
+        <div id="styleContainer">
+            <div (click)="setShapeStyle(2, false)" class="shapeStyle" id="style2"></div>
+            <div (click)="setShapeStyle(0, false)" class="shapeStyle" id="style0"></div>
+            <div (click)="setShapeStyle(1, false)" class="shapeStyle" id="style1"></div>
+        </div>
+        <div id="numberOfSidesContainer">
+
+        </div>
+    </div>
+
     <div id="buttonContainer">
         <button id="accept" (click)="acceptChanges()" class="buttons">Accepter</button>
         <button id="cancel" (click)="restoreValues()" class="buttons">Annuler</button>

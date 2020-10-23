@@ -5,6 +5,8 @@ import { EllipseService } from '@app/services/tools/ellipse/ellipse.service';
 import { LineService } from '@app/services/tools/line/line.service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle.service';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
+import { PolygonService } from "@app/services/tools/polygon/polygon.service";
+
 const MAX_WIDTH_VALUE = 100;
 @Component({
     selector: 'app-attributebar',
@@ -62,6 +64,12 @@ export class AttributebarComponent implements OnInit {
                 brush.setTexture(brush.imageId);
                 const currentImage = document.querySelector('#currentImage') as HTMLImageElement;
                 if (currentImage) currentImage.src = '../../../assets/b' + brush.imageId + '.svg';
+                break;
+            
+            case this.tools.getTools().get('polygon'):
+                currentTool= this.tools.currentTool as PolygonService;
+                this.changeStyle('currentPolygonStyle', currentTool.polygonStyle);
+                break;
         }
     }
 
@@ -86,6 +94,8 @@ export class AttributebarComponent implements OnInit {
                 brush.imageId = this.idStyleBrush;
                 brush.setTexture(this.idStyleBrush);
                 break;
+            case this.tools.getTools().get('polygon'):
+                this.tools.setEllipseStyle(this.idStyleRectangle);
         }
     }
 
@@ -143,4 +153,5 @@ export class AttributebarComponent implements OnInit {
         else this.changeStyle('currentRectangleStyle', idStyle);
         this.idStyleRectangle = idStyle;
     }
+    //aller pour un switch case pour les prochaines shapes
 }
