@@ -69,8 +69,11 @@ export class SelectionService extends Tool {
             console.log("on rect");
             this.mouseDownInsideSelection=true;
             this.mouseDown=false;
+            console.log("start point on offset", this.selectionStartPoint);
+            console.log("mousedownon offset", this.mouseDownCoord);
             this.offsetX= this.mouseDownCoord.x-this.selectionStartPoint.x;
             this.offsetY=this.mouseDownCoord.y-this.selectionStartPoint.y;
+            console.log("offsetX", this.offsetX);
             return;
           }
         else{
@@ -91,8 +94,8 @@ export class SelectionService extends Tool {
     }
     saveSelection(): void{
       const temp = document.createElement('canvas') as HTMLCanvasElement;
-      let width =this.mouseUpCoord.x-this.selectionStartPoint.x;
-      let height = this.mouseUpCoord.y-this.selectionStartPoint.y;
+      let width =this.selectionEndPoint.x-this.selectionStartPoint.x;
+      let height = this.selectionEndPoint.y-this.selectionStartPoint.y;
       const tempCtx = temp.getContext('2d') as CanvasRenderingContext2D;
       tempCtx.canvas.height=height;
       tempCtx.canvas.width=width;
@@ -140,7 +143,7 @@ export class SelectionService extends Tool {
       console.log("mouseup width", this.rectangleService.width);
       console.log("mouseup height", this.rectangleService.height);
 
-      this.selectionEndPoint=this.currentPos;
+      this.selectionEndPoint=this.mouseUpCoord;
       /*{
         x:this.selectionStartPoint.x+this.rectangleService.width,
         y:this.selectionStartPoint.y=this.rectangleService.height
@@ -150,19 +153,33 @@ export class SelectionService extends Tool {
     }
     console.log("end point on mouse up", this.selectionEndPoint);
     
-    this.saveSelection();
+    let height = Math.abs(this.selectionEndPoint.y-this.selectionStartPoint.y);
+    let width =Math.abs(this.selectionEndPoint.x-this.selectionStartPoint.x);
     /*
-    let height = this.selectionEndPoint.y-this.selectionStartPoint.y;
-    let width =this.selectionEndPoint.x-this.selectionStartPoint.x;
     this.drawingService.baseCtx.beginPath();
     this.drawingService.baseCtx.fillStyle="white";
     this.drawingService.baseCtx.rect(this.selectionStartPoint.x,this.selectionStartPoint.y,width,height);
     this.drawingService.baseCtx.fill();
     this.drawingService.baseCtx.closePath();
     */
+   if (this.selectionEndPoint.y<this.selectionStartPoint.y){
+     
+     this.selectionEndPoint.y+=height;
+     this.selectionStartPoint.y-=height;
+     
+    }
+    if (this.selectionEndPoint.x<this.selectionStartPoint.x){
+      
+      this.selectionEndPoint.x+=width;
+      this.selectionStartPoint.x-=width;
+      
+      
+    }
+    this.saveSelection();
     this.drawingService.previewCtx.drawImage(this.selectionData, this.selectionStartPoint.x, this.selectionStartPoint.y);
     //this.rectangleService.drawRectangle(this.drawingService.previewCtx,this.selectionStartPoint,this.selectionEndPoint,this.rectangleService.toSquare);
-
+    console.log("start point after up", this.selectionStartPoint);
+    console.log("end point after up ", this.selectionEndPoint);
     }
     this.selectionActivated=true;
     this.mouseDown=false;
@@ -186,8 +203,7 @@ export class SelectionService extends Tool {
         this.selectionEndPoint.x=this.currentPos.x;
         break;
       case 4:
-        console.log("start point before", this.selectionStartPoint);
-        console.log("curr point before", this.currentPos);
+
         this.selectionStartPoint.x=this.currentPos.x;
         break;
       case 5:
@@ -219,7 +235,7 @@ export class SelectionService extends Tool {
     if(this.firstSelectionMove){
       let height = this.selectionEndPoint.y-this.selectionStartPoint.y;
 
-      let width =this.selectionEndPoint.x-this.selectionStartPoint.x;
+      let width =Math.abs(this.selectionEndPoint.x-this.selectionStartPoint.x);
       this.drawingService.baseCtx.beginPath();
       this.drawingService.baseCtx.fillStyle="white";
       this.drawingService.baseCtx.rect(this.selectionStartPoint.x,this.selectionStartPoint.y,width,height);
@@ -231,7 +247,8 @@ export class SelectionService extends Tool {
     }
 
       this.selectionStartPoint={x:this.currentPos.x-this.offsetX,y:this.currentPos.y-this.offsetY};
-      this.selectionEndPoint= {x: this.selectionStartPoint.x+this.rectangleService.width,y:this.selectionStartPoint.y+this.rectangleService.height};
+      console.log("selection start point on move",this,this.selectionStartPoint);
+      this.selectionEndPoint= {x: this.selectionStartPoint.x+Math.abs(this.rectangleService.width),y:this.selectionStartPoint.y+Math.abs(this.rectangleService.height)};
       this.rectangleService.drawRectangle(this.drawingService.previewCtx,this.selectionStartPoint,this.selectionEndPoint,false);
       this.drawingService.previewCtx.drawImage(this.selectionData, this.selectionStartPoint.x, this.selectionStartPoint.y);
       this.updateResizingHandles();
