@@ -30,6 +30,7 @@ export class SelectionService extends Tool {
     selectionHeight:number;
     selectionData: HTMLCanvasElement;
     currenthandle: number;
+    firstSelectionMove: boolean
 
     constructor(drawingService: DrawingService) {
         super(drawingService);
@@ -42,6 +43,7 @@ export class SelectionService extends Tool {
         this.ellipseService.setStyle(0);
         this.selectionActivated=false;
         this.toolAttributes = [];
+        this.firstSelectionMove=true;
 
     }
 
@@ -71,6 +73,14 @@ export class SelectionService extends Tool {
             this.offsetY=this.mouseDownCoord.y-this.selectionStartPoint.y;
             return;
           }
+        else{
+          this.drawingService.clearCanvas(this.drawingService.previewCtx);
+          this.drawingService.baseCtx.drawImage(this.selectionData, this.selectionStartPoint.x, this.selectionStartPoint.y);
+          this.resetSelection();
+          this.selectionActivated=false;
+          
+
+        }
         }
           this.selectionStartPoint=this.getPositionFromMouse(event);
           this.rectangleService.onMouseDown(event);
@@ -84,9 +94,10 @@ export class SelectionService extends Tool {
       let width =this.mouseUpCoord.x-this.selectionStartPoint.x;
       let height = this.mouseUpCoord.y-this.selectionStartPoint.y;
       const tempCtx = temp.getContext('2d') as CanvasRenderingContext2D;
-
+      tempCtx.canvas.height=height;
+      tempCtx.canvas.width=width;
       tempCtx.drawImage(this.drawingService.baseCtx.canvas,this.selectionStartPoint.x,this.selectionStartPoint.y,width,height,0,0,width,height);
-
+      console.log("ctx height", tempCtx.canvas.height);
      this.selectionData=temp;
   }
     onMouseOut(event: MouseEvent): void {
@@ -94,8 +105,6 @@ export class SelectionService extends Tool {
 
         case 1:
           this.rectangleService.onMouseOut(event);
-
-
 
       }     
   }
@@ -126,19 +135,31 @@ export class SelectionService extends Tool {
 
     
     this.mouseUpCoord=this.getPositionFromMouse(event);
+    console.log("mouse up coord", this.mouseUpCoord);
     if(!this.selectionActivated){
-      this.selectionEndPoint=this.rectangleService.currentPos;
+      console.log("mouseup width", this.rectangleService.width);
+      console.log("mouseup height", this.rectangleService.height);
+
+      this.selectionEndPoint=this.currentPos;
+      /*{
+        x:this.selectionStartPoint.x+this.rectangleService.width,
+        y:this.selectionStartPoint.y=this.rectangleService.height
+
+      };*/
 
     }
+    console.log("end point on mouse up", this.selectionEndPoint);
     
     this.saveSelection();
-    let width =this.selectionEndPoint.x-this.selectionStartPoint.x;
+    /*
     let height = this.selectionEndPoint.y-this.selectionStartPoint.y;
+    let width =this.selectionEndPoint.x-this.selectionStartPoint.x;
     this.drawingService.baseCtx.beginPath();
     this.drawingService.baseCtx.fillStyle="white";
     this.drawingService.baseCtx.rect(this.selectionStartPoint.x,this.selectionStartPoint.y,width,height);
     this.drawingService.baseCtx.fill();
     this.drawingService.baseCtx.closePath();
+    */
     this.drawingService.previewCtx.drawImage(this.selectionData, this.selectionStartPoint.x, this.selectionStartPoint.y);
     //this.rectangleService.drawRectangle(this.drawingService.previewCtx,this.selectionStartPoint,this.selectionEndPoint,this.rectangleService.toSquare);
 
@@ -155,11 +176,7 @@ export class SelectionService extends Tool {
 
     switch(this.currenthandle){
       case 1:
-        console.log("start point before", this.selectionStartPoint);
-        console.log("curr point before", this.currentPos);
         this.selectionStartPoint=this.currentPos;
-        console.log("start point after", this.selectionStartPoint);
-
         break;
       case 2:
         this.selectionStartPoint.y=this.currentPos.y;
@@ -171,10 +188,7 @@ export class SelectionService extends Tool {
       case 4:
         console.log("start point before", this.selectionStartPoint);
         console.log("curr point before", this.currentPos);
-
         this.selectionStartPoint.x=this.currentPos.x;
-        console.log("start point after", this.selectionStartPoint);
-
         break;
       case 5:
         this.selectionEndPoint.x=this.currentPos.x;
@@ -189,8 +203,9 @@ export class SelectionService extends Tool {
       case 8:
         this.selectionEndPoint=this.currentPos;
         break;
-
     }
+  
+    this.saveSelection();
     this.drawingService.clearCanvas(this.drawingService.previewCtx);
     this.rectangleService.drawRectangle(this.drawingService.previewCtx,this.selectionStartPoint,this.selectionEndPoint,false);
     return;
@@ -201,6 +216,19 @@ export class SelectionService extends Tool {
 
       this.drawingService.clearCanvas(this.drawingService.previewCtx);
 
+    if(this.firstSelectionMove){
+      let height = this.selectionEndPoint.y-this.selectionStartPoint.y;
+
+      let width =this.selectionEndPoint.x-this.selectionStartPoint.x;
+      this.drawingService.baseCtx.beginPath();
+      this.drawingService.baseCtx.fillStyle="white";
+      this.drawingService.baseCtx.rect(this.selectionStartPoint.x,this.selectionStartPoint.y,width,height);
+      this.drawingService.baseCtx.fill();
+      this.drawingService.baseCtx.closePath();
+      this.firstSelectionMove=false;
+
+
+    }
 
       this.selectionStartPoint={x:this.currentPos.x-this.offsetX,y:this.currentPos.y-this.offsetY};
       this.selectionEndPoint= {x: this.selectionStartPoint.x+this.rectangleService.width,y:this.selectionStartPoint.y+this.rectangleService.height};
@@ -291,7 +319,26 @@ export class SelectionService extends Tool {
     
     if(event.key== "Escape"){
       this.drawingService.clearCanvas(this.drawingService.previewCtx);
+      this.selectionActivated=false;
+      
     }
+    else{
     this.rectangleService.onKeyDown(event);
+    }
+  }
+
+
+  resetSelection(): void{
+
+    this.resizingHandles = [];
+    this.rectangleService = new RectangleService(this.drawingService);
+    this.selectionStyle=1;
+    this.rectangleService.setStyle(0);
+    this.rectangleService.lineDash=true;
+    this.ellipseService.setStyle(0);
+    this.selectionActivated=false;
+    this.toolAttributes = [];
+    this.firstSelectionMove=true;
+  
   }
 }
