@@ -12,6 +12,7 @@ export class BrushCommand extends Command {
     private primaryColor: string;
     private secondaryColor: string;
     private opacity: number;
+    private lineWidht:number;
     isResize: boolean = false;
 
     constructor(pathData: Vec2[], protected tool: BrushService, protected drawingService: DrawingService) {
@@ -19,6 +20,7 @@ export class BrushCommand extends Command {
         this.primaryColor = this.tool.primaryColor;
         this.secondaryColor = this.tool.secondaryColor;
         this.opacity = this.tool.opacity;
+        this.lineWidht = this.tool.lineWidth;
         for (const point of pathData) {
             this.pathData.push(point);
         }
@@ -44,6 +46,7 @@ export class BrushCommand extends Command {
         this.tool.primaryColor = this.primaryColor;
         this.tool.secondaryColor = this.secondaryColor;
         this.tool.opacity = this.opacity;
+        this.tool.lineWidth = this.lineWidht;
         for (let i = 0; i < this.pathData.length - 1; i++) {
             this.drawLineCommand(this.pathData[i], this.pathData[i + 1]);
         }
