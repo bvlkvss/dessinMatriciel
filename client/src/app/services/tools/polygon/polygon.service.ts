@@ -163,16 +163,8 @@ export class PolygonService extends Tool {
                 ctx.lineTo (startPos.x + width * Math.cos(i * 2 * Math.PI / this.numberSides), startPos.y + height * Math.sin(i * 2 * Math.PI / this.numberSides));
             }  
               ctx.stroke();
-
-
-    //ctx.moveTo (Xcenter +  size * Math.cos(0), Ycenter +  size *  Math.sin(0));          
- 
-    //ctx.lineTo (Xcenter + size * Math.cos(i * 2 * Math.PI / numberOfSides), Ycenter + size * Math.sin(i * 2 * Math.PI / numberOfSides));
-
-
-
               break;             
-          case 1:
+              case 1:
               for (var i = 0; i <= this.numberSides;i += 1) {
                 if(this.numberSides==i){
                     ctx.closePath();
