@@ -8,6 +8,7 @@ import { BrushService } from '@app/services/tools/brush/brush.service';
 import { EllipseService } from '@app/services/tools/ellipse/ellipse.service';
 import { EraserService } from '@app/services/tools/eraser/eraser-service';
 import { LineService } from '@app/services/tools/line/line.service';
+import { PaintBucketService } from '@app/services/tools/paint-bucket/paint-bucket.service';
 import { PencilService } from '@app/services/tools/pencil/pencil-service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle.service';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
@@ -37,6 +38,7 @@ describe('DrawingComponent', () => {
     let eraserStub: EraserService;
     let ellipseStub: EllipseService;
     let lineStub: LineService;
+    let paintBucketStub: PaintBucketService;
     let drawServiceMock: MockDrawingService;
     let undoRedoServiceMock: MockUndoRedoService;
     let resizingServiceMock: MockResizingService;

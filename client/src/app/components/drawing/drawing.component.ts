@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { Tool } from '@app/classes/tool';
+import { ExportComponent } from '@app/components/export/export.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ResizingService } from '@app/services/resizing/resizing.service';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
@@ -41,7 +42,8 @@ export class DrawingComponent implements AfterViewInit, OnInit {
             .set('e', this.tools.getTools().get('eraser') as Tool)
             .set('1', this.tools.getTools().get('rectangle') as Tool)
             .set('2', this.tools.getTools().get('ellipse') as Tool)
-            .set('l', this.tools.getTools().get('line') as Tool);
+            .set('l', this.tools.getTools().get('line') as Tool)
+            .set('b', this.tools.getTools().get('paintBucket') as Tool);
         this.baseCtx = this.baseCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.previewCtx = this.previewCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.drawingService.baseCtx = this.baseCtx;
@@ -133,6 +135,12 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         this.tools.currentTool.onMouseOut(event);
     }
 
+    @HostListener('contextmenu', ['$event'])
+    onRightClick(event: MouseEvent): void {
+        event.preventDefault();
+        this.tools.currentTool.onRightClick(event);
+    }
+
     @HostListener('document:keyup', ['$event'])
     onKeyUp(event: KeyboardEvent): void {
         this.tools.currentTool.onKeyUp(event);
@@ -140,8 +148,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
 
     @HostListener('window:keydown', ['$event'])
     onkeyDownWindow(event: KeyboardEvent): void {
-        console.log(event.shiftKey, ';', event.key);
-        if (event.ctrlKey && event.key === 'o') {
+        if (event.ctrlKey && event.key === 'o' && !ExportComponent.isExportOpen) {
             event.preventDefault();
             event.stopPropagation();
             this.drawingService.newDrawing();
@@ -153,7 +160,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
 
     @HostListener('keydown', ['$event'])
     onKeyDown(event: KeyboardEvent): void {
-        if (event.ctrlKey && event.key === 'o') {
+        if ((event.ctrlKey && event.key === 'o') || ExportComponent.isExportOpen) {
             return;
         } else if (this.keyBindings.has(event.key)) {
             this.drawingService.restoreCanvasState();

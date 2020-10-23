@@ -4,6 +4,7 @@ import { BrushService } from '@app/services/tools/brush/brush.service';
 import { EllipseService } from '@app/services/tools/ellipse/ellipse.service';
 import { EraserService } from '@app/services/tools/eraser/eraser-service';
 import { LineService } from '@app/services/tools/line/line.service';
+import { PaintBucketService } from '@app/services/tools/paint-bucket/paint-bucket.service';
 import { PencilService } from '@app/services/tools/pencil/pencil-service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle.service';
 
@@ -21,6 +22,7 @@ export class ToolsManagerService {
         eraserService: EraserService,
         ellipseService: EllipseService,
         lineService: LineService,
+        paintBucketService: PaintBucketService,
     ) {
         this.tools = new Map<string, Tool>([
             ['pencil', pencilService],
@@ -29,6 +31,7 @@ export class ToolsManagerService {
             ['eraser', eraserService],
             ['ellipse', ellipseService],
             ['line', lineService],
+            ['paintBucket', paintBucketService],
         ]);
         this.currentTool = this.tools.get('pencil') as Tool;
     }
@@ -54,6 +57,11 @@ export class ToolsManagerService {
             this.tools.forEach((element) => {
                 element.setSecondaryColor(color);
             });
+    }
+
+    setBucketTolerance(tolerance: number): void {
+        const paintBucket = this.currentTool as PaintBucketService;
+        paintBucket.setTolerance(tolerance);
     }
 
     setRectangleStyle(id: number): void {

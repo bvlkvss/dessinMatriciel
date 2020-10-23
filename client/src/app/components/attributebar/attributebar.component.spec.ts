@@ -5,6 +5,7 @@ import { BrushService } from '@app/services/tools/brush/brush.service';
 import { EllipseService } from '@app/services/tools/ellipse/ellipse.service';
 import { EraserService } from '@app/services/tools/eraser/eraser-service';
 import { LineService } from '@app/services/tools/line/line.service';
+import { PaintBucketService } from '@app/services/tools/paint-bucket/paint-bucket.service';
 import { PencilService } from '@app/services/tools/pencil/pencil-service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle.service';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
@@ -30,6 +31,7 @@ describe('AttributebarComponent', () => {
     let eraserStub: EraserService;
     let ellipseStub: EllipseService;
     let lineStub: LineService;
+    let paintBucketStub: PaintBucketService;
     let drawServiceMock: MockDrawingService;
     let UndoRedoServiceMock: MockUndoRedoService;
 
@@ -151,6 +153,12 @@ describe('AttributebarComponent', () => {
         component.setShapeStyle(idStyle, false);
         expect(changeStyleSpy).toHaveBeenCalledWith('currentRectangleStyle', idStyle);
         expect(component.idStyleRectangle).toEqual(idStyle);
+    });
+
+    it('should call setBucketTolerance when calling setTolerance', () => {
+        let setBucketToleranceSpy = spyOn(toolManagerStub, 'setBucketTolerance');
+        component.setTolerance('40');
+        expect(setBucketToleranceSpy).toHaveBeenCalled();
     });
 
     it('should call querySelector when toggleList is called', () => {

@@ -12,6 +12,8 @@ import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.ser
 import { MockUndoRedoService } from '../attributebar/attributebar.component.spec';
 import { UserGuideComponent } from '../user-guide/user-guide.component';
 import { SidebarComponent } from './sidebar.component';
+import { MatDialog } from '@angular/material/dialog';
+import { PaintBucketService } from '@app/services/tools/paint-bucket/paint-bucket.service';
 
 describe('SidebarComponent', () => {
     let component: SidebarComponent;
@@ -25,22 +27,27 @@ describe('SidebarComponent', () => {
     let lineStub: LineService;
     let drawServiceMock: MockDrawingService;
     let UndoRedoServiceMock: MockUndoRedoService;
+    let paintBucketStub: PaintBucketService;
+    let matDialogSpy: jasmine.SpyObj<MatDialog>;
 
     beforeEach(async(() => {
         drawServiceMock = new MockDrawingService();
         UndoRedoServiceMock = new MockUndoRedoService(drawServiceMock);
-        pencilStub = new PencilService(drawServiceMock, UndoRedoServiceMock);
-        brushStub = new BrushService(drawServiceMock, UndoRedoServiceMock);
-        rectangleStub = new RectangleService(drawServiceMock, UndoRedoServiceMock);
-        lineStub = new LineService(drawServiceMock, UndoRedoServiceMock);
-        ellipseStub = new EllipseService(drawServiceMock, UndoRedoServiceMock);
-        eraserStub = new EraserService(drawServiceMock, UndoRedoServiceMock);
-        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub);
+        pencilStub = new PencilService(drawServiceMock);
+        brushStub = new BrushService(drawServiceMock);
+        rectangleStub = new RectangleService(drawServiceMock);
+        lineStub = new LineService(drawServiceMock);
+        ellipseStub = new EllipseService(drawServiceMock);
+        eraserStub = new EraserService(drawServiceMock);
+
+        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub, paintBucketStub);
+        matDialogSpy = jasmine.createSpyObj('MatDialog', ['open']);
         TestBed.configureTestingModule({
             declarations: [SidebarComponent],
             providers: [
                 { provide: ToolsManagerService, useValue: toolManagerStub },
                 { provide: DrawingService, useValue: drawServiceMock },
+                { provide: MatDialog, useValue: matDialogSpy},
                 { provide: ComponentFixtureAutoDetect, useValue: true },
             ],
         }).compileComponents();
@@ -134,5 +141,17 @@ describe('SidebarComponent', () => {
         toolManagerStub.currentTool.secondaryColor = '#bbaabbaa';
         component.revertColors();
         expect(toolManagerStub.currentTool.primaryColor).toEqual('#bbaabbaa');
+    });
+
+    it('should open dialog if none was opened beforeHand when calling openDialog', () => {
+        (matDialogSpy.openDialogs as any) = {length:0};
+        component.openExportDialog();
+        expect(matDialogSpy.open).toHaveBeenCalled();
+    });
+
+    it('should not open dialog if one was opened beforeHand when calling openDialog', () => {
+        (matDialogSpy.openDialogs as any) = {length:1};
+        component.openExportDialog();
+        expect(matDialogSpy.open).not.toHaveBeenCalled();
     });
 });

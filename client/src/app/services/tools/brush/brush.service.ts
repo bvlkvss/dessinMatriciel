@@ -22,13 +22,6 @@ const MAX_EIGHT_BIT_NB = 255;
 const BASE_SIZE = 250;
 const MINIMUM_BRUSH_SIZE = 10;
 
-// TODO : Déplacer ça dans un fichier séparé accessible par tous
-
-// Ceci est une implémentation de base de l'outil Crayon pour aider à débuter le projet
-// L'implémentation ici ne couvre pas tous les critères d'accepetation du projet
-// Vous êtes encouragés de modifier et compléter le code.
-// N'oubliez pas de regarder les tests dans le fichier spec.ts aussi!
-
 @Injectable({
     providedIn: 'root',
 })

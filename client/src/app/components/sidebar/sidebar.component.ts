@@ -1,4 +1,6 @@
-import { Component, Input, OnChanges } from '@angular/core';
+import { Component, HostListener, Input, OnChanges } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { ExportComponent } from '@app/components/export/export.component';
 import { UserGuideComponent } from '@app/components/user-guide/user-guide.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
@@ -12,7 +14,7 @@ const COLOR_STRING_LENGTH = 7;
     styleUrls: ['./sidebar.component.scss'],
 })
 export class SidebarComponent implements OnChanges {
-    constructor(private tools: ToolsManagerService, protected drawingService: DrawingService, protected invoker: UndoRedoService) { }
+    constructor(private tools: ToolsManagerService, protected drawingService: DrawingService,protected invoker: UndoRedoService,private dialog: MatDialog) {}
     @Input() primaryColor: string = this.tools.currentTool.primaryColor.slice(0, COLOR_STRING_LENGTH);
     @Input() secondaryColor: string = this.tools.currentTool.secondaryColor.slice(0, COLOR_STRING_LENGTH);
     isRevertClicked: boolean = false;
@@ -33,6 +35,13 @@ export class SidebarComponent implements OnChanges {
 
     redo(): void {
         this.invoker.redoPrev();
+    }
+
+    openExportDialog(): void {
+        if (this.dialog.openDialogs.length === 0) {
+            this.dialog.open(ExportComponent);
+            ExportComponent.isExportOpen = true;
+        }
     }
 
     displayPalette(toolName: string): void {
@@ -112,6 +121,13 @@ export class SidebarComponent implements OnChanges {
     warningMessage(): void {
         if (window.confirm('Warning, your current sketch will be deleted.\n Do you want to proceed to the main menu?')) {
             location.replace('main-page.component.html');
+        }
+    }
+
+    @HostListener('window:keydown', ['$event'])
+    onkeyDownWindow(event: KeyboardEvent): void {
+        if (event.ctrlKey && event.key === 'e') {
+            this.openExportDialog();
         }
     }
 }

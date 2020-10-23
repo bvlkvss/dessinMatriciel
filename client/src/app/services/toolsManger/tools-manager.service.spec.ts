@@ -3,6 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { Tool } from '@app/classes/tool';
 import { EllipseService } from '../tools/ellipse/ellipse.service';
 import { LineService } from '../tools/line/line.service';
+import { PaintBucketService } from '../tools/paint-bucket/paint-bucket.service';
 import { RectangleService } from '../tools/rectangle/rectangle.service';
 import { ToolsManagerService } from './tools-manager.service';
 
@@ -54,6 +55,14 @@ describe('ToolsManagerService', () => {
 
         service.setJunctionWidth(1);
         expect(setJunctionWidthSpy).toHaveBeenCalled();
+    });
+
+    it('should call paintBucket setTolerance when setBucketTolerance is called', () => {
+        service.currentTool = service.getTools().get('paintBucket') as Tool;
+        let setToleranceSpy = spyOn(service.currentTool as PaintBucketService, 'setTolerance');
+
+        service.setBucketTolerance(10);
+        expect(setToleranceSpy).toHaveBeenCalled();
     });
 
     it('should call line setJunctionState when setJunctionState is called', () => {
