@@ -133,23 +133,21 @@ export class SelectionService extends Tool {
     
     if(this.mouseDown){
       
-    this.updateResizingHandles();
-    this.drawResizingHandles();
-
-    
-    this.mouseUpCoord=this.getPositionFromMouse(event);
-    console.log("mouse up coord", this.mouseUpCoord);
-    if(!this.selectionActivated){
-      console.log("mouseup width", this.rectangleService.width);
-      console.log("mouseup height", this.rectangleService.height);
-
-      this.selectionEndPoint=this.mouseUpCoord;
-      /*{
+      
+      
+      this.mouseUpCoord=this.getPositionFromMouse(event);
+      console.log("mouse up coord", this.mouseUpCoord);
+      if(!this.selectionActivated){
+        console.log("mouseup width", this.rectangleService.width);
+        console.log("mouseup height", this.rectangleService.height);
+        
+        this.selectionEndPoint=this.mouseUpCoord;
+        /*{
         x:this.selectionStartPoint.x+this.rectangleService.width,
         y:this.selectionStartPoint.y=this.rectangleService.height
 
       };*/
-
+      
     }
     console.log("end point on mouse up", this.selectionEndPoint);
     
@@ -180,10 +178,12 @@ export class SelectionService extends Tool {
     //this.rectangleService.drawRectangle(this.drawingService.previewCtx,this.selectionStartPoint,this.selectionEndPoint,this.rectangleService.toSquare);
     console.log("start point after up", this.selectionStartPoint);
     console.log("end point after up ", this.selectionEndPoint);
-    }
-    this.selectionActivated=true;
-    this.mouseDown=false;
+    this.updateResizingHandles();
+    this.drawResizingHandles();
   }
+  this.selectionActivated=true;
+  this.mouseDown=false;
+}
 
   onMouseMove(event: MouseEvent): void {
     
@@ -280,8 +280,8 @@ export class SelectionService extends Tool {
 
   updateResizingHandles(){
     this.resizingHandles=[];
-    let width = this.rectangleService.width;
-    let height = this.rectangleService.height;
+    let width = Math.abs(this.rectangleService.width);
+    let height = Math.abs(this.rectangleService.height);
     
     /*
       1 2 3
