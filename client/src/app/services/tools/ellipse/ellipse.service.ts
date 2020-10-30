@@ -120,8 +120,6 @@ export class EllipseService extends Tool {
     }
 
     drawEllipse(ctx: CanvasRenderingContext2D, startPos: Vec2, currentPos: Vec2, toSquare: boolean, preview: boolean = true): void {
-        console.log("im in ellipse");
-
         let width = currentPos.x - startPos.x;
         let height = currentPos.y - startPos.y;
         if (width !== 0 && height !== 0) {
