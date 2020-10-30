@@ -146,7 +146,12 @@ export class SelectionService extends Tool {
       
       
       if(!this.selectionActivated){
-        this.selectionEndPoint=this.mouseUpCoord;    
+        if(!this.rectangleService.isOut){
+        this.selectionEndPoint=this.mouseUpCoord;
+        }
+        else{
+          this.selectionEndPoint=this.rectangleService.mouseOutCoord;
+        }
       }   
       this.width=Math.abs(this.rectangleService.width);
       this.height=Math.abs(this.rectangleService.height);
@@ -241,6 +246,8 @@ export class SelectionService extends Tool {
     }
     else{
       this.rectangleService.onMouseMove(event);
+      //if(this.selectionStyle==1)
+       //this.ellipseService.drawEllipse(this.drawingService.previewCtx,this.selectionStartPoint,this.currentPos,this.rectangleService.toSquare,false);
       
     }
   }
