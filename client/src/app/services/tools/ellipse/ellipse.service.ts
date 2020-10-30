@@ -119,10 +119,11 @@ export class EllipseService extends Tool {
         this.primaryColor = color;
     }
 
-    private drawEllipse(ctx: CanvasRenderingContext2D, startPos: Vec2, currentPos: Vec2, toSquare: boolean, preview: boolean = true): void {
+    drawEllipse(ctx: CanvasRenderingContext2D, startPos: Vec2, currentPos: Vec2, toSquare: boolean, preview: boolean = true): void {
+        console.log("im in ellipse");
+
         let width = currentPos.x - startPos.x;
         let height = currentPos.y - startPos.y;
-
         if (width !== 0 && height !== 0) {
             if (toSquare) {
                 if (Math.abs(width) > Math.abs(height)) {
@@ -132,8 +133,8 @@ export class EllipseService extends Tool {
                 }
             }
 
-            const centerx = this.mouseDownCoord.x + width / 2;
-            const centery = this.mouseDownCoord.y + height / 2;
+            const centerx = startPos.x + width / 2;
+            const centery = startPos.y + height / 2;
 
             if (this.ellipseStyle === EllipseStyle.Filled_contour) {
                 this.lineWidth = 0;
