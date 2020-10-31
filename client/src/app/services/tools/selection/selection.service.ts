@@ -37,7 +37,7 @@ export class SelectionService extends Tool {
     constructor(drawingService: DrawingService) {
         super(drawingService);
         this.resizingHandles = [];
-        this.selectionStyle=0;
+        this.selectionStyle=1;
         this.rectangleService = new RectangleService(drawingService);
         this.rectangleService.setStyle(0);
         this.rectangleService.lineDash=true;
@@ -328,7 +328,7 @@ export class SelectionService extends Tool {
       if(this.selectionStyle===1 && !event.shiftKey && this.mouseDown){
         this.ellipseService.drawEllipse(this.drawingService.previewCtx, this.mouseDownCoord, this.currentPos, this.rectangleService.toSquare);          
       }
-      
+
       this.mouseDownInsideSelection=false;
 
   }
@@ -404,16 +404,25 @@ export class SelectionService extends Tool {
     this.selectionEndPoint= {x: this.selectionStartPoint.x+Math.abs(this.rectangleService.width),y:this.selectionStartPoint.y+Math.abs(this.rectangleService.height)};
       //this.rectangleService.drawRectangle(this.drawingService.previewCtx,this.selectionStartPoint,this.selectionEndPoint,false);
       //break;
-    if (this.selectionStyle===1)
+      this.drawingService.previewCtx.save();
+        if (this.selectionStyle===1)  
+          this.ellipseService.drawEllipse(this.drawingService.previewCtx,this.selectionStartPoint,this.selectionEndPoint,false,false);
+        
+      
+      this.drawingService.previewCtx.clip();
+      console.log("moving selection");
+      this.drawingService.previewCtx.drawImage(this.selectionData, this.selectionStartPoint.x, this.selectionStartPoint.y);
+      this.drawingService.previewCtx.restore();
+      
+    this.rectangleService.drawRectangle(this.drawingService.previewCtx,this.selectionStartPoint,this.selectionEndPoint,false);
+    if (this.selectionStyle===1){
+      this.ellipseService.secondaryColor="black";
+      console.log("drwing ellipse")
+      this.ellipseService.setStyle(0);
       this.ellipseService.drawEllipse(this.drawingService.previewCtx,this.selectionStartPoint,this.selectionEndPoint,false,false);
 
-    this.drawingService.previewCtx.save();
-    
-    this.drawingService.previewCtx.clip();
-    console.log("moving selection");
-    this.drawingService.previewCtx.drawImage(this.selectionData, this.selectionStartPoint.x, this.selectionStartPoint.y);
-    this.drawingService.previewCtx.restore();
-    this.rectangleService.drawRectangle(this.drawingService.previewCtx,this.selectionStartPoint,this.selectionEndPoint,false);
+
+    }
     //this.updateResizingHandles();
     //this.drawResizingHandles();
     
