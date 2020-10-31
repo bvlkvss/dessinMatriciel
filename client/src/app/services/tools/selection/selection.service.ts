@@ -37,7 +37,7 @@ export class SelectionService extends Tool {
     constructor(drawingService: DrawingService) {
         super(drawingService);
         this.resizingHandles = [];
-        this.selectionStyle=1;
+        this.selectionStyle=0;
         this.rectangleService = new RectangleService(drawingService);
         this.rectangleService.setStyle(0);
         this.rectangleService.lineDash=true;
@@ -189,6 +189,7 @@ export class SelectionService extends Tool {
     }
     this.rectangleService.mouseDown = false;
     this.rectangleService.toSquare = false;
+    this.mouseDown=false;
   
     this.mouseDownInsideSelection=false;
   }
@@ -244,10 +245,11 @@ export class SelectionService extends Tool {
     this.moveSelection();
 
     }
-    else{
+    else if(this.mouseDown){
+      this.drawingService.clearCanvas(this.drawingService.previewCtx);
       this.rectangleService.onMouseMove(event);
-      //if(this.selectionStyle==1)
-       //this.ellipseService.drawEllipse(this.drawingService.previewCtx,this.selectionStartPoint,this.currentPos,this.rectangleService.toSquare,false);
+      if(this.selectionStyle==1)
+       this.ellipseService.drawEllipse(this.drawingService.previewCtx,this.selectionStartPoint,this.currentPos,this.rectangleService.toSquare,false);
       
     }
   }
@@ -321,19 +323,28 @@ export class SelectionService extends Tool {
   }
 
   onKeyUp(event: KeyboardEvent): void {
+    
       this.rectangleService.onKeyUp(event);
+      if(this.selectionStyle===1 && !event.shiftKey && this.mouseDown){
+        this.ellipseService.drawEllipse(this.drawingService.previewCtx, this.mouseDownCoord, this.currentPos, this.rectangleService.toSquare);          
+      }
 
   }
 
   onKeyDown(event: KeyboardEvent): void {
-    
-    if(event.key== "Escape"){
+    if (event.ctrlKey && event.key === 'a') {
+    this.selectAllCanvas();
+    }
+    else if(event.key== "Escape"){
       this.drawingService.clearCanvas(this.drawingService.previewCtx);
       this.selectionActivated=false;
       
     }
     else{
     this.rectangleService.onKeyDown(event);
+    if(this.selectionStyle===1 && event.shiftKey && this.mouseDown){
+      this.ellipseService.drawEllipse(this.drawingService.previewCtx, this.mouseDownCoord, this.currentPos, this.rectangleService.toSquare);    
+    }
     }
   }
 
@@ -382,6 +393,7 @@ export class SelectionService extends Tool {
 
 
 eraseSelectionFromBase(): void{
+  console.log("whiteout");
   this.drawingService.baseCtx.beginPath();
   this.drawingService.baseCtx.fillStyle="white";
   switch(this.selectionStyle){
@@ -401,5 +413,26 @@ this.drawingService.baseCtx.fill();
 this.drawingService.baseCtx.closePath();
 this.firstSelectionMove=false;
 
+}
+
+
+selectAllCanvas(): void{
+
+  console.log("ctrl a");
+  this.selectionStartPoint={x:0,y:0};
+  console.log("canvas width", this.drawingService.canvas.width);
+  console.log("canvas height", this.drawingService.canvas.height);
+  this.rectangleService.width=this.drawingService.canvas.width;
+  this.rectangleService.height=this.drawingService.canvas.height;
+  this.width=this.drawingService.canvas.width;
+  this.height=this.drawingService.canvas.height;
+
+  this.selectionEndPoint={x:this.drawingService.canvas.width,y:this.drawingService.canvas.height};
+
+  this.saveSelection();
+  
+  this.drawingService.previewCtx.drawImage(this.selectionData, this.selectionStartPoint.x, this.selectionStartPoint.y);
+  this.rectangleService.drawRectangle(this.drawingService.previewCtx,this.selectionStartPoint,this.selectionEndPoint,false);
+  this.selectionActivated=true;
 }
 }
