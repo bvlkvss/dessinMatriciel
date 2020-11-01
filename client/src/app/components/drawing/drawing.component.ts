@@ -142,7 +142,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     onkeyDownWindow(event: KeyboardEvent): void {
         if (event.ctrlKey && event.key === 'o') {
             event.preventDefault();
-            //event.stopPropagation();
+            event.stopPropagation();
             this.drawingService.newDrawing();
             this.drawingService.resizeCanvas();
         }

@@ -26,8 +26,6 @@ export class SelectionService extends Tool {
     selectionActivated:boolean;
     selectionStartPoint: Vec2;
     selectionEndPoint: Vec2;
-    selectionWidth:number;
-    selectionHeight:number;
     selectionData: HTMLCanvasElement;
     currenthandle: number;
     firstSelectionMove: boolean;
@@ -464,10 +462,10 @@ selectAllCanvas(): void{
   console.log("canvas height", this.drawingService.canvas.height);
   this.rectangleService.width=this.drawingService.canvas.width;
   this.rectangleService.height=this.drawingService.canvas.height;
-  this.width=this.drawingService.canvas.width;
-  this.height=this.drawingService.canvas.height;
+  this.width=this.drawingService.canvas.width-2;
+  this.height=this.drawingService.canvas.height-2;
 
-  this.selectionEndPoint={x:this.drawingService.canvas.width,y:this.drawingService.canvas.height};
+  this.selectionEndPoint={x:this.drawingService.canvas.width-2,y:this.drawingService.canvas.height-2};
 
   this.saveSelection();
   
