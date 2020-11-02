@@ -7,6 +7,7 @@ import { EraserService } from '@app/services/tools/eraser/eraser-service';
 import { LineService } from '@app/services/tools/line/line.service';
 import { PencilService } from '@app/services/tools/pencil/pencil-service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle.service';
+import { SelectionService } from '@app/services/tools/selection/selection.service';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
 import { AttributebarComponent } from './attributebar.component';
 
@@ -21,6 +22,7 @@ describe('AttributebarComponent', () => {
     let ellipseStub: EllipseService;
     let lineStub: LineService;
     let drawServiceMock: MockDrawingService;
+    let selectionStub: SelectionService;
 
     beforeEach(async(() => {
         drawServiceMock = new MockDrawingService();
@@ -30,7 +32,8 @@ describe('AttributebarComponent', () => {
         lineStub = new LineService(drawServiceMock);
         ellipseStub = new EllipseService(drawServiceMock);
         eraserStub = new EraserService(drawServiceMock);
-        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub);
+        selectionStub = new SelectionService(drawServiceMock);
+        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub, selectionStub);
         TestBed.configureTestingModule({
             declarations: [AttributebarComponent],
             providers: [{ provide: ToolsManagerService, useValue: toolManagerStub }],
