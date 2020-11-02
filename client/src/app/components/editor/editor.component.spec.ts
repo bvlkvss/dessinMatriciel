@@ -1,6 +1,13 @@
 /* tslint:disable */
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatDialog} from '@angular/material/dialog';
 import { delay } from 'rxjs/operators';
+import { AttributebarComponent } from '../attributebar/attributebar.component';
+import { ColorPaletteComponent } from '../color-picker/color-palette/color-palette.component';
+import { ColorPickerComponent } from '../color-picker/color-picker.component';
+import { ColorSliderComponent } from '../color-picker/color-slider/color-slider.component';
+import { DrawingComponent } from '../drawing/drawing.component';
+import { SidebarComponent } from '../sidebar/sidebar.component';
 import { EditorComponent } from './editor.component';
 
 describe('EditorComponent', () => {
@@ -8,7 +15,9 @@ describe('EditorComponent', () => {
     let fixture: ComponentFixture<EditorComponent>;
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [EditorComponent],
+          
+            declarations: [EditorComponent, AttributebarComponent, ColorPickerComponent, DrawingComponent, ColorSliderComponent, ColorPaletteComponent, SidebarComponent],
+            providers:[{provide: MatDialog, useValue: {}}],
         }).compileComponents();
         delay(1000);
         fixture = TestBed.createComponent(EditorComponent);
