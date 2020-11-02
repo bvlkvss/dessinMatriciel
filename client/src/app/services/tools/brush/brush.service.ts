@@ -3,6 +3,8 @@ import { Color } from '@app/classes/color';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { BrushCommand } from '../../../classes/brushCommand';
+import { UndoRedoService } from '../../undo-redo/undo-redo.service';
 
 // TODO : Déplacer ça dans un fichier séparé accessible par tous
 export enum MouseButton {
@@ -20,21 +22,15 @@ const MAX_EIGHT_BIT_NB = 255;
 const BASE_SIZE = 250;
 const MINIMUM_BRUSH_SIZE = 10;
 
-// TODO : Déplacer ça dans un fichier séparé accessible par tous
-
-// Ceci est une implémentation de base de l'outil Crayon pour aider à débuter le projet
-// L'implémentation ici ne couvre pas tous les critères d'accepetation du projet
-// Vous êtes encouragés de modifier et compléter le code.
-// N'oubliez pas de regarder les tests dans le fichier spec.ts aussi!
-
 @Injectable({
     providedIn: 'root',
 })
 export class BrushService extends Tool {
-    private image: HTMLImageElement;
+    image: HTMLImageElement;
     imageId: number;
-    private color: Color = { red: 0, green: 0, blue: 0, opacity: MAX_EIGHT_BIT_NB };
-    constructor(drawingService: DrawingService) {
+    pathData: Vec2[] = [];
+    color: Color = { red: 0, green: 0, blue: 0, opacity: MAX_EIGHT_BIT_NB };
+    constructor(drawingService: DrawingService, protected invoker: UndoRedoService) {
         super(drawingService);
         this.primaryColor = '0000000';
         this.image = new Image();
@@ -57,13 +53,21 @@ export class BrushService extends Tool {
         this.isOut = false;
         this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseDown) {
+            this.invoker.setIsAllowed(false);
             this.currentPos = this.getPositionFromMouse(event);
             this.mouseDownCoord = this.getPositionFromMouse(event);
+            this.pathData.push(this.mouseDownCoord);
+            this.invoker.ClearRedo();
         }
     }
     onMouseUp(event: MouseEvent): void {
         if (this.mouseDown && !this.isOut) {
             this.currentPos = this.getPositionFromMouse(event);
+            this.pathData.push(this.currentPos);
+            const cmd = new BrushCommand(this.pathData, this, this.drawingService) as BrushCommand;
+            this.invoker.addToUndo(cmd);
+            this.invoker.setIsAllowed(true);
+            this.pathData = [];
             this.drawLine(this.drawingService.baseCtx);
         }
         this.mouseDown = false;
@@ -77,6 +81,7 @@ export class BrushService extends Tool {
     onMouseMove(event: MouseEvent): void {
         if (this.mouseDown && !this.isOut) {
             this.currentPos = this.getPositionFromMouse(event);
+            this.pathData.push(this.currentPos);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.drawLine(this.drawingService.baseCtx);
         }
@@ -138,10 +143,10 @@ export class BrushService extends Tool {
 
         return tempCanvas;
     }
-    private distanceBetween2Points(point1: Vec2, point2: Vec2): number {
+    distanceBetween2Points(point1: Vec2, point2: Vec2): number {
         return Math.sqrt(Math.pow(point2.x - point1.x, 2) + Math.pow(point2.y - point1.y, 2));
     }
-    private angleBetween2Points(point1: Vec2, point2: Vec2): number {
+    angleBetween2Points(point1: Vec2, point2: Vec2): number {
         return Math.atan2(point2.x - point1.x, point2.y - point1.y);
     }
 }

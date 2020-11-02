@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { EllipseCommand } from '../../../classes/ellipseCommand';
+import { UndoRedoService } from '../../undo-redo/undo-redo.service';
 
 const LINE_DASH_SEGMENT_START = 5;
 const LINE_DASH_SEGMENT_END = 15;
@@ -26,7 +28,7 @@ export class EllipseService extends Tool {
     isOut: boolean = false;
     currentPos: Vec2;
     ellipseStyle: EllipseStyle;
-    constructor(drawingService: DrawingService) {
+    constructor(drawingService: DrawingService, protected invoker: UndoRedoService) {
         super(drawingService);
         this.lineWidth = 1;
         this.ellipseStyle = 2;
@@ -37,6 +39,8 @@ export class EllipseService extends Tool {
         this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseDown) {
             this.mouseDownCoord = this.getPositionFromMouse(event);
+            this.invoker.setIsAllowed(false);
+            this.invoker.ClearRedo();
         }
     }
 
@@ -68,8 +72,10 @@ export class EllipseService extends Tool {
         if (this.mouseDown) {
             let mousePosition = this.getPositionFromMouse(event);
             if (this.isOut) mousePosition = this.mouseOutCoord;
-
             this.drawEllipse(this.drawingService.baseCtx, this.mouseDownCoord, mousePosition, this.toSquare, false);
+            const cmd = new EllipseCommand(this.mouseDownCoord, mousePosition, this.ellipseStyle, this, this.drawingService) as EllipseCommand;
+            this.invoker.addToUndo(cmd);
+            this.invoker.setIsAllowed(true);
         }
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
 

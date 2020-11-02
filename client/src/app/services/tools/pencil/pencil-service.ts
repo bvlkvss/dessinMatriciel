@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { PencilCommand } from '../../../classes/pencilCommand';
+import { UndoRedoService } from '../../undo-redo/undo-redo.service';
 
 // TODO : Déplacer ça dans un fichier séparé accessible par tous
 export enum MouseButton {
@@ -19,7 +21,7 @@ const DEFAULT_PENCIL_WIDTH = 1;
 export class PencilService extends Tool {
     private pathData: Vec2[];
 
-    constructor(drawingService: DrawingService) {
+    constructor(drawingService: DrawingService, protected invoker: UndoRedoService) {
         super(drawingService);
 
         this.toolAttributes = ['lineWidth'];
@@ -30,6 +32,8 @@ export class PencilService extends Tool {
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseDown) {
+            this.invoker.ClearRedo();
+            this.invoker.setIsAllowed(false);
             this.clearPath();
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.pathData.push(this.mouseDownCoord);
@@ -50,6 +54,9 @@ export class PencilService extends Tool {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
 
             this.drawLine(this.drawingService.baseCtx, this.pathData);
+            const cmd = new PencilCommand(this.pathData, this, this.drawingService) as PencilCommand;
+            this.invoker.addToUndo(cmd);
+            this.invoker.setIsAllowed(true);
         }
         this.mouseDown = false;
         this.clearPath();
@@ -74,7 +81,7 @@ export class PencilService extends Tool {
         this.lineWidth = width;
     }
 
-    private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
+    drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.setLineDash([0, 0]);
         ctx.lineWidth = this.lineWidth;
         ctx.lineCap = 'round';

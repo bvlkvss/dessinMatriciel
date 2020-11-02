@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
+import { EraserCommand } from '@app/classes/eraserCommand';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
 const MINIMUM_ERASER_SIZE = 5;
 // TODO : Déplacer ça dans un fichier séparé accessible par tous
@@ -18,7 +20,7 @@ export enum MouseButton {
 export class EraserService extends Tool {
     private pathData: Vec2[];
 
-    constructor(drawingService: DrawingService) {
+    constructor(drawingService: DrawingService, protected invoker: UndoRedoService) {
         super(drawingService);
         this.toolAttributes = ['eraserWidth'];
         this.lineWidth = MINIMUM_ERASER_SIZE;
@@ -29,6 +31,8 @@ export class EraserService extends Tool {
         this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseDown) {
             this.clearPath();
+            this.invoker.ClearRedo();
+            this.invoker.setIsAllowed(false);
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.pathData.push(this.mouseDownCoord);
         }
@@ -45,7 +49,11 @@ export class EraserService extends Tool {
 
     onMouseUp(event: MouseEvent): void {
         if (this.mouseDown) {
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.clearLine(this.drawingService.baseCtx, this.pathData);
+            const cmd = new EraserCommand(this.pathData, this, this.drawingService) as EraserCommand;
+            this.invoker.addToUndo(cmd);
+            this.invoker.setIsAllowed(true);
         }
         this.mouseDown = false;
         this.clearPath();
@@ -69,12 +77,12 @@ export class EraserService extends Tool {
         }
     }
 
-    private clearLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
+    clearLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.lineWidth = this.lineWidth;
         ctx.lineCap = 'round';
         ctx.canvas.style.cursor = 'url("../../../assets/whiteSquare.png"), auto';
-        ctx.beginPath();
         ctx.strokeStyle = 'rgba(255,255,255)';
+        ctx.beginPath();
         for (const point of path) {
             ctx.lineTo(point.x, point.y);
         }

@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { RectangleCommand } from '../../../classes/rectangleCommand';
+import { UndoRedoService } from '../../undo-redo/undo-redo.service';
 export enum MouseButton {
     Left = 0,
     Middle = 1,
@@ -27,7 +29,7 @@ export class RectangleService extends Tool {
     lineDash: boolean;
     width: number;
     height:number;
-    constructor(drawingService: DrawingService) {
+    constructor(drawingService: DrawingService, protected invoker: UndoRedoService) {
         super(drawingService);
         this.toolAttributes = ['strokeWidth', 'rectangleStyle'];
         this.rectangleStyle = 2;
@@ -44,6 +46,9 @@ export class RectangleService extends Tool {
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseDown) {
+            this.invoker.ClearRedo();
+            this.invoker.setIsAllowed(false);
+            console.log(event.offsetX, ';', event.offsetY);
             this.mouseDownCoord = this.getPositionFromMouse(event);
         }
     }
@@ -86,8 +91,11 @@ export class RectangleService extends Tool {
         if (this.mouseDown) {
             let mousePosition = this.getPositionFromMouse(event);
             if (this.isOut) mousePosition = this.mouseOutCoord;
-
             this.drawRectangle(this.drawingService.baseCtx, this.mouseDownCoord, mousePosition, this.toSquare);
+            const cmd = new RectangleCommand(this.mouseDownCoord, mousePosition, this.rectangleStyle, this, this.drawingService) as RectangleCommand;
+            console.log(cmd);
+            this.invoker.addToUndo(cmd);
+            this.invoker.setIsAllowed(true);
         }
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
 

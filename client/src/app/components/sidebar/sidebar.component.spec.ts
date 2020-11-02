@@ -1,8 +1,7 @@
 /* tslint:disable */
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { ComponentFixtureAutoDetect } from '@angular/core/testing';
-import { SidebarComponent } from './sidebar.component';
+import { async, ComponentFixture, ComponentFixtureAutoDetect, TestBed } from '@angular/core/testing';
 import { MockDrawingService } from '@app/components/drawing/drawing.component.spec';
+import { DrawingService } from '@app/services/drawing/drawing.service';
 import { BrushService } from '@app/services/tools/brush/brush.service';
 import { EllipseService } from '@app/services/tools/ellipse/ellipse.service';
 import { EraserService } from '@app/services/tools/eraser/eraser-service';
@@ -10,9 +9,12 @@ import { LineService } from '@app/services/tools/line/line.service';
 import { PencilService } from '@app/services/tools/pencil/pencil-service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle.service';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
-import { DrawingService } from '@app/services/drawing/drawing.service';
+import { MockUndoRedoService } from '../attributebar/attributebar.component.spec';
 import { UserGuideComponent } from '../user-guide/user-guide.component';
 import { SelectionService } from '@app/services/tools/selection/selection.service';
+import { SidebarComponent } from './sidebar.component';
+import { MatDialog } from '@angular/material/dialog';
+import { PaintBucketService } from '@app/services/tools/paint-bucket/paint-bucket.service';
 
 describe('SidebarComponent', () => {
     let component: SidebarComponent;
@@ -26,9 +28,13 @@ describe('SidebarComponent', () => {
     let lineStub: LineService;
     let selectionStub: SelectionService;
     let drawServiceMock: MockDrawingService;
+    let UndoRedoServiceMock: MockUndoRedoService;
+    let paintBucketStub: PaintBucketService;
+    let matDialogSpy: jasmine.SpyObj<MatDialog>;
 
     beforeEach(async(() => {
         drawServiceMock = new MockDrawingService();
+        UndoRedoServiceMock = new MockUndoRedoService(drawServiceMock);
         pencilStub = new PencilService(drawServiceMock);
         brushStub = new BrushService(drawServiceMock);
         rectangleStub = new RectangleService(drawServiceMock);
@@ -36,12 +42,14 @@ describe('SidebarComponent', () => {
         ellipseStub = new EllipseService(drawServiceMock);
         eraserStub = new EraserService(drawServiceMock);
         selectionStub = new SelectionService(drawServiceMock);
-        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub,selectionStub);
+        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub, paintBucketStub,selectionStub);
+        matDialogSpy = jasmine.createSpyObj('MatDialog', ['open']);
         TestBed.configureTestingModule({
             declarations: [SidebarComponent],
             providers: [
                 { provide: ToolsManagerService, useValue: toolManagerStub },
                 { provide: DrawingService, useValue: drawServiceMock },
+                { provide: MatDialog, useValue: matDialogSpy},
                 { provide: ComponentFixtureAutoDetect, useValue: true },
             ],
         }).compileComponents();
@@ -135,5 +143,17 @@ describe('SidebarComponent', () => {
         toolManagerStub.currentTool.secondaryColor = '#bbaabbaa';
         component.revertColors();
         expect(toolManagerStub.currentTool.primaryColor).toEqual('#bbaabbaa');
+    });
+
+    it('should open dialog if none was opened beforeHand when calling openDialog', () => {
+        (matDialogSpy.openDialogs as any) = {length:0};
+        component.openExportDialog();
+        expect(matDialogSpy.open).toHaveBeenCalled();
+    });
+
+    it('should not open dialog if one was opened beforeHand when calling openDialog', () => {
+        (matDialogSpy.openDialogs as any) = {length:1};
+        component.openExportDialog();
+        expect(matDialogSpy.open).not.toHaveBeenCalled();
     });
 });
