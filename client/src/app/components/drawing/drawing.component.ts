@@ -43,12 +43,18 @@ export class DrawingComponent implements AfterViewInit, OnInit {
             .set('1', this.tools.getTools().get('rectangle') as Tool)
             .set('2', this.tools.getTools().get('ellipse') as Tool)
             .set('l', this.tools.getTools().get('line') as Tool)
+            .set('r', this.tools.getTools().get('selection') as Tool);
             .set('b', this.tools.getTools().get('paintBucket') as Tool);
         this.baseCtx = this.baseCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.previewCtx = this.previewCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.drawingService.baseCtx = this.baseCtx;
         this.drawingService.previewCtx = this.previewCtx;
         this.drawingService.canvas = this.baseCanvas.nativeElement;
+        this.baseCtx.beginPath();
+        this.baseCtx.fillStyle="white";
+        this.baseCtx.rect(0,0,this.baseCanvas.nativeElement.width,this.baseCanvas.nativeElement.height);
+        this.baseCtx.fill();
+        this.baseCtx.closePath();
         this.mouseFired = false;
         this.baseCtx.save();
         this.previewCtx.save();
@@ -155,6 +161,10 @@ export class DrawingComponent implements AfterViewInit, OnInit {
             this.drawingService.resizeCanvas();
         } else if (event.ctrlKey || (event.ctrlKey && event.shiftKey && (event.key === 'z' || event.key === 'Z'))) {
             this.invoker.onKeyDown(event);
+        }
+        else if (event.ctrlKey && event.key === 'a') {
+            this.tools.currentTool = this.keyBindings.get("r") as Tool;
+            this.tools.currentTool.onKeyDown(event);
         }
     }
 

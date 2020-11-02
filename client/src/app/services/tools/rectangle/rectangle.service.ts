@@ -26,6 +26,9 @@ export class RectangleService extends Tool {
     isOut: boolean = false;
     currentPos: Vec2;
     rectangleStyle: RectangleStyle;
+    lineDash: boolean;
+    width: number;
+    height:number;
     constructor(drawingService: DrawingService, protected invoker: UndoRedoService) {
         super(drawingService);
         this.toolAttributes = ['strokeWidth', 'rectangleStyle'];
@@ -33,6 +36,7 @@ export class RectangleService extends Tool {
         this.lineWidth = 1;
         this.primaryColor = '#000000';
         this.secondaryColor = '#000000';
+        this.lineDash=false;
     }
 
     setStyle(id: number): void {
@@ -135,8 +139,14 @@ export class RectangleService extends Tool {
                 height = width * Math.sign(width) * Math.sign(height);
             }
         }
+        this.width=width;
+        this.height=height;
         ctx.beginPath();
-        ctx.setLineDash([0, 0]);
+        if(!this.lineDash)
+            ctx.setLineDash([0, 0]);
+        
+        else
+            ctx.setLineDash([5, 15]);
 
         ctx.fillStyle = this.primaryColor;
         ctx.strokeStyle = this.secondaryColor;

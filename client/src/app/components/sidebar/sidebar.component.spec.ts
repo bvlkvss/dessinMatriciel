@@ -11,6 +11,7 @@ import { RectangleService } from '@app/services/tools/rectangle/rectangle.servic
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
 import { MockUndoRedoService } from '../attributebar/attributebar.component.spec';
 import { UserGuideComponent } from '../user-guide/user-guide.component';
+import { SelectionService } from '@app/services/tools/selection/selection.service';
 import { SidebarComponent } from './sidebar.component';
 import { MatDialog } from '@angular/material/dialog';
 import { PaintBucketService } from '@app/services/tools/paint-bucket/paint-bucket.service';
@@ -25,6 +26,7 @@ describe('SidebarComponent', () => {
     let eraserStub: EraserService;
     let ellipseStub: EllipseService;
     let lineStub: LineService;
+    let selectionStub: SelectionService;
     let drawServiceMock: MockDrawingService;
     let UndoRedoServiceMock: MockUndoRedoService;
     let paintBucketStub: PaintBucketService;
@@ -39,8 +41,8 @@ describe('SidebarComponent', () => {
         lineStub = new LineService(drawServiceMock);
         ellipseStub = new EllipseService(drawServiceMock);
         eraserStub = new EraserService(drawServiceMock);
-
-        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub, paintBucketStub);
+        selectionStub = new SelectionService(drawServiceMock);
+        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub, paintBucketStub,selectionStub);
         matDialogSpy = jasmine.createSpyObj('MatDialog', ['open']);
         TestBed.configureTestingModule({
             declarations: [SidebarComponent],

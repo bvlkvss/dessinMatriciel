@@ -8,6 +8,7 @@ import { LineService } from '@app/services/tools/line/line.service';
 import { PaintBucketService } from '@app/services/tools/paint-bucket/paint-bucket.service';
 import { PencilService } from '@app/services/tools/pencil/pencil-service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle.service';
+import { SelectionService } from '@app/services/tools/selection/selection.service';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { AttributebarComponent } from './attributebar.component';
@@ -31,8 +32,9 @@ describe('AttributebarComponent', () => {
     let eraserStub: EraserService;
     let ellipseStub: EllipseService;
     let lineStub: LineService;
-    let paintBucketStub: PaintBucketService;
+    //let paintBucketStub: PaintBucketService;
     let drawServiceMock: MockDrawingService;
+    let selectionStub: SelectionService;
     let UndoRedoServiceMock: MockUndoRedoService;
 
     beforeEach(async(() => {
@@ -44,7 +46,7 @@ describe('AttributebarComponent', () => {
         lineStub = new LineService(drawServiceMock, UndoRedoServiceMock);
         ellipseStub = new EllipseService(drawServiceMock, UndoRedoServiceMock);
         eraserStub = new EraserService(drawServiceMock, UndoRedoServiceMock);
-        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub);
+        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub,selectionStub);
         TestBed.configureTestingModule({
             declarations: [AttributebarComponent],
             providers: [{ provide: ToolsManagerService, useValue: toolManagerStub }],

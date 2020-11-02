@@ -7,6 +7,7 @@ import { LineService } from '@app/services/tools/line/line.service';
 import { PaintBucketService } from '@app/services/tools/paint-bucket/paint-bucket.service';
 import { PencilService } from '@app/services/tools/pencil/pencil-service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle.service';
+import { SelectionService } from '@app/services/tools/selection/selection.service';
 
 @Injectable({
     providedIn: 'root',
@@ -22,6 +23,7 @@ export class ToolsManagerService {
         eraserService: EraserService,
         ellipseService: EllipseService,
         lineService: LineService,
+        selectionService: SelectionService,
         paintBucketService: PaintBucketService,
     ) {
         this.tools = new Map<string, Tool>([
@@ -31,6 +33,7 @@ export class ToolsManagerService {
             ['eraser', eraserService],
             ['ellipse', ellipseService],
             ['line', lineService],
+            ['selection', selectionService],
             ['paintBucket', paintBucketService],
         ]);
         this.currentTool = this.tools.get('pencil') as Tool;
