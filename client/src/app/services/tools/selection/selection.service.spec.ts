@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-//import { RectangleService } from '../rectangle/rectangle.service';
+// import { RectangleService } from '../rectangle/rectangle.service';
 
 import { SelectionService } from './selection.service';
 
@@ -13,7 +13,7 @@ describe('SelectionService', () => {
   let baseCtxStub: CanvasRenderingContext2D;
   let previewCtxStub: CanvasRenderingContext2D;
   let canvasStub: HTMLCanvasElement;
-  //let drawRectangleSpy: jasmine.Spy<any>;
+  // let drawRectangleSpy: jasmine.Spy<any>;
 
   beforeEach(() => {
       canvasStub = canvasTestHelper.canvas;
@@ -25,7 +25,7 @@ describe('SelectionService', () => {
           providers: [{ provide: DrawingService, useValue: drawServiceSpy }],
       });
       service = TestBed.inject(SelectionService);
-      //drawRectangleSpy = spyOn<any>(service, 'drawRectangle').and.callThrough();
+      // drawRectangleSpy = spyOn<any>(service, 'drawRectangle').and.callThrough();
 
       service['drawingService'].canvas = canvasStub;
       service['drawingService'].baseCtx = baseCtxStub;
@@ -70,7 +70,7 @@ describe('SelectionService', () => {
 });
 
 it('mousedownonhandle should return number of handle if mouse is down on handle', () => {
-  //start point is the handle #1 so the method should return 1
+  // start point is the handle #1 so the method should return 1
   service.selectionStartPoint = {x:15,y:20};
   let mouseDownPos={x:15,y:20};
   service.rectangleService.width=100;
@@ -79,7 +79,7 @@ it('mousedownonhandle should return number of handle if mouse is down on handle'
   expect(service.mouseDownOnHandle(mouseDownPos)).toEqual(1);
 });
 it('mousedownonhandle should return -1 if mouse isnt down on anyhandle', () => {
-  //start point is the handle #1 so the method should return 1
+  // start point is the handle #1 so the method should return 1
   service.selectionStartPoint = {x:15,y:20};
   let mouseDownPos={x:15,y:25};
   service.rectangleService.width=100;
@@ -328,7 +328,7 @@ it('onMouseDown should change mousedown inside selection to true if mousedown co
   service.currenthandle=1;
   service.selectionActivated=true;
 
-  //initial state is false, should turn to true;
+  // initial state is false, should turn to true;
   service.mouseDownInsideSelection=false;
   let mouseDownEvent = {
     offsetX: 10,
@@ -365,7 +365,7 @@ it('onMouseDown should not change mousedown inside selection to true if mousedow
   service.currenthandle=1;
   service.selectionActivated=true;
 
-  //initial state is false, should stay false;
+  // initial state is false, should stay false;
   service.mouseDownInsideSelection=false;
   let mouseDownEvent = {
     offsetX: 2,
@@ -403,8 +403,8 @@ it('onMouseDown should change current handle if the mouse is down on a resizingH
   service.currenthandle=-1;
   service.selectionActivated=true;
 
-  //we set the mouse down to the endPos, which corresponds to the handle #8;
-  //service.mouseDownInsideSelection=false;
+  // we set the mouse down to the endPos, which corresponds to the handle #8;
+  // service.mouseDownInsideSelection=false;
   let mouseDownEvent = {
     offsetX: service.selectionEndPoint.x,
     offsetY: service.selectionEndPoint.y,
@@ -437,10 +437,10 @@ it('onMouseDown should not change current handle if the mouse is down on a resiz
   service.currenthandle=-1;
   service.selectionActivated=true;
 
-  //we set the mouse down to the endPos, which corresponds to the handle #8;
-  //service.mouseDownInsideSelection=false;
+  // we set the mouse down to the endPos, which corresponds to the handle #8;
+  // service.mouseDownInsideSelection=false;
   let mouseDownEvent = {
-    //out of canvas bounds
+    // out of canvas bounds
     offsetX: 103,
     offsetY: 200,
     button: 0,
@@ -474,10 +474,10 @@ it('onMouseDown should draw image on baseCtx if selection is activated and mouse
   service.currenthandle=-1;
   service.selectionActivated=true;
 
-  //we set the mouse down to the endPos, which corresponds to the handle #8;
-  //service.mouseDownInsideSelection=false;
+  // we set the mouse down to the endPos, which corresponds to the handle #8;
+  // service.mouseDownInsideSelection=false;
   let mouseDownEvent = {
-    //out of canvas bounds
+    // out of canvas bounds
     offsetX: 3,
     offsetY: 70,
     button: 0,
@@ -513,10 +513,10 @@ it('onMouseDown should call clipImageWithEllipse if selection is cofirmed and se
   service.selectionActivated=true;
   service.selectionStyle=1;
 
-  //we set the mouse down to the endPos, which corresponds to the handle #8;
-  //service.mouseDownInsideSelection=false;
+  // we set the mouse down to the endPos, which corresponds to the handle #8;
+  // service.mouseDownInsideSelection=false;
   let mouseDownEvent = {
-    //out of canvas bounds
+    // out of canvas bounds
     offsetX: 3,
     offsetY: 70,
     button: 0,
@@ -552,10 +552,10 @@ it('onMouseDown should not call clipImageWithEllipse if selection is cofirmed an
   service.selectionActivated=true;
   service.selectionStyle=0;
 
-  //we set the mouse down to the endPos, which corresponds to the handle #8;
-  //service.mouseDownInsideSelection=false;
+  // we set the mouse down to the endPos, which corresponds to the handle #8;
+  // service.mouseDownInsideSelection=false;
   let mouseDownEvent = {
-    //out of canvas bounds
+    // out of canvas bounds
     offsetX: 3,
     offsetY: 70,
     button: 0,
@@ -591,10 +591,10 @@ it('onMouseDown should call resetSelection if current selection is confirmed', (
   service.selectionActivated=true;
   service.selectionStyle=0;
 
-  //we set the mouse down to the endPos, which corresponds to the handle #8;
-  //service.mouseDownInsideSelection=false;
+  // we set the mouse down to the endPos, which corresponds to the handle #8;
+  // service.mouseDownInsideSelection=false;
   let mouseDownEvent = {
-    //out of canvas bounds
+    // out of canvas bounds
     offsetX: 3,
     offsetY: 70,
     button: 0,
@@ -629,10 +629,10 @@ it('onMouseDown should not call resetSelection if current selection is not confi
   service.selectionActivated=true;
   service.selectionStyle=0;
 
-  //we set the mouse down to the endPos, which corresponds to the handle #8;
-  //service.mouseDownInsideSelection=false;
+  // we set the mouse down to the endPos, which corresponds to the handle #8;
+  // service.mouseDownInsideSelection=false;
   let mouseDownEvent = {
-    //out of canvas bounds
+    // out of canvas bounds
     offsetX: service.selectionStartPoint.x,
     offsetY: service.selectionStartPoint.y,
     button: 0,
@@ -643,13 +643,11 @@ it('onMouseDown should not call resetSelection if current selection is not confi
   service.onMouseDown(mouseDownEvent);
   expect(resetSelectionSpy).not.toHaveBeenCalled();
 
-
 });
 
-it('onMouseEnter should set isOut of rectangleService to false', () => {
-  service.rectangleService.isOut=true;
-  service.onMouseEnter(mouseEvent);
-  expect(service.rectangleService.isOut).toBe(false);
-});
-
+    it('onMouseEnter should set isOut of rectangleService to false', () => {
+        service.rectangleService.isOut = true;
+        service.onMouseEnter(mouseEvent);
+        expect(service.rectangleService.isOut).toBe(false);
+    });
 });

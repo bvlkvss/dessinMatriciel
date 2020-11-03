@@ -35,12 +35,14 @@ export class EllipseService extends Tool {
         this.toolAttributes = ['ellipseStyle', 'strokeWidth'];
     }
 
-    onMouseDown(event: MouseEvent): void {
+    onMouseDown(event: MouseEvent, isSelection: boolean = false): void {
         this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseDown) {
             this.mouseDownCoord = this.getPositionFromMouse(event);
-            this.invoker.setIsAllowed(false);
-            this.invoker.ClearRedo();
+            if (!isSelection) {
+                this.invoker.setIsAllowed(false);
+                this.invoker.ClearRedo();
+            }
         }
     }
 
@@ -68,14 +70,16 @@ export class EllipseService extends Tool {
         this.isOut = false;
     }
 
-    onMouseUp(event: MouseEvent): void {
+    onMouseUp(event: MouseEvent, isSelection: boolean = false): void {
         if (this.mouseDown) {
             let mousePosition = this.getPositionFromMouse(event);
             if (this.isOut) mousePosition = this.mouseOutCoord;
             this.drawEllipse(this.drawingService.baseCtx, this.mouseDownCoord, mousePosition, this.toSquare, false);
-            const cmd = new EllipseCommand(this.mouseDownCoord, mousePosition, this.ellipseStyle, this, this.drawingService) as EllipseCommand;
-            this.invoker.addToUndo(cmd);
-            this.invoker.setIsAllowed(true);
+            if (!isSelection) {
+                const cmd = new EllipseCommand(this.mouseDownCoord, mousePosition, this.ellipseStyle, this, this.drawingService) as EllipseCommand;
+                this.invoker.addToUndo(cmd);
+                this.invoker.setIsAllowed(true);
+            }
         }
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
 

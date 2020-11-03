@@ -10,7 +10,7 @@ export class UndoRedoService {
     private redoStack: Command[] = [];
     private isAllowed: boolean;
 
-    constructor(protected drawingService: DrawingService) {}
+    constructor(protected drawingService: DrawingService) { }
     onKeyDown(event: KeyboardEvent): void {
         if (this.isAllowed) {
             if (event.ctrlKey && event.shiftKey && (event.key === 'z' || event.key === 'Z')) {
@@ -46,22 +46,28 @@ export class UndoRedoService {
     }
 
     undoLast(): void {
-        const lastUndo = this.undoStack.pop();
-        if (lastUndo) {
-            if (lastUndo.isResize) {
-                lastUndo.unexecute();
+        console.log(this.isAllowed);
+        if (this.isAllowed) {
+            const lastUndo = this.undoStack.pop();
+            if (lastUndo) {
+                if (lastUndo.isResize) {
+                    lastUndo.unexecute();
+                }
+                this.redoStack.push(lastUndo);
+                this.drawingService.clearCanvas(this.drawingService.baseCtx);
+                this.executeAll();
             }
-            this.redoStack.push(lastUndo);
-            this.drawingService.clearCanvas(this.drawingService.baseCtx);
-            this.executeAll();
+            console.log(this.redoStack, 'hey');
         }
     }
     redoPrev(): void {
-        const firstRedo = this.redoStack.pop();
-        if (firstRedo) {
-            this.undoStack.push(firstRedo);
-            this.drawingService.clearCanvas(this.drawingService.baseCtx);
-            this.executeAll();
+        if (this.isAllowed) {
+            const firstRedo = this.redoStack.pop();
+            if (firstRedo) {
+                this.undoStack.push(firstRedo);
+                this.drawingService.clearCanvas(this.drawingService.baseCtx);
+                this.executeAll();
+            }
         }
     }
 

@@ -44,7 +44,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
             .set('2', this.tools.getTools().get('ellipse') as Tool)
             .set('l', this.tools.getTools().get('line') as Tool)
             .set('r', this.tools.getTools().get('selection') as Tool);
-            .set('b', this.tools.getTools().get('paintBucket') as Tool);
+            //.set('b', this.tools.getTools().get('paintBucket') as Tool);
         this.baseCtx = this.baseCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.previewCtx = this.previewCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.drawingService.baseCtx = this.baseCtx;
