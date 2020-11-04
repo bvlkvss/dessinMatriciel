@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Color } from '@app/classes/color';
+import { PaintBucketCommand } from '@app/classes/paint-bucker-command';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
-import { PaintBucketCommand } from '../../../classes/paint-bucker-command';
 
 export enum MouseButton {
     Left = 0,
@@ -30,6 +30,7 @@ export class PaintBucketService extends Tool {
     }
 
     onRightClick(event: MouseEvent): void {
+        this.invoker.setIsAllowed(false);
         const mousePosition = this.getPositionFromMouse(event);
         const newImgData = this.fillNonContiguousArea(mousePosition);
         this.drawingService.baseCtx.putImageData(newImgData, 0, 0);
@@ -39,6 +40,7 @@ export class PaintBucketService extends Tool {
     }
 
     onClick(event: MouseEvent): void {
+        this.invoker.setIsAllowed(false);
         const mousePosition = this.getPositionFromMouse(event);
         const newImgData = this.fillContiguousArea(mousePosition);
         this.drawingService.baseCtx.putImageData(newImgData, 0, 0);

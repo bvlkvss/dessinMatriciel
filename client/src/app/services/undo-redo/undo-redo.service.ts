@@ -10,7 +10,7 @@ export class UndoRedoService {
     private redoStack: Command[] = [];
     private isAllowed: boolean;
 
-    constructor(protected drawingService: DrawingService) { }
+    constructor(protected drawingService: DrawingService) {}
     onKeyDown(event: KeyboardEvent): void {
         if (this.isAllowed) {
             if (event.ctrlKey && event.shiftKey && (event.key === 'z' || event.key === 'Z')) {
