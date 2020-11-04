@@ -145,12 +145,15 @@ export class ResizingService {
             if (this.hasBeenResized) {
                 this.drawingService.clearCanvas(this.drawingService.baseCtx);
             }
-            this.drawingService.baseCtx.beginPath();
-            this.drawingService.baseCtx.fillStyle = 'white';
-            this.drawingService.baseCtx.rect(0, 0, this.resizedWidth, this.resizedHeight);
-            this.drawingService.baseCtx.fill();
-            this.drawingService.baseCtx.closePath();
+            this.makeCanvasWhite();
             this.drawingService.baseCtx.drawImage(save, 0, 0);
         }
+    }
+    makeCanvasWhite(): void {
+        this.drawingService.baseCtx.beginPath();
+        this.drawingService.baseCtx.fillStyle = 'white';
+        this.drawingService.baseCtx.rect(0, 0, this.resizedWidth, this.resizedHeight);
+        this.drawingService.baseCtx.fill();
+        this.drawingService.baseCtx.closePath();
     }
 }
