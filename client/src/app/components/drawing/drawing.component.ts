@@ -4,6 +4,7 @@ import { ExportComponent } from '@app/components/export/export.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ResizingService } from '@app/services/resizing/resizing.service';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
+import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
 // TODO : Avoir un fichier séparé pour les constantes ?
 
@@ -23,7 +24,12 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     private previewCtx: CanvasRenderingContext2D;
     private mouseFired: boolean;
 
-    constructor(private drawingService: DrawingService, private tools: ToolsManagerService, private resizer: ResizingService) {}
+    constructor(
+        private drawingService: DrawingService,
+        private tools: ToolsManagerService,
+        private resizer: ResizingService,
+        private invoker: UndoRedoService,
+    ) {}
 
     ngOnInit(): void {
         this.drawingService.resizeCanvas();
@@ -37,12 +43,18 @@ export class DrawingComponent implements AfterViewInit, OnInit {
             .set('1', this.tools.getTools().get('rectangle') as Tool)
             .set('2', this.tools.getTools().get('ellipse') as Tool)
             .set('l', this.tools.getTools().get('line') as Tool)
-            .set('b', this.tools.getTools().get('paintBucket') as Tool);
+            .set('b', this.tools.getTools().get('paintBucket') as Tool)
+            .set('r', this.tools.getTools().get('selection') as Tool);
         this.baseCtx = this.baseCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.previewCtx = this.previewCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.drawingService.baseCtx = this.baseCtx;
         this.drawingService.previewCtx = this.previewCtx;
         this.drawingService.canvas = this.baseCanvas.nativeElement;
+        this.baseCtx.beginPath();
+        this.baseCtx.fillStyle = 'white';
+        this.baseCtx.rect(0, 0, this.baseCanvas.nativeElement.width, this.baseCanvas.nativeElement.height);
+        this.baseCtx.fill();
+        this.baseCtx.closePath();
         this.mouseFired = false;
         this.baseCtx.save();
         this.previewCtx.save();
@@ -147,6 +159,11 @@ export class DrawingComponent implements AfterViewInit, OnInit {
             event.stopPropagation();
             this.drawingService.newDrawing();
             this.drawingService.resizeCanvas();
+        } else if (event.ctrlKey || (event.ctrlKey && event.shiftKey && (event.key === 'z' || event.key === 'Z'))) {
+            this.invoker.onKeyDown(event);
+        } else if (event.ctrlKey && event.key === 'a') {
+            this.tools.currentTool = this.keyBindings.get('r') as Tool;
+            this.tools.currentTool.onKeyDown(event);
         }
     }
 

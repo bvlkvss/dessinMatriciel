@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-
+    
 <head>
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
 </head>
@@ -35,6 +35,12 @@
             <a id="paintBucket" (click)="displayPalette('paintBucket')" (click)="changeTools('paintBucket')">
                 <img class="material-icons" src="../../../assets/format-color-fill.png">
                 <span class="slidingtxt"> Remplir (B)</span>
+            </a>
+            <a id="undo" (click)="undo()">
+                <i class="material-icons">undo</i>
+            </a>
+            <a id="redo" (click)="redo()">
+                <i class="material-icons">undo</i>
             </a>
         </div>
 
