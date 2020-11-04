@@ -125,10 +125,27 @@ describe('UndoRedoService', () => {
     expect(undoLastSpy).toHaveBeenCalled();
   });
 
+  it('should not call undoLast if shortcut ctrl+z is pressed and undo-redo is not allowed', () => {
+    service.setIsAllowed(false);
+    service.onKeyDown(shortCutUndo);
+    expect(undoLastSpy).not.toHaveBeenCalled();
+  });
+
+  it('should push redoStack if Command defined', () => {
+    service.addToRedo(rectangleCommandStub);
+    expect(service.getRedo().length).toEqual(1);
+  });
+
   it('shoudl call redoPrev if shortcut ctrl+shift+z is pressed and undo-redo is allowed', () => {
     service.setIsAllowed(true);
     service.onKeyDown(shortCutRedo);
     expect(redoPrevSpy).toHaveBeenCalled();
+  });
+
+  it('shoudl not call redoPrev if shortcut ctrl+shift+z is pressed and undo-redo is not allowed', () => {
+    service.setIsAllowed(false);
+    service.onKeyDown(shortCutRedo);
+    expect(redoPrevSpy).not.toHaveBeenCalled();
   });
 
   it('should call executeAll if shortcut ctrl+z is pressed and undo-redo is allowed', () => {
@@ -296,4 +313,60 @@ describe('UndoRedoService', () => {
     expect(service.getUndo().length === 0);
   });
 
+  it('should pop undostack if undo redo is Allowed', () => {
+    service.setIsAllowed(true);
+    service.addToUndo(rectangleCommandStub);
+    service.undoLast();
+    expect(service.getUndo().length).toEqual(0);
+  });
+
+  it('should not pop undostack if undo redo is not Allowed', () => {
+    service.setIsAllowed(false);
+    service.addToUndo(rectangleCommandStub);
+    service.undoLast();
+    expect(service.getUndo().length).toEqual(1);
+  });
+
+  it('shoudl add to redo if Command is defined', () => {
+    service.addToRedo(rectangleCommandStub);
+    expect(service.getRedo().length).toEqual(1);
+  });
+
+  it('shoud call push into redoStack and call executeAll', () => {
+    service.setIsAllowed(true);
+    service.addToUndo(rectangleCommandStub);
+    service.undoLast();
+    expect(service.getRedo().length).toEqual(1);
+    expect(executeAllSpy).toHaveBeenCalled();
+  });
+
+  it('shoud call unexecute if isREsize', () => {
+    service.setIsAllowed(true);
+    let execute = spyOn(ResizeCommandStub, 'unexecute').and.callThrough();
+    service.addToUndo(ResizeCommandStub);
+    service.undoLast();
+    expect(execute).toHaveBeenCalled();
+  });
+
+  it('shoudl pop redo if undo redo is Allowed and redoPrev is called', () => {
+    service.setIsAllowed(true);
+    service.addToRedo(rectangleCommandStub);
+    service.redoPrev();
+    expect(service.getRedo().length).toEqual(0);
+  });
+
+  it('shoudl bot pop redo if undo redo is bot Allowed and redoPrev is called', () => {
+    service.setIsAllowed(false);
+    service.addToRedo(rectangleCommandStub);
+    service.redoPrev();
+    expect(service.getRedo().length).toEqual(1);
+  });
+
+  it('should call executeAll and push one command into undo stack if undo redo is allowed and redostack is not empty', () => {
+    service.setIsAllowed(true);
+    service.addToRedo(rectangleCommandStub);
+    service.redoPrev();
+    //expect(service.getUndo().length).toEqual(1);
+    expect(executeAllSpy).toHaveBeenCalled();
+  });
 });

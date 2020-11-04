@@ -32,7 +32,7 @@ describe('AttributebarComponent', () => {
     let eraserStub: EraserService;
     let ellipseStub: EllipseService;
     let lineStub: LineService;
-    //let paintBucketStub: PaintBucketService;
+    let paintBucketStub: PaintBucketService;
     let drawServiceMock: MockDrawingService;
     let selectionStub: SelectionService;
     let UndoRedoServiceMock: MockUndoRedoService;
@@ -46,7 +46,8 @@ describe('AttributebarComponent', () => {
         lineStub = new LineService(drawServiceMock, UndoRedoServiceMock);
         ellipseStub = new EllipseService(drawServiceMock, UndoRedoServiceMock);
         eraserStub = new EraserService(drawServiceMock, UndoRedoServiceMock);
-        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub,selectionStub);
+        paintBucketStub = new PaintBucketService(drawServiceMock);
+        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub, selectionStub, paintBucketStub);
         TestBed.configureTestingModule({
             declarations: [AttributebarComponent],
             providers: [{ provide: ToolsManagerService, useValue: toolManagerStub }],
