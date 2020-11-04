@@ -8,9 +8,20 @@ import { LineService } from '@app/services/tools/line/line.service';
 import { PaintBucketService } from '@app/services/tools/paint-bucket/paint-bucket.service';
 import { PencilService } from '@app/services/tools/pencil/pencil-service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle.service';
+import { SelectionService } from '@app/services/tools/selection/selection.service';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
+import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { AttributebarComponent } from './attributebar.component';
 
+
+export class MockUndoRedoService extends UndoRedoService {
+    executeAll(): void {
+        console.log("executeAll was Called");
+    }
+    ClearRedo(): void {
+        console.log("clearRedo was called");
+    }
+}
 describe('AttributebarComponent', () => {
     let component: AttributebarComponent;
     let fixture: ComponentFixture<AttributebarComponent>;
@@ -23,16 +34,19 @@ describe('AttributebarComponent', () => {
     let lineStub: LineService;
     let paintBucketStub: PaintBucketService;
     let drawServiceMock: MockDrawingService;
+    let selectionStub: SelectionService;
+    let UndoRedoServiceMock: MockUndoRedoService;
 
     beforeEach(async(() => {
         drawServiceMock = new MockDrawingService();
-        pencilStub = new PencilService(drawServiceMock);
-        brushStub = new BrushService(drawServiceMock);
-        rectangleStub = new RectangleService(drawServiceMock);
-        lineStub = new LineService(drawServiceMock);
-        ellipseStub = new EllipseService(drawServiceMock);
-        eraserStub = new EraserService(drawServiceMock);
-        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub, paintBucketStub);
+        UndoRedoServiceMock = new MockUndoRedoService(drawServiceMock);
+        pencilStub = new PencilService(drawServiceMock, UndoRedoServiceMock);
+        brushStub = new BrushService(drawServiceMock, UndoRedoServiceMock);
+        rectangleStub = new RectangleService(drawServiceMock, UndoRedoServiceMock);
+        lineStub = new LineService(drawServiceMock, UndoRedoServiceMock);
+        ellipseStub = new EllipseService(drawServiceMock, UndoRedoServiceMock);
+        eraserStub = new EraserService(drawServiceMock, UndoRedoServiceMock);
+        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub,paintBucketStub,selectionStub);
         TestBed.configureTestingModule({
             declarations: [AttributebarComponent],
             providers: [{ provide: ToolsManagerService, useValue: toolManagerStub }],
@@ -108,19 +122,19 @@ describe('AttributebarComponent', () => {
     });
 
     it('should call toolManager"s setjunctionWidth when calling setJunctionWidth', () => {
-        let junctionWidthSpy = spyOn(toolManagerStub,'setJunctionWidth');
+        let junctionWidthSpy = spyOn(toolManagerStub, 'setJunctionWidth');
         component.setJunctionWidth("6");
         expect(junctionWidthSpy).toHaveBeenCalled();
     });
 
     it('should call toolManager"s setjunctionState when calling setJunctionState', () => {
-        let junctionStateSpy = spyOn(toolManagerStub,'setJunctionState');
+        let junctionStateSpy = spyOn(toolManagerStub, 'setJunctionState');
         component.setJunctionState(true);
         expect(junctionStateSpy).toHaveBeenCalled();
     });
 
     it('should set currentTexture to given value when setTexture is called', () => {
-        (toolManagerStub.currentTool as BrushService).setTexture =  jasmine.createSpy('setTexture');
+        (toolManagerStub.currentTool as BrushService).setTexture = jasmine.createSpy('setTexture');
         component.setTexture(5);
         expect(component.currentTexture).toContain('b5.svg');
     });

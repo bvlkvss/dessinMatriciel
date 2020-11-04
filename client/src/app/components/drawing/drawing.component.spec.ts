@@ -11,7 +11,11 @@ import { LineService } from '@app/services/tools/line/line.service';
 import { PaintBucketService } from '@app/services/tools/paint-bucket/paint-bucket.service';
 import { PencilService } from '@app/services/tools/pencil/pencil-service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle.service';
+import { SelectionService } from '@app/services/tools/selection/selection.service';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
+import { MockUndoRedoService } from '../attributebar/attributebar.component.spec';
+
+
 
 export class MockDrawingService extends DrawingService {
     resizeCanvas(): void {
@@ -37,18 +41,22 @@ describe('DrawingComponent', () => {
     let lineStub: LineService;
     let paintBucketStub: PaintBucketService;
     let drawServiceMock: MockDrawingService;
+    let selectionStub: SelectionService;
+    let undoRedoServiceMock: MockUndoRedoService;
     let resizingServiceMock: MockResizingService;
 
     beforeEach(async(() => {
         drawServiceMock = new MockDrawingService();
-        resizingServiceMock = new MockResizingService(drawServiceMock);
-        pencilStub = new PencilService(drawServiceMock);
-        brushStub = new BrushService(drawServiceMock);
-        rectangleStub = new RectangleService(drawServiceMock);
-        lineStub = new LineService(drawServiceMock);
-        ellipseStub = new EllipseService(drawServiceMock);
-        eraserStub = new EraserService(drawServiceMock);
-        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub, paintBucketStub);
+        undoRedoServiceMock = new MockUndoRedoService(drawServiceMock);
+        resizingServiceMock = new MockResizingService(drawServiceMock, undoRedoServiceMock);
+        pencilStub = new PencilService(drawServiceMock, undoRedoServiceMock);
+        brushStub = new BrushService(drawServiceMock, undoRedoServiceMock);
+        rectangleStub = new RectangleService(drawServiceMock, undoRedoServiceMock);
+        lineStub = new LineService(drawServiceMock, undoRedoServiceMock);
+        ellipseStub = new EllipseService(drawServiceMock, undoRedoServiceMock);
+        eraserStub = new EraserService(drawServiceMock, undoRedoServiceMock);
+        selectionStub = new SelectionService(drawServiceMock,undoRedoServiceMock);
+        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub,paintBucketStub,selectionStub);
 
         TestBed.configureTestingModule({
             declarations: [DrawingComponent],

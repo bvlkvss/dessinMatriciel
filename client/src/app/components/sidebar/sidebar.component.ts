@@ -4,6 +4,7 @@ import { ExportComponent } from '@app/components/export/export.component';
 import { UserGuideComponent } from '@app/components/user-guide/user-guide.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
+import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
 const COLOR_STRING_LENGTH = 7;
 
@@ -13,7 +14,12 @@ const COLOR_STRING_LENGTH = 7;
     styleUrls: ['./sidebar.component.scss'],
 })
 export class SidebarComponent implements OnChanges {
-    constructor(private tools: ToolsManagerService, protected drawingService: DrawingService, private dialog: MatDialog) {}
+    constructor(
+        private tools: ToolsManagerService,
+        protected drawingService: DrawingService,
+        protected invoker: UndoRedoService,
+        private dialog: MatDialog,
+    ) { }
     @Input() primaryColor: string = this.tools.currentTool.primaryColor.slice(0, COLOR_STRING_LENGTH);
     @Input() secondaryColor: string = this.tools.currentTool.secondaryColor.slice(0, COLOR_STRING_LENGTH);
     isRevertClicked: boolean = false;
@@ -27,6 +33,13 @@ export class SidebarComponent implements OnChanges {
             secondColorDiv.style.backgroundColor = this.secondaryColor;
         }
         this.isRevertClicked = false;
+    }
+    undo(): void {
+        this.invoker.undoLast();
+    }
+
+    redo(): void {
+        this.invoker.redoPrev();
     }
 
     openExportDialog(): void {
