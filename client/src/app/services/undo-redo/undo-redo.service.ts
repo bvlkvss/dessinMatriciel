@@ -55,9 +55,9 @@ export class UndoRedoService {
                 }
                 this.redoStack.push(lastUndo);
                 this.drawingService.clearCanvas(this.drawingService.baseCtx);
+                this.makeCanvasWhite(this.drawingService.baseCtx);
                 this.executeAll();
             }
-            console.log(this.redoStack, 'hey');
         }
     }
     redoPrev(): void {
@@ -66,6 +66,7 @@ export class UndoRedoService {
             if (firstRedo) {
                 this.undoStack.push(firstRedo);
                 this.drawingService.clearCanvas(this.drawingService.baseCtx);
+                this.makeCanvasWhite(this.drawingService.baseCtx);
                 this.executeAll();
             }
         }
@@ -82,5 +83,13 @@ export class UndoRedoService {
         for (const cmd of this.undoStack) {
             cmd.execute();
         }
+    }
+
+    makeCanvasWhite(context: CanvasRenderingContext2D): void {
+        context.beginPath();
+        context.fillStyle = 'white';
+        context.rect(0, 0, this.drawingService.canvas.width, this.drawingService.canvas.height);
+        context.fill();
+        context.closePath();
     }
 }
