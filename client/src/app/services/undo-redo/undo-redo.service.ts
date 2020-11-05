@@ -46,22 +46,29 @@ export class UndoRedoService {
     }
 
     undoLast(): void {
-        const lastUndo = this.undoStack.pop();
-        if (lastUndo) {
-            if (lastUndo.isResize) {
-                lastUndo.unexecute();
+        console.log(this.isAllowed);
+        if (this.isAllowed) {
+            const lastUndo = this.undoStack.pop();
+            if (lastUndo) {
+                if (lastUndo.isResize) {
+                    lastUndo.unexecute();
+                }
+                this.redoStack.push(lastUndo);
+                this.drawingService.clearCanvas(this.drawingService.baseCtx);
+                this.makeCanvasWhite(this.drawingService.baseCtx);
+                this.executeAll();
             }
-            this.redoStack.push(lastUndo);
-            this.drawingService.clearCanvas(this.drawingService.baseCtx);
-            this.executeAll();
         }
     }
     redoPrev(): void {
-        const firstRedo = this.redoStack.pop();
-        if (firstRedo) {
-            this.undoStack.push(firstRedo);
-            this.drawingService.clearCanvas(this.drawingService.baseCtx);
-            this.executeAll();
+        if (this.isAllowed) {
+            const firstRedo = this.redoStack.pop();
+            if (firstRedo) {
+                this.undoStack.push(firstRedo);
+                this.drawingService.clearCanvas(this.drawingService.baseCtx);
+                this.makeCanvasWhite(this.drawingService.baseCtx);
+                this.executeAll();
+            }
         }
     }
 
@@ -76,5 +83,13 @@ export class UndoRedoService {
         for (const cmd of this.undoStack) {
             cmd.execute();
         }
+    }
+
+    makeCanvasWhite(context: CanvasRenderingContext2D): void {
+        context.beginPath();
+        context.fillStyle = 'white';
+        context.rect(0, 0, this.drawingService.canvas.width, this.drawingService.canvas.height);
+        context.fill();
+        context.closePath();
     }
 }

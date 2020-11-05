@@ -144,8 +144,17 @@ export class ResizingService {
         if (save) {
             if (this.hasBeenResized) {
                 this.drawingService.clearCanvas(this.drawingService.baseCtx);
+                this.makeCanvasWhite(this.drawingService.baseCtx);
             }
             this.drawingService.baseCtx.drawImage(save, 0, 0);
         }
+    }
+    makeCanvasWhite(context: CanvasRenderingContext2D): void {
+        console.log('called');
+        context.beginPath();
+        context.fillStyle = 'white';
+        context.rect(0, 0, this.drawingService.canvas.width, this.drawingService.canvas.height);
+        context.fill();
+        context.closePath();
     }
 }

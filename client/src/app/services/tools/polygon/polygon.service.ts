@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
+import { PolygonCommand } from '@app/classes/polygon-command';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
 export enum MouseButton {
     Left = 0,
@@ -36,7 +38,7 @@ export class PolygonService extends Tool {
     heightPolygon: number = 0;
     incertitude: number = 0;
 
-    constructor(drawingService: DrawingService) {
+    constructor(drawingService: DrawingService, protected invoker: UndoRedoService) {
         super(drawingService);
         this.toolAttributes = ['strokeWidth', 'polygonStyle'];
         this.polygonStyle = 2;
@@ -56,6 +58,8 @@ export class PolygonService extends Tool {
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseDown) {
+            this.invoker.ClearRedo();
+            this.invoker.setIsAllowed(false);
             this.mouseDownCoord = this.getPositionFromMouse(event);
         }
     }
@@ -113,6 +117,10 @@ export class PolygonService extends Tool {
             let mousePosition = this.getPositionFromMouse(event);
             if (this.isOut) mousePosition = this.mouseOutCoord;
             this.drawPolygon(this.drawingService.baseCtx, this.mouseDownCoord, mousePosition, false);
+            const cmd = new PolygonCommand(this.mouseDownCoord, mousePosition, this.polygonStyle, this, this.drawingService) as PolygonCommand;
+            console.log(cmd);
+            this.invoker.addToUndo(cmd);
+            this.invoker.setIsAllowed(true);
         }
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.mouseDown = false;

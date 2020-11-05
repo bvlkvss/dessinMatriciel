@@ -52,7 +52,7 @@ describe('AttributebarComponent', () => {
         mouseEvent = (new MouseEvent('click', { clientX: 5, clientY: 5 }));
         drawServiceMock = new MockDrawingService();
         UndoRedoServiceMock = new MockUndoRedoService(drawServiceMock);
-        polygonStub = new PolygonService(drawServiceMock);
+        polygonStub = new PolygonService(drawServiceMock,UndoRedoServiceMock);
         pencilStub = new PencilService(drawServiceMock, UndoRedoServiceMock);
         brushStub = new BrushService(drawServiceMock, UndoRedoServiceMock);
         rectangleStub = new RectangleService(drawServiceMock, UndoRedoServiceMock);
@@ -61,7 +61,7 @@ describe('AttributebarComponent', () => {
         eraserStub = new EraserService(drawServiceMock, UndoRedoServiceMock);
         pipetteStub = new PipetteService(drawServiceMock);
 
-        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub, paintBucketStub, selectionStub, polygonStub, pipetteStub);
+        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub, selectionStub,paintBucketStub, polygonStub, pipetteStub);
         TestBed.configureTestingModule({
             declarations: [AttributebarComponent],
             providers: [{ provide: ToolsManagerService, useValue: toolManagerStub }, { provide: PipetteService, useValue: pipetteStub }],

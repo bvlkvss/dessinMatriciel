@@ -3,16 +3,21 @@ import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { EraserCommand } from '@app/classes/eraser-command';
 import { LineCommand } from '@app/classes/line-command';
+import { PaintBucketCommand } from '@app/classes/paint-bucker-command';
+import { PolygonCommand } from '@app/classes/polygon-command';
 import { ResizeCommand } from '@app/classes/resize-command';
 import { Vec2 } from '@app/classes/vec2';
 import { MockDrawingService } from '@app/components/drawing/drawing.component.spec';
 import { EraserService } from '@app/services/tools/eraser/eraser-service';
+import { PolygonService } from '@app/services/tools/polygon/polygon.service';
 //import { ResizingService } from '@app/services/resizing/resizing.service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle.service';
+import { SelectionService } from '@app/services/tools/selection/selection.service';
 import { BrushCommand } from '../../classes/brush-command';
 import { EllipseCommand } from '../../classes/ellipse-command';
 import { PencilCommand } from '../../classes/pencil-command';
 import { RectangleCommand } from '../../classes/rectangle-command';
+import { SelectionCommand } from '../../classes/selection-command';
 //import { ResizeCommand } from '../../classes/resizeCommand';
 import { DrawingService } from '../drawing/drawing.service';
 import { ResizingService } from '../resizing/resizing.service';
@@ -36,6 +41,9 @@ describe('UndoRedoService', () => {
   let lineCommandStub: LineCommand;
   let eraserCommandStub: EraserCommand;
   let ResizeCommandStub: ResizeCommand;
+  let PaintCommandStub: PaintBucketCommand;
+  let PolygonCommandStub: PolygonCommand;
+  let selectionCommandStub: SelectionCommand;
   let pathData: Vec2[] = [{ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 2, y: 1 }, { x: 2, y: 2 }, { x: 1, y: 3 }];
   let pencilStub: PencilService;
   let brushStub: BrushService;
@@ -44,6 +52,8 @@ describe('UndoRedoService', () => {
   let lineStub: LineService;
   let eraserStub: EraserService;
   let resizeStub: ResizingService;
+  let polygoneStub: PolygonService;
+  let selectionStub: SelectionService
   let canvasStub: HTMLCanvasElement;
   let baseCtxStub: CanvasRenderingContext2D;
   let previewCtxStub: CanvasRenderingContext2D;
@@ -86,7 +96,25 @@ describe('UndoRedoService', () => {
     ResizeCommandStub.setnewSize(100, 100);
     eraserStub = new EraserService(DrawingServiceMock, service);
     eraserCommandStub = new EraserCommand(pathData, eraserStub, DrawingServiceMock);
-
+    const temp = document.createElement('canvas');
+    temp.width = 100;
+    temp.height = 100;
+    const context = temp.getContext('2d') as CanvasRenderingContext2D;
+    context.beginPath();
+    context.fillStyle = 'red';
+    context.rect(0, 0, 50, 50);
+    context.fill();
+    context.closePath();
+    let test = context.getImageData(0, 0, 30, 30) as ImageData;
+    PaintCommandStub = new PaintBucketCommand(test, DrawingServiceMock);
+    polygoneStub = new PolygonService(DrawingServiceMock, service);
+    polygoneStub.startPos = pathData[0];
+    polygoneStub.currentPos = pathData[1];
+    polygoneStub.mouseDownCoord = pathData[1];
+    PolygonCommandStub = new PolygonCommand(pathData[0], pathData[1], 0, polygoneStub, DrawingServiceMock);
+    selectionStub = new SelectionService(DrawingServiceMock, service);
+    selectionCommandStub = new SelectionCommand(pathData[0], selectionStub, DrawingServiceMock);
+    selectionCommandStub.setStartPos(pathData[1]);
     undoLastSpy = spyOn<any>(service, 'undoLast').and.callThrough();
     redoPrevSpy = spyOn<any>(service, 'redoPrev').and.callThrough();
     executeAllSpy = spyOn<any>(service, 'executeAll').and.callThrough();
@@ -125,10 +153,27 @@ describe('UndoRedoService', () => {
     expect(undoLastSpy).toHaveBeenCalled();
   });
 
+  it('should not call undoLast if shortcut ctrl+z is pressed and undo-redo is not allowed', () => {
+    service.setIsAllowed(false);
+    service.onKeyDown(shortCutUndo);
+    expect(undoLastSpy).not.toHaveBeenCalled();
+  });
+
+  it('should push redoStack if Command defined', () => {
+    service.addToRedo(rectangleCommandStub);
+    expect(service.getRedo().length).toEqual(1);
+  });
+
   it('shoudl call redoPrev if shortcut ctrl+shift+z is pressed and undo-redo is allowed', () => {
     service.setIsAllowed(true);
     service.onKeyDown(shortCutRedo);
     expect(redoPrevSpy).toHaveBeenCalled();
+  });
+
+  it('shoudl not call redoPrev if shortcut ctrl+shift+z is pressed and undo-redo is not allowed', () => {
+    service.setIsAllowed(false);
+    service.onKeyDown(shortCutRedo);
+    expect(redoPrevSpy).not.toHaveBeenCalled();
   });
 
   it('should call executeAll if shortcut ctrl+z is pressed and undo-redo is allowed', () => {
@@ -230,6 +275,9 @@ describe('UndoRedoService', () => {
     service.addToUndo(BrushCommandStub);
     service.addToUndo(ResizeCommandStub);
     service.addToUndo(eraserCommandStub);
+    service.addToUndo(PaintCommandStub);
+    service.addToUndo(PolygonCommandStub);
+    service.addToUndo(selectionCommandStub);
     let execute = [] as jasmine.Spy<any>[];
     for (let cmd of service.getUndo()) {
       execute.push(spyOn(cmd, 'execute').and.callThrough());
@@ -296,4 +344,76 @@ describe('UndoRedoService', () => {
     expect(service.getUndo().length === 0);
   });
 
+  it('should pop undostack if undo redo is Allowed', () => {
+    service.setIsAllowed(true);
+    service.addToUndo(rectangleCommandStub);
+    service.undoLast();
+    expect(service.getUndo().length).toEqual(0);
+  });
+
+  it('should not pop undostack if undo redo is not Allowed', () => {
+    service.setIsAllowed(false);
+    service.addToUndo(rectangleCommandStub);
+    service.undoLast();
+    expect(service.getUndo().length).toEqual(1);
+  });
+
+  it('shoudl add to redo if Command is defined', () => {
+    service.addToRedo(rectangleCommandStub);
+    expect(service.getRedo().length).toEqual(1);
+  });
+
+  it('shoud call push into redoStack and call executeAll', () => {
+    service.setIsAllowed(true);
+    service.addToUndo(rectangleCommandStub);
+    service.undoLast();
+    expect(service.getRedo().length).toEqual(1);
+    expect(executeAllSpy).toHaveBeenCalled();
+  });
+
+  it('shoud call unexecute if isREsize', () => {
+    service.setIsAllowed(true);
+    let execute = spyOn(ResizeCommandStub, 'unexecute').and.callThrough();
+    service.addToUndo(ResizeCommandStub);
+    service.undoLast();
+    expect(execute).toHaveBeenCalled();
+  });
+
+  it('shoudl pop redo if undo redo is Allowed and redoPrev is called', () => {
+    service.setIsAllowed(true);
+    service.addToRedo(rectangleCommandStub);
+    service.redoPrev();
+    expect(service.getRedo().length).toEqual(0);
+  });
+
+  it('shoudl bot pop redo if undo redo is bot Allowed and redoPrev is called', () => {
+    service.setIsAllowed(false);
+    service.addToRedo(rectangleCommandStub);
+    service.redoPrev();
+    expect(service.getRedo().length).toEqual(1);
+  });
+
+  it('should call executeAll and push one command into undo stack if undo redo is allowed and redostack is not empty', () => {
+    service.setIsAllowed(true);
+    service.addToRedo(rectangleCommandStub);
+    service.redoPrev();
+    //expect(service.getUndo().length).toEqual(1);
+    expect(executeAllSpy).toHaveBeenCalled();
+  });
+
+  it('should call clipImageWithEllipse', () => {
+    let cmdStub = new SelectionCommand(pathData[1], selectionStub, DrawingServiceMock);
+    cmdStub.setStartPos(pathData[1]);
+    cmdStub.setEndPos(pathData[1]);
+    cmdStub.setEndPosErase(pathData[1]);
+    cmdStub.setSize(pathData[1].x, pathData[1].x);
+    const temp = document.createElement('canvas');
+    temp.width = 100;
+    temp.height = 100;
+    cmdStub.setCanvas(temp);
+    let spy = spyOn(selectionStub, "clipImageWithEllipse").and.callThrough();
+    cmdStub.setSelectionStyle(1);
+    cmdStub.execute();
+    expect(spy).toHaveBeenCalled();
+  });
 });

@@ -25,8 +25,8 @@ export class ToolsManagerService {
         eraserService: EraserService,
         ellipseService: EllipseService,
         lineService: LineService,
-        paintBucketService: PaintBucketService,
         selectionService: SelectionService,
+        paintBucketService: PaintBucketService,
         polygonService: PolygonService,
         pipetteService: PipetteService,
     ) {
@@ -37,6 +37,7 @@ export class ToolsManagerService {
             ['eraser', eraserService],
             ['ellipse', ellipseService],
             ['line', lineService],
+            ['selection', selectionService],
             ['paintBucket', paintBucketService],
             ['selection', selectionService],
             ['polygon', polygonService],

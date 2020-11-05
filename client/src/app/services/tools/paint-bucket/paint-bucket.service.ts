@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Color } from '@app/classes/color';
+import { PaintBucketCommand } from '@app/classes/paint-bucker-command';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
 export enum MouseButton {
     Left = 0,
@@ -21,22 +23,31 @@ const MAX_TOLERANCE = 100;
 })
 export class PaintBucketService extends Tool {
     tolerance: number;
-    constructor(drawingService: DrawingService) {
+    constructor(drawingService: DrawingService, protected invoker: UndoRedoService) {
         super(drawingService);
         this.tolerance = MIN_TOLERANCE;
         this.toolAttributes = ['tolerance'];
     }
 
     onRightClick(event: MouseEvent): void {
+        this.invoker.setIsAllowed(false);
         const mousePosition = this.getPositionFromMouse(event);
         const newImgData = this.fillNonContiguousArea(mousePosition);
         this.drawingService.baseCtx.putImageData(newImgData, 0, 0);
+        this.invoker.setIsAllowed(true);
+        const cmd = new PaintBucketCommand(newImgData, this.drawingService);
+        this.invoker.addToUndo(cmd);
     }
 
     onClick(event: MouseEvent): void {
+        this.invoker.setIsAllowed(false);
         const mousePosition = this.getPositionFromMouse(event);
         const newImgData = this.fillContiguousArea(mousePosition);
         this.drawingService.baseCtx.putImageData(newImgData, 0, 0);
+        const cmd = new PaintBucketCommand(newImgData, this.drawingService);
+        this.invoker.setIsAllowed(true);
+        this.invoker.addToUndo(cmd);
+        console.log(this.invoker.getRedo());
     }
 
     setPrimaryColor(color: string): void {

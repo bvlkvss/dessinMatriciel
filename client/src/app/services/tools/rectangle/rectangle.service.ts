@@ -26,6 +26,7 @@ export class RectangleService extends Tool {
     isOut: boolean = false;
     currentPos: Vec2;
     rectangleStyle: RectangleStyle;
+    isSelection: boolean = false;
     lineDash: boolean;
     width: number;
     height: number;
@@ -43,12 +44,13 @@ export class RectangleService extends Tool {
         this.rectangleStyle = id;
     }
 
-    onMouseDown(event: MouseEvent): void {
+    onMouseDown(event: MouseEvent, isSelection: boolean = false): void {
         this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseDown) {
-            this.invoker.ClearRedo();
-            this.invoker.setIsAllowed(false);
-            console.log(event.offsetX, ';', event.offsetY);
+            if (!isSelection) {
+                this.invoker.ClearRedo();
+                this.invoker.setIsAllowed(false);
+            }
             this.mouseDownCoord = this.getPositionFromMouse(event);
         }
     }
@@ -87,15 +89,23 @@ export class RectangleService extends Tool {
         this.isOut = false;
     }
 
-    onMouseUp(event: MouseEvent): void {
+    onMouseUp(event: MouseEvent, isSelection: boolean = false): void {
         if (this.mouseDown) {
             let mousePosition = this.getPositionFromMouse(event);
             if (this.isOut) mousePosition = this.mouseOutCoord;
             this.drawRectangle(this.drawingService.baseCtx, this.mouseDownCoord, mousePosition, this.toSquare);
-            const cmd = new RectangleCommand(this.mouseDownCoord, mousePosition, this.rectangleStyle, this, this.drawingService) as RectangleCommand;
-            console.log(cmd);
-            this.invoker.addToUndo(cmd);
-            this.invoker.setIsAllowed(true);
+            if (!isSelection) {
+                const cmd = new RectangleCommand(
+                    this.mouseDownCoord,
+                    mousePosition,
+                    this.rectangleStyle,
+                    this,
+                    this.drawingService,
+                ) as RectangleCommand;
+                console.log(cmd);
+                this.invoker.addToUndo(cmd);
+                this.invoker.setIsAllowed(true);
+            }
         }
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
 
