@@ -10,6 +10,7 @@
     box-shadow: inset 5px 5px 25px -20px rgba(0, 0, 0, 0.64);
     transition: all 0.6s ease;
 }
+
 .attribute-open {
     position: relative;
     flex: 1 1 auto;
@@ -36,13 +37,13 @@
 .size-slider::-webkit-slider-thumb {
     -webkit-appearance: none;
     box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.3);
-
     width: 15px;
     height: 15px;
     border-radius: 50%;
     background: rgb(202, 202, 202);
     cursor: pointer;
 }
+
 #label {
     position: relative;
     bottom: 60px;
@@ -61,16 +62,17 @@
     background-color: rgb(48, 46, 64);
     border: none;
 }
+
 #lineWidthcontainer {
     padding: 5px;
     position: relative;
     margin-bottom: 2px;
-
     -webkit-box-shadow: inset 0px 64px 59px -71px rgba(255, 255, 255, 0.2);
     -moz-box-shadow: inset 0px 64px 59px -71px rgba(255, 255, 255, 0.2);
     box-shadow: inset 0px 64px 59px -71px rgba(255, 255, 255, 0.2);
     height: 60px;
 }
+
 #header {
     position: relative;
     color: white;
@@ -81,9 +83,11 @@
     height: 0px;
     left: 6%;
 }
+
 #headerImage {
     left: 23%;
 }
+
 #isJunction {
     position: relative;
     left: 6%;
@@ -92,6 +96,7 @@
     width: 30px;
     border-radius: 100%;
 }
+
 .header {
     position: absolute;
     color: white;
@@ -100,26 +105,30 @@
     font-family: Arial, Helvetica, sans-serif;
     height: 0px;
 }
+
 #junctionHeader {
     left: 9%;
 }
+
 #headerStyle {
     top: 10px;
     left: 30%;
 }
+
 .material-icons {
     user-select: none;
 }
+
 #colorContainer {
     position: relative;
     top: 0;
     height: 50px;
 }
+
 .shapeStyle {
     width: 45px;
     height: 30px;
     position: relative;
-
     left: 20px;
     top: 10px;
     margin-right: 30px;
@@ -134,16 +143,17 @@
     position: relative;
     top: 25px;
 }
+
 #currentImage {
     position: relative;
     width: 50px;
     height: 50px;
     right: 11px;
-
     &:hover {
         cursor: pointer;
     }
 }
+
 #imageTexture {
     position: relative;
     height: 50px;
@@ -172,20 +182,21 @@
     border-width: 4px;
     border-style: solid;
 }
+
 #style0 {
     border-color: white;
     border-width: 4px;
     border-style: solid;
-
     background-color: transparent;
 }
+
 #style1 {
     border-color: rgb(0, 0, 0);
     border-width: 4px;
     border-style: solid;
-
     background-color: rgb(255, 255, 255);
 }
+
 #textureContainer {
     display: none;
     position: relative;
@@ -196,6 +207,7 @@
     -moz-box-shadow: inset 0px 64px 59px -71px rgba(255, 255, 255, 0.1);
     box-shadow: inset 0px 64px 59px -71px rgba(255, 255, 255, 0.1);
 }
+
 #styleContainer {
     display: none;
     height: 70px;
@@ -213,6 +225,7 @@
     border-style: solid;
     background-color: white;
 }
+
 #currentEllipseStyle {
     position: absolute;
     top: 20px;
@@ -223,6 +236,7 @@
     border-style: solid;
     background-color: white;
 }
+
 #currentImageContainer {
     padding: 5px;
     margin-bottom: 5px;
@@ -247,7 +261,6 @@
     border-radius: 50px;
     top: 7px;
     left: 30%;
-
     label {
         width: 16px;
         height: 16px;
@@ -262,11 +275,95 @@
     }
     input[type='checkbox'] {
         visibility: hidden;
-        &:checked + label {
+        &:checked+label {
             left: 37px;
         }
         input[type='checkbox']:not(:checked) {
             background: gray;
         }
     }
+}
+
+.numberCircle {
+    //margin: auto;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    padding: 8px;
+    background: #fff;
+    border: 2px solid #666;
+    color: #666;
+    text-align: center;
+    font: 25px Arial, sans-serif;
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+//pour l'affichage des boutons de selection pour le nombre de cotes en format grille
+.grid-container {
+    margin-top: 20px;
+    display: grid;
+    grid-template-columns: auto auto auto;
+    padding: 10px;
+}
+
+.grid-item {
+    background-color: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(0, 0, 0, 0.8);
+    padding: 20px;
+    font-size: 30px;
+    text-align: center;
+}
+
+#triangleStyle1 {
+    width: 0;
+    height: 0;
+    border-left: 30px solid transparent;
+    border-right: 30px solid transparent;
+    border-bottom: 50px solid white;
+}
+
+#triangleStyle3 {
+    width: 0;
+    height: 0;
+    border-left: 30px solid transparent;
+    border-right: 30px solid transparent;
+    border-bottom: 50px solid black;
+}
+
+#triangleBackgroundStyle2 {
+    left: 10px;
+    width: 0;
+    height: 0;
+    border-left: 20px solid transparent;
+    border-right: 20px solid transparent;
+    border-bottom: 35px solid rgb(48, 46, 64);
+    left: 70px;
+    position: absolute;
+    top: 168px;
+}
+
+#triangleBackgroundStyle3 {
+    left: 10px;
+    width: 0;
+    height: 0;
+    border-left: 20px solid transparent;
+    border-right: 20px solid transparent;
+    border-bottom: 35px solid white;
+    left: 131px;
+    position: absolute;
+    top: 168px;
+}
+
+#headerPolygone {
+    padding-top: 60px;
+    position: relative;
+    color: white;
+    bottom: 20px;
+    width: auto;
+    font-size: 25px;
+    font-family: Arial, Helvetica, sans-serif;
+    height: 0px;
+    left: 6%;
 }

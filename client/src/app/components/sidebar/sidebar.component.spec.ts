@@ -15,6 +15,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { PaintBucketService } from '@app/services/tools/paint-bucket/paint-bucket.service';
 import { SelectionService } from '@app/services/tools/selection/selection.service';
 import { SidebarComponent } from './sidebar.component';
+import { PolygonService } from '@app/services/tools/polygon/polygon.service';
 
 describe('SidebarComponent', () => {
     let component: SidebarComponent;
@@ -30,7 +31,7 @@ describe('SidebarComponent', () => {
     let drawServiceMock: MockDrawingService;
     let paintBucketStub: PaintBucketService;
     let UndoRedoServiceMock: MockUndoRedoService;
-    //let paintBucketStub: PaintBucketService;
+    let polygonStub: PolygonService;
     let matDialogSpy: jasmine.SpyObj<MatDialog>;
 
     beforeEach(async(() => {
@@ -42,8 +43,9 @@ describe('SidebarComponent', () => {
         lineStub = new LineService(drawServiceMock,UndoRedoServiceMock);
         ellipseStub = new EllipseService(drawServiceMock,UndoRedoServiceMock);
         eraserStub = new EraserService(drawServiceMock,UndoRedoServiceMock);
+        polygonStub = new PolygonService(drawServiceMock);
         selectionStub = new SelectionService(drawServiceMock,UndoRedoServiceMock);
-        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub,paintBucketStub,selectionStub);
+        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub,paintBucketStub,selectionStub, polygonStub);
         matDialogSpy = jasmine.createSpyObj('MatDialog', ['open']);
         TestBed.configureTestingModule({
             declarations: [SidebarComponent],

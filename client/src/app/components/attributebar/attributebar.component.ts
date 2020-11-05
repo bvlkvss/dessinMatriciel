@@ -105,4 +105,8 @@ export class AttributebarComponent implements OnInit {
             this.tools.setRectangleStyle(this.idStyleRectangle);
         }
     }
+
+    setNumberSides(newNumberSides: number) {
+        this.tools.setPolygonNumberSides(newNumberSides);
+    }
 }

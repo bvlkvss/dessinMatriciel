@@ -7,6 +7,7 @@ import { EraserService } from '@app/services/tools/eraser/eraser-service';
 import { LineService } from '@app/services/tools/line/line.service';
 import { PaintBucketService } from '@app/services/tools/paint-bucket/paint-bucket.service';
 import { PencilService } from '@app/services/tools/pencil/pencil-service';
+import { PolygonService } from '@app/services/tools/polygon/polygon.service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle.service';
 import { SelectionService } from '@app/services/tools/selection/selection.service';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
@@ -35,18 +36,20 @@ describe('AttributebarComponent', () => {
     let paintBucketStub: PaintBucketService;
     let drawServiceMock: MockDrawingService;
     let selectionStub: SelectionService;
+    let polygonStub: PolygonService;
     let UndoRedoServiceMock: MockUndoRedoService;
 
     beforeEach(async(() => {
         drawServiceMock = new MockDrawingService();
         UndoRedoServiceMock = new MockUndoRedoService(drawServiceMock);
+        polygonStub = new PolygonService(drawServiceMock);
         pencilStub = new PencilService(drawServiceMock, UndoRedoServiceMock);
         brushStub = new BrushService(drawServiceMock, UndoRedoServiceMock);
         rectangleStub = new RectangleService(drawServiceMock, UndoRedoServiceMock);
         lineStub = new LineService(drawServiceMock, UndoRedoServiceMock);
         ellipseStub = new EllipseService(drawServiceMock, UndoRedoServiceMock);
         eraserStub = new EraserService(drawServiceMock, UndoRedoServiceMock);
-        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub,paintBucketStub,selectionStub);
+        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub,paintBucketStub,selectionStub, polygonStub);
         TestBed.configureTestingModule({
             declarations: [AttributebarComponent],
             providers: [{ provide: ToolsManagerService, useValue: toolManagerStub }],
