@@ -3,6 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ExportComponent } from '@app/components/export/export.component';
 import { UserGuideComponent } from '@app/components/user-guide/user-guide.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+//import { SelectionService } from '@app/services/tools/selection/selection.service';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
@@ -133,6 +134,13 @@ export class SidebarComponent implements OnChanges {
     onkeyDownWindow(event: KeyboardEvent): void {
         if (event.ctrlKey && event.key === 'e') {
             this.openExportDialog();
+        } 
+        /*
+        if (event.ctrlKey && event.key === 'a') {
+            this.tools.currentTool as SelectionService;
         }
+        */
     }
+
+    
 }

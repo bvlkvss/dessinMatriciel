@@ -28,70 +28,32 @@ body {
     color: white;
 }
 
+.drawingtoolscontainer {
+    display: inline-table;
+    border-top: solid 2px darkgray;
+    margin-bottom: 8px;
+}
+
+.drawingtoolscontainer2 {
+    display: flex;
+    border-top: solid 2px darkgray;
+}
+
+.colorboxcontainer {
+    display: flex;
+}
+
+.actioniconcontainer {
+    display: flex;
+}
+
 .icon-bar {
-    width: 50px;
+    display: inline-table;
+    width: 100px;
     background-color: rgb(64, 61, 85);
     padding-bottom: 10px;
     border-bottom: solid 2px darkgray;
-}
-
-.icon-bar2 {
-    position: relative;
-    top: 200px;
-    width: 50px;
-    background-color: rgb(64, 61, 85);
-}
-
-.color-bar {
-    position: relative;
-    top: 15px;
-    width: 50px;
-    background-color: rgb(64, 61, 85);
-}
-
-.color-bar a {
-    display: block;
-    position: relative;
-    text-align: center;
-    vertical-align: middle;
-    height: 20px;
-    width: 20px;
-    left: 4px;
-    padding: 10px;
-    cursor: pointer;
-}
-
-.color-box1 {
-    background-color: black;
-    border: slategray 1px solid;
-    border-radius: 10px;
-}
-.color-box2 {
-    background-color: black;
-    border: slategray 1px solid;
-    border-radius: 10px;
-}
-
-.change {
-    transition: all 0.1s;
-}
-
-.change:hover {
-    transition: all 0.1s;
-    transform: rotateX(180deg);
-}
-
-.icon-bar2 a {
-    display: block;
-    position: relative;
-    text-align: center;
-    top: 10px;
-    padding: 10px;
-    cursor: pointer;
-}
-
-.active {
-    background-color: #9fa1a3;
+    
 }
 
 .icon-bar a {
@@ -99,6 +61,7 @@ body {
     position: relative;
     text-align: center;
     vertical-align: middle;
+    width: 30px;
     height: 30px;
     transition: all 0.3s ease;
     color: white;
@@ -106,6 +69,20 @@ body {
     padding: 10px;
     color: rgb(64, 61, 85);
     cursor: pointer;
+}
+
+.icon-bar a:hover {
+    background-color: #9fa1a3;
+    .slidingtxt {
+        visibility: initial;
+        -webkit-transform: translateX(55px);
+        transform: translate(55px);
+    }
+    .slidingtxt2 {
+        visibility: initial;
+        -webkit-transform: translateX(55px);
+        transform: translate(55px);
+    }
 }
 
 .slidingtxt {
@@ -125,13 +102,83 @@ body {
     z-index: -1;
 }
 
-.icon-bar a:hover {
+.slidingtxt2 {
+    font-family: Arial, Helvetica, sans-serif;
+    position: absolute;
+    top: 0;
+    left: 45px;
+    width: auto;
+    height: 30px;
+    visibility: hidden;
+    text-align: center;
+    transition: all 0.3s ease;
+    color: white;
+    cursor: pointer;
+    padding: 10px;
+    background-color: rgb(64, 61, 85);
+    z-index: -1;
+}
+
+.icon-bar2 {
+    position: relative;
+    top: 200px;
+    width: 50px;
+    background-color: rgb(64, 61, 85);
+    left: 4px;
+}
+
+.color-bar {
+    position: relative;
+    padding-left: 4px;
+    top: 15px;
+    width: 50px;
+    background-color: rgb(64, 61, 85);
+}
+
+.color-bar a {
+    display: block;
+    position: relative;
+    text-align: center;
+    vertical-align: middle;
+    height: 20px;
+    width: 20px;
+    left: 4px;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.color-box1 {
+    background-color: white;
+    border: slategray 1px solid;
+    border-radius: 5px;
+}
+
+.color-box2 {
+    background-color: white;
+    border: slategray 1px solid;
+    border-radius: 5px;
+}
+
+.change {
+    transition: all 0.1s;
+}
+
+.change:hover {
+    transition: all 0.1s;
+    transform: rotateX(180deg);
+}
+
+.icon-bar2 a {
+    display: block;
+    position: relative;
+    text-align: center;
+    top: 90px;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.active {
     background-color: #9fa1a3;
-    .slidingtxt {
-        visibility: initial;
-        -webkit-transform: translateX(55px);
-        transform: translate(55px);
-    }
 }
 
 .icon-bar a [name='pipette']:hover {
