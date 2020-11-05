@@ -15,9 +15,9 @@ export class SelectionCommand extends Command {
 
     isResize: boolean = false;
 
-    constructor(startPos: Vec2, protected tool: SelectionService, protected drawingService: DrawingService) {
+    constructor(startPosErase: Vec2, protected tool: SelectionService, protected drawingService: DrawingService) {
         super();
-        this.startPosErase = startPos;
+        this.startPosErase = startPosErase;
     }
     setStartPos(endPos: Vec2): void {
         this.startPos = endPos;
