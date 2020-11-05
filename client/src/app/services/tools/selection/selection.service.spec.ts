@@ -1,7 +1,10 @@
 /* tslint:disable */
 import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
+import { SelectionCommand } from '@app/classes/selection-command';
+import { MockDrawingService } from '@app/components/drawing/drawing.component.spec';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 //import { RectangleService } from '../rectangle/rectangle.service';
 import { SelectionService } from './selection.service';
 
@@ -9,13 +12,17 @@ describe('SelectionService', () => {
   let service: SelectionService;
   let mouseEvent: MouseEvent;
   let drawServiceSpy: jasmine.SpyObj<DrawingService>;
-
+  let selectionCommandStub: SelectionCommand;
+  let selectionStub: SelectionService;
+  let invokerStub: UndoRedoService;
   let baseCtxStub: CanvasRenderingContext2D;
   let previewCtxStub: CanvasRenderingContext2D;
   let canvasStub: HTMLCanvasElement;
+  let DrawingServiceMock: MockDrawingService;
   //let drawRectangleSpy: jasmine.Spy<any>;
 
   beforeEach(() => {
+    DrawingServiceMock = new MockDrawingService();
     canvasStub = canvasTestHelper.canvas;
     baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
     previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
@@ -36,9 +43,10 @@ describe('SelectionService', () => {
     service['drawingService'].previewCtx.canvas.width = previewCtxStub.canvas.width;
     service['drawingService'].baseCtx.canvas.height = baseCtxStub.canvas.height;
     service['drawingService'].previewCtx.canvas.height = previewCtxStub.canvas.height;
-
-
-
+    invokerStub = new UndoRedoService(DrawingServiceMock);
+    selectionStub = new SelectionService(DrawingServiceMock, invokerStub);
+    selectionCommandStub = new SelectionCommand({ x: 0, y: 0 }, selectionStub, DrawingServiceMock);
+    service.selectionCommand = selectionCommandStub;
     mouseEvent = {
       offsetX: 25,
       offsetY: 25,
@@ -1447,7 +1455,7 @@ describe('SelectionService', () => {
     service.selectionEndPoint = { x: 70, y: 35 };
     service.selectionStyle = 0;
 
-    service.eraseSelectionFromBase(service.selectionEndPoint);
+    service.eraseSelectionFromBase(service.selectionStartPoint);
 
     expect(ctxRectMock).toHaveBeenCalled();
 
@@ -1468,7 +1476,7 @@ describe('SelectionService', () => {
     service.selectionEndPoint = { x: 70, y: 35 };
     service.selectionStyle = 1;
 
-    service.eraseSelectionFromBase(service.selectionEndPoint);
+    service.eraseSelectionFromBase(service.selectionStartPoint);
 
     expect(ellipseServiceDrawSpy).toHaveBeenCalled();
 

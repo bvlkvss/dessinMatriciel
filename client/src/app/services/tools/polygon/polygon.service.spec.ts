@@ -1,7 +1,7 @@
 /* tslint:disable */
 import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
-//import { Vec2 } from '@app/classes/vec2';
+import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { PolygonService } from './polygon.service';
 
@@ -37,17 +37,17 @@ describe('PolygonService', () => {
         service['drawingService'].previewCtx.canvas.height = previewCtxStub.canvas.height;
 
         drawPolygonSpy = spyOn(service, 'drawPolygon');
-        mouseEvent = {
-            offsetX: 25,
-            offsetY: 25,
-            button: 0,
-        } as MouseEvent;
+           mouseEvent = {
+             offsetX: 25,
+             offsetY: 25,
+             button: 0,
+         } as MouseEvent;
     });
     it('should be created', () => {
         expect(service).toBeTruthy();
     });
 
-    /*it('style should be set to assigned value when setStyle is called', () => {
+    it('style should be set to assigned value when setStyle is called', () => {
         service.setStyle(2);
         expect(service.polygonStyle).toEqual(2);
     });
@@ -221,6 +221,6 @@ describe('PolygonService', () => {
     service.secondaryColor = "abaaba";
     service.setSecondaryColor("bbhhbb");
     expect(service.secondaryColor).toEqual("bbhhbb");
-});*/
+});
 
 });
