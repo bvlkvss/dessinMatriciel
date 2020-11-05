@@ -15,7 +15,7 @@ export class ResizingService {
     resizedWidth: number;
     resizedHeight: number;
     cmd: ResizeCommand;
-    constructor(private drawingService: DrawingService, protected invoker: UndoRedoService) { }
+    constructor(private drawingService: DrawingService, protected invoker: UndoRedoService) {}
 
     initResizing(event: MouseEvent): void {
         if (event.button === 0) {

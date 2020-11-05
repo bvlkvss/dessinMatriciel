@@ -1,12 +1,12 @@
 // tslint:disable:max-file-line-count
 import { Injectable } from '@angular/core';
+import { SelectionCommand } from '@app/classes/selection-command';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { EllipseService } from '@app/services/tools/ellipse/ellipse.service';
 import { RectangleService, RectangleStyle } from '@app/services/tools/rectangle/rectangle.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
-import { SelectionCommand } from '../../../classes/selection-command';
 export enum MouseButton {
     Left = 0,
     Middle = 1,
@@ -395,23 +395,25 @@ export class SelectionService extends Tool {
     }
 
     eraseSelectionFromBase(endPos: Vec2): void {
-        this.drawingService.baseCtx.beginPath();
-        this.drawingService.baseCtx.fillStyle = 'white';
-        switch (this.selectionStyle) {
-            case 0:
-                this.drawingService.baseCtx.rect(this.selectionStartPoint.x, this.selectionStartPoint.y, this.width, this.height);
-                break;
-            case 1:
-                this.ellipseService.setStyle(2);
-                this.ellipseService.primaryColor = 'white';
-                let toCircle = false;
-                if (this.height === this.width) toCircle = true;
-                this.ellipseService.drawEllipse(this.drawingService.baseCtx, this.selectionStartPoint, endPos, toCircle, false);
-                break;
+        if (endPos) {
+            this.drawingService.baseCtx.beginPath();
+            this.drawingService.baseCtx.fillStyle = 'white';
+            switch (this.selectionStyle) {
+                case 0:
+                    this.drawingService.baseCtx.rect(this.selectionStartPoint.x, this.selectionStartPoint.y, this.width, this.height);
+                    break;
+                case 1:
+                    this.ellipseService.setStyle(2);
+                    this.ellipseService.primaryColor = 'white';
+                    let toCircle = false;
+                    if (this.height === this.width) toCircle = true;
+                    this.ellipseService.drawEllipse(this.drawingService.baseCtx, this.selectionStartPoint, endPos, toCircle, false);
+                    break;
+            }
+            this.drawingService.baseCtx.fill();
+            this.drawingService.baseCtx.closePath();
+            this.firstSelectionMove = false;
         }
-        this.drawingService.baseCtx.fill();
-        this.drawingService.baseCtx.closePath();
-        this.firstSelectionMove = false;
     }
 
     selectAllCanvas(): void {

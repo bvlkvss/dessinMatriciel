@@ -9,7 +9,7 @@ const drawCanvas = document.createElement('canvas') as HTMLCanvasElement;
 drawCanvas.width = WIDTH;
 drawCanvas.height = HEIGHT;
 
-const selectionCanvas = document.createElement('canvas') ;
+const selectionCanvas = document.createElement('canvas');
 selectionCanvas.width = WIDTH;
 selectionCanvas.height = HEIGHT;
 

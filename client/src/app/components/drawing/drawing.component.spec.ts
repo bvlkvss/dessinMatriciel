@@ -57,9 +57,9 @@ describe('DrawingComponent', () => {
         lineStub = new LineService(drawServiceMock, undoRedoServiceMock);
         ellipseStub = new EllipseService(drawServiceMock, undoRedoServiceMock);
         eraserStub = new EraserService(drawServiceMock, undoRedoServiceMock);
-        selectionStub = new SelectionService(drawServiceMock,undoRedoServiceMock);
-        polygonStub = new PolygonService(drawServiceMock);
-        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub,selectionStub,paintBucketStub, polygonStub);
+        selectionStub = new SelectionService(drawServiceMock, undoRedoServiceMock);
+        polygonStub = new PolygonService(drawServiceMock, undoRedoServiceMock);
+        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub, selectionStub, paintBucketStub, polygonStub);
 
         TestBed.configureTestingModule({
             declarations: [DrawingComponent],

@@ -1,21 +1,21 @@
 /* tslint:disable */
 import { async, ComponentFixture, ComponentFixtureAutoDetect, TestBed } from '@angular/core/testing';
+import { MatDialog } from '@angular/material/dialog';
 import { MockDrawingService } from '@app/components/drawing/drawing.component.spec';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { BrushService } from '@app/services/tools/brush/brush.service';
 import { EllipseService } from '@app/services/tools/ellipse/ellipse.service';
 import { EraserService } from '@app/services/tools/eraser/eraser-service';
 import { LineService } from '@app/services/tools/line/line.service';
+import { PaintBucketService } from '@app/services/tools/paint-bucket/paint-bucket.service';
 import { PencilService } from '@app/services/tools/pencil/pencil-service';
+import { PolygonService } from '@app/services/tools/polygon/polygon.service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle.service';
+import { SelectionService } from '@app/services/tools/selection/selection.service';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
 import { MockUndoRedoService } from '../attributebar/attributebar.component.spec';
 import { UserGuideComponent } from '../user-guide/user-guide.component';
-import { MatDialog } from '@angular/material/dialog';
-import { PaintBucketService } from '@app/services/tools/paint-bucket/paint-bucket.service';
-import { SelectionService } from '@app/services/tools/selection/selection.service';
 import { SidebarComponent } from './sidebar.component';
-import { PolygonService } from '@app/services/tools/polygon/polygon.service';
 
 describe('SidebarComponent', () => {
     let component: SidebarComponent;
@@ -37,15 +37,15 @@ describe('SidebarComponent', () => {
     beforeEach(async(() => {
         drawServiceMock = new MockDrawingService();
         UndoRedoServiceMock = new MockUndoRedoService(drawServiceMock);
-        pencilStub = new PencilService(drawServiceMock,UndoRedoServiceMock);
-        brushStub = new BrushService(drawServiceMock,UndoRedoServiceMock);
-        rectangleStub = new RectangleService(drawServiceMock,UndoRedoServiceMock);
-        lineStub = new LineService(drawServiceMock,UndoRedoServiceMock);
-        ellipseStub = new EllipseService(drawServiceMock,UndoRedoServiceMock);
-        eraserStub = new EraserService(drawServiceMock,UndoRedoServiceMock);
-        polygonStub = new PolygonService(drawServiceMock);
-        selectionStub = new SelectionService(drawServiceMock,UndoRedoServiceMock);
-        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub,selectionStub,paintBucketStub, polygonStub);
+        pencilStub = new PencilService(drawServiceMock, UndoRedoServiceMock);
+        brushStub = new BrushService(drawServiceMock, UndoRedoServiceMock);
+        rectangleStub = new RectangleService(drawServiceMock, UndoRedoServiceMock);
+        lineStub = new LineService(drawServiceMock, UndoRedoServiceMock);
+        ellipseStub = new EllipseService(drawServiceMock, UndoRedoServiceMock);
+        eraserStub = new EraserService(drawServiceMock, UndoRedoServiceMock);
+        polygonStub = new PolygonService(drawServiceMock, UndoRedoServiceMock);
+        selectionStub = new SelectionService(drawServiceMock, UndoRedoServiceMock);
+        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub, selectionStub, paintBucketStub, polygonStub);
         matDialogSpy = jasmine.createSpyObj('MatDialog', ['open']);
         TestBed.configureTestingModule({
             declarations: [SidebarComponent],
