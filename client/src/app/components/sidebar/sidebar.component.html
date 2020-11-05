@@ -36,6 +36,11 @@
                 <img class="material-icons" src="../../../assets/format-color-fill.png">
                 <span class="slidingtxt"> Remplir (B)</span>
             </a>
+            <a id="pipette" (click)="displayPalette('pipette')" (click)="changeTools('pipette')">
+                <i class="material-icons">colorize</i>
+                <span class="slidingtxt"> Pipette (I)</span>
+            </a>
+            
             <a id="undo" (click)="undo()">
                 <i class="material-icons">undo</i>
             </a>
@@ -44,35 +49,26 @@
             </a>
         </div>
 
-        <div class="color-bar ">
-            <a (click)="toggleColorPalette('primaryColorPicker')" class="color-box1">
-            </a>
-            <a class="tooltip">
-                <i (click)="revertColors()" class="material-icons change">swap_vert</i>
-            </a>
-            <a (click)="toggleColorPalette('secondaryColorPicker')" class="color-box2">
-            </a>
-        </div>
+                <a class="tooltip">
+                    <i (click)="revertColors()" class="material-icons change">swap_vert</i>
+                </a>
+                <a (click)="toggleColorPalette('secondaryColorPicker')" class="color-box2"> </a>
+            </div>
 
-        <div class="icon-bar2">
-            <a class="tooltip" (click)="newDrawing()">
-                <i class="material-icons">add</i>
-                <span class="tooltiptext">Nouveau Dessin</span>
-            </a>
-            <a class="tooltip" (click)="openUserGuide()">
-                <i class="material-icons">help_center</i>
-                <span class="tooltiptext">Guide D'utilisateur</span>
-            </a>
-            <a class="tooltip" (click)="openExportDialog()">
-                <i class="material-icons">save_alt</i>
-                <span class="tooltiptext">Exporter le dessin</span>
-            </a>
-            <a class="tooltip" (click)="warningMessage()">
-                <i class="material-icons">house</i>
-                <span class="tooltiptext">Menu Principal</span>
-            </a>
+            <div class="icon-bar2">
+                <a class="tooltip" (click)="newDrawing()">
+                    <i class="material-icons">add</i>
+                    <span class="tooltiptext">Nouveau Dessin</span>
+                </a>
+                <a class="tooltip" (click)="openUserGuide()">
+                    <i class="material-icons">help_center</i>
+                    <span class="tooltiptext">Guide D'utilisateur</span>
+                </a>
+                <a class="tooltip" (click)="warningMessage()">
+                    <i class="material-icons">house</i>
+                    <span class="tooltiptext">Menu Principal</span>
+                </a>
+            </div>
         </div>
-    </div>
-</body>
-
+    </body>
 </html>

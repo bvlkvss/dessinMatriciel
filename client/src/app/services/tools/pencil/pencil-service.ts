@@ -58,6 +58,7 @@ export class PencilService extends Tool {
             this.invoker.addToUndo(cmd);
             this.invoker.setIsAllowed(true);
         }
+        console.log(this.primaryColor);
         this.mouseDown = false;
         this.clearPath();
     }

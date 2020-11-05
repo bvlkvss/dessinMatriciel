@@ -6,6 +6,7 @@ import { EraserService } from '@app/services/tools/eraser/eraser-service';
 import { LineService } from '@app/services/tools/line/line.service';
 import { PaintBucketService } from '@app/services/tools/paint-bucket/paint-bucket.service';
 import { PencilService } from '@app/services/tools/pencil/pencil-service';
+import { PipetteService } from '@app/services/tools/pipette/pipette.service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle.service';
 import { SelectionService } from '@app/services/tools/selection/selection.service';
 
@@ -25,6 +26,7 @@ export class ToolsManagerService {
         lineService: LineService,
         paintBucketService: PaintBucketService,
         selectionService: SelectionService,
+        pipetteService: PipetteService,
     ) {
         this.tools = new Map<string, Tool>([
             ['pencil', pencilService],
@@ -35,6 +37,7 @@ export class ToolsManagerService {
             ['line', lineService],
             ['paintBucket', paintBucketService],
             ['selection', selectionService],
+            ['pipette', pipetteService],
         ]);
         this.currentTool = this.tools.get('pencil') as Tool;
     }

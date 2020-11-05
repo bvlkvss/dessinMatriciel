@@ -1,10 +1,10 @@
-import { Component, HostListener, Input, OnChanges } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { ExportComponent } from '@app/components/export/export.component';
+import { Component, Input, OnChanges } from '@angular/core';
 import { UserGuideComponent } from '@app/components/user-guide/user-guide.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
+import { MatDialog } from '@angular/material/dialog';
+import { ExportComponent } from '@app/components/export/export.component';
 
 const COLOR_STRING_LENGTH = 7;
 
@@ -41,14 +41,12 @@ export class SidebarComponent implements OnChanges {
     redo(): void {
         this.invoker.redoPrev();
     }
-
     openExportDialog(): void {
         if (this.dialog.openDialogs.length === 0) {
             this.dialog.open(ExportComponent);
             ExportComponent.isExportOpen = true;
         }
     }
-
     displayPalette(toolName: string): void {
         if (!this.attributeBarIsActive) {
             this.attributeBarIsActive = true;
@@ -126,13 +124,6 @@ export class SidebarComponent implements OnChanges {
     warningMessage(): void {
         if (window.confirm('Warning, your current sketch will be deleted.\n Do you want to proceed to the main menu?')) {
             location.replace('main-page.component.html');
-        }
-    }
-
-    @HostListener('window:keydown', ['$event'])
-    onkeyDownWindow(event: KeyboardEvent): void {
-        if (event.ctrlKey && event.key === 'e') {
-            this.openExportDialog();
         }
     }
 }

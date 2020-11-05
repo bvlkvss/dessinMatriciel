@@ -1,8 +1,8 @@
 import { AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { Tool } from '@app/classes/tool';
-import { ExportComponent } from '@app/components/export/export.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ResizingService } from '@app/services/resizing/resizing.service';
+import { SelectionService } from '@app/services/tools/selection/selection.service';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
@@ -44,7 +44,10 @@ export class DrawingComponent implements AfterViewInit, OnInit {
             .set('2', this.tools.getTools().get('ellipse') as Tool)
             .set('l', this.tools.getTools().get('line') as Tool)
             .set('b', this.tools.getTools().get('paintBucket') as Tool)
-            .set('r', this.tools.getTools().get('selection') as Tool);
+            .set('r', this.tools.getTools().get('selection') as Tool)
+            .set('s', this.tools.getTools().get('selection') as Tool)
+            .set('i', this.tools.getTools().get('pipette') as Tool);
+
         this.baseCtx = this.baseCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.previewCtx = this.previewCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.drawingService.baseCtx = this.baseCtx;
@@ -97,6 +100,11 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     onMouseDown(event: MouseEvent): void {
         this.tools.currentTool.onMouseDown(event);
     }
+    @HostListener('contextmenu', ['$event'])
+    onRightClick(event: MouseEvent): void {
+        event.preventDefault();
+        this.tools.currentTool.onRightClick(event);
+    }
 
     @HostListener('mouseenter', ['$event'])
     onMouseEnter(event: MouseEvent): void {
@@ -141,12 +149,6 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         this.tools.currentTool.onMouseOut(event);
     }
 
-    @HostListener('contextmenu', ['$event'])
-    onRightClick(event: MouseEvent): void {
-        event.preventDefault();
-        this.tools.currentTool.onRightClick(event);
-    }
-
     @HostListener('document:keyup', ['$event'])
     onKeyUp(event: KeyboardEvent): void {
         this.tools.currentTool.onKeyUp(event);
@@ -154,7 +156,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
 
     @HostListener('window:keydown', ['$event'])
     onkeyDownWindow(event: KeyboardEvent): void {
-        if (event.ctrlKey && event.key === 'o' && !ExportComponent.isExportOpen) {
+        if (event.ctrlKey && event.key === 'o') {
             event.preventDefault();
             event.stopPropagation();
             this.drawingService.newDrawing();
@@ -169,11 +171,13 @@ export class DrawingComponent implements AfterViewInit, OnInit {
 
     @HostListener('keydown', ['$event'])
     onKeyDown(event: KeyboardEvent): void {
-        if ((event.ctrlKey && event.key === 'o') || ExportComponent.isExportOpen) {
+        if (event.ctrlKey && event.key === 'o') {
             return;
         } else if (this.keyBindings.has(event.key)) {
             this.drawingService.restoreCanvasState();
             this.tools.currentTool = this.keyBindings.get(event.key) as Tool;
+            if (event.key === 'r') (this.tools.currentTool as SelectionService).selectionStyle = 0;
+            else if (event.key === 's') (this.tools.currentTool as SelectionService).selectionStyle = 1;
         } else this.tools.currentTool.onKeyDown(event);
     }
 
