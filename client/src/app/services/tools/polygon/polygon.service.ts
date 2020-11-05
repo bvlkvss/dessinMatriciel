@@ -1,190 +1,215 @@
 import { Injectable } from '@angular/core';
-import { Tool } from "@app/classes/tool";
+import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 
-export enum MouseButton{
-  Left=0,
-  Middle=1,
-  Right=2,
-  Back=3,
-  Forward=4
+export enum MouseButton {
+    Left = 0,
+    Middle = 1,
+    Right = 2,
+    Back = 3,
+    Forward = 4,
 }
 
-export enum polygonStyle{
-  Empty = 0,
-  Filled_contour = 1,
-  Filled = 2,
+export enum polygonStyle {
+    Empty = 0,
+    Filled_contour = 1,
+    Filled = 2,
 }
 
 @Injectable({
-  providedIn: 'root',
+    providedIn: 'root',
 })
-
 export class PolygonService extends Tool {
-  toSquare: boolean = false;  
-  isOut: boolean = false;
-  numberSides:number = 9;
-  currentPos: Vec2;
-  polygonStyle: polygonStyle;
-  constructor(drawingService: DrawingService) {
-      super(drawingService);
-      this.toolAttributes = ['strokeWidth', 'polygonStyle'];
-      this.polygonStyle = 2;
-      this.lineWidth = 1;
-      this.primaryColor = '#000000';
-      this.secondaryColor = '#000000';
-  }
+    isOut: boolean = false;
+    numberSides: number = 3;
+    currentPos: Vec2;
+    startPos: Vec2;
+    polygonStyle: polygonStyle;
 
-  setStyle(id: number): void {
-      this.polygonStyle = id;
-  }
+    widthPolygon: number = 0;  //variables globales car doivent etre modifiees par differentes methodes
+    heightPolygon: number = 0; 
+    incertitude: number = 0;
 
-  onMouseDown(event: MouseEvent): void {
-      this.mouseDown = event.button === MouseButton.Left;
-      if (this.mouseDown) {
-          this.mouseDownCoord = this.getPositionFromMouse(event);
-      }
-  }
+    constructor(drawingService: DrawingService) {
+        super(drawingService);
+        this.toolAttributes = ['strokeWidth', 'polygonStyle'];
+        this.polygonStyle = 2;
+        this.lineWidth = 1;
+        this.primaryColor = '#000000';
+        this.secondaryColor = '#000000';
+    }
 
-  setLineWidth(width: number): void {
-      this.lineWidth = width;
-  }
+    setNumberSides(newNumberSides: number): void {
+        this.numberSides = newNumberSides;
+    }
 
-  setPrimaryColor(color: string): void {
-      this.primaryColor = color;
-  }
-  setSecondaryColor(color: string): void {
-      this.secondaryColor = color;
-  }
-  onMouseOut(event: MouseEvent): void {
-      if (this.mouseDown) {
-          this.isOut = true;
+    setStyle(id: number): void {
+        this.polygonStyle = id;
+    }
 
-          this.mouseOutCoord = this.getPositionFromMouse(event);
-          if (this.mouseOutCoord.x > this.drawingService.previewCtx.canvas.width ) {
-              this.mouseOutCoord.x = this.drawingService.canvas.width;
-          } else if (this.mouseOutCoord.x < 0) {
-              this.mouseOutCoord.x = 0;
-          }
-           if (this.mouseOutCoord.y > this.drawingService.previewCtx.canvas.height) {
-              this.mouseOutCoord.y = this.drawingService.canvas.height;
-          } else if (this.mouseOutCoord.y < 0) {
-              this.mouseOutCoord.y = 0;
-          }
-          this.drawingService.clearCanvas(this.drawingService.previewCtx);
-          this.drawPolygon(this.drawingService.previewCtx, this.mouseDownCoord, this.mouseOutCoord, this.toSquare);
-      }
-  }
+    onMouseDown(event: MouseEvent): void {
+        this.mouseDown = event.button === MouseButton.Left;
+        if (this.mouseDown) {
+            this.mouseDownCoord = this.getPositionFromMouse(event);
+        }
+    }
 
-  onMouseEnter(event: MouseEvent): void {
-      this.isOut = false;
-  }
+    setLineWidth(width: number): void {
+        this.lineWidth = width;
+    }
 
-  onMouseUp(event: MouseEvent): void {
-      if (this.mouseDown) {
-          let mousePosition = this.getPositionFromMouse(event);
-          if (this.isOut) mousePosition = this.mouseOutCoord;
-            this.drawPolygon(this.drawingService.baseCtx, this.mouseDownCoord, mousePosition, this.toSquare);
-      }
-      this.drawingService.clearCanvas(this.drawingService.previewCtx);
-      this.mouseDown = false;
-      this.toSquare = false;
-  }
+    setPrimaryColor(color: string): void {
+        this.primaryColor = color;
+    }
+    setSecondaryColor(color: string): void {
+        this.secondaryColor = color;
+    }
+    onMouseOut(event: MouseEvent): void {
+        if (this.mouseDown) {
+            this.isOut = true;
 
-  onMouseMove(event: MouseEvent): void {
-      if (this.mouseDown) {
-          this.currentPos = this.getPositionFromMouse(event);
+            this.mouseOutCoord = this.getPositionFromMouse(event);
+            if (this.mouseOutCoord.x > this.drawingService.previewCtx.canvas.width) {
+                this.mouseOutCoord.x = this.drawingService.canvas.width;
+            } else if (this.mouseOutCoord.x < 0) {
+                this.mouseOutCoord.x = 0;
+            }
+            if (this.mouseOutCoord.y > this.drawingService.previewCtx.canvas.height) {
+                this.mouseOutCoord.y = this.drawingService.canvas.height;
+            } else if (this.mouseOutCoord.y < 0) {
+                this.mouseOutCoord.y = 0;
+            }
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.drawPolygon(this.drawingService.previewCtx, this.mouseDownCoord, this.mouseOutCoord);
+        }
+    }
 
-          // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
-          this.drawingService.clearCanvas(this.drawingService.previewCtx);
-          this.drawPolygon(this.drawingService.previewCtx, this.mouseDownCoord, this.currentPos, this.toSquare);
-      }
-  }
+    //va calibrer la taille du polygon pour eviter davoir un dessin qui sort du canvas
+    calibratePolygon(widthP: number): void {
+        if (this.mouseDownCoord.x - Math.abs(this.widthPolygon) - widthP <= 0) {
+            this.widthPolygon = this.mouseDownCoord.x - widthP;         
+        } else if (this.mouseDownCoord.x + Math.abs(this.widthPolygon) + widthP >= this.drawingService.previewCtx.canvas.width) {
+            this.widthPolygon = Math.abs(this.drawingService.previewCtx.canvas.width - this.mouseDownCoord.x) - widthP;
+        }
+        if (this.mouseDownCoord.y - Math.abs(this.heightPolygon) - widthP <= 0) {
+            this.heightPolygon = this.mouseDownCoord.y - widthP;
+        } else if (this.mouseDownCoord.y + Math.abs(this.heightPolygon) + widthP >= this.drawingService.previewCtx.canvas.height) {
+            this.heightPolygon = Math.abs(this.drawingService.previewCtx.canvas.height - this.mouseDownCoord.y) - widthP;
+        }
+    }
 
-  onKeyUp(event: KeyboardEvent): void {
-      if (!event.shiftKey && this.mouseDown) {
-          this.toSquare = false; //false
-          this.drawingService.clearCanvas(this.drawingService.previewCtx);
-          this.drawPolygon(this.drawingService.previewCtx, this.mouseDownCoord, this.currentPos, this.toSquare);
+    onMouseEnter(event: MouseEvent): void {
+        this.isOut = false;
+    }
 
-      }
-  }
+    onMouseUp(event: MouseEvent): void {
+        if (this.mouseDown) {
+            let mousePosition = this.getPositionFromMouse(event);
+            if (this.isOut) mousePosition = this.mouseOutCoord;
+            this.drawPolygon(this.drawingService.baseCtx, this.mouseDownCoord, mousePosition, false);
+        }
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        this.mouseDown = false;
+    }
 
-  onKeyDown(event: KeyboardEvent): void {
-      if (event.shiftKey && this.mouseDown) {
-          this.toSquare = true;
-          this.drawingService.clearCanvas(this.drawingService.previewCtx);
-          this.drawPolygon(this.drawingService.previewCtx, this.mouseDownCoord, this.currentPos, this.toSquare);
+    onMouseMove(event: MouseEvent): void {
+        if (this.mouseDown) {
+            this.currentPos = this.getPositionFromMouse(event);
 
-      }
-  }
+            // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.drawPolygon(this.drawingService.previewCtx, this.mouseDownCoord, this.currentPos);
+        }
+    }
 
-  private drawPolygon(ctx: CanvasRenderingContext2D, startPos: Vec2, currentPos: Vec2, toSquare:boolean): void {
-      let width = currentPos.x - startPos.x;
-      let height = currentPos.y - startPos.y;
+    drawPolygon(ctx: CanvasRenderingContext2D, startPos: Vec2, currentPos: Vec2, preview: boolean = true): void {
+        this.widthPolygon = currentPos.x - startPos.x;
+        this.heightPolygon = currentPos.y - startPos.y;
 
-      //toSquare always true
-          if (Math.abs(width) > Math.abs(height)) {
-              width = height * Math.sign(height) * Math.sign(width);
-          } else {
-              height = width * Math.sign(width) * Math.sign(height);
-          } 
+        //incertitude pour perimetre contenant le dessin      
+        ctx.beginPath();
+        ctx.setLineDash([0, 0]);
 
+        ctx.fillStyle = this.primaryColor;
+        ctx.strokeStyle = this.secondaryColor;
+        ctx.lineWidth = this.lineWidth;
 
-      //controle de la taille du polygone
-    //   let sizePolygon;   
-    //   if(width<height){
-    //         sizePolygon = height;
-    //   }else{
-    //         sizePolygon = width;
-    //   }
-      //const centerx = this.mouseDownCoord.x + width / 2;
-      //const centerx = startPos.x +width/ 2;
-      //const centery = startPos.y +width/ 2;
-      //const centery = this.mouseDownCoord.y + height / 2;
+        this.calibratePolygon(this.lineWidth);
 
-      ctx.beginPath();
-     
-      ctx.setLineDash([0, 0]);
+        //polygone regulier donc width et height doivent avoir la meme valeur absolue
+        if (Math.abs(this.widthPolygon) > Math.abs(this.heightPolygon)) {
+            this.widthPolygon = this.heightPolygon * Math.sign(this.heightPolygon) * Math.sign(this.widthPolygon);
+        } else {
+            this.heightPolygon = this.widthPolygon * Math.sign(this.widthPolygon) * Math.sign(this.heightPolygon);
+        }
 
-      ctx.fillStyle = this.secondaryColor;
-      ctx.strokeStyle = this.primaryColor;
-      ctx.lineWidth = this.lineWidth;
+        ctx.moveTo(startPos.x + this.widthPolygon, startPos.y); // emplacement depart
+        switch (this.polygonStyle) {
+            case 0:
+                for (var i = 0; i <= this.numberSides; i += 1) {
+                    if (this.numberSides == i) {
+                        ctx.closePath();
+                    } else
+                        ctx.lineTo(
+                            startPos.x + this.widthPolygon * Math.cos((i * 2 * Math.PI) / this.numberSides),
+                            startPos.y + this.heightPolygon * Math.sin((i * 2 * Math.PI) / this.numberSides),
+                        );
+                }
+                ctx.stroke();
+                if (this.numberSides == 3) this.incertitude = this.lineWidth;
+                else this.incertitude = this.lineWidth / 2;
+                break;
 
-      //ctx.moveTo(centerx + width*Math.cos(0), centery+height*Math.sin(0) ); // emplacement depart
-      switch (this.polygonStyle) {
-          case 0:
-              for (var i = 0; i <= this.numberSides;i += 1) {
+            case 1:
+                for (var i = 0; i <= this.numberSides; i += 1) {
+                    if (this.numberSides == i) {
+                        ctx.closePath();
+                    } else
+                        ctx.lineTo(
+                            startPos.x + this.widthPolygon * Math.cos((i * 2 * Math.PI) / this.numberSides),
+                            startPos.y + this.heightPolygon * Math.sin((i * 2 * Math.PI) / this.numberSides),
+                        );
+                }
+                ctx.stroke();
+                ctx.fill();
 
-                if(this.numberSides==i){
-                    ctx.closePath();
-                }else 
-                ctx.lineTo (startPos.x + width * Math.cos(i * 2 * Math.PI / this.numberSides), startPos.y + height * Math.sin(i * 2 * Math.PI / this.numberSides));
-            }  
-              ctx.stroke();
-              break;             
-              case 1:
-              for (var i = 0; i <= this.numberSides;i += 1) {
-                if(this.numberSides==i){
-                    ctx.closePath();
-                }else
-                ctx.lineTo (currentPos.x + width * Math.cos(i * 2 * Math.PI / this.numberSides), currentPos.y + height * Math.sin(i * 2 * Math.PI / this.numberSides));
-            }    
-              ctx.stroke();
-              ctx.fill();
-              break;
-          case 2:
-              for (var i = 0; i <= this.numberSides;i += 1) {
-                ctx.lineTo (currentPos.x + width * Math.cos(i * 2 * Math.PI / this.numberSides), currentPos.y + height * Math.sin(i * 2 * Math.PI / this.numberSides));
-              }  
-              ctx.fill();
-              break;
-      }
+                if (this.numberSides == 3) this.incertitude = this.lineWidth;
+                else this.incertitude = this.lineWidth / 2;
 
-      ctx.closePath();
-  }
+                break;
 
+            case 2:
+                for (var i = 0; i <= this.numberSides; i += 1) {
+                    ctx.lineTo(
+                        startPos.x + this.widthPolygon * Math.cos((i * 2 * Math.PI) / this.numberSides),
+                        startPos.y + this.heightPolygon * Math.sin((i * 2 * Math.PI) / this.numberSides),
+                    );
+                }
+                ctx.fill();
+                this.incertitude = 0;
+                break;
+        }
+        ctx.closePath();
 
-  
+        //perimetre circulaire du cercle
+        if (preview) {
+            ctx.beginPath();
+            ctx.setLineDash([5, 15]);
+            ctx.lineWidth = 3;
+            ctx.strokeStyle = 'grey';
+            ctx.ellipse(
+                startPos.x,
+                startPos.y,
+                Math.abs(this.widthPolygon) + this.incertitude + ctx.lineWidth,
+                Math.abs(this.heightPolygon) + this.incertitude + ctx.lineWidth,
+                0,
+                0,
+                2 * Math.PI,
+                false,
+            );
+            ctx.stroke();
+            ctx.closePath();
+        }
+    }
 }

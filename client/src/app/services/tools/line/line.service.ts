@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
+import { LineCommand } from '@app/classes/line-command';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
 const LINE_MIN_DISTANCE = 20;
 const ANGLE_VALUE = 45;
@@ -23,10 +25,10 @@ export class LineService extends Tool {
     private allignementPoint: Vec2;
     isDoubleClicked: boolean = false;
     withJunction: boolean = true;
-    private pathData: Vec2[];
+    pathData: Vec2[];
     toAllign: boolean = false;
     junctionWidth: number = 1;
-    constructor(drawingService: DrawingService) {
+    constructor(drawingService: DrawingService, protected invoker: UndoRedoService) {
         super(drawingService);
         this.pathData = [];
         this.toolAttributes = ['lineWidth', 'junctionWidth', 'junction'];
@@ -58,6 +60,8 @@ export class LineService extends Tool {
         this.mouseDown = event.button === MouseButton.Left;
 
         if (this.mouseDown && !this.toAllign) {
+            this.invoker.ClearRedo();
+            this.invoker.setIsAllowed(false);
             this.keyOnEscape = false;
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.pathData.push(this.mouseDownCoord);
@@ -90,6 +94,9 @@ export class LineService extends Tool {
 
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.drawLines(this.drawingService.baseCtx);
+        const cmd = new LineCommand(this.pathData, this.withJunction, this, this.drawingService) as LineCommand;
+        this.invoker.addToUndo(cmd);
+        this.invoker.setIsAllowed(true);
         this.mouseDown = false;
         this.clearPath();
     }
@@ -133,9 +140,10 @@ export class LineService extends Tool {
         }
     }
 
-    private drawLine(ctx: CanvasRenderingContext2D, startPoint: Vec2, endPoint: Vec2): void {
+    drawLine(ctx: CanvasRenderingContext2D, startPoint: Vec2, endPoint: Vec2): void {
         if (startPoint && endPoint) {
-            ctx.fillStyle = this.primaryColor;
+            ctx.strokeStyle = this.primaryColor;
+            ctx.fillStyle = this.secondaryColor;
             ctx.lineWidth = this.lineWidth;
             ctx.beginPath();
             ctx.moveTo(startPoint.x, startPoint.y);
@@ -154,7 +162,7 @@ export class LineService extends Tool {
         }
     }
 
-    private drawJunction(ctx: CanvasRenderingContext2D, centerPoint: Vec2): void {
+    drawJunction(ctx: CanvasRenderingContext2D, centerPoint: Vec2): void {
         ctx.beginPath();
         ctx.arc(centerPoint.x, centerPoint.y, this.junctionWidth, 0, 2 * Math.PI);
         ctx.fill();

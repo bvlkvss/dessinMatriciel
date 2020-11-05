@@ -4,9 +4,11 @@ import { BrushService } from '@app/services/tools/brush/brush.service';
 import { EllipseService } from '@app/services/tools/ellipse/ellipse.service';
 import { EraserService } from '@app/services/tools/eraser/eraser-service';
 import { LineService } from '@app/services/tools/line/line.service';
+import { PaintBucketService } from '@app/services/tools/paint-bucket/paint-bucket.service';
 import { PencilService } from '@app/services/tools/pencil/pencil-service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle.service';
-import { PolygonService } from "@app/services/tools/polygon/polygon.service";
+import { SelectionService } from '@app/services/tools/selection/selection.service';
+import { PolygonService } from '@app/services/tools/polygon/polygon.service';
 
 @Injectable({
     providedIn: 'root',
@@ -22,6 +24,8 @@ export class ToolsManagerService {
         eraserService: EraserService,
         ellipseService: EllipseService,
         lineService: LineService,
+        paintBucketService: PaintBucketService,
+        selectionService: SelectionService,
         polygonService: PolygonService,
     ) {
         this.tools = new Map<string, Tool>([
@@ -31,7 +35,9 @@ export class ToolsManagerService {
             ['eraser', eraserService],
             ['ellipse', ellipseService],
             ['line', lineService],
-            ['polygon',polygonService],
+            ['paintBucket', paintBucketService],
+            ['selection', selectionService],
+            ['polygon', polygonService],
         ]);
         this.currentTool = this.tools.get('pencil') as Tool;
     }
@@ -59,6 +65,11 @@ export class ToolsManagerService {
             });
     }
 
+    setBucketTolerance(tolerance: number): void {
+        const paintBucket = this.currentTool as PaintBucketService;
+        paintBucket.setTolerance(tolerance);
+    }
+
     setRectangleStyle(id: number): void {
         const rectangle = this.currentTool as RectangleService;
         rectangle.setStyle(id);
@@ -68,10 +79,14 @@ export class ToolsManagerService {
         const ellipse = this.currentTool as EllipseService;
         ellipse.setStyle(id);
     }
-
     setPolygonStyle(id: number): void {
         const polygon = this.currentTool as PolygonService;
         polygon.setStyle(id);
+    }
+
+    setPolygonNumberSides(newNumberSides: number): void {
+        const polygon = this.currentTool as PolygonService;
+        polygon.setNumberSides(newNumberSides);
     }
 
     setJunctionWidth(id: number): void {

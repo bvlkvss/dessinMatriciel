@@ -1,0 +1,104 @@
+    h1 {
+        margin: 0;
+        padding: 15px;
+        text-align: left;
+        background-color: rgb(64, 61, 85);
+    }
+    
+    .export {
+        margin: auto;
+        width: 45%;
+        height: 50%;
+        position: absolute;
+        left: 0;
+        right: 0;
+        text-align: center;
+        background-color: white;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+        overflow-y: scroll !important;
+        display: block;
+    }
+    
+    .topBar {
+        position: relative;
+        align-items: center;
+        width: 100px;
+        //height: 70px;
+        top: 0px;
+        color: rgb(99, 196, 235);
+        font-family: exo, ubuntu, "segoe ui", helvetica, arial, sans-serif;
+        text-align: center;
+    }
+    
+    .close {
+        right: 5px;
+        top: 5px;
+        position: relative;
+        background-color: rgba(255, 0, 0, 0.836);
+        border-radius: 90%;
+        border: none;
+        height: 20px;
+        width: 20px;
+        font-family: exo, ubuntu, "segoe ui", helvetica, arial, sans-serif;
+        cursor: pointer;
+        font-weight: 1700;
+        user-select: none;
+        display: block;
+    }
+    
+    #filtres {
+        position: absolute;
+        flex-direction: column;
+        width: 120px;
+        top: 100px;
+        left: 20px;
+        background-color: rgba(150, 150, 150, 0.7);
+        padding: 15px;
+        border-radius: 20px;
+        z-index: 0;
+    }
+    
+    #filtres input {
+        position: absolute;
+        left: 5px;
+    }
+    
+    #format {
+        position: absolute;
+        flex-direction: column;
+        top: 100px;
+        left: 220px;
+        background-color: rgba(150, 150, 150, 0.7);
+        padding: 15px;
+        border-radius: 20px;
+        z-index: 0;
+    }
+    
+    #format input {
+        position: absolute;
+        left: 80px;
+    }
+    
+    .demo {
+        display: block;
+        border-radius: 15px;
+        width: 200px;
+        height: 180px;
+        border: 1px solid lightgray;
+        position: absolute;
+        right: 10px;
+    }
+    
+    .chooseName {
+        position: absolute;
+        bottom: 75px;
+        right: 140px;
+    }
+    
+    .confirmation {
+        position: absolute;
+        bottom: 0px;
+        left: 300px;
+        padding: 14px 16px;
+    }

@@ -1,8 +1,7 @@
 /* tslint:disable */
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { ComponentFixtureAutoDetect } from '@angular/core/testing';
-import { SidebarComponent } from './sidebar.component';
+import { async, ComponentFixture, ComponentFixtureAutoDetect, TestBed } from '@angular/core/testing';
 import { MockDrawingService } from '@app/components/drawing/drawing.component.spec';
+import { DrawingService } from '@app/services/drawing/drawing.service';
 import { BrushService } from '@app/services/tools/brush/brush.service';
 import { EllipseService } from '@app/services/tools/ellipse/ellipse.service';
 import { EraserService } from '@app/services/tools/eraser/eraser-service';
@@ -10,8 +9,12 @@ import { LineService } from '@app/services/tools/line/line.service';
 import { PencilService } from '@app/services/tools/pencil/pencil-service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle.service';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
-import { DrawingService } from '@app/services/drawing/drawing.service';
+import { MockUndoRedoService } from '../attributebar/attributebar.component.spec';
 import { UserGuideComponent } from '../user-guide/user-guide.component';
+import { MatDialog } from '@angular/material/dialog';
+import { PaintBucketService } from '@app/services/tools/paint-bucket/paint-bucket.service';
+import { SelectionService } from '@app/services/tools/selection/selection.service';
+import { SidebarComponent } from './sidebar.component';
 import { PolygonService } from '@app/services/tools/polygon/polygon.service';
 
 describe('SidebarComponent', () => {
@@ -24,25 +27,32 @@ describe('SidebarComponent', () => {
     let eraserStub: EraserService;
     let ellipseStub: EllipseService;
     let lineStub: LineService;
+    let selectionStub: SelectionService;
     let drawServiceMock: MockDrawingService;
+    let paintBucketStub: PaintBucketService;
+    let UndoRedoServiceMock: MockUndoRedoService;
     let polygonStub: PolygonService;
+    let matDialogSpy: jasmine.SpyObj<MatDialog>;
 
     beforeEach(async(() => {
         drawServiceMock = new MockDrawingService();
-        pencilStub = new PencilService(drawServiceMock);
-        brushStub = new BrushService(drawServiceMock);
-        rectangleStub = new RectangleService(drawServiceMock);
-        lineStub = new LineService(drawServiceMock);
-        ellipseStub = new EllipseService(drawServiceMock);
-        eraserStub = new EraserService(drawServiceMock);
-        polygonStub = new PolygonService(drawServiceMock); // ajout
-
-        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub,polygonStub);
+        UndoRedoServiceMock = new MockUndoRedoService(drawServiceMock);
+        pencilStub = new PencilService(drawServiceMock,UndoRedoServiceMock);
+        brushStub = new BrushService(drawServiceMock,UndoRedoServiceMock);
+        rectangleStub = new RectangleService(drawServiceMock,UndoRedoServiceMock);
+        lineStub = new LineService(drawServiceMock,UndoRedoServiceMock);
+        ellipseStub = new EllipseService(drawServiceMock,UndoRedoServiceMock);
+        eraserStub = new EraserService(drawServiceMock,UndoRedoServiceMock);
+        polygonStub = new PolygonService(drawServiceMock);
+        selectionStub = new SelectionService(drawServiceMock,UndoRedoServiceMock);
+        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub,paintBucketStub,selectionStub, polygonStub);
+        matDialogSpy = jasmine.createSpyObj('MatDialog', ['open']);
         TestBed.configureTestingModule({
             declarations: [SidebarComponent],
             providers: [
                 { provide: ToolsManagerService, useValue: toolManagerStub },
                 { provide: DrawingService, useValue: drawServiceMock },
+                { provide: MatDialog, useValue: matDialogSpy},
                 { provide: ComponentFixtureAutoDetect, useValue: true },
             ],
         }).compileComponents();
@@ -136,5 +146,17 @@ describe('SidebarComponent', () => {
         toolManagerStub.currentTool.secondaryColor = '#bbaabbaa';
         component.revertColors();
         expect(toolManagerStub.currentTool.primaryColor).toEqual('#bbaabbaa');
+    });
+
+    it('should open dialog if none was opened beforeHand when calling openDialog', () => {
+        (matDialogSpy.openDialogs as any) = {length:0};
+        component.openExportDialog();
+        expect(matDialogSpy.open).toHaveBeenCalled();
+    });
+
+    it('should not open dialog if one was opened beforeHand when calling openDialog', () => {
+        (matDialogSpy.openDialogs as any) = {length:1};
+        component.openExportDialog();
+        expect(matDialogSpy.open).not.toHaveBeenCalled();
     });
 });

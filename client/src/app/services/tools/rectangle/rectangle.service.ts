@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
+import { RectangleCommand } from '@app/classes/rectangle-command';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 export enum MouseButton {
     Left = 0,
     Middle = 1,
@@ -9,11 +11,11 @@ export enum MouseButton {
     Back = 3,
     Forward = 4,
 }
-
 export enum RectangleStyle {
     Empty = 0,
     Filled_contour = 1,
     Filled = 2,
+    Selection = 3,
 }
 
 @Injectable({
@@ -24,13 +26,17 @@ export class RectangleService extends Tool {
     isOut: boolean = false;
     currentPos: Vec2;
     rectangleStyle: RectangleStyle;
-    constructor(drawingService: DrawingService) {
+    lineDash: boolean;
+    width: number;
+    height: number;
+    constructor(drawingService: DrawingService, protected invoker: UndoRedoService) {
         super(drawingService);
         this.toolAttributes = ['strokeWidth', 'rectangleStyle'];
         this.rectangleStyle = 2;
         this.lineWidth = 1;
         this.primaryColor = '#000000';
         this.secondaryColor = '#000000';
+        this.lineDash = false;
     }
 
     setStyle(id: number): void {
@@ -40,7 +46,9 @@ export class RectangleService extends Tool {
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseDown) {
-            console.log(event.offsetX, ';', event.offsetY); 
+            this.invoker.ClearRedo();
+            this.invoker.setIsAllowed(false);
+            console.log(event.offsetX, ';', event.offsetY);
             this.mouseDownCoord = this.getPositionFromMouse(event);
         }
     }
@@ -83,8 +91,11 @@ export class RectangleService extends Tool {
         if (this.mouseDown) {
             let mousePosition = this.getPositionFromMouse(event);
             if (this.isOut) mousePosition = this.mouseOutCoord;
-
             this.drawRectangle(this.drawingService.baseCtx, this.mouseDownCoord, mousePosition, this.toSquare);
+            const cmd = new RectangleCommand(this.mouseDownCoord, mousePosition, this.rectangleStyle, this, this.drawingService) as RectangleCommand;
+            console.log(cmd);
+            this.invoker.addToUndo(cmd);
+            this.invoker.setIsAllowed(true);
         }
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
 
@@ -118,7 +129,7 @@ export class RectangleService extends Tool {
         }
     }
 
-    private drawRectangle(ctx: CanvasRenderingContext2D, startPos: Vec2, currentPos: Vec2, toSquare: boolean): void {
+    drawRectangle(ctx: CanvasRenderingContext2D, startPos: Vec2, currentPos: Vec2, toSquare: boolean): void {
         let width = currentPos.x - startPos.x;
         let height = currentPos.y - startPos.y;
         if (toSquare) {
@@ -128,26 +139,37 @@ export class RectangleService extends Tool {
                 height = width * Math.sign(width) * Math.sign(height);
             }
         }
+        this.width = width;
+        this.height = height;
         ctx.beginPath();
-        ctx.setLineDash([0, 0]);
+        if (!this.lineDash) ctx.setLineDash([0, 0]);
+        else ctx.setLineDash([2, 2]);
 
-        ctx.fillStyle = this.secondaryColor;
-        ctx.strokeStyle = this.primaryColor;
+        ctx.fillStyle = this.primaryColor;
+        ctx.strokeStyle = this.secondaryColor;
         ctx.lineWidth = this.lineWidth;
 
         switch (this.rectangleStyle) {
-            case 0:
+            case RectangleStyle.Empty:
                 ctx.rect(startPos.x, startPos.y, width - (this.lineWidth / 2) * Math.sign(width), height - (this.lineWidth / 2) * Math.sign(height));
                 ctx.stroke();
                 break;
-            case 1:
+            case RectangleStyle.Filled:
                 ctx.rect(startPos.x, startPos.y, width - (this.lineWidth / 2) * Math.sign(width), height - (this.lineWidth / 2) * Math.sign(height));
                 ctx.stroke();
                 ctx.fill();
                 break;
-            case 2:
+            case RectangleStyle.Filled_contour:
                 ctx.rect(startPos.x, startPos.y, width, height);
                 ctx.fill();
+                break;
+            case RectangleStyle.Selection:
+                this.drawingService.previewCtx.shadowColor = 'white';
+                this.drawingService.previewCtx.shadowOffsetX = 1;
+                this.drawingService.previewCtx.shadowOffsetY = 1;
+                this.drawingService.previewCtx.strokeStyle = 'black';
+                ctx.rect(startPos.x, startPos.y, width - (this.lineWidth / 2) * Math.sign(width), height - (this.lineWidth / 2) * Math.sign(height));
+                ctx.stroke();
                 break;
         }
 

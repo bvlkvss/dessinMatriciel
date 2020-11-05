@@ -1,11 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { BrushService } from '@app/services/tools/brush/brush.service';
-import { EllipseService } from '@app/services/tools/ellipse/ellipse.service';
-import { LineService } from '@app/services/tools/line/line.service';
-import { RectangleService } from '@app/services/tools/rectangle/rectangle.service';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
-import { PolygonService } from "@app/services/tools/polygon/polygon.service";
 
 const MAX_WIDTH_VALUE = 100;
 @Component({
@@ -18,6 +14,8 @@ export class AttributebarComponent implements OnInit {
     junctionWidth: string = '1';
     idStyleRectangle: number = 2;
     idStyleBrush: number = 1;
+    tolerance: string = '0';
+    currentTexture: string = '../../../assets/b1.svg';
     constructor(private tools: ToolsManagerService) {}
     private showContainer: boolean = false;
     private lastTool: Tool = this.tools.currentTool;
@@ -39,63 +37,13 @@ export class AttributebarComponent implements OnInit {
     }
 
     restoreValues(): void {
-        let currentTool;
         if (this.tools.currentTool.lineWidth) this.widthValue = this.tools.currentTool.lineWidth.toString();
-        switch (this.tools.currentTool) {
-            case this.tools.getTools().get('rectangle'):
-                currentTool = this.tools.currentTool as RectangleService;
-                this.changeStyle('currentRectangleStyle', currentTool.rectangleStyle);
-                break;
-
-            case this.tools.getTools().get('ellipse'):
-                currentTool = this.tools.currentTool as EllipseService;
-                this.changeStyle('currentEllipseStyle', currentTool.ellipseStyle);
-                break;
-
-            case this.tools.getTools().get('line'):
-                currentTool = this.tools.currentTool as LineService;
-                this.junctionWidth = currentTool.junctionWidth.toString();
-                const inputValue = document.getElementById('sliderJunction') as HTMLInputElement;
-                if (inputValue) inputValue.checked = currentTool.withJunction;
-                break;
-
-            case this.tools.getTools().get('brush'):
-                const brush = this.tools.currentTool as BrushService;
-                brush.setTexture(brush.imageId);
-                const currentImage = document.querySelector('#currentImage') as HTMLImageElement;
-                if (currentImage) currentImage.src = '../../../assets/b' + brush.imageId + '.svg';
-                break;
-            
-            case this.tools.getTools().get('polygon'):
-                currentTool= this.tools.currentTool as PolygonService;
-                this.changeStyle('currentPolygonStyle', currentTool.polygonStyle);
-                break;
-        }
     }
 
-    acceptChanges(): void {
-        let inputValue;
-        if (Number(this.widthValue) > MAX_WIDTH_VALUE) this.widthValue = '100';
-        this.tools.setLineWidth(Number(this.widthValue));
-        switch (this.tools.currentTool) {
-            case this.tools.getTools().get('rectangle'):
-                this.tools.setRectangleStyle(this.idStyleRectangle);
-                break;
-            case this.tools.getTools().get('ellipse'):
-                this.tools.setEllipseStyle(this.idStyleRectangle);
-                break;
-            case this.tools.getTools().get('line'):
-                this.tools.setJunctionWidth(Number(this.junctionWidth));
-                inputValue = document.getElementById('sliderJunction') as HTMLInputElement;
-                this.tools.setJunctionState(inputValue.checked);
-                break;
-            case this.tools.getTools().get('brush'):
-                const brush = this.tools.currentTool as BrushService;
-                brush.imageId = this.idStyleBrush;
-                brush.setTexture(this.idStyleBrush);
-                break;
-            case this.tools.getTools().get('polygon'):
-                this.tools.setEllipseStyle(this.idStyleRectangle);
+    validate(event: KeyboardEvent): void {
+        const WIDTH_ALLOWED_CHARS_REGEXP = /[0-9\/]+/;
+        if (event.key !== 'Backspace' && event.key !== 'Enter' && !WIDTH_ALLOWED_CHARS_REGEXP.test(event.key)) {
+            event.preventDefault();
         }
     }
 
@@ -109,23 +57,23 @@ export class AttributebarComponent implements OnInit {
 
     setLineWidth(input: string): void {
         this.widthValue = input;
+        if (Number(this.widthValue) > MAX_WIDTH_VALUE) this.widthValue = '100';
+        this.tools.setLineWidth(Number(this.widthValue));
     }
 
     setJunctionWidth(input: string): void {
         this.junctionWidth = input;
+        this.tools.setJunctionWidth(Number(this.junctionWidth));
     }
 
-    setJunctionState(): void {
-        const checkBox = document.querySelector('#sliderJunction') as HTMLInputElement;
-        const slider = document.querySelector('.sliderJunction') as HTMLElement;
-        if (checkBox.checked) slider.style.background = 'white';
-        else slider.style.background = 'gray';
+    setJunctionState(checkBoxValue: boolean): void {
+        this.tools.setJunctionState(checkBoxValue);
     }
 
-    updateTextInput(): void {
-        const input = document.querySelector('.size-slider') as HTMLInputElement;
-        const inputToUpdate = document.querySelector('.textInput') as HTMLInputElement;
-        inputToUpdate.value = input.value + 'px';
+    setTolerance(input: string): void {
+        this.tolerance = input;
+        if (Number(this.tolerance) > MAX_WIDTH_VALUE) this.tolerance = '100';
+        this.tools.setBucketTolerance(Number(this.tolerance));
     }
 
     toggleList(id: string): void {
@@ -143,15 +91,24 @@ export class AttributebarComponent implements OnInit {
     }
 
     setTexture(id: number): void {
-        const currentImage = document.querySelector('#currentImage') as HTMLImageElement;
-        currentImage.src = '../../../assets/b' + id + '.svg';
-        this.idStyleBrush = id;
+        const brush = this.tools.currentTool as BrushService;
+        brush.setTexture(id);
+        this.currentTexture = '../../../assets/b' + id + '.svg';
     }
 
     setShapeStyle(idStyle: number, isEllipse: boolean): void {
-        if (isEllipse) this.changeStyle('currentEllipseStyle', idStyle);
-        else this.changeStyle('currentRectangleStyle', idStyle);
         this.idStyleRectangle = idStyle;
+        if (isEllipse) {
+            this.changeStyle('currentEllipseStyle', idStyle);
+            this.tools.setEllipseStyle(this.idStyleRectangle);
+        } else {
+            this.changeStyle('currentRectangleStyle', idStyle);
+            this.tools.setRectangleStyle(this.idStyleRectangle);
+        }
     }
-    //aller pour un switch case pour les prochaines shapes
+
+    setNumberSides(newNumberSides: number) {
+        this.tools.setPolygonNumberSides(newNumberSides);
+    }
+    
 }

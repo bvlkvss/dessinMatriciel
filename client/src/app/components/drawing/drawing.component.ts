@@ -1,8 +1,10 @@
 import { AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { Tool } from '@app/classes/tool';
+import { ExportComponent } from '@app/components/export/export.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ResizingService } from '@app/services/resizing/resizing.service';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
+import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
 // TODO : Avoir un fichier séparé pour les constantes ?
 
@@ -22,7 +24,12 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     private previewCtx: CanvasRenderingContext2D;
     private mouseFired: boolean;
 
-    constructor(private drawingService: DrawingService, private tools: ToolsManagerService, private resizer: ResizingService) {}
+    constructor(
+        private drawingService: DrawingService,
+        private tools: ToolsManagerService,
+        private resizer: ResizingService,
+        private invoker: UndoRedoService,
+    ) {}
 
     ngOnInit(): void {
         this.drawingService.resizeCanvas();
@@ -36,12 +43,19 @@ export class DrawingComponent implements AfterViewInit, OnInit {
             .set('1', this.tools.getTools().get('rectangle') as Tool)
             .set('2', this.tools.getTools().get('ellipse') as Tool)
             .set('l', this.tools.getTools().get('line') as Tool)
-            .set('3', this.tools.getTools().get('polygon') as Tool); 
+            .set('b', this.tools.getTools().get('paintBucket') as Tool)
+            .set('3', this.tools.getTools().get('polygon') as Tool)
+            .set('r', this.tools.getTools().get('selection') as Tool);
         this.baseCtx = this.baseCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.previewCtx = this.previewCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.drawingService.baseCtx = this.baseCtx;
         this.drawingService.previewCtx = this.previewCtx;
         this.drawingService.canvas = this.baseCanvas.nativeElement;
+        this.baseCtx.beginPath();
+        this.baseCtx.fillStyle = 'white';
+        this.baseCtx.rect(0, 0, this.baseCanvas.nativeElement.width, this.baseCanvas.nativeElement.height);
+        this.baseCtx.fill();
+        this.baseCtx.closePath();
         this.mouseFired = false;
         this.baseCtx.save();
         this.previewCtx.save();
@@ -128,6 +142,12 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         this.tools.currentTool.onMouseOut(event);
     }
 
+    @HostListener('contextmenu', ['$event'])
+    onRightClick(event: MouseEvent): void {
+        event.preventDefault();
+        this.tools.currentTool.onRightClick(event);
+    }
+
     @HostListener('document:keyup', ['$event'])
     onKeyUp(event: KeyboardEvent): void {
         this.tools.currentTool.onKeyUp(event);
@@ -135,17 +155,22 @@ export class DrawingComponent implements AfterViewInit, OnInit {
 
     @HostListener('window:keydown', ['$event'])
     onkeyDownWindow(event: KeyboardEvent): void {
-        if (event.ctrlKey && event.key === 'o') {
+        if (event.ctrlKey && event.key === 'o' && !ExportComponent.isExportOpen) {
             event.preventDefault();
             event.stopPropagation();
             this.drawingService.newDrawing();
             this.drawingService.resizeCanvas();
+        } else if (event.ctrlKey || (event.ctrlKey && event.shiftKey && (event.key === 'z' || event.key === 'Z'))) {
+            this.invoker.onKeyDown(event);
+        } else if (event.ctrlKey && event.key === 'a') {
+            this.tools.currentTool = this.keyBindings.get('r') as Tool;
+            this.tools.currentTool.onKeyDown(event);
         }
     }
 
     @HostListener('keydown', ['$event'])
     onKeyDown(event: KeyboardEvent): void {
-        if (event.ctrlKey && event.key === 'o') {
+        if ((event.ctrlKey && event.key === 'o') || ExportComponent.isExportOpen) {
             return;
         } else if (this.keyBindings.has(event.key)) {
             this.drawingService.restoreCanvasState();

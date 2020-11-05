@@ -8,10 +8,15 @@ import { BrushService } from '@app/services/tools/brush/brush.service';
 import { EllipseService } from '@app/services/tools/ellipse/ellipse.service';
 import { EraserService } from '@app/services/tools/eraser/eraser-service';
 import { LineService } from '@app/services/tools/line/line.service';
+import { PaintBucketService } from '@app/services/tools/paint-bucket/paint-bucket.service';
 import { PencilService } from '@app/services/tools/pencil/pencil-service';
+import { PolygonService } from '@app/services/tools/polygon/polygon.service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle.service';
+import { SelectionService } from '@app/services/tools/selection/selection.service';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
-import { PolygonService } from "@app/services/tools/polygon/polygon.service";
+import { MockUndoRedoService } from '../attributebar/attributebar.component.spec';
+
+
 
 export class MockDrawingService extends DrawingService {
     resizeCanvas(): void {
@@ -35,21 +40,26 @@ describe('DrawingComponent', () => {
     let eraserStub: EraserService;
     let ellipseStub: EllipseService;
     let lineStub: LineService;
+    let paintBucketStub: PaintBucketService;
     let drawServiceMock: MockDrawingService;
+    let selectionStub: SelectionService;
+    let undoRedoServiceMock: MockUndoRedoService;
     let resizingServiceMock: MockResizingService;
-    let polygonStub: PolygonService;
+    let polygonStub: PolygonService
 
     beforeEach(async(() => {
         drawServiceMock = new MockDrawingService();
-        resizingServiceMock = new MockResizingService(drawServiceMock);
-        pencilStub = new PencilService(drawServiceMock);
-        brushStub = new BrushService(drawServiceMock);
-        rectangleStub = new RectangleService(drawServiceMock);
-        lineStub = new LineService(drawServiceMock);
-        ellipseStub = new EllipseService(drawServiceMock);
-        eraserStub = new EraserService(drawServiceMock);
-        polygonStub= new PolygonService(drawServiceMock);  //ajout de yassine
-        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub,polygonStub);
+        undoRedoServiceMock = new MockUndoRedoService(drawServiceMock);
+        resizingServiceMock = new MockResizingService(drawServiceMock, undoRedoServiceMock);
+        pencilStub = new PencilService(drawServiceMock, undoRedoServiceMock);
+        brushStub = new BrushService(drawServiceMock, undoRedoServiceMock);
+        rectangleStub = new RectangleService(drawServiceMock, undoRedoServiceMock);
+        lineStub = new LineService(drawServiceMock, undoRedoServiceMock);
+        ellipseStub = new EllipseService(drawServiceMock, undoRedoServiceMock);
+        eraserStub = new EraserService(drawServiceMock, undoRedoServiceMock);
+        selectionStub = new SelectionService(drawServiceMock,undoRedoServiceMock);
+        polygonStub = new PolygonService(drawServiceMock);
+        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub,paintBucketStub,selectionStub, polygonStub);
 
         TestBed.configureTestingModule({
             declarations: [DrawingComponent],

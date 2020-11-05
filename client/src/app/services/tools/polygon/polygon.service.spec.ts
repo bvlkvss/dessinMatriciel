@@ -1,4 +1,3 @@
-/* tslint:disable */
 import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Vec2 } from '@app/classes/vec2';
@@ -24,8 +23,7 @@ describe('PolygonService', () => {
         TestBed.configureTestingModule({
             providers: [{ provide: DrawingService, useValue: drawServiceSpy }],
         });
-        service = TestBed.inject(PolygonService); //PolygonService
-        drawPolygonSpy = spyOn<any>(service, 'drawPolygon').and.callThrough(); //'drawPolygon'
+        service = TestBed.inject(PolygonService);
 
         service['drawingService'].canvas = canvasStub;
         service['drawingService'].baseCtx = baseCtxStub;
@@ -36,21 +34,22 @@ describe('PolygonService', () => {
         service['drawingService'].previewCtx.canvas.width = previewCtxStub.canvas.width;
         service['drawingService'].baseCtx.canvas.height = baseCtxStub.canvas.height;
         service['drawingService'].previewCtx.canvas.height = previewCtxStub.canvas.height;
+        
 
-        mouseEvent = {
-            offsetX: 25,
-            offsetY: 25,
-            button: 0,
-        } as MouseEvent;
+        drawPolygonSpy = spyOn(service, 'drawPolygon');
+           mouseEvent = {
+             offsetX: 25,
+             offsetY: 25,
+             button: 0,
+         } as MouseEvent;
     });
-
     it('should be created', () => {
         expect(service).toBeTruthy();
     });
 
     it('style should be set to assigned value when setStyle is called', () => {
         service.setStyle(2);
-        expect(service.polygonStyle).toEqual(2); // .polygonStyle
+        expect(service.polygonStyle).toEqual(2);
     });
 
     it(' mouseDown should set mouseDownCoord to correct position', () => {
@@ -58,7 +57,6 @@ describe('PolygonService', () => {
         service.onMouseDown(mouseEvent);
         expect(service.mouseDownCoord).toEqual(expectedResult);
     });
-
     it(' mouseDown should set mouseDown property to true on left click', () => {
         service.onMouseDown(mouseEvent);
         expect(service.mouseDown).toEqual(true);
@@ -92,7 +90,7 @@ describe('PolygonService', () => {
         expect(service.isOut).toBe(false);
     });
 
-    it('onMouseOut should  set isOut to true if mouse is  down', () => {
+    it('onMouseOut should set isOut to true if mouse is  down', () => {
         service.mouseDownCoord = { x: 6, y: 20 };
         service.mouseDown = true;
         service.isOut = false;
@@ -107,7 +105,7 @@ describe('PolygonService', () => {
     });
 
     it('onMouseOut should call drawPolygon if mouseDown is true', () => {
-        service.mouseDownCoord = { x: 6, y: 20 };
+        service.mouseDownCoord = { x: 60, y: 60 };
         service.polygonStyle = 1;
         service.mouseDown = true;
         service.onMouseOut(mouseEvent);
@@ -182,7 +180,7 @@ describe('PolygonService', () => {
         expect(drawPolygonSpy).toHaveBeenCalled();
     });
 
-    it('if mouse is out onMouseUp should  call drawPolygon with mouseOutCoords', () => {
+    it('if mouse is out onMouseUp should  call drawRectangle with mouseOutCoords', () => {
         service.mouseDownCoord = { x: 6, y: 20 };
         service.mouseOutCoord = { x: 102, y: 20 };
         service.mouseDown = true;
@@ -198,97 +196,55 @@ describe('PolygonService', () => {
         expect(drawPolygonSpy).not.toHaveBeenCalled();
     });
 
-    // it('onMouseMove should  call drawPolygon if mouse is down', () => {
-    //     service.mouseDownCoord = { x: 6, y: 20 };
-    //     service.mouseDown = true;
-    //     service.onMouseMove(mouseEvent);
-    //     expect(drawPolygonSpy).toHaveBeenCalled();
-    // });
+    it('onMouseMove should  call drawPolygon if mouse is down', () => {
+        service.mouseDownCoord = { x: 6, y: 20 };
+        service.mouseDown = true;
+        service.onMouseMove(mouseEvent);
+        expect(drawPolygonSpy).toHaveBeenCalled();
+    });
 
-    // it('onKeyUp should not call drawPolygon if mouse is not down', () => {
-    //     service.mouseDown = false;
-    //     const event = new KeyboardEvent('document:keydown', {
-    //         key: 'z',
-    //         shiftKey: false,
-    //     });
-    //     service.onKeyUp(event);
-    //     expect(drawPolygonSpy).not.toHaveBeenCalled();
-    // });
+    it('if center of polygon - width is out of bounds change width', () => {
+        service.mouseDownCoord = { x: 10, y: 200 };
+        service.widthPolygon = 50;
+        service.calibratePolygon(1);
+        expect(service.widthPolygon).toEqual(9);
+    });
 
-    // it('onKeyUp should not call drawPolygon if shift is pressed', () => {
-    //     service.mouseDown = true;
-    //     const event = new KeyboardEvent('document:keydown', {
-    //         key: 'Shift',
-    //         shiftKey: true,
-    //     });
-    //     service.onKeyUp(event);
-    //     expect(drawPolygonSpy).not.toHaveBeenCalled();
-    // });
+    it('if center of polygon - height is out of bounds, change height', () => {
+        service.mouseDownCoord = { x: 60, y: 40 };
+        service.heightPolygon = 50;
+        service.calibratePolygon(1);
+        expect(service.heightPolygon).toEqual(39);
+    });
 
-    // it('onKeyUp should call drawPolygon if shift is not pressed and mouseDown is true', () => {
-    //     service.mouseDownCoord = { x: 6, y: 20 };
-    //     service.currentPos = { x: 8, y: 42 };
-    //     service.mouseDown = true;
-    //     const event = new KeyboardEvent('document:keydown', {
-    //         key: 'z',
-    //         shiftKey: false,
-    //     });
+    //pas encore reussii
+    it('if polygoneStyle equals 0 and number of sides is greater than 3, incertitude should equal half of width of stroke', () => {        
+        service.setStyle(0);
+        service.setNumberSides(5);
+        service.lineWidth = 10;
+        service.drawPolygon(previewCtxStub,{x: 80, y: 80},{x: 120, y: 55}, true);       
+        expect(service.incertitude).toEqual(service.lineWidth/2 );
+        //je narrive pas a faire changer la varibale service.incertitude apres que jai appelle service.drawpolygone
+        //normalement incertitude devrait avoir changer de valeur mais en ce moment elle garde la mm valeur que quand je 
+        //l"instancie
+     });
+    //  //#2
+    //  it('if polygoneStyle equals 0 and number of sides is 3, incertitude should equal the width of stroke', () => {
+    //     service.polygonStyle = 0;
+    //     service.numberSides =3;
+    //     expect(service.incertitude).toEqual(service.lineWidth);
+    //  });
 
-    //     service.onKeyUp(event);
-    //     expect(drawPolygonSpy).toHaveBeenCalled();
-    // });
+    it('should set numberSides when setNumberSides is called', () => {
+      service.numberSides = 7;
+      service.setNumberSides(8);
+      expect(service.numberSides).toEqual(8);
+  });
 
-    // it('shift onKeyDown should not set toSquare to true if mouse is not down', () => {
-    //     service.mouseDown = false;
-    //     service.toSquare = false;
-    //     const event = new KeyboardEvent('document:keydown', {
-    //         key: 'Shift',
-    //         shiftKey: true,
-    //     });
+  it('should set secondaryColor when setSecondaryColor is called', () => {
+    service.secondaryColor = "abaaba";
+    service.setSecondaryColor("bbhhbb");
+    expect(service.secondaryColor).toEqual("bbhhbb");
+});
 
-    //     service.onKeyDown(event);
-    //     expect(service.toSquare).toBe(false);
-    // });
-
-    // it('shift onKeyDown should not set toSquare to true if mouse is down but shift is not pressed', () => {
-    //     service.mouseDownCoord = { x: 6, y: 20 };
-    //     service.mouseDown = true;
-    //     service.toSquare = false;
-    //     const event = new KeyboardEvent('document:keydown', {
-    //         key: 'z',
-    //         shiftKey: false,
-    //     });
-
-    //     service.onKeyDown(event);
-    //     expect(service.toSquare).toBe(false);
-    // });
-
-    // it('shift onKeyDown should set toSquare to true if mouse is down and shift is  pressed', () => {
-    //     service.mouseDownCoord = { x: 6, y: 20 };
-    //     service.currentPos = { x: 20, y: 22 };
-    //     service.mouseDown = true;
-    //     service.toSquare = false;
-    //     const event = new KeyboardEvent('document:keydown', {
-    //         key: 'Shift',
-    //         shiftKey: true,
-    //     });
-
-    //     service.onKeyDown(event);
-    //     expect(service.toSquare).toBe(true);
-    // });
-
-    // it('shift onKeyDown should call drawPolygon and toSquare should be true if mouse is down and shift is  pressed', () => {
-    //     service.mouseDownCoord = { x: 6, y: 20 };
-    //     service.currentPos = { x: 20, y: 54 };
-    //     service.mouseDown = true;
-    //     service.toSquare = false;
-    //     const event = new KeyboardEvent('document:keydown', {
-    //         key: 'Shift',
-    //         shiftKey: true,
-    //     });
-
-    //     service.onKeyDown(event);
-    //     expect(service.toSquare).toBe(true);
-    //     expect(drawPolygonSpy).toHaveBeenCalled(); //drawPolygonSpy
-    // });
 });
