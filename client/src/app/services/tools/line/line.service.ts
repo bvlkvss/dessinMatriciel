@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { LineCommand } from '@app/classes/lineCommand';
+import { LineCommand } from '@app/classes/line-command';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';

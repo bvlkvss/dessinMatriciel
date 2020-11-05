@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
+import { BrushCommand } from '@app/classes/brush-command';
 import { Color } from '@app/classes/color';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { BrushCommand } from '../../../classes/brushCommand';
-import { UndoRedoService } from '../../undo-redo/undo-redo.service';
+import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
 // TODO : Déplacer ça dans un fichier séparé accessible par tous
 export enum MouseButton {

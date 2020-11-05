@@ -1,18 +1,18 @@
 /* tslint:disable */
 import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
-import { EraserCommand } from '@app/classes/eraserCommand';
-import { LineCommand } from '@app/classes/lineCommand';
-import { ResizeCommand } from '@app/classes/resizeCommand';
+import { EraserCommand } from '@app/classes/eraser-command';
+import { LineCommand } from '@app/classes/line-command';
+import { ResizeCommand } from '@app/classes/resize-command';
 import { Vec2 } from '@app/classes/vec2';
 import { MockDrawingService } from '@app/components/drawing/drawing.component.spec';
 import { EraserService } from '@app/services/tools/eraser/eraser-service';
 //import { ResizingService } from '@app/services/resizing/resizing.service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle.service';
-import { BrushCommand } from '../../classes/brushCommand';
-import { EllipseCommand } from '../../classes/ellipseCommand';
-import { PencilCommand } from '../../classes/pencilCommand';
-import { RectangleCommand } from '../../classes/rectangleCommand';
+import { BrushCommand } from '../../classes/brush-command';
+import { EllipseCommand } from '../../classes/ellipse-command';
+import { PencilCommand } from '../../classes/pencil-command';
+import { RectangleCommand } from '../../classes/rectangle-command';
 //import { ResizeCommand } from '../../classes/resizeCommand';
 import { DrawingService } from '../drawing/drawing.service';
 import { ResizingService } from '../resizing/resizing.service';

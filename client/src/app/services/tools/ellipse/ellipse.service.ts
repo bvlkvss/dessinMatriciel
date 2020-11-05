@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
+import { EllipseCommand } from '@app/classes/ellipse-command';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { EllipseCommand } from '../../../classes/ellipseCommand';
-import { UndoRedoService } from '../../undo-redo/undo-redo.service';
+import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
 const LINE_DASH_SEGMENT_START = 5;
 const LINE_DASH_SEGMENT_END = 15;

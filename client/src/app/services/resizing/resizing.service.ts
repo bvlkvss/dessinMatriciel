@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
+import { ResizeCommand } from '@app/classes/resize-command';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { ResizeCommand } from '../../classes/resizeCommand';
-import { UndoRedoService } from '../undo-redo/undo-redo.service';
+import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 const MIN_SIZE = 250;
 const PROPORTION_SIZE = 0.95;
 @Injectable({

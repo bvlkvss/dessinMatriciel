@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
+import { RectangleCommand } from '@app/classes/rectangle-command';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { RectangleCommand } from '../../../classes/rectangleCommand';
-import { UndoRedoService } from '../../undo-redo/undo-redo.service';
+import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 export enum MouseButton {
     Left = 0,
     Middle = 1,

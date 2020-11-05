@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { EraserCommand } from '@app/classes/eraserCommand';
+import { EraserCommand } from '@app/classes/eraser-command';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
