@@ -204,7 +204,7 @@ describe('AttributebarComponent', () => {
         let canvas: HTMLCanvasElement = document.createElement("canvas");
         component.pipetteCanvas = new ElementRef<HTMLCanvasElement>(canvas);
         component.pipetteCtx = component.pipetteCanvas.nativeElement.getContext("2d") as CanvasRenderingContext2D;
-        let spy = spyOn<any>(toolManagerStub, 'setColor').and.callThrough();
+        let spy = spyOn<any>(toolManagerStub, 'setColor').and.stub();
         component.pickColor(true);
         expect(spy).toHaveBeenCalled();
     });

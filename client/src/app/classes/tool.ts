@@ -26,7 +26,6 @@ export abstract class Tool {
     }
 
     onClick(event: MouseEvent): void {}
-    onRightClick(event: MouseEvent): void {}
     onMouseDown(event: MouseEvent): void {}
     onRightClick(event: MouseEvent): void {}
     onDblClick(event: MouseEvent): void {}
