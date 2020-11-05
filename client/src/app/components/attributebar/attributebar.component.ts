@@ -107,8 +107,7 @@ export class AttributebarComponent implements OnInit {
         }
     }
 
-    setNumberSides(newNumberSides: number) {
+    setNumberSides(newNumberSides: number): void {
         this.tools.setPolygonNumberSides(newNumberSides);
     }
-    
 }

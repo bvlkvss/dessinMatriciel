@@ -1,3 +1,4 @@
+/* tslint:disable */
 import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Vec2 } from '@app/classes/vec2';
@@ -12,7 +13,6 @@ describe('PolygonService', () => {
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
     let canvasStub: HTMLCanvasElement;
-    let drawPolygonSpy: jasmine.Spy<any>;
 
     beforeEach(() => {
         canvasStub = canvasTestHelper.canvas;
@@ -34,14 +34,12 @@ describe('PolygonService', () => {
         service['drawingService'].previewCtx.canvas.width = previewCtxStub.canvas.width;
         service['drawingService'].baseCtx.canvas.height = baseCtxStub.canvas.height;
         service['drawingService'].previewCtx.canvas.height = previewCtxStub.canvas.height;
-        
 
-        drawPolygonSpy = spyOn(service, 'drawPolygon');
-           mouseEvent = {
-             offsetX: 25,
-             offsetY: 25,
-             button: 0,
-         } as MouseEvent;
+        mouseEvent = {
+            offsetX: 25,
+            offsetY: 25,
+            button: 0,
+        } as MouseEvent;
     });
     it('should be created', () => {
         expect(service).toBeTruthy();
@@ -99,12 +97,14 @@ describe('PolygonService', () => {
     });
 
     it('onMouseOut should not call drawPolygon if mouseDown is false', () => {
+        let drawPolygonSpy: jasmine.Spy<any> = spyOn(service, 'drawPolygon');
         service.mouseDown = false;
         service.onMouseOut(mouseEvent);
         expect(drawPolygonSpy).not.toHaveBeenCalled();
     });
 
     it('onMouseOut should call drawPolygon if mouseDown is true', () => {
+        let drawPolygonSpy: jasmine.Spy<any> = spyOn(service, 'drawPolygon');
         service.mouseDownCoord = { x: 60, y: 60 };
         service.polygonStyle = 1;
         service.mouseDown = true;
@@ -168,12 +168,14 @@ describe('PolygonService', () => {
     });
 
     it('onMouseUp should not call drawPolygon if mouse is not down', () => {
+        let drawPolygonSpy: jasmine.Spy<any> = spyOn(service, 'drawPolygon');
         service.mouseDown = false;
         service.onMouseUp(mouseEvent);
         expect(drawPolygonSpy).not.toHaveBeenCalled();
     });
 
     it('onMouseUp should  call drawPolygon if mouse is down', () => {
+        let drawPolygonSpy: jasmine.Spy<any> = spyOn(service, 'drawPolygon');
         service.mouseDownCoord = { x: 6, y: 20 };
         service.mouseDown = true;
         service.onMouseUp(mouseEvent);
@@ -181,6 +183,7 @@ describe('PolygonService', () => {
     });
 
     it('if mouse is out onMouseUp should  call drawRectangle with mouseOutCoords', () => {
+        let drawPolygonSpy: jasmine.Spy<any> = spyOn(service, 'drawPolygon');
         service.mouseDownCoord = { x: 6, y: 20 };
         service.mouseOutCoord = { x: 102, y: 20 };
         service.mouseDown = true;
@@ -190,6 +193,7 @@ describe('PolygonService', () => {
     });
 
     it('onMouseMove should  not call drawPolygon if mouse is not down', () => {
+        let drawPolygonSpy: jasmine.Spy<any> = spyOn(service, 'drawPolygon');
         service.mouseDownCoord = { x: 6, y: 20 };
         service.mouseDown = false;
         service.onMouseMove(mouseEvent);
@@ -197,6 +201,7 @@ describe('PolygonService', () => {
     });
 
     it('onMouseMove should  call drawPolygon if mouse is down', () => {
+        let drawPolygonSpy: jasmine.Spy<any> = spyOn(service, 'drawPolygon');
         service.mouseDownCoord = { x: 6, y: 20 };
         service.mouseDown = true;
         service.onMouseMove(mouseEvent);
@@ -218,33 +223,33 @@ describe('PolygonService', () => {
     });
 
     //pas encore reussii
-    it('if polygoneStyle equals 0 and number of sides is greater than 3, incertitude should equal half of width of stroke', () => {        
+    it('if polygoneStyle equals 0 and number of sides is greater than 3, incertitude should equal half of width of stroke', () => {
         service.setStyle(0);
         service.setNumberSides(5);
         service.lineWidth = 10;
-        service.drawPolygon(previewCtxStub,{x: 80, y: 80},{x: 120, y: 55}, true);       
-        expect(service.incertitude).toEqual(service.lineWidth/2 );
-        //je narrive pas a faire changer la varibale service.incertitude apres que jai appelle service.drawpolygone
-        //normalement incertitude devrait avoir changer de valeur mais en ce moment elle garde la mm valeur que quand je 
-        //l"instancie
-     });
-    //  //#2
-    //  it('if polygoneStyle equals 0 and number of sides is 3, incertitude should equal the width of stroke', () => {
-    //     service.polygonStyle = 0;
-    //     service.numberSides =3;
-    //     expect(service.incertitude).toEqual(service.lineWidth);
-    //  });
+        service.calibratePolygon = jasmine.createSpy().and.callFake(() => {});
+        service.drawPolygon(previewCtxStub, { x: 80, y: 80 }, { x: 120, y: 55 }, true);
+        expect(service.incertitude).toEqual(service.lineWidth / 2);
+    });
+
+    it('if polygoneStyle equals 0 and number of sides is 3, incertitude should equal the width of stroke', () => {
+        service.setStyle(0);
+        service.setNumberSides(3);
+        service.lineWidth = 10;
+        service.calibratePolygon = jasmine.createSpy().and.callFake(() => {});
+        service.drawPolygon(previewCtxStub, { x: 80, y: 80 }, { x: 120, y: 55 }, true);
+        expect(service.incertitude).toEqual(service.lineWidth);
+    });
 
     it('should set numberSides when setNumberSides is called', () => {
-      service.numberSides = 7;
-      service.setNumberSides(8);
-      expect(service.numberSides).toEqual(8);
-  });
+        service.numberSides = 7;
+        service.setNumberSides(8);
+        expect(service.numberSides).toEqual(8);
+    });
 
-  it('should set secondaryColor when setSecondaryColor is called', () => {
-    service.secondaryColor = "abaaba";
-    service.setSecondaryColor("bbhhbb");
-    expect(service.secondaryColor).toEqual("bbhhbb");
-});
-
+    it('should set secondaryColor when setSecondaryColor is called', () => {
+        service.secondaryColor = 'abaaba';
+        service.setSecondaryColor('bbhhbb');
+        expect(service.secondaryColor).toEqual('bbhhbb');
+    });
 });

@@ -17,6 +17,11 @@ export enum polygonStyle {
     Filled = 2,
 }
 
+const MINIMUM_NUMBER_OF_SIDES = 3;
+const PREVIEW_CIRCLE_LINE_WIDTH = 3;
+const PREVIEW_CIRCLE_LINE_DASH_MIN = 5;
+const PREVIEW_CIRCLE_LINE_DASH_MAX = 15;
+
 @Injectable({
     providedIn: 'root',
 })
@@ -27,8 +32,8 @@ export class PolygonService extends Tool {
     startPos: Vec2;
     polygonStyle: polygonStyle;
 
-    widthPolygon: number = 0;  //variables globales car doivent etre modifiees par differentes methodes
-    heightPolygon: number = 0; 
+    widthPolygon: number = 0;
+    heightPolygon: number = 0;
     incertitude: number = 0;
 
     constructor(drawingService: DrawingService) {
@@ -85,10 +90,10 @@ export class PolygonService extends Tool {
         }
     }
 
-    //va calibrer la taille du polygon pour eviter davoir un dessin qui sort du canvas
+    // va calibrer la taille du polygon pour eviter davoir un dessin qui sort du canvas
     calibratePolygon(widthP: number): void {
         if (this.mouseDownCoord.x - Math.abs(this.widthPolygon) - widthP <= 0) {
-            this.widthPolygon = this.mouseDownCoord.x - widthP;         
+            this.widthPolygon = this.mouseDownCoord.x - widthP;
         } else if (this.mouseDownCoord.x + Math.abs(this.widthPolygon) + widthP >= this.drawingService.previewCtx.canvas.width) {
             this.widthPolygon = Math.abs(this.drawingService.previewCtx.canvas.width - this.mouseDownCoord.x) - widthP;
         }
@@ -127,7 +132,7 @@ export class PolygonService extends Tool {
         this.widthPolygon = currentPos.x - startPos.x;
         this.heightPolygon = currentPos.y - startPos.y;
 
-        //incertitude pour perimetre contenant le dessin      
+        // incertitude pour perimetre contenant le dessin
         ctx.beginPath();
         ctx.setLineDash([0, 0]);
 
@@ -137,7 +142,7 @@ export class PolygonService extends Tool {
 
         this.calibratePolygon(this.lineWidth);
 
-        //polygone regulier donc width et height doivent avoir la meme valeur absolue
+        // polygone regulier donc width et height doivent avoir la meme valeur absolue
         if (Math.abs(this.widthPolygon) > Math.abs(this.heightPolygon)) {
             this.widthPolygon = this.heightPolygon * Math.sign(this.heightPolygon) * Math.sign(this.widthPolygon);
         } else {
@@ -145,10 +150,12 @@ export class PolygonService extends Tool {
         }
 
         ctx.moveTo(startPos.x + this.widthPolygon, startPos.y); // emplacement depart
+
         switch (this.polygonStyle) {
             case 0:
-                for (var i = 0; i <= this.numberSides; i += 1) {
-                    if (this.numberSides == i) {
+                /* tslint:disable-next-line:no-shadowed-variable */
+                for (let i = 0; i <= this.numberSides; i += 1) {
+                    if (this.numberSides === i) {
                         ctx.closePath();
                     } else
                         ctx.lineTo(
@@ -157,13 +164,14 @@ export class PolygonService extends Tool {
                         );
                 }
                 ctx.stroke();
-                if (this.numberSides == 3) this.incertitude = this.lineWidth;
+                if (this.numberSides === MINIMUM_NUMBER_OF_SIDES) this.incertitude = this.lineWidth;
                 else this.incertitude = this.lineWidth / 2;
                 break;
 
             case 1:
-                for (var i = 0; i <= this.numberSides; i += 1) {
-                    if (this.numberSides == i) {
+                /* tslint:disable-next-line:no-shadowed-variable */
+                for (let i = 0; i <= this.numberSides; i += 1) {
+                    if (this.numberSides === i) {
                         ctx.closePath();
                     } else
                         ctx.lineTo(
@@ -174,13 +182,13 @@ export class PolygonService extends Tool {
                 ctx.stroke();
                 ctx.fill();
 
-                if (this.numberSides == 3) this.incertitude = this.lineWidth;
+                if (this.numberSides === MINIMUM_NUMBER_OF_SIDES) this.incertitude = this.lineWidth;
                 else this.incertitude = this.lineWidth / 2;
 
                 break;
 
             case 2:
-                for (var i = 0; i <= this.numberSides; i += 1) {
+                for (let i = 0; i <= this.numberSides; i += 1) {
                     ctx.lineTo(
                         startPos.x + this.widthPolygon * Math.cos((i * 2 * Math.PI) / this.numberSides),
                         startPos.y + this.heightPolygon * Math.sin((i * 2 * Math.PI) / this.numberSides),
@@ -192,11 +200,11 @@ export class PolygonService extends Tool {
         }
         ctx.closePath();
 
-        //perimetre circulaire du cercle
+        // perimetre circulaire du cercle
         if (preview) {
             ctx.beginPath();
-            ctx.setLineDash([5, 15]);
-            ctx.lineWidth = 3;
+            ctx.setLineDash([PREVIEW_CIRCLE_LINE_DASH_MIN, PREVIEW_CIRCLE_LINE_DASH_MAX]);
+            ctx.lineWidth = PREVIEW_CIRCLE_LINE_WIDTH;
             ctx.strokeStyle = 'grey';
             ctx.ellipse(
                 startPos.x,
