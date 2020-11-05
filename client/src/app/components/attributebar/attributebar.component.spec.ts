@@ -13,8 +13,8 @@ import { RectangleService } from '@app/services/tools/rectangle/rectangle.servic
 import { SelectionService } from '@app/services/tools/selection/selection.service';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
-import { AttributebarComponent } from './attributebar.component';
 import { of } from 'rxjs';
+import { AttributebarComponent } from './attributebar.component';
 
 
 export class MockUndoRedoService extends UndoRedoService {
@@ -58,7 +58,7 @@ describe('AttributebarComponent', () => {
         eraserStub = new EraserService(drawServiceMock, UndoRedoServiceMock);
         pipetteStub = new PipetteService(drawServiceMock);
 
-        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub,paintBucketStub,selectionStub);
+        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub, paintBucketStub, selectionStub, pipetteStub);
         TestBed.configureTestingModule({
             declarations: [AttributebarComponent],
             providers: [{ provide: ToolsManagerService, useValue: toolManagerStub }, { provide: PipetteService, useValue: pipetteStub }],
