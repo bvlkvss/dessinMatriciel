@@ -116,12 +116,10 @@ export class BrushService extends Tool {
     }
     changeColor(imageData: ImageData): void {
         this.color = this.hexToColor(this.primaryColor);
-
         for (let j = 0; j < imageData.data.length; j += RGBA_NUMBER_OF_COMPONENTS) {
             imageData.data[j] = this.color.red; // Invert Red
             imageData.data[j + 1] = this.color.green; // Invert Green
             imageData.data[j + 2] = this.color.blue; // Invert Blue
-            // imageData.data[j + 3] = this.color.opacity;//working but it transfrom texture to square
         }
     }
 

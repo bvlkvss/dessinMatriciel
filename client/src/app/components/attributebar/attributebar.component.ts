@@ -1,29 +1,93 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewChecked, AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { BrushService } from '@app/services/tools/brush/brush.service';
+import { Arguments, PipetteService } from '@app/services/tools/pipette/pipette.service';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
 
 const MAX_WIDTH_VALUE = 100;
+const IMAGE_ZOOM = 60;
+const PIPETTE_IMAGE_WIDTH = 10;
+const PIPETTE_IMAGE_HEIGHT = 10;
+const PIPETTE_IMAGE_OFFSET_Y = -5;
+const PIPETTE_IMAGE_OFFSET_X = 3;
+const RECT_STROKE = 4;
+const RECT_SIZE = 5;
+
 @Component({
     selector: 'app-attributebar',
     templateUrl: './attributebar.component.html',
     styleUrls: ['./attributebar.component.scss'],
 })
-export class AttributebarComponent implements OnInit {
+export class AttributebarComponent implements OnInit, AfterViewChecked, AfterViewInit {
     widthValue: string;
     junctionWidth: string = '1';
     idStyleRectangle: number = 2;
     idStyleBrush: number = 1;
     tolerance: string = '0';
+    circleIsShown: boolean = true;
+    @ViewChild('pipette', { static: false }) pipetteCanvas: ElementRef<HTMLCanvasElement>;
+    pipetteCtx: CanvasRenderingContext2D;
     currentTexture: string = '../../../assets/b1.svg';
-    constructor(private tools: ToolsManagerService) {}
+    constructor(private tools: ToolsManagerService, private pipetteService: PipetteService) {
+        this.onClick();
+    }
     private showContainer: boolean = false;
     private lastTool: Tool = this.tools.currentTool;
 
     ngOnInit(): void {
         this.widthValue = this.tools.currentTool.lineWidth.toString();
     }
-
+    onClick(): void {
+        this.pipetteService.getColorObservable().subscribe((isPrimary: boolean) => {
+            this.pickColor(isPrimary);
+        });
+    }
+    ngAfterViewChecked(): void {
+        this.displayCircle();
+    }
+    displayCircle(): void {
+        this.pipetteService.getCircleViewObservable().subscribe((isShown: boolean) => {
+            this.circleIsShown = isShown;
+        });
+    }
+    ngAfterViewInit(): void {
+        this.pipetteService.getPipetteObservable().subscribe((arg: Arguments) => {
+            this.pipetteCtx = this.pipetteCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
+            this.drawImage(arg);
+            this.drawPixelContour();
+        });
+    }
+    pickColor(isPrimary: boolean): void {
+        const height = this.pipetteCanvas.nativeElement.height / 2;
+        const width = this.pipetteCanvas.nativeElement.width / 2;
+        const data = this.pipetteCtx.getImageData(width + 2, height + RECT_STROKE, 1, 1);
+        this.tools.setColor('#' + this.pipetteService.rgbaToHex(this.pipetteService.getColorFromData(data)), isPrimary);
+    }
+    drawPixelContour(): void {
+        const height = this.pipetteCanvas.nativeElement.height / 2;
+        const width = this.pipetteCanvas.nativeElement.width / 2;
+        this.pipetteCtx.beginPath();
+        this.pipetteCtx.strokeStyle = 'red';
+        this.pipetteCtx.strokeRect(width - 1, height + 1, RECT_SIZE, RECT_SIZE);
+    }
+    drawImage(arg: Arguments): void {
+        const x = arg.event.offsetX;
+        const y = arg.event.offsetY;
+        this.pipetteCtx.clearRect(0, 0, this.pipetteCanvas.nativeElement.width, this.pipetteCanvas.nativeElement.height);
+        this.pipetteCtx.imageSmoothingEnabled = false;
+        this.pipetteCtx.imageSmoothingQuality = 'high';
+        this.pipetteCtx.drawImage(
+            arg.image,
+            Math.abs(x - PIPETTE_IMAGE_OFFSET_X),
+            Math.abs(y + PIPETTE_IMAGE_OFFSET_Y),
+            PIPETTE_IMAGE_WIDTH,
+            PIPETTE_IMAGE_HEIGHT,
+            0,
+            PIPETTE_IMAGE_OFFSET_Y,
+            IMAGE_ZOOM,
+            IMAGE_ZOOM,
+        );
+    }
     changeStyle(styleToChangeId: string, styleId: number): void {
         const shapeStyle = document.querySelector('#style' + styleId) as HTMLElement;
         const currentStyle = document.querySelector('#' + styleToChangeId) as HTMLElement;

@@ -62,14 +62,28 @@
     background-color: rgb(48, 46, 64);
     border: none;
 }
-
+#canvasContainer {
+    width: 100%;
+    height: 100%;
+    border: black 1px salmon;
+}
+#pipetteCircle {
+    width: 160px;
+    height: 160px;
+    border: black 2px solid;
+    border-radius: 50%;
+    background-color: white;
+    position: relative;
+    bottom: 4%;
+    left: 20%;
+}
 #lineWidthcontainer {
     padding: 5px;
     position: relative;
     margin-bottom: 2px;
-    -webkit-box-shadow: inset 0px 64px 59px -71px rgba(255, 255, 255, 0.2);
-    -moz-box-shadow: inset 0px 64px 59px -71px rgba(255, 255, 255, 0.2);
-    box-shadow: inset 0px 64px 59px -71px rgba(255, 255, 255, 0.2);
+    -webkit-box-shadow: inset 0px 64px 59px -71px rgba(255, 255, 255, 0.3);
+    -moz-box-shadow: inset 0px 64px 59px -71px rgba(255, 255, 255, 0.3);
+    box-shadow: inset 0px 64px 59px -71px rgba(255, 255, 255, 0.3);
     height: 60px;
 }
 
