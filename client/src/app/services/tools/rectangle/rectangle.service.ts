@@ -11,11 +11,11 @@ export enum MouseButton {
     Back = 3,
     Forward = 4,
 }
-
 export enum RectangleStyle {
     Empty = 0,
     Filled_contour = 1,
     Filled = 2,
+    Selection = 3,
 }
 
 @Injectable({
@@ -153,25 +153,33 @@ export class RectangleService extends Tool {
         this.height = height;
         ctx.beginPath();
         if (!this.lineDash) ctx.setLineDash([0, 0]);
-        else ctx.setLineDash([5, 15]);
+        else ctx.setLineDash([2, 2]);
 
         ctx.fillStyle = this.primaryColor;
         ctx.strokeStyle = this.secondaryColor;
         ctx.lineWidth = this.lineWidth;
 
         switch (this.rectangleStyle) {
-            case 0:
+            case RectangleStyle.Empty:
                 ctx.rect(startPos.x, startPos.y, width - (this.lineWidth / 2) * Math.sign(width), height - (this.lineWidth / 2) * Math.sign(height));
                 ctx.stroke();
                 break;
-            case 1:
+            case RectangleStyle.Filled:
                 ctx.rect(startPos.x, startPos.y, width - (this.lineWidth / 2) * Math.sign(width), height - (this.lineWidth / 2) * Math.sign(height));
                 ctx.stroke();
                 ctx.fill();
                 break;
-            case 2:
+            case RectangleStyle.Filled_contour:
                 ctx.rect(startPos.x, startPos.y, width, height);
                 ctx.fill();
+                break;
+            case RectangleStyle.Selection:
+                this.drawingService.previewCtx.shadowColor = 'white';
+                this.drawingService.previewCtx.shadowOffsetX = 1;
+                this.drawingService.previewCtx.shadowOffsetY = 1;
+                this.drawingService.previewCtx.strokeStyle = 'black';
+                ctx.rect(startPos.x, startPos.y, width - (this.lineWidth / 2) * Math.sign(width), height - (this.lineWidth / 2) * Math.sign(height));
+                ctx.stroke();
                 break;
         }
 

@@ -12,7 +12,7 @@ export class BrushCommand extends Command {
     private primaryColor: string;
     private secondaryColor: string;
     private opacity: number;
-    private lineWidht:number;
+    private lineWidht: number;
     isResize: boolean = false;
 
     constructor(pathData: Vec2[], protected tool: BrushService, protected drawingService: DrawingService) {

@@ -28,6 +28,7 @@ export class LineCommand extends Command {
         for (let i = 0; i < this.pathData.length - 1; i++) {
             this.tool.drawLine(this.drawingService.baseCtx, this.pathData[i], this.pathData[i + 1]);
             if (this.withJunction) {
+                // tslint:disable-next-line:no-magic-numbers
                 if (i === this.pathData.length - 3) break;
                 this.tool.drawJunction(this.drawingService.baseCtx, this.pathData[i + 1]);
             }

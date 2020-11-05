@@ -4,7 +4,7 @@ import { ExportComponent } from '@app/components/export/export.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ResizingService } from '@app/services/resizing/resizing.service';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
-import { UndoRedoService } from '../../services/undo-redo/undo-redo.service';
+import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
 // TODO : Avoir un fichier séparé pour les constantes ?
 
@@ -43,8 +43,9 @@ export class DrawingComponent implements AfterViewInit, OnInit {
             .set('1', this.tools.getTools().get('rectangle') as Tool)
             .set('2', this.tools.getTools().get('ellipse') as Tool)
             .set('l', this.tools.getTools().get('line') as Tool)
+            .set('b', this.tools.getTools().get('paintBucket') as Tool)
+            .set('3', this.tools.getTools().get('polygon') as Tool)
             .set('r', this.tools.getTools().get('selection') as Tool);
-        // .set('b', this.tools.getTools().get('paintBucket') as Tool);
         this.baseCtx = this.baseCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.previewCtx = this.previewCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.drawingService.baseCtx = this.baseCtx;

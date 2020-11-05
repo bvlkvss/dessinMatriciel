@@ -14,7 +14,12 @@ const COLOR_STRING_LENGTH = 7;
     styleUrls: ['./sidebar.component.scss'],
 })
 export class SidebarComponent implements OnChanges {
-    constructor(private tools: ToolsManagerService, protected drawingService: DrawingService,protected invoker: UndoRedoService,private dialog: MatDialog) {}
+    constructor(
+        private tools: ToolsManagerService,
+        protected drawingService: DrawingService,
+        protected invoker: UndoRedoService,
+        private dialog: MatDialog,
+    ) {}
     @Input() primaryColor: string = this.tools.currentTool.primaryColor.slice(0, COLOR_STRING_LENGTH);
     @Input() secondaryColor: string = this.tools.currentTool.secondaryColor.slice(0, COLOR_STRING_LENGTH);
     isRevertClicked: boolean = false;

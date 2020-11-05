@@ -5,7 +5,7 @@ import { ExportComponent } from './export.component';
 import { MockDrawingService } from '@app/components/drawing/drawing.component.spec';
 import { ExportService } from '@app/services/export/export.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialogContent, MatDialogRef } from '@angular/material/dialog';
 import { of } from 'rxjs';
 
 class MockExportService extends ExportService {
@@ -25,7 +25,7 @@ describe('ExportComponent', () => {
         exportServiceStub = new MockExportService(drawServiceMock);
         matDialogRefSpy = jasmine.createSpyObj({ afterClosed : of({subscribe:jasmine.createSpy}), close: null });
         TestBed.configureTestingModule({
-            declarations: [ExportComponent],
+            declarations: [ExportComponent, MatDialogContent],
             providers: [
                 { provide: DrawingService, useValue: drawServiceMock },
                 { provide: ExportService, useValue: exportServiceStub },

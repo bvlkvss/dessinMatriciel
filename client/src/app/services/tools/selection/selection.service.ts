@@ -1,9 +1,10 @@
+// tslint:disable:max-file-line-count
 import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { EllipseService } from '@app/services/tools/ellipse/ellipse.service';
-import { RectangleService } from '@app/services/tools/rectangle/rectangle.service';
+import { RectangleService, RectangleStyle } from '@app/services/tools/rectangle/rectangle.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { SelectionCommand } from '../../../classes/selection-command';
 export enum MouseButton {
@@ -13,6 +14,22 @@ export enum MouseButton {
     Back = 3,
     Forward = 4,
 }
+enum HANDLES {
+    one = 1,
+    two = 2,
+    three = 3,
+    four = 4,
+    five = 5,
+    six = 6,
+    seven = 7,
+    eight = 8,
+}
+const HANDLE_LENGTH = 6;
+const HANDLE_OFFSET = HANDLE_LENGTH / 2;
+const DEFAULT_HANDLE_INDEX = -1;
+const MOVEMENT_OFFSET = 3;
+const INIT_MOVE_DELAY = 500;
+const CONTINUOUS_MOVE_DELAY = 100;
 @Injectable({
     providedIn: 'root',
 })
@@ -25,6 +42,7 @@ export class SelectionService extends Tool {
     mouseDownInsideSelection: boolean;
     offsetX: number;
     offsetY: number;
+    selectionCommand: SelectionCommand;
     selectionActivated: boolean;
     selectionStartPoint: Vec2;
     selectionEndPoint: Vec2;
@@ -33,18 +51,15 @@ export class SelectionService extends Tool {
     firstSelectionMove: boolean;
     width: number;
     height: number;
-    keysDown: any;
-    selectionCommand: SelectionCommand;
+    keysDown: { [key: string]: boolean };
     moveDelayActive: boolean;
+    continuousMove: boolean;
     constructor(drawingService: DrawingService, protected invoker: UndoRedoService) {
         super(drawingService);
-        this.initSelection(drawingService);
-    }
-    initSelection(drawingService: DrawingService): void {
         this.resizingHandles = [];
-        this.selectionStyle = 0;
+        this.selectionStyle = 1;
         this.rectangleService = new RectangleService(drawingService, this.invoker);
-        this.rectangleService.setStyle(0);
+        this.rectangleService.setStyle(RectangleStyle.Selection);
         this.rectangleService.lineDash = true;
         this.ellipseService = new EllipseService(drawingService, this.invoker);
         this.ellipseService.setStyle(0);
@@ -55,6 +70,7 @@ export class SelectionService extends Tool {
         this.firstSelectionMove = true;
         this.keysDown = {};
         this.moveDelayActive = false;
+        this.continuousMove = false;
     }
 
     onMouseDown(event: MouseEvent): void {
@@ -64,7 +80,7 @@ export class SelectionService extends Tool {
             this.mouseDownCoord = this.getPositionFromMouse(event);
 
             if (this.selectionActivated) {
-                if (this.mouseDownOnHandle(this.mouseDownCoord) !== -1) {
+                if (this.mouseDownOnHandle(this.mouseDownCoord) !== DEFAULT_HANDLE_INDEX) {
                     this.currenthandle = this.mouseDownOnHandle(this.mouseDownCoord);
                     this.invoker.ClearRedo();
                     this.invoker.setIsAllowed(false);
@@ -83,33 +99,37 @@ export class SelectionService extends Tool {
                     this.offsetY = this.mouseDownCoord.y - this.selectionStartPoint.y;
                     return;
                 } else {
-                    this.drawingService.clearCanvas(this.drawingService.previewCtx);
-                    this.drawingService.baseCtx.save();
-                    if (this.selectionStyle === 1) {
-                        this.clipImageWithEllipse();
-                    } else {
-                        this.drawingService.baseCtx.drawImage(this.selectionData, this.selectionStartPoint.x, this.selectionStartPoint.y);
-                    }
-                    this.selectionCommand.setStartPos(this.selectionStartPoint);
-                    this.selectionCommand.setEndPos(this.selectionEndPoint);
-                    this.selectionCommand.setSelectionStyle(this.selectionStyle);
-                    if (this.selectionCommand) {
-                        this.selectionCommand.setSize(this.width, this.height);
-                        this.selectionCommand.setCanvas(this.selectionData);
-                        this.invoker.addToUndo(this.selectionCommand);
-                        this.invoker.setIsAllowed(true);
-                        console.log(this.invoker.getIsAllowed(), 'hey');
-                    }
-                    this.drawingService.baseCtx.restore();
-                    this.resetSelection();
-                    this.selectionActivated = false;
+                    this.drawSelectionOnBase();
                 }
             }
             this.selectionStartPoint = this.getPositionFromMouse(event);
             this.rectangleService.onMouseDown(event, true);
-            console.log(this.invoker.getIsAllowed());
         }
     }
+    private drawSelectionOnBase(): void {
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        this.drawingService.baseCtx.save();
+        if (this.selectionStyle === 1) {
+            this.clipImageWithEllipse();
+        } else {
+            this.drawingService.baseCtx.drawImage(this.selectionData, this.selectionStartPoint.x, this.selectionStartPoint.y);
+        }
+        this.selectionCommand.setStartPos(this.selectionStartPoint);
+        this.selectionCommand.setEndPos(this.selectionEndPoint);
+        this.selectionCommand.setSelectionStyle(this.selectionStyle);
+        if (this.selectionCommand) {
+            this.selectionCommand.setSize(this.width, this.height);
+            this.selectionCommand.setCanvas(this.selectionData);
+            this.invoker.addToUndo(this.selectionCommand);
+            this.invoker.setIsAllowed(true);
+            console.log(this.invoker.getIsAllowed(), 'hey', this.selectionCommand);
+        }
+        this.drawingService.baseCtx.restore();
+
+        this.resetSelection();
+        this.selectionActivated = false;
+    }
+
     saveSelection(): void {
         const temp = document.createElement('canvas') as HTMLCanvasElement;
         const width = Math.abs(this.rectangleService.width);
@@ -132,43 +152,35 @@ export class SelectionService extends Tool {
     }
 
     onMouseOut(event: MouseEvent): void {
-        switch (this.selectionStyle) {
-            case 1:
-                this.rectangleService.onMouseOut(event);
+        this.rectangleService.onMouseOut(event);
+        if (this.mouseDown) {
+            if (this.selectionStyle === 1 && !this.selectionActivated)
+                this.ellipseService.drawEllipse(
+                    this.drawingService.previewCtx,
+                    this.selectionStartPoint,
+                    this.rectangleService.mouseOutCoord,
+                    this.rectangleService.toSquare,
+                    false,
+                );
+            this.isOut = true;
         }
     }
 
     onMouseEnter(event: MouseEvent): void {
-        this.rectangleService.isOut = false;
+        if (!this.selectionActivated) this.rectangleService.isOut = false;
     }
 
     onMouseUp(event: MouseEvent): void {
-        /*
-1 2 3
-4   5
-6 7 8
-*/
         this.mouseUpCoord = this.getPositionFromMouse(event);
         if (this.mouseDown && this.mouseUpCoord.x !== this.selectionStartPoint.x && this.mouseUpCoord.y !== this.selectionStartPoint.y) {
             if (!this.selectionActivated) {
-                if (!this.rectangleService.isOut) {
-                    this.selectionEndPoint = this.mouseUpCoord;
-                } else {
-                    this.selectionEndPoint = this.rectangleService.mouseOutCoord;
-                }
+                this.selectionEndPoint = !this.rectangleService.isOut ? this.mouseUpCoord : this.rectangleService.mouseOutCoord;
             }
             this.width = Math.abs(this.rectangleService.width);
             this.height = Math.abs(this.rectangleService.height);
 
-            if (this.selectionEndPoint.y < this.selectionStartPoint.y) {
-                this.selectionEndPoint.y = this.selectionStartPoint.y;
-                this.selectionStartPoint.y -= this.height;
-            }
-            if (this.selectionEndPoint.x < this.selectionStartPoint.x) {
-                this.selectionEndPoint.x = this.selectionStartPoint.x;
-                this.selectionStartPoint.x -= this.width;
-            }
-            console.log(this.width, this.height);
+            this.updateSelectionNodes();
+
             this.saveSelection();
             if (this.selectionStyle === 1) {
                 this.clipImageWithEllipse();
@@ -183,52 +195,25 @@ export class SelectionService extends Tool {
         this.rectangleService.mouseDown = false;
         this.rectangleService.toSquare = false;
         this.mouseDown = false;
-
         this.mouseDownInsideSelection = false;
+    }
+
+    updateSelectionNodes(): void {
+        if (this.selectionEndPoint.y < this.selectionStartPoint.y) {
+            this.selectionEndPoint.y = this.selectionStartPoint.y;
+            this.selectionStartPoint.y -= this.height;
+        }
+        if (this.selectionEndPoint.x < this.selectionStartPoint.x) {
+            this.selectionEndPoint.x = this.selectionStartPoint.x;
+            this.selectionStartPoint.x -= this.width;
+        }
     }
 
     onMouseMove(event: MouseEvent): void {
         this.currentPos = this.getPositionFromMouse(event);
 
         if (this.selectionActivated && this.mouseDown) {
-            switch (this.currenthandle) {
-                case 1:
-                    this.selectionStartPoint = this.currentPos;
-                    break;
-                case 2:
-                    this.selectionStartPoint.y = this.currentPos.y;
-                    break;
-                case 3:
-                    this.selectionStartPoint.y = this.currentPos.y;
-                    this.selectionEndPoint.x = this.currentPos.x;
-                    break;
-                case 4:
-                    this.selectionStartPoint.x = this.currentPos.x;
-                    break;
-                case 5:
-                    this.selectionEndPoint.x = this.currentPos.x;
-                    break;
-                case 6:
-                    this.selectionStartPoint.x = this.currentPos.x;
-                    this.selectionEndPoint.y = this.currentPos.y;
-                    break;
-                case 7:
-                    this.selectionEndPoint.y = this.currentPos.y;
-                    break;
-                case 8:
-                    this.selectionEndPoint = this.currentPos;
-
-                    break;
-            }
-
-            /*
-1 2 3
-4   5
-6 7 8
-*/
-            this.saveSelection();
-            this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.rectangleService.drawRectangle(this.drawingService.previewCtx, this.selectionStartPoint, this.selectionEndPoint, false);
+            this.resizeSelection();
 
             if (this.selectionStyle === 1) {
                 this.ellipseService.drawEllipse(this.drawingService.previewCtx, this.selectionStartPoint, this.selectionEndPoint, false, false);
@@ -238,9 +223,8 @@ export class SelectionService extends Tool {
             return;
         }
 
-        if (this.mouseDownInsideSelection) {
-            this.moveSelection(this.currentPos);
-        } else if (this.mouseDown) {
+        if (this.mouseDownInsideSelection) this.moveSelection(this.currentPos);
+        else if (this.mouseDown) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.rectangleService.onMouseMove(event);
             if (this.selectionStyle === 1)
@@ -254,69 +238,86 @@ export class SelectionService extends Tool {
         }
     }
 
-    drawResizingHandles() {
+    drawResizingHandles(): void {
+        this.drawingService.previewCtx.save();
         this.drawingService.previewCtx.beginPath();
         this.drawingService.previewCtx.fillStyle = '#ffffff';
         this.drawingService.previewCtx.strokeStyle = 'blue';
         this.drawingService.previewCtx.lineWidth = 2;
         this.drawingService.previewCtx.setLineDash([0, 0]);
-        // this.drawingService.previewCtx.shadowOffsetY = 1;
-        // this.drawingService.previewCtx.shadowOffsetX = 1;
         for (const handle of this.resizingHandles) {
-            this.drawingService.previewCtx.rect(handle.x, handle.y, 6, 6);
+            this.drawingService.previewCtx.rect(handle.x, handle.y, HANDLE_LENGTH, HANDLE_LENGTH);
         }
         this.drawingService.previewCtx.stroke();
         this.drawingService.previewCtx.fill();
         this.drawingService.previewCtx.closePath();
+        this.drawingService.previewCtx.restore();
     }
 
-    updateResizingHandles() {
+    updateResizingHandles(): void {
         this.resizingHandles = [];
         const width = Math.abs(this.rectangleService.width);
         const height = Math.abs(this.rectangleService.height);
-
         /*
-1 2 3
-4   5
-6 7 8
-*/
-
+      1 2 3
+      4   5
+      6 7 8
+    */
         // 1
-        this.resizingHandles.push({ x: this.selectionStartPoint.x - 3, y: this.selectionStartPoint.y - 3 });
+        this.resizingHandles.push({
+            x: this.selectionStartPoint.x - HANDLE_OFFSET,
+            y: this.selectionStartPoint.y - HANDLE_OFFSET,
+        });
         // 2
-        this.resizingHandles.push({ x: this.selectionStartPoint.x + width / 2 - 3, y: this.selectionStartPoint.y - 3 });
+        this.resizingHandles.push({
+            x: this.selectionStartPoint.x + width / 2 - HANDLE_OFFSET,
+            y: this.selectionStartPoint.y - HANDLE_OFFSET,
+        });
         // 3
-        this.resizingHandles.push({ x: this.selectionStartPoint.x + width - 3, y: this.selectionStartPoint.y - 3 });
+        this.resizingHandles.push({
+            x: this.selectionStartPoint.x + width - HANDLE_OFFSET,
+            y: this.selectionStartPoint.y - HANDLE_OFFSET,
+        });
         // 4
-        this.resizingHandles.push({ x: this.selectionStartPoint.x - 3, y: this.selectionStartPoint.y + height / 2 - 3 });
+        this.resizingHandles.push({
+            x: this.selectionStartPoint.x - HANDLE_OFFSET,
+            y: this.selectionStartPoint.y + height / 2 - HANDLE_OFFSET,
+        });
         // 5
-        this.resizingHandles.push({ x: this.selectionStartPoint.x + width - 3, y: this.selectionStartPoint.y - 3 + height / 2 });
+        this.resizingHandles.push({
+            x: this.selectionStartPoint.x + width - HANDLE_OFFSET,
+            y: this.selectionStartPoint.y - HANDLE_OFFSET + height / 2,
+        });
         // 6
-        this.resizingHandles.push({ x: this.selectionStartPoint.x - 3, y: this.selectionStartPoint.y - 3 + height });
+        this.resizingHandles.push({
+            x: this.selectionStartPoint.x - HANDLE_OFFSET,
+            y: this.selectionStartPoint.y - HANDLE_OFFSET + height,
+        });
         // 7
-        this.resizingHandles.push({ x: this.selectionStartPoint.x + width / 2 - 3, y: this.selectionStartPoint.y + height - 3 });
+        this.resizingHandles.push({
+            x: this.selectionStartPoint.x + width / 2 - HANDLE_OFFSET,
+            y: this.selectionStartPoint.y + height - HANDLE_OFFSET,
+        });
         // 8
-        this.resizingHandles.push({ x: this.selectionStartPoint.x + width - 3, y: this.selectionStartPoint.y + height - 3 });
+        this.resizingHandles.push({
+            x: this.selectionStartPoint.x + width - HANDLE_OFFSET,
+            y: this.selectionStartPoint.y + height - HANDLE_OFFSET,
+        });
     }
 
-    mouseDownOnHandle(mousedownpos: Vec2) {
-        /*
-1 2 3
-4   5
-6 7 8
-*/
+    mouseDownOnHandle(mousedownpos: Vec2): number {
         for (let i = 0; i < this.resizingHandles.length; i++) {
             if (
                 mousedownpos.x >= this.resizingHandles[i].x &&
-                mousedownpos.x <= this.resizingHandles[i].x + 6 &&
+                mousedownpos.x <= this.resizingHandles[i].x + HANDLE_LENGTH &&
                 mousedownpos.y >= this.resizingHandles[i].y &&
-                mousedownpos.y <= this.resizingHandles[i].y + 6
+                mousedownpos.y <= this.resizingHandles[i].y + HANDLE_LENGTH
             ) {
                 return i + 1;
             }
         }
         // mouse not on any handle
-        return -1;
+        return DEFAULT_HANDLE_INDEX;
     }
 
     onKeyUp(event: KeyboardEvent): void {
@@ -326,14 +327,14 @@ export class SelectionService extends Tool {
         }
         this.keysDown[event.key] = event.type === 'keydown';
         this.mouseDownInsideSelection = false;
+        this.continuousMove = !event.key.includes('Arrow');
     }
 
     onKeyDown(event: KeyboardEvent): void {
         if (event.ctrlKey && event.key === 'a') {
             this.selectAllCanvas();
         } else if (event.key === 'Escape') {
-            this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.selectionActivated = false;
+            this.drawSelectionOnBase();
         } else {
             this.rectangleService.onKeyDown(event);
 
@@ -344,14 +345,23 @@ export class SelectionService extends Tool {
             this.keysDown[event.key] = event.type === 'keydown';
 
             if (event.key.includes('Arrow')) {
-                console.log('arrow found');
+                event.preventDefault();
+                event.stopPropagation();
                 this.moveSelectionWithKeys();
             }
         }
     }
 
     resetSelection(): void {
-        this.initSelection(this.drawingService);
+        this.resizingHandles = [];
+        this.rectangleService = new RectangleService(this.drawingService, this.invoker);
+        // this.selectionStyle=0;
+        this.rectangleService.setStyle(RectangleStyle.Selection);
+        this.rectangleService.lineDash = true;
+        this.ellipseService.setStyle(0);
+        this.selectionActivated = false;
+        this.toolAttributes = [];
+        this.firstSelectionMove = true;
     }
 
     moveSelection(endpoint: Vec2): void {
@@ -367,9 +377,8 @@ export class SelectionService extends Tool {
             x: this.selectionStartPoint.x + Math.abs(this.rectangleService.width),
             y: this.selectionStartPoint.y + Math.abs(this.rectangleService.height),
         };
-        // this.rectangleService.drawRectangle(this.drawingService.previewCtx,this.selectionStartPoint,this.selectionEndPoint,false);
-        // break;
         this.drawingService.previewCtx.save();
+
         if (this.selectionStyle === 1)
             this.ellipseService.drawEllipse(this.drawingService.previewCtx, this.selectionStartPoint, this.selectionEndPoint, false, false);
 
@@ -383,8 +392,6 @@ export class SelectionService extends Tool {
             this.ellipseService.setStyle(0);
             this.ellipseService.drawEllipse(this.drawingService.previewCtx, this.selectionStartPoint, this.selectionEndPoint, false, false);
         }
-        // this.updateResizingHandles();
-        // this.drawResizingHandles();
     }
 
     eraseSelectionFromBase(endPos: Vec2): void {
@@ -414,17 +421,16 @@ export class SelectionService extends Tool {
         this.rectangleService.height = this.drawingService.canvas.height;
         this.width = this.drawingService.canvas.width;
         this.height = this.drawingService.canvas.height;
-
         this.selectionEndPoint = { x: this.drawingService.canvas.width - 2, y: this.drawingService.canvas.height - 2 };
-
         this.saveSelection();
-
         this.drawingService.previewCtx.drawImage(this.selectionData, this.selectionStartPoint.x, this.selectionStartPoint.y);
         this.rectangleService.drawRectangle(this.drawingService.previewCtx, this.selectionStartPoint, this.selectionEndPoint, false);
+        this.updateResizingHandles();
+        this.drawResizingHandles();
         this.selectionActivated = true;
     }
 
-    delay(ms: number) {
+    async delay(ms: number): Promise<void> {
         return new Promise((resolve) => setTimeout(resolve, ms));
     }
 
@@ -434,22 +440,25 @@ export class SelectionService extends Tool {
 
         if (!this.moveDelayActive) {
             this.moveDelayActive = true;
-            if (this.keysDown.ArrowRight === true) {
-                this.selectionStartPoint.x += 3;
+            if (this.keysDown.ArrowRight) {
+                this.selectionStartPoint.x += MOVEMENT_OFFSET;
             }
-            if (this.keysDown.ArrowLeft === true) {
-                this.selectionStartPoint.x -= 3;
+            if (this.keysDown.ArrowLeft) {
+                this.selectionStartPoint.x -= MOVEMENT_OFFSET;
             }
-            if (this.keysDown.ArrowUp === true) {
-                this.selectionStartPoint.y -= 3;
+            if (this.keysDown.ArrowUp) {
+                this.selectionStartPoint.y -= MOVEMENT_OFFSET;
             }
 
-            if (this.keysDown.ArrowDown === true) {
-                this.selectionStartPoint.y += 3;
+            if (this.keysDown.ArrowDown) {
+                this.selectionStartPoint.y += MOVEMENT_OFFSET;
             }
 
             this.moveSelection(this.selectionStartPoint);
-            await this.delay(100);
+            if (!this.continuousMove) {
+                await this.delay(INIT_MOVE_DELAY);
+                this.continuousMove = true;
+            } else await this.delay(CONTINUOUS_MOVE_DELAY);
             this.moveDelayActive = false;
         }
     }
@@ -462,5 +471,39 @@ export class SelectionService extends Tool {
         this.drawingService.baseCtx.drawImage(this.selectionData, this.selectionStartPoint.x, this.selectionStartPoint.y);
         this.drawingService.baseCtx.restore();
         this.ellipseService.secondaryColor = 'black';
+    }
+
+    resizeSelection(): void {
+        switch (this.currenthandle) {
+            case HANDLES.one:
+                this.selectionStartPoint = this.currentPos;
+                break;
+            case HANDLES.two:
+                this.selectionStartPoint.y = this.currentPos.y;
+                break;
+            case HANDLES.three:
+                this.selectionStartPoint.y = this.currentPos.y;
+                this.selectionEndPoint.x = this.currentPos.x;
+                break;
+            case HANDLES.four:
+                this.selectionStartPoint.x = this.currentPos.x;
+                break;
+            case HANDLES.five:
+                this.selectionEndPoint.x = this.currentPos.x;
+                break;
+            case HANDLES.six:
+                this.selectionStartPoint.x = this.currentPos.x;
+                this.selectionEndPoint.y = this.currentPos.y;
+                break;
+            case HANDLES.seven:
+                this.selectionEndPoint.y = this.currentPos.y;
+                break;
+            case HANDLES.eight:
+                this.selectionEndPoint = this.currentPos;
+                break;
+        }
+        this.saveSelection();
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        this.rectangleService.drawRectangle(this.drawingService.previewCtx, this.selectionStartPoint, this.selectionEndPoint, false);
     }
 }

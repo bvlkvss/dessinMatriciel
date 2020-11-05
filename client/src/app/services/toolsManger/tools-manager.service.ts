@@ -6,6 +6,7 @@ import { EraserService } from '@app/services/tools/eraser/eraser-service';
 import { LineService } from '@app/services/tools/line/line.service';
 import { PaintBucketService } from '@app/services/tools/paint-bucket/paint-bucket.service';
 import { PencilService } from '@app/services/tools/pencil/pencil-service';
+import { PolygonService } from '@app/services/tools/polygon/polygon.service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle.service';
 import { SelectionService } from '@app/services/tools/selection/selection.service';
 
@@ -25,6 +26,7 @@ export class ToolsManagerService {
         lineService: LineService,
         selectionService: SelectionService,
         paintBucketService: PaintBucketService,
+        polygonService: PolygonService,
     ) {
         this.tools = new Map<string, Tool>([
             ['pencil', pencilService],
@@ -35,6 +37,8 @@ export class ToolsManagerService {
             ['line', lineService],
             ['selection', selectionService],
             ['paintBucket', paintBucketService],
+            ['selection', selectionService],
+            ['polygon', polygonService],
         ]);
         this.currentTool = this.tools.get('pencil') as Tool;
     }
@@ -76,6 +80,16 @@ export class ToolsManagerService {
         const ellipse = this.currentTool as EllipseService;
         ellipse.setStyle(id);
     }
+    setPolygonStyle(id: number): void {
+        const polygon = this.currentTool as PolygonService;
+        polygon.setStyle(id);
+    }
+
+    setPolygonNumberSides(newNumberSides: number): void {
+        const polygon = this.currentTool as PolygonService;
+        polygon.setNumberSides(newNumberSides);
+    }
+
     setJunctionWidth(id: number): void {
         const line = this.currentTool as LineService;
         line.setJunctionWidth(id);
