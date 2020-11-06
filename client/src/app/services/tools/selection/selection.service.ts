@@ -117,10 +117,10 @@ export class SelectionService extends Tool {
         } else {
             this.drawingService.baseCtx.drawImage(this.selectionData, this.selectionStartPoint.x, this.selectionStartPoint.y);
         }
-        this.selectionCommand.setStartPos(this.selectionStartPoint);
-        this.selectionCommand.setEndPos(this.selectionEndPoint);
-        this.selectionCommand.setSelectionStyle(this.selectionStyle);
         if (this.selectionCommand) {
+            this.selectionCommand.setStartPos(this.selectionStartPoint);
+            this.selectionCommand.setEndPos(this.selectionEndPoint);
+            this.selectionCommand.setSelectionStyle(this.selectionStyle);
             this.selectionCommand.setSize(this.width, this.height);
             this.selectionCommand.setCanvas(this.selectionData);
             this.invoker.addToUndo(this.selectionCommand);
