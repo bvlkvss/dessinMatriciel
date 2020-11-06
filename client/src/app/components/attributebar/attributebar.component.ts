@@ -172,6 +172,7 @@ export class AttributebarComponent implements OnInit, AfterViewChecked, AfterVie
     }
 
     setNumberSides(newNumberSides: number): void {
+        
         this.tools.setPolygonNumberSides(newNumberSides);
     }
 }

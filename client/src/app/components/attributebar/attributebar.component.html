@@ -106,9 +106,8 @@
             </div>
         </div>
 
-        <div class="header"> Nombre de cotés : </div>
         <div>
-            <div class="grid-container">
+           <!--- <div class="grid-container">
                 <div class="numberCircle" (click)="setNumberSides(3)">3</div>
                 <div class="numberCircle" (click)="setNumberSides(4)">4</div>
                 <div class="numberCircle" (click)="setNumberSides(5)">5</div>
@@ -119,8 +118,10 @@
                 <div class="numberCircle" (click)="setNumberSides(10)">10</div>
                 <div class="numberCircle" (click)="setNumberSides(11)">11</div>
                 <div class="numberCircle" (click)="setNumberSides(12)">12</div>
-            </div>
+            </div>-->
+            
+            <input #nbcote type="input" class="form__field" placeholder="Entrez nombre de côtés" name="nbcote" id="nbcote" required />
         </div>
-
+        <button (click)="setNumberSides(nbcote.value); nbcote.value = ''"> Confirmer </button>
     </div>
 </div>
