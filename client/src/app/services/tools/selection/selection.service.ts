@@ -76,6 +76,9 @@ export class SelectionService extends Tool {
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseDown) {
+            this.drawingService.previewCtx.shadowColor = 'white';
+            this.drawingService.previewCtx.shadowOffsetX = 1;
+            this.drawingService.previewCtx.shadowOffsetY = 1;
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.mouseDownCoord = this.getPositionFromMouse(event);
 
@@ -187,6 +190,7 @@ export class SelectionService extends Tool {
             } else {
                 this.drawingService.previewCtx.drawImage(this.selectionData, this.selectionStartPoint.x, this.selectionStartPoint.y);
             }
+            this.rectangleService.drawRectangle(this.drawingService.previewCtx, this.selectionStartPoint, this.selectionEndPoint, false);
             this.updateResizingHandles();
             this.drawResizingHandles();
             this.selectionActivated = true;

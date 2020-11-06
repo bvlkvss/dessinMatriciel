@@ -11,10 +11,10 @@ describe('CarrouselComponent', () => {
   let component: CarrouselComponent;
   let fixture: ComponentFixture<CarrouselComponent>;
   let httpTestingController: HttpTestingController;
-  const drawingMock: Drawings = { name: 'test', tag: 'tagtest', imageData: 'datatest' };
-  const drawingMock2: Drawings = { name: 'test2', tag: 'tagtest2', imageData: 'datatest2' };
-  const drawingMock3: Drawings = { name: 'test3', tag: 'tagtest3', imageData: 'datatest' };
-  const drawingMock4: Drawings = { name: 'test4', tag: 'tagtest4', imageData: 'datatest' };
+  const drawingMock: Drawings = { name: 'test', tag: ['tagtest'], imageData: 'datatest' };
+  const drawingMock2: Drawings = { name: 'test2', tag: ['tagtest2'], imageData: 'datatest2' };
+  const drawingMock3: Drawings = { name: 'test3', tag: ['tagtest3'], imageData: 'datatest' };
+  const drawingMock4: Drawings = { name: 'test4', tag: ['tagtest4'], imageData: 'datatest' };
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -100,8 +100,8 @@ describe('CarrouselComponent', () => {
     expect(swipeSpy).not.toHaveBeenCalled();
   });
   it('next should add the next drawing to the array and pop the previous one', () => {
-    const drawingMock3: Drawings = { name: 'test3', tag: 'tagtest3', imageData: 'datatest' };
-    const drawingMock4: Drawings = { name: 'test4', tag: 'tagtest4', imageData: 'datatest' };
+    const drawingMock3: Drawings = { name: 'test3', tag: ['tagtest3'], imageData: 'datatest' };
+    const drawingMock4: Drawings = { name: 'test4', tag: ['tagtest4'], imageData: 'datatest' };
     component.middlePosition = 1;
     httpTestingController.expectOne({ method: 'GET', url: 'http://localhost:3000/api/drawings/localServer' });
     component.allDrawings.push(drawingMock);
@@ -183,7 +183,7 @@ describe('CarrouselComponent', () => {
     httpTestingController.match({ method: 'GET', url: 'http://localhost:3000/api/drawings/localServer' });
   });
   it('deleteFromServer should should set spinnerVisible to true and emptyCarrouselMessage to false  ', () => {
-    const drawingMock = { name: 'test1', tag: 'tag', imageData: 'imageData', _id: 'ok' };
+    const drawingMock = { name: 'test1', tag: ['tag'], imageData: 'imageData', _id: 'ok' };
     component.allDrawings.push(drawingMock);
     component.deleteFromServer(0).subscribe(() => { });
     httpTestingController.expectOne({ method: 'GET', url: 'http://localhost:3000/api/drawings/localServer' });
@@ -192,7 +192,7 @@ describe('CarrouselComponent', () => {
     expect(component.emptyCarrouselMessage).toEqual(false);
   });
   it('deleteFromServer should return the deletedElement   ', () => {
-    const drawingMock = { name: 'test1', tag: 'tag', imageData: 'imageData', _id: 'ok' };
+    const drawingMock = { name: 'test1', tag: ['tag'], imageData: 'imageData', _id: 'ok' };
     spyOn(component, 'deleteFromServer').and.returnValue(of(drawingMock));
     component.allDrawings.push(drawingMock);
     component.deleteFromServer(0).subscribe((drawings) => {
@@ -202,10 +202,10 @@ describe('CarrouselComponent', () => {
   });
   it('delete should call deleteFromServer,addDrawing and delete the drawing from the carousel   ', () => {
     const drawingsMock: any[] = [
-      { name: 'test1', tag: 'tag', imageData: 'imageData', _id: 'ok' },
-      { name: 'test2', tag: 'tag', imageData: 'imageData', _id: 'ok2' },
-      { name: 'test3', tag: 'tag', imageData: 'imageData', _id: 'ok3' },
-      { name: 'test4', tag: 'tag', imageData: 'imageData', _id: 'ok4' },
+      { name: 'test1', tag: ['tag'], imageData: 'imageData', _id: 'ok' },
+      { name: 'test2', tag: ['tag'], imageData: 'imageData', _id: 'ok2' },
+      { name: 'test3', tag: ['tag'], imageData: 'imageData', _id: 'ok3' },
+      { name: 'test4', tag: ['tag'], imageData: 'imageData', _id: 'ok4' },
     ];
     let deleteSpy = spyOn(component, 'deleteFromServer').and.returnValue(of(drawingsMock[1]));
     let addDrawingSpy = spyOn(component, 'addDrawing').and.callThrough();
@@ -235,10 +235,10 @@ describe('CarrouselComponent', () => {
   });
   it('delete should after deleting  call addDrawing first drawing to drawingsToShow array if middlePosition > size    ', () => {
     const drawingsMock: any[] = [
-      { name: 'test1', tag: 'tag', imageData: 'imageData', _id: 'ok' },
-      { name: 'test2', tag: 'tag', imageData: 'imageData', _id: 'ok2' },
-      { name: 'test3', tag: 'tag', imageData: 'imageData', _id: 'ok3' },
-      { name: 'test4', tag: 'tag', imageData: 'imageData', _id: 'ok4' },
+      { name: 'test1', tag: ['tag'], imageData: 'imageData', _id: 'ok' },
+      { name: 'test2', tag: ['tag'], imageData: 'imageData', _id: 'ok2' },
+      { name: 'test3', tag: ['tag'], imageData: 'imageData', _id: 'ok3' },
+      { name: 'test4', tag: ['tag'], imageData: 'imageData', _id: 'ok4' },
     ];
     let addDrawingSpy = spyOn(component, 'addDrawing').and.callThrough();
     spyOn(component, 'deleteFromServer').and.returnValue(of(drawingsMock[1]));

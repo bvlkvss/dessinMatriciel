@@ -13,9 +13,9 @@ export class FilterTagComponent implements OnInit {
     selectedTags: string[] = [];
     tags: string[] = [];
     dropdownSettings: IDropdownSettings;
-    constructor(private http: HttpClient, private filter: FilterByTagService) {}
+    constructor(private http: HttpClient, private filter: FilterByTagService) { }
     ngOnInit(): void {
-        this.http.get<Drawings[]>('http://localhost:3000/api/drawings/').subscribe((drawings) => {
+        this.http.get<Drawings[]>('http://localhost:3000/api/drawings/localServer').subscribe((drawings) => {
             this.filter.initDrawings = drawings;
         });
         this.dropdownSettings = {

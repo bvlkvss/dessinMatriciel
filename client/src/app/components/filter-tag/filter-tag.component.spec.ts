@@ -44,58 +44,58 @@ describe('FilterTagComponent', () => {
     });
 
     it('should create', () => {
-        httpTestController.expectOne({ method: 'GET', url: 'http://localhost:3000/api/drawings/' });
+        httpTestController.expectOne({ method: 'GET', url: 'http://localhost:3000/api/drawings/localServer' });
         //httpTestController.expectOne({ method: 'GET', url: 'http://localhost:3000/api/drawings/' });
         expect(component).toBeTruthy();
     });
 
     it('shoud get', () => {
-        httpTestController.expectOne({ method: 'GET', url: 'http://localhost:3000/api/drawings/' });
+        httpTestController.expectOne({ method: 'GET', url: 'http://localhost:3000/api/drawings/localServer' });
         component.onClick();
     });
 
     it('should update initdraw', () => {
-        httpTestController.expectOne({ method: 'GET', url: 'http://localhost:3000/api/drawings/' });
+        httpTestController.expectOne({ method: 'GET', url: 'http://localhost:3000/api/drawings/localServer' });
         component.updateTags(filterStub.initDrawings);
         expect(component.tags.length).toEqual(4);
     });
 
     it('SHOULD INGORE DUPLICATE', () => {
-        httpTestController.expectOne({ method: 'GET', url: 'http://localhost:3000/api/drawings/' });
+        httpTestController.expectOne({ method: 'GET', url: 'http://localhost:3000/api/drawings/localServer' });
         component.updateTags(filterStub.initDrawings);
         expect(component.tags.length).toEqual(4);
     });
 
     it('shoul call filter', () => {
-        httpTestController.expectOne({ method: 'GET', url: 'http://localhost:3000/api/drawings/' });
+        httpTestController.expectOne({ method: 'GET', url: 'http://localhost:3000/api/drawings/localServer' });
         let spy = spyOn(filterStub, 'filter').and.callThrough().and.callFake(() => { });
         component.onItemSelect();
         expect(spy).toHaveBeenCalled();
     });
 
     it('shoul call ignorefilter', () => {
-        httpTestController.expectOne({ method: 'GET', url: 'http://localhost:3000/api/drawings/' });
+        httpTestController.expectOne({ method: 'GET', url: 'http://localhost:3000/api/drawings/localServer' });
         let spy = spyOn(filterStub, 'ignoreFilter').and.callThrough().and.callFake(() => { });
         component.ignoreFilter();
         expect(spy).toHaveBeenCalled();
     });
 
     it('shoul call filterOndDeselect', () => {
-        httpTestController.expectOne({ method: 'GET', url: 'http://localhost:3000/api/drawings/' });
+        httpTestController.expectOne({ method: 'GET', url: 'http://localhost:3000/api/drawings/localServer' });
         let spy = spyOn(filterStub, 'filterOnDeSelect').and.callThrough().and.callFake(() => { });
         component.onDeSelect();
         expect(spy).toHaveBeenCalled();
     });
 
     it('shoudl call update tag if we call onclick ', () => {
-        httpTestController.expectOne({ method: 'GET', url: 'http://localhost:3000/api/drawings/' });
+        httpTestController.expectOne({ method: 'GET', url: 'http://localhost:3000/api/drawings/localServer' });
         let spy = spyOn(component, 'updateTags').and.callThrough();
         component.onClick();
         expect(spy).toHaveBeenCalled();
     });
 
     it('shoudl call update tag if we call onclick ', () => {
-        httpTestController.expectOne({ method: 'GET', url: 'http://localhost:3000/api/drawings/' });
+        httpTestController.expectOne({ method: 'GET', url: 'http://localhost:3000/api/drawings/localServer' });
         let spy = spyOn(component, 'updateTags').and.callThrough();
         component.onClick();
         expect(spy).toHaveBeenCalled();
