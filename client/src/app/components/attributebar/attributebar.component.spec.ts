@@ -252,10 +252,8 @@ describe('AttributebarComponent', () => {
         component.displayCircle();
         expect(observerSpy).toHaveBeenCalled();
         expect(component.circleIsShown).toEqual(false);
-
-
-
     });
+    
     it('ngAfterViewInit should call drawImage and drawPixelContour  ', () => {
 
         const arg: Arguments = { image: new Image(), event: mouseEvent }

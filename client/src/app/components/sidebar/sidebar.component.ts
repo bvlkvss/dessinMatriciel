@@ -5,7 +5,7 @@ import { ExportComponent } from '@app/components/export/export.component';
 import { SavingComponent } from '@app/components/saving/saving.component';
 import { UserGuideComponent } from '@app/components/user-guide/user-guide.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-// import { SelectionService } from '@app/services/tools/selection/selection.service';
+import { SelectionService } from '@app/services/tools/selection/selection.service';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
@@ -141,6 +141,11 @@ export class SidebarComponent implements OnChanges {
         this.drawingService.newDrawing();
     }
 
+    selectAll(): void {
+        (this.tools.currentTool as SelectionService).selectionStyle = 0;
+        (this.tools.currentTool as SelectionService).selectAllCanvas();
+    }
+
     warningMessage(): void {
         if (window.confirm('Warning, your current sketch will be deleted.\n Do you want to proceed to the main menu?')) {
             location.replace('main-page.component.html');
@@ -150,8 +155,10 @@ export class SidebarComponent implements OnChanges {
     @HostListener('window:keydown', ['$event'])
     onkeyDownWindow(event: KeyboardEvent): void {
         if (event.ctrlKey && event.key === 'e') {
+            event.preventDefault();
             this.openExportDialog();
-        } else if (event.ctrlKey && event.key === 'a') {
+        } else if (event.ctrlKey && event.key === 's') {
+            event.preventDefault();
             this.openSavingDialog();
         } else if (event.ctrlKey && event.key === 'g') {
             event.preventDefault();

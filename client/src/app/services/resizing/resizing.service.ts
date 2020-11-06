@@ -150,7 +150,6 @@ export class ResizingService {
         }
     }
     makeCanvasWhite(context: CanvasRenderingContext2D): void {
-        console.log('called');
         context.beginPath();
         context.fillStyle = 'white';
         context.rect(0, 0, this.drawingService.canvas.width, this.drawingService.canvas.height);

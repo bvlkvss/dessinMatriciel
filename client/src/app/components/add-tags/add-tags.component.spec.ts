@@ -1,7 +1,10 @@
 /* tslint:disable */
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatChipInputEvent } from '@angular/material/chips';
+import { MatChipInputEvent, MatChipList, MatChipsModule} from '@angular/material/chips';
+import { MatFormField, MatFormFieldModule } from '@angular/material/form-field';
 import { AddTagsComponent } from '@app/components/add-tags/add-tags.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
 const MAX_ARRAY_TAG_SIZE = 8;
 const EXCEEDING_MAX_ARRAY_TAG_SIZE = 10;
 const GOOD_INDEX = 4;
@@ -12,7 +15,8 @@ describe('addTagsComponent', () => {
     let fixture: ComponentFixture<AddTagsComponent>;
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [AddTagsComponent],
+            declarations: [AddTagsComponent, MatFormField, MatChipList],
+            imports: [MatFormFieldModule, MatChipsModule, BrowserAnimationsModule]
         }).compileComponents();
     }));
     beforeEach(() => {

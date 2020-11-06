@@ -102,7 +102,7 @@ export class RectangleService extends Tool {
                     this,
                     this.drawingService,
                 ) as RectangleCommand;
-                console.log(cmd);
+
                 this.invoker.addToUndo(cmd);
                 this.invoker.setIsAllowed(true);
             }

@@ -38,12 +38,6 @@ describe('CarrouselComponent', () => {
     httpTestingController.expectOne({ method: 'GET', url: 'http://localhost:3000/api/drawings/localServer' });
     expect(component).toBeTruthy();
   });
-  it('test', () => {
-    component.getDrawings().subscribe((data: Drawings[]) => {
-      //  expect(data).not.toBe(null)
-    });
-    httpTestingController.match({ method: 'GET', url: 'http://localhost:3000/api/drawings/localServer' });
-  });
 
   it('addDrawing should  add a drawing if it exists and not add if it does exists', () => {
     httpTestingController.expectOne({ method: 'GET', url: 'http://localhost:3000/api/drawings/localServer' });

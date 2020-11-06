@@ -139,12 +139,12 @@ describe('UndoRedoService', () => {
 
   it('setisAllowed should set isAllowed to the write value', () => {
     service.setIsAllowed(true);
-    expect(service.getIsAllowed() === true);
+    expect(service.getIsAllowed()).toBeTruthy();
   });
 
   it('setisAllowed should set isAllowed to the write value', () => {
     service.setIsAllowed(false);
-    expect(service.getIsAllowed() === false);
+    expect(service.getIsAllowed()).toBeFalsy();
   });
 
   it('should call undoLast if shortcut ctrl+z is pressed and undo-redo is allowed', () => {
@@ -310,7 +310,7 @@ describe('UndoRedoService', () => {
     tmp2.width = 420;
     tmp2.height = 69;
     ResizeCommandStub.setPreview(tmp2);
-    expect(ResizeCommandStub.preview !== tmp && ResizeCommandStub.preview === tmp2).toBeTruthy;
+    expect(ResizeCommandStub.preview !== tmp && ResizeCommandStub.preview === tmp2).toBeTruthy();
   });
 
   it('setnewSize should update newWIdht and newHeight', () => {
@@ -341,7 +341,8 @@ describe('UndoRedoService', () => {
     service.addToUndo(ResizeCommandStub);
     service.addToUndo(eraserCommandStub);
     service.ClearUndo();
-    expect(service.getUndo().length === 0);
+    
+    expect(service.getUndo().length).toEqual(0);
   });
 
   it('should pop undostack if undo redo is Allowed', () => {

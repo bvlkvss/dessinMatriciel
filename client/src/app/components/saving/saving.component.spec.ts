@@ -2,8 +2,11 @@
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatChipsModule } from '@angular/material/chips';
 import { MatDialogContent, MatDialogRef } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSpinner } from '@angular/material/progress-spinner';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AddTagsComponent } from '@app/components/add-tags/add-tags.component';
 import { SavingService } from '@app/services/saving/saving.service';
 import { of } from 'rxjs';
@@ -33,7 +36,7 @@ describe('SavingComponent', () => {
 
         TestBed.configureTestingModule({
             declarations: [SavingComponent, MatDialogContent, AddTagsComponent, MatSpinner],
-            imports: [HttpClientModule, HttpClientTestingModule],
+            imports: [HttpClientModule, HttpClientTestingModule, BrowserAnimationsModule, MatChipsModule, MatFormFieldModule],
 
             providers: [
                 { provide: SavingService, useValue: savingerviceStub },

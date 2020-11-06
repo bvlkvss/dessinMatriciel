@@ -162,4 +162,10 @@ describe('SidebarComponent', () => {
         component.openExportDialog();
         expect(matDialogSpy.open).not.toHaveBeenCalled();
     });
+
+    it('should call selectAllCanvas when selectAll is called', () => {
+        ((component as any).tools.currentTool as SelectionService).selectAllCanvas = jasmine.createSpy()
+        component.selectAll();
+        expect(((component as any).tools.currentTool as SelectionService).selectAllCanvas).toHaveBeenCalled();
+    });
 });

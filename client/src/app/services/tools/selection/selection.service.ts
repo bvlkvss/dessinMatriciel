@@ -122,7 +122,6 @@ export class SelectionService extends Tool {
             this.selectionCommand.setCanvas(this.selectionData);
             this.invoker.addToUndo(this.selectionCommand);
             this.invoker.setIsAllowed(true);
-            console.log(this.invoker.getIsAllowed(), 'hey', this.selectionCommand);
         }
         this.drawingService.baseCtx.restore();
 

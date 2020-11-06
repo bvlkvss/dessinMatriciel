@@ -118,7 +118,6 @@ export class PolygonService extends Tool {
             if (this.isOut) mousePosition = this.mouseOutCoord;
             this.drawPolygon(this.drawingService.baseCtx, this.mouseDownCoord, mousePosition, false);
             const cmd = new PolygonCommand(this.mouseDownCoord, mousePosition, this.polygonStyle, this, this.drawingService) as PolygonCommand;
-            console.log(cmd);
             this.invoker.addToUndo(cmd);
             this.invoker.setIsAllowed(true);
         }

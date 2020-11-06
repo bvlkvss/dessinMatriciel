@@ -24,7 +24,6 @@ export class UndoRedoService {
         if (cmd) {
             this.undoStack.push(cmd);
         }
-        console.log(this.undoStack);
     }
     addToRedo(cmd: Command): void {
         if (cmd) {
@@ -46,7 +45,6 @@ export class UndoRedoService {
     }
 
     undoLast(): void {
-        console.log(this.isAllowed);
         if (this.isAllowed) {
             const lastUndo = this.undoStack.pop();
             if (lastUndo) {

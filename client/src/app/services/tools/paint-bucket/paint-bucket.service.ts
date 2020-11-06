@@ -47,7 +47,6 @@ export class PaintBucketService extends Tool {
         const cmd = new PaintBucketCommand(newImgData, this.drawingService);
         this.invoker.setIsAllowed(true);
         this.invoker.addToUndo(cmd);
-        console.log(this.invoker.getRedo());
     }
 
     setPrimaryColor(color: string): void {
