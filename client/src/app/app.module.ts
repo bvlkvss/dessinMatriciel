@@ -9,6 +9,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { AppRoutingModule } from './app-routing.module';
 import { ColorPickerModule } from './color-picker/color-picker.module';
 import { AddTagsComponent } from './components/add-tags/add-tags.component';
@@ -19,6 +20,7 @@ import { DrawingCardComponent } from './components/drawing-card/drawing-card.com
 import { DrawingComponent } from './components/drawing/drawing.component';
 import { EditorComponent } from './components/editor/editor.component';
 import { ExportComponent } from './components/export/export.component';
+import { FilterTagComponent } from './components/filter-tag/filter-tag.component';
 import { MainPageComponent } from './components/main-page/main-page.component';
 import { SavingComponent } from './components/saving/saving.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
@@ -38,6 +40,7 @@ import { UserGuideComponent } from './components/user-guide/user-guide.component
         DrawingCardComponent,
         CarrouselComponent,
         AddTagsComponent,
+        FilterTagComponent,
     ],
     imports: [
         BrowserModule,
@@ -52,6 +55,7 @@ import { UserGuideComponent } from './components/user-guide/user-guide.component
         MatFormFieldModule,
         MatChipsModule,
         MatIconModule,
+        NgMultiSelectDropDownModule.forRoot(),
     ],
     providers: [],
     bootstrap: [AppComponent],

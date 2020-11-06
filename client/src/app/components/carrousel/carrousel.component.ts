@@ -1,12 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { AfterViewChecked, Component, ElementRef, HostListener, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { DrawingCardComponent } from '@app/components/drawing-card/drawing-card.component';
+import { FilterByTagService } from '@app/services/filterByTag/filter-by-tag.service';
 import { Observable } from 'rxjs';
 
 export interface Drawings {
     name: string;
     imageData: string;
-    tag: string;
+    tag: string[];
     _id?: string;
 }
 const DRAWINGS_TO_SHOW_LIMIT = 3;
@@ -30,7 +31,7 @@ export class CarrouselComponent implements OnInit, AfterViewChecked {
     @ViewChildren('button') buttons: QueryList<ElementRef<HTMLButtonElement>>;
     @ViewChildren('card') cards: QueryList<DrawingCardComponent>;
 
-    constructor(private http: HttpClient) {
+    constructor(private http: HttpClient, public filter: FilterByTagService) {
         this.allDrawings = [];
         this.drawingsToShow = [];
         this.fillCarousel();
@@ -51,6 +52,9 @@ export class CarrouselComponent implements OnInit, AfterViewChecked {
                 for (let i = 0; i < this.step; i++) {
                     if (this.allDrawings[i]) this.drawingsToShow.push(this.allDrawings[i]);
                 }
+                this.filter.drawings = this.allDrawings;
+                console.log(this.filter.drawings, 'on init');
+                this.filter.drawingsToShow = this.drawingsToShow;
                 this.middlePosition = this.drawingsToShow.length - this.step + 1;
             },
             (error) => {
