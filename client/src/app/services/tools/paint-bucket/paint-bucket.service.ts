@@ -79,6 +79,13 @@ export class PaintBucketService extends Tool {
         const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
         let newPosition: Vec2;
         let pixelPosition: number;
+
+        const startingPixelPosition: number = (position.y * canvas.width + position.x) * RGBA_NUMBER_OF_COMPONENTS;
+        const isColorTheSame: boolean = this.areColorsMatching(this.hexToColor(this.primaryColor), imageData, startingPixelPosition);
+
+        if (isColorTheSame) {
+            return imageData;
+        }
         while (pixelStack.length) {
             newPosition = pixelStack.pop() as Vec2;
             pixelPosition = (newPosition.y * canvas.width + newPosition.x) * RGBA_NUMBER_OF_COMPONENTS;
