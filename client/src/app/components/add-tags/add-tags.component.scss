@@ -1,0 +1,98 @@
+.input{
+    width: 100%;
+}
+
+.deuxiemePartie{
+    display: flex;
+}
+
+#tags{
+    height: 100px;
+    width: 100px;
+    background-color: orange;
+    color: hotpink;
+}
+
+.tag{
+    height: 400px;
+    width: 500px;
+    background-color: red;
+}
+
+.saving {
+    width: 400px;
+    height: 400px;
+    position: relative;
+}
+
+.tagContainer {
+    width: 400px;
+    height: 250px;
+    background-color: greenyellow;
+}
+
+
+.topBar {
+    position: relative;
+    width: 100px;
+    //height: 70px;
+    top: 0px;
+    color: rgb(99, 196, 235);
+    text-align: center;
+}
+
+.close {
+    right: 5px;
+    top: 5px;
+    position: relative;
+    background-color: rgba(255, 0, 0, 0.836);
+    border-radius: 90%;
+    border: none;
+    height: 20px;
+    width: 20px;
+    font-family: exo, ubuntu, "segoe ui", helvetica, arial, sans-serif;
+    cursor: pointer;
+    font-weight: 1700;
+    user-select: none;
+    display: block;
+}
+
+
+.simple-tags {
+    border: 1px solid #1e87f0;
+    box-sizing: border-box;
+    margin: 1em;
+    padding: 0em 0.5em;
+    display: -webkit-box;
+    display: flex;
+    flex-wrap: wrap;
+    font-size: 14px;
+    border-radius: 5px; }
+    .simple-tags > ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: -webkit-box;
+      display: flex;
+      flex-wrap: wrap; }
+    .simple-tags ul li {
+      margin: 0.5em 0.2em;
+      padding: 0.5em;
+      color: #fff;
+      background-color: #1e87f0;
+      border-radius: 5px; }
+    .simple-tags ul li a {
+      margin: 0.5em 0.2em;
+      text-decoration: none;
+      color: inherit; }
+    .simple-tags input {
+      padding: 0.9em 0.5em;
+      box-sizing: border-box;
+      -webkit-box-flex: 1;
+              flex-grow: 1;
+      border: none;
+      outline: none;
+      font-size: inherit;
+      font-family: inherit;
+      color: inherit; }
+  

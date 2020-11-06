@@ -142,6 +142,12 @@ describe('AttributebarComponent', () => {
         component.setJunctionWidth("6");
         expect(junctionWidthSpy).toHaveBeenCalled();
     });
+    it('should call prevent if an not accepted key is pressed', () => {
+        event = new KeyboardEvent('keydown', { key: '@' })
+        let eventSpy = spyOn<any>(event, 'preventDefault').and.callThrough();
+        component.validate(event);
+        expect(eventSpy).toHaveBeenCalled();
+    });
 
     it('should call toolManager"s setjunctionState when calling setJunctionState', () => {
         let junctionStateSpy = spyOn(toolManagerStub, 'setJunctionState');

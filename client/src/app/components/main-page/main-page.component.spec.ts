@@ -1,6 +1,7 @@
 /* tslint:disable */
 import { HttpClientModule } from '@angular/common/http';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatDialogModule } from "@angular/material/dialog";
 import { RouterTestingModule } from '@angular/router/testing';
 import { IndexService } from '@app/services/index/index.service';
 import { of } from 'rxjs';
@@ -13,13 +14,14 @@ describe('MainPageComponent', () => {
     let fixture: ComponentFixture<MainPageComponent>;
     let indexServiceSpy: SpyObj<IndexService>;
 
+
     beforeEach(async(() => {
         indexServiceSpy = jasmine.createSpyObj('IndexService', ['basicGet', 'basicPost']);
         indexServiceSpy.basicGet.and.returnValue(of({ title: '', body: '' }));
         indexServiceSpy.basicPost.and.returnValue(of());
 
         TestBed.configureTestingModule({
-            imports: [RouterTestingModule, HttpClientModule],
+            imports: [RouterTestingModule, HttpClientModule, MatDialogModule],
             declarations: [MainPageComponent],
             providers: [{ provide: IndexService, useValue: indexServiceSpy }],
         }).compileComponents();
@@ -47,5 +49,11 @@ describe('MainPageComponent', () => {
     it('should call basicPost when calling sendTimeToServer', () => {
         component.sendTimeToServer();
         expect(indexServiceSpy.basicPost).toHaveBeenCalled();
+    });
+    it('should call openCarousel when the button is pressed', () => {
+        let spy = spyOn(component, "openCarousel")
+        const button = fixture.debugElement.nativeElement.querySelector('#carousel');
+        button.click();
+        expect(spy).toHaveBeenCalled();
     });
 });

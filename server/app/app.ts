@@ -4,6 +4,7 @@ import * as cors from 'cors';
 import * as express from 'express';
 import { inject, injectable } from 'inversify';
 import * as logger from 'morgan';
+import { DatabaseController } from './controllers/database.controller';
 import { DateController } from './controllers/date.controller';
 import { IndexController } from './controllers/index.controller';
 import { TYPES } from './types';
@@ -16,18 +17,20 @@ export class Application {
     constructor(
         @inject(TYPES.IndexController) private indexController: IndexController,
         @inject(TYPES.DateController) private dateController: DateController,
+        @inject(TYPES.DatabaseController) private dataBaseController: DatabaseController,
     ) {
         this.app = express();
 
         this.config();
 
         this.bindRoutes();
+        this.errorHandling();
     }
 
     private config(): void {
         // Middlewares configuration
         this.app.use(logger('dev'));
-        this.app.use(bodyParser.json());
+        this.app.use(bodyParser.json({ limit: '50mb' }));
         this.app.use(bodyParser.urlencoded({ extended: true }));
         this.app.use(cookieParser());
         this.app.use(cors());
@@ -37,6 +40,8 @@ export class Application {
         // Notre application utilise le routeur de notre API `Index`
         this.app.use('/api/index', this.indexController.router);
         this.app.use('/api/date', this.dateController.router);
+        this.app.use('/api/drawings', this.dataBaseController.router);
+
         this.errorHandling();
     }
 

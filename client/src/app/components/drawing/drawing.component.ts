@@ -16,6 +16,8 @@ import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 export class DrawingComponent implements AfterViewInit, OnInit {
     @ViewChild('baseCanvas', { static: false }) baseCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('container') container: ElementRef<HTMLDivElement>;
+    @ViewChild('resizeContainer') resizeContainer: ElementRef<HTMLDivElement>;
+
     // On utilise ce canvas pour dessiner sans affecter le dessin final
     @ViewChild('previewCanvas', { static: false }) previewCanvas: ElementRef<HTMLCanvasElement>;
 
@@ -59,7 +61,11 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         this.baseCtx.rect(0, 0, this.baseCanvas.nativeElement.width, this.baseCanvas.nativeElement.height);
         this.baseCtx.fill();
         this.baseCtx.closePath();
+        this.drawingService.previewCanvas = this.previewCanvas.nativeElement;
+        this.drawingService.canvasContainer = this.resizeContainer.nativeElement as HTMLDivElement;
         this.mouseFired = false;
+        this.drawingService.blankCanvasDataUrl = this.drawingService.canvas.toDataURL();
+
         this.baseCtx.save();
         this.previewCtx.save();
     }
@@ -177,8 +183,13 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         } else if (this.keyBindings.has(event.key)) {
             this.drawingService.restoreCanvasState();
             this.tools.currentTool = this.keyBindings.get(event.key) as Tool;
-            if (event.key === 'r') (this.tools.currentTool as SelectionService).selectionStyle = 0;
-            else if (event.key === 's') (this.tools.currentTool as SelectionService).selectionStyle = 1;
+            if (event.key === 'r') {
+                (this.tools.currentTool as SelectionService).selectionStyle = 0;
+                (this.tools.currentTool as SelectionService).resetSelection();
+            } else if (event.key === 's') {
+                (this.tools.currentTool as SelectionService).selectionStyle = 1;
+                (this.tools.currentTool as SelectionService).resetSelection();
+            }
         } else this.tools.currentTool.onKeyDown(event);
     }
 

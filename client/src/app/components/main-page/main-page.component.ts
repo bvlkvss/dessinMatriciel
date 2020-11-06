@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { CarrouselComponent } from '@app/components/carrousel/carrousel.component';
 import { UserGuideComponent } from '@app/components/user-guide/user-guide.component';
 import { IndexService } from '@app/services/index/index.service';
 import { Message } from '@common/communication/message';
@@ -14,7 +16,7 @@ export class MainPageComponent {
     readonly title: string = 'PolyDessin2';
     message: BehaviorSubject<string> = new BehaviorSubject<string>('');
 
-    constructor(private basicService: IndexService) {}
+    constructor(private basicService: IndexService, private dialog: MatDialog) {}
 
     sendTimeToServer(): void {
         const newTimeMessage: Message = {
@@ -36,7 +38,14 @@ export class MainPageComponent {
             )
             .subscribe(this.message);
     }
-
+    openCarousel(): void {
+        this.dialog.open(CarrouselComponent, {
+            maxWidth: 'none',
+            height: '460px',
+            width: 'auto',
+            minWidth: '615px',
+        });
+    }
     openUserGuide(): void {
         UserGuideComponent.displayUserGuide();
     }

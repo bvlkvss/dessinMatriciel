@@ -1,4 +1,4 @@
-import { TYPES } from '@app/types';
+import { TYPES } from '../types';
 import { expect } from 'chai';
 import * as sinon from 'sinon';
 import { testingContainer } from '../../test/test-utils';

@@ -15,7 +15,6 @@ export class ExportComponent {
     private filter: string;
     private name: string;
     image: HTMLImageElement;
-
     constructor(private exportService: ExportService, protected drawingService: DrawingService, private dialogRef: MatDialogRef<ExportComponent>) {
         this.filter = 'none';
         this.type = 'jpeg';
