@@ -1,6 +1,8 @@
 import { Component, HostListener, Input, OnChanges } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { CarrouselComponent } from '@app/components/carrousel/carrousel.component';
 import { ExportComponent } from '@app/components/export/export.component';
+import { SavingComponent } from '@app/components/saving/saving.component';
 import { UserGuideComponent } from '@app/components/user-guide/user-guide.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 // import { SelectionService } from '@app/services/tools/selection/selection.service';
@@ -47,6 +49,21 @@ export class SidebarComponent implements OnChanges {
         if (this.dialog.openDialogs.length === 0) {
             this.dialog.open(ExportComponent);
             ExportComponent.isExportOpen = true;
+        }
+    }
+    openCarousel(): void {
+        this.dialog.open(CarrouselComponent, {
+            maxWidth: 'none',
+            height: '460px',
+            width: 'auto',
+            minWidth: '615px',
+        });
+    }
+
+    openSavingDialog(): void {
+        if (this.dialog.openDialogs.length === 0) {
+            this.dialog.open(SavingComponent);
+            SavingComponent.isSavingOpen = true;
         }
     }
 
@@ -134,6 +151,11 @@ export class SidebarComponent implements OnChanges {
     onkeyDownWindow(event: KeyboardEvent): void {
         if (event.ctrlKey && event.key === 'e') {
             this.openExportDialog();
+        } else if (event.ctrlKey && event.key === 'a') {
+            this.openSavingDialog();
+        } else if (event.ctrlKey && event.key === 'g') {
+            event.preventDefault();
+            this.openCarousel();
         }
     }
 }

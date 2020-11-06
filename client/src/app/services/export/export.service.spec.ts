@@ -12,7 +12,7 @@ describe('ExportService', () => {
     let baseCtxStub: CanvasRenderingContext2D;
     beforeEach(() => {
         canvasStub = canvasTestHelper.canvas;
-       baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
+        baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
         drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
 

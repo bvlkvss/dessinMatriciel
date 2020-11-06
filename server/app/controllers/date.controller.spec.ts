@@ -1,10 +1,10 @@
-import { Application } from '@app/app';
-import { DateService } from '@app/services/date.service';
-import { TYPES } from '@app/types';
-import { Message } from '@common/communication/message';
 import { expect } from 'chai';
 import * as supertest from 'supertest';
+import { Message } from "../../../common/communication/message";
 import { Stubbed, testingContainer } from '../../test/test-utils';
+import { Application } from '../app';
+import { DateService } from '../services/date.service';
+import { TYPES } from '../types';
 
 // tslint:disable:no-any
 const HTTP_STATUS_OK = 200;

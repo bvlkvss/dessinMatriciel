@@ -1,0 +1,87 @@
+.carrousel {
+    display: flex;
+    padding: 20px;
+    background-color: rgb(64, 61, 85);
+}
+.dialog {
+    overflow: hidden;
+    background-color: rgb(64, 61, 85);
+}
+p {
+    position: relative;
+    font-size: 230%;
+    color: white;
+    top: 140px;
+    left: 2%;
+}
+#delete {
+    position: absolute;
+    font-size: 200%;
+    top: 16%;
+    left: 14%;
+}
+#spinner {
+    position: absolute;
+    left: 45%;
+    top: 40%;
+}
+:host ::ng-deep .mat-progress-spinner circle,
+.mat-spinner circle {
+    stroke: white;
+}
+
+::ng-deep .mat-dialog-container {
+    background-color: rgb(64, 61, 85);
+    overflow: hidden;
+}
+
+.control {
+    border: none;
+    background-color: transparent;
+    outline: 0; // remove blue outline border, but make sure they are still focussable for accessibility
+    position: relative;
+    top: 10vw;
+    cursor: pointer;
+    padding: 0.5em;
+    color: white;
+    font-weight: bold;
+    font-size: 3em;
+    user-select: none;
+    height: 100%;
+    opacity: 80%;
+    // opacity effect on hover
+    transition: opacity 150ms cubic-bezier(0.25, 0.46, 0.45, 0.84);
+
+    &:hover {
+        opacity: 1;
+    }
+
+    /* Position the buttons */
+    &.next {
+        right: 0;
+    }
+    &.prev {
+        left: 0;
+    }
+}
+#card {
+    transition-delay: 0.3s;
+    transform: none;
+    animation: fadein 0.3s;
+    animation-delay: 0.3s;
+}
+/* style the arrows */
+.arrow {
+    display: block;
+    border-left: 0.1em solid white;
+    border-bottom: 0.1em solid white;
+    width: 0.65em;
+    height: 0.65em;
+
+    &.left {
+        transform: rotate(45deg);
+    }
+    &.right {
+        transform: rotate(225deg);
+    }
+}

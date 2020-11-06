@@ -1,0 +1,18 @@
+<mat-dialog-content class="dialog">
+    <mat-spinner *ngIf="spinnerVisible" id="spinner" [diameter]="180"></mat-spinner>
+    <p *ngIf="errorMessageVisible">The server may be down, please restart the server and try again !</p>
+    <p *ngIf="emptyCarrouselMessage">There is no saved drawing.</p>
+    <p *ngIf="deleteErrorMessage" id="delete">The delete failed, the server may be down, please restart the server and try again</p>
+
+    <div #carousel *ngIf="carouselVisible" class="carrousel">
+        <button #button class="control prev" (click)="previous()">
+            <span class="arrow left"></span>
+        </button>
+        <div *ngFor="let item of drawingsToShow; let i = index">
+            <app-drawing-card #card (deleteDrawing)="delete($event)" [drawingIndex]="i" id="card" [drawing]="item"></app-drawing-card>
+        </div>
+        <button #button class="control next" (click)="next()">
+            <span class="arrow right"></span>
+        </button>
+    </div>
+</mat-dialog-content>

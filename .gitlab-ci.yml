@@ -1,4 +1,4 @@
-image: xwiillz/node-chromium:lts-alpine
+image: xwiillz/node-chromium-mongo:lts-bionic
 
 cache:
     key: '${CI_COMMIT_REF_SLUG}-client'

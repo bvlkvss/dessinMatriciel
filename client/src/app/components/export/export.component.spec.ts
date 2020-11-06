@@ -1,17 +1,17 @@
 /* tslint:disable */
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { ComponentFixtureAutoDetect } from '@angular/core/testing';
-import { ExportComponent } from './export.component';
-import { MockDrawingService } from '@app/components/drawing/drawing.component.spec';
-import { ExportService } from '@app/services/export/export.service';
-import { DrawingService } from '@app/services/drawing/drawing.service';
+import { async, ComponentFixture, ComponentFixtureAutoDetect, TestBed } from '@angular/core/testing';
 import { MatDialogContent, MatDialogRef } from '@angular/material/dialog';
+import { MockDrawingService } from '@app/components/drawing/drawing.component.spec';
+import { DrawingService } from '@app/services/drawing/drawing.service';
+import { ExportService } from '@app/services/export/export.service';
 import { of } from 'rxjs';
+import { ExportComponent } from './export.component';
 
 class MockExportService extends ExportService {
-    createBaseImage():HTMLImageElement {
-        return new Image(200,200);
+    createBaseImage(): HTMLImageElement {
+        return new Image(200, 200);
     }
+    
 }
 
 describe('ExportComponent', () => {
@@ -23,13 +23,13 @@ describe('ExportComponent', () => {
     beforeEach(async(() => {
         drawServiceMock = new MockDrawingService();
         exportServiceStub = new MockExportService(drawServiceMock);
-        matDialogRefSpy = jasmine.createSpyObj({ afterClosed : of({subscribe:jasmine.createSpy}), close: null });
+        matDialogRefSpy = jasmine.createSpyObj({ afterClosed: of({ subscribe: jasmine.createSpy }), close: null });
         TestBed.configureTestingModule({
             declarations: [ExportComponent, MatDialogContent],
             providers: [
                 { provide: DrawingService, useValue: drawServiceMock },
                 { provide: ExportService, useValue: exportServiceStub },
-                { provide: MatDialogRef, useValue: matDialogRefSpy},
+                { provide: MatDialogRef, useValue: matDialogRefSpy },
                 { provide: ComponentFixtureAutoDetect, useValue: true },
             ],
         }).compileComponents();
@@ -65,15 +65,15 @@ describe('ExportComponent', () => {
     });
 
     it('should set type and call changeImage when setImageType is called', () => {
-        let changeImageSpy = spyOn((component as any),'changeImage');
+        let changeImageSpy = spyOn((component as any), 'changeImage');
         component.setImageType("hello");
         expect((component as any).type).toEqual("hello");
         expect(changeImageSpy).toHaveBeenCalled();
     });
 
     it('should set filter and call changeImage and setPreviewFilter when setImageFilter is called', () => {
-        let changeImageSpy = spyOn((component as any),'changeImage');
-        let setPreviewFilterSpy = spyOn((component as any),'setPreviewFilter');
+        let changeImageSpy = spyOn((component as any), 'changeImage');
+        let setPreviewFilterSpy = spyOn((component as any), 'setPreviewFilter');
         component.setImageFilter("hello");
         expect((component as any).filter).toEqual("hello");
         expect(changeImageSpy).toHaveBeenCalled();

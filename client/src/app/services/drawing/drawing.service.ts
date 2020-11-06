@@ -14,6 +14,10 @@ export class DrawingService {
     baseCtx: CanvasRenderingContext2D;
     previewCtx: CanvasRenderingContext2D;
     canvas: HTMLCanvasElement;
+    previewCanvas: HTMLCanvasElement;
+    canvasContainer: HTMLDivElement;
+
+    blankCanvasDataUrl: string;
     canvasSize: Vec2 = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
 
     resizeCanvas(): void {

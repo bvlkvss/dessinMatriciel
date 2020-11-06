@@ -1,0 +1,58 @@
+<mat-dialog-content>
+    <button class="close" (click)="closeDialog()">x</button>
+    <div class="errormessagecontainer">
+        <p *ngIf="errorMessageVisible">Le serveur semble etre en panne, reessayez plus tard</p>
+    </div>
+
+    <div class="errormessagecontainer">
+        <p *ngIf="nameIsInvalid">Entrez un nom de dessin</p>
+    </div>
+
+    <div *ngIf="isSaving" class="panel">
+        <div class="textcontainer">
+            <h1 >Sauvegarde en cours</h1>
+        </div>
+        <div class="spinnercontainer">
+            <mat-spinner *ngIf="spinnerVisible" id="spinner" [diameter]="180"></mat-spinner>
+        </div>
+    </div>
+
+    <div *ngIf="isNotSaving" class="saving">
+            <div class="topBar">
+                <h1>Sauvegarder un dessin</h1>
+            </div>
+
+            <div class="premierePartie">
+                <div class="deuxiemePartie">
+                    <!--<div class="chooseName">
+                        <label
+                            >Nom:
+                            <input #imageName />
+                        </label>
+                    </div>-->
+                    <div class="form__group field">
+                        <input #imageName type="input" class="form__field" placeholder="Name" name="name" id="name" required />
+                        <label for="name" class="form__label">Nom</label>
+                    </div>
+
+                    <add-tags></add-tags>
+                </div>
+
+                <div class="zoneReglements">
+                    <ul>
+                        <li>Maximum de 8 tags</li>
+                        <li>Pas de chiffres dans les tags</li>
+                        <li>Pas d'espaces dans les tags</li>
+                        <li>Pas de symboles dans les tags</li>
+                    </ul>
+                </div>
+            </div>
+        
+        <div class="confirmation">
+            <button class="confirm" (click)="add(imageName.value); imageName.value = ''">Sauvegarder</button>
+            <button class="cancel" (click)="closeDialog()">Quitter</button>
+        </div>
+    </div>
+       
+    
+</mat-dialog-content>
