@@ -18,7 +18,7 @@ describe('DrawingCardComponent', () => {
   let drawService: DrawingService;
   let baseCtxStub: CanvasRenderingContext2D;
 
-  const drawingMock: Drawings = { name: 'mockname', tag: 'mocktag', imageData: '' };
+  const drawingMock: Drawings = { name: 'mockname', tag: ['mocktag'], imageData: '' };
   beforeEach(async(() => {
     drawService = new DrawingService();
     baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;

@@ -1,0 +1,13 @@
+<ng-multiselect-dropdown
+    class= "test"
+    id="filter"
+    [placeholder]="'custom tag'"
+    [data]="tags"
+    [(ngModel)]="selectedTags"
+    [settings]="dropdownSettings"
+    (onSelect)="onItemSelect()"
+    (onSelectAll)="ignoreFilter()"
+    (onDeSelect)="onDeSelect()"
+    (click)="onClick()"
+>
+</ng-multiselect-dropdown>
