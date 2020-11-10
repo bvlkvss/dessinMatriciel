@@ -124,7 +124,7 @@ export class PaintBucketService extends Tool {
         return imageData;
     }
 
-    private areColorsMatching(color: Color, imageData: ImageData, position: number): boolean {
+    protected areColorsMatching(color: Color, imageData: ImageData, position: number): boolean {
         let areColorsMatching = true;
         const tolerance = this.toleranceToRGBAValue();
         const pixelRed = imageData.data[position];
@@ -141,30 +141,10 @@ export class PaintBucketService extends Tool {
         return (this.tolerance / MAX_TOLERANCE) * MAX_8BIT_NBR;
     }
 
-    private fillPixel(imageData: ImageData, position: number): void {
+    protected fillPixel(imageData: ImageData, position: number): void {
         const color: Color = this.hexToColor(this.primaryColor);
         imageData.data[position] = color.red;
         imageData.data[position + 1] = color.green;
         imageData.data[position + 2] = color.blue;
-    }
-
-    private getActualColor(position: Vec2): Color {
-        const imageData = this.drawingService.baseCtx.getImageData(position.x, position.y, 1, 1);
-        return this.getColorFromData(imageData);
-    }
-
-    private getColorFromData(imageData: ImageData): Color {
-        // tslint:disable:no-magic-numbers
-        let redData = 0;
-        let greenData = 0;
-        let blueData = 0;
-        let opacityData = 0;
-        for (let j = 0; j < imageData.data.length; j += RGBA_NUMBER_OF_COMPONENTS) {
-            redData = imageData.data[j];
-            greenData = imageData.data[j + 1];
-            blueData = imageData.data[j + 2];
-            opacityData = imageData.data[j + 3];
-        }
-        return { red: redData, green: greenData, blue: blueData, opacity: opacityData };
     }
 }
