@@ -1,8 +1,8 @@
 // tslint:disable:max-file-line-count
 import { Injectable } from '@angular/core';
 import { SelectionCommand } from '@app/classes/selection-command';
-import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
+import { Movable } from '@app/classes/movable';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { EllipseService } from '@app/services/tools/ellipse/ellipse.service';
 import { RectangleService, RectangleStyle } from '@app/services/tools/rectangle/rectangle.service';
@@ -25,38 +25,29 @@ enum HANDLES {
     eight = 8,
 }
 const HANDLE_LENGTH = 6;
-const HANDLE_OFFSET = HANDLE_LENGTH / 2;
 const DEFAULT_HANDLE_INDEX = -1;
-const MOVEMENT_OFFSET = 3;
-const INIT_MOVE_DELAY = 500;
-const CONTINUOUS_MOVE_DELAY = 100;
+
 @Injectable({
     providedIn: 'root',
 })
-export class SelectionService extends Tool {
+export class SelectionService extends Movable {
     rectangleService: RectangleService;
     ellipseService: EllipseService;
-    selectionStyle: number;
-    private resizingHandles: Vec2[];
     mouseUpCoord: Vec2;
     mouseDownInsideSelection: boolean;
-    offsetX: number;
-    offsetY: number;
+
     selectionCommand: SelectionCommand;
     selectionActivated: boolean;
-    selectionStartPoint: Vec2;
-    selectionEndPoint: Vec2;
     selectionData: HTMLCanvasElement;
     currenthandle: number;
-    firstSelectionMove: boolean;
     width: number;
     height: number;
-    keysDown: { [key: string]: boolean };
-    moveDelayActive: boolean;
-    continuousMove: boolean;
+    selectionStyle: number;
+
+
     constructor(drawingService: DrawingService, protected invoker: UndoRedoService) {
         super(drawingService);
-        this.resizingHandles = [];
+        
         this.selectionStyle = 1;
         this.rectangleService = new RectangleService(drawingService, this.invoker);
         this.rectangleService.setStyle(RectangleStyle.Selection);
@@ -67,10 +58,7 @@ export class SelectionService extends Tool {
         this.ellipseService.primaryColor = 'black';
         this.selectionActivated = false;
         this.toolAttributes = [];
-        this.firstSelectionMove = true;
-        this.keysDown = {};
-        this.moveDelayActive = false;
-        this.continuousMove = false;
+
     }
 
     onMouseDown(event: MouseEvent): void {
@@ -201,16 +189,7 @@ export class SelectionService extends Tool {
         this.mouseDownInsideSelection = false;
     }
 
-    updateSelectionNodes(): void {
-        if (this.selectionEndPoint.y < this.selectionStartPoint.y) {
-            this.selectionEndPoint.y = this.selectionStartPoint.y;
-            this.selectionStartPoint.y -= this.height;
-        }
-        if (this.selectionEndPoint.x < this.selectionStartPoint.x) {
-            this.selectionEndPoint.x = this.selectionStartPoint.x;
-            this.selectionStartPoint.x -= this.width;
-        }
-    }
+
 
     onMouseMove(event: MouseEvent): void {
         this.currentPos = this.getPositionFromMouse(event);
@@ -226,7 +205,28 @@ export class SelectionService extends Tool {
             return;
         }
 
-        if (this.mouseDownInsideSelection) this.moveSelection(this.currentPos);
+        if (this.mouseDownInsideSelection) {
+            this.moveSelection(this.currentPos);
+            if (this.firstSelectionMove) {
+                this.selectionCommand = new SelectionCommand(this.selectionStartPoint, this, this.drawingService);
+                this.selectionCommand.setEndPosErase(this.selectionEndPoint);
+                this.eraseSelectionFromBase(this.selectionEndPoint);
+    }
+        this.drawingService.previewCtx.save();
+        if (this.selectionStyle === 1)
+        this.ellipseService.drawEllipse(this.drawingService.previewCtx, this.selectionStartPoint, this.selectionEndPoint, false, false);
+    
+        this.drawingService.previewCtx.clip();
+        this.drawingService.previewCtx.drawImage(this.selectionData, this.selectionStartPoint.x, this.selectionStartPoint.y);
+        this.drawingService.previewCtx.restore();
+    
+        this.rectangleService.drawRectangle(this.drawingService.previewCtx, this.selectionStartPoint, this.selectionEndPoint, false);
+        if (this.selectionStyle === 1) {
+            this.ellipseService.secondaryColor = 'black';
+            this.ellipseService.setStyle(0);
+            this.ellipseService.drawEllipse(this.drawingService.previewCtx, this.selectionStartPoint, this.selectionEndPoint, false, false);
+        }
+        }
         else if (this.mouseDown) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.rectangleService.onMouseMove(event);
@@ -238,75 +238,13 @@ export class SelectionService extends Tool {
                     this.rectangleService.toSquare,
                     false,
                 );
+
         }
     }
 
-    drawResizingHandles(): void {
-        this.drawingService.previewCtx.save();
-        this.drawingService.previewCtx.beginPath();
-        this.drawingService.previewCtx.fillStyle = '#ffffff';
-        this.drawingService.previewCtx.strokeStyle = 'blue';
-        this.drawingService.previewCtx.lineWidth = 2;
-        this.drawingService.previewCtx.setLineDash([0, 0]);
-        for (const handle of this.resizingHandles) {
-            this.drawingService.previewCtx.rect(handle.x, handle.y, HANDLE_LENGTH, HANDLE_LENGTH);
-        }
-        this.drawingService.previewCtx.stroke();
-        this.drawingService.previewCtx.fill();
-        this.drawingService.previewCtx.closePath();
-        this.drawingService.previewCtx.restore();
-    }
 
-    updateResizingHandles(): void {
-        this.resizingHandles = [];
-        const width = Math.abs(this.rectangleService.width);
-        const height = Math.abs(this.rectangleService.height);
-        /*
-      1 2 3
-      4   5
-      6 7 8
-    */
-        // 1
-        this.resizingHandles.push({
-            x: this.selectionStartPoint.x - HANDLE_OFFSET,
-            y: this.selectionStartPoint.y - HANDLE_OFFSET,
-        });
-        // 2
-        this.resizingHandles.push({
-            x: this.selectionStartPoint.x + width / 2 - HANDLE_OFFSET,
-            y: this.selectionStartPoint.y - HANDLE_OFFSET,
-        });
-        // 3
-        this.resizingHandles.push({
-            x: this.selectionStartPoint.x + width - HANDLE_OFFSET,
-            y: this.selectionStartPoint.y - HANDLE_OFFSET,
-        });
-        // 4
-        this.resizingHandles.push({
-            x: this.selectionStartPoint.x - HANDLE_OFFSET,
-            y: this.selectionStartPoint.y + height / 2 - HANDLE_OFFSET,
-        });
-        // 5
-        this.resizingHandles.push({
-            x: this.selectionStartPoint.x + width - HANDLE_OFFSET,
-            y: this.selectionStartPoint.y - HANDLE_OFFSET + height / 2,
-        });
-        // 6
-        this.resizingHandles.push({
-            x: this.selectionStartPoint.x - HANDLE_OFFSET,
-            y: this.selectionStartPoint.y - HANDLE_OFFSET + height,
-        });
-        // 7
-        this.resizingHandles.push({
-            x: this.selectionStartPoint.x + width / 2 - HANDLE_OFFSET,
-            y: this.selectionStartPoint.y + height - HANDLE_OFFSET,
-        });
-        // 8
-        this.resizingHandles.push({
-            x: this.selectionStartPoint.x + width - HANDLE_OFFSET,
-            y: this.selectionStartPoint.y + height - HANDLE_OFFSET,
-        });
-    }
+
+
 
     mouseDownOnHandle(mousedownpos: Vec2): number {
         for (let i = 0; i < this.resizingHandles.length; i++) {
@@ -351,6 +289,25 @@ export class SelectionService extends Tool {
                 event.preventDefault();
                 event.stopPropagation();
                 this.moveSelectionWithKeys();
+                if (this.firstSelectionMove) {
+                    this.selectionCommand = new SelectionCommand(this.selectionStartPoint, this, this.drawingService);
+                    this.selectionCommand.setEndPosErase(this.selectionEndPoint);
+                    this.eraseSelectionFromBase(this.selectionEndPoint);
+        }
+            this.drawingService.previewCtx.save();
+            if (this.selectionStyle === 1)
+            this.ellipseService.drawEllipse(this.drawingService.previewCtx, this.selectionStartPoint, this.selectionEndPoint, false, false);
+        
+            this.drawingService.previewCtx.clip();
+            this.drawingService.previewCtx.drawImage(this.selectionData, this.selectionStartPoint.x, this.selectionStartPoint.y);
+            this.drawingService.previewCtx.restore();
+        
+            this.rectangleService.drawRectangle(this.drawingService.previewCtx, this.selectionStartPoint, this.selectionEndPoint, false);
+            if (this.selectionStyle === 1) {
+                this.ellipseService.secondaryColor = 'black';
+                this.ellipseService.setStyle(0);
+                this.ellipseService.drawEllipse(this.drawingService.previewCtx, this.selectionStartPoint, this.selectionEndPoint, false, false);
+            }
             }
         }
     }
@@ -367,57 +324,9 @@ export class SelectionService extends Tool {
         this.firstSelectionMove = true;
     }
 
-    moveSelection(endpoint: Vec2): void {
-        this.drawingService.clearCanvas(this.drawingService.previewCtx);
 
-        if (this.firstSelectionMove) {
-            this.selectionCommand = new SelectionCommand(this.selectionStartPoint, this, this.drawingService);
-            this.selectionCommand.setEndPosErase(this.selectionEndPoint);
-            this.eraseSelectionFromBase(this.selectionEndPoint);
-        }
-        this.selectionStartPoint = { x: endpoint.x - this.offsetX, y: endpoint.y - this.offsetY };
-        this.selectionEndPoint = {
-            x: this.selectionStartPoint.x + Math.abs(this.rectangleService.width),
-            y: this.selectionStartPoint.y + Math.abs(this.rectangleService.height),
-        };
-        this.drawingService.previewCtx.save();
 
-        if (this.selectionStyle === 1)
-            this.ellipseService.drawEllipse(this.drawingService.previewCtx, this.selectionStartPoint, this.selectionEndPoint, false, false);
 
-        this.drawingService.previewCtx.clip();
-        this.drawingService.previewCtx.drawImage(this.selectionData, this.selectionStartPoint.x, this.selectionStartPoint.y);
-        this.drawingService.previewCtx.restore();
-
-        this.rectangleService.drawRectangle(this.drawingService.previewCtx, this.selectionStartPoint, this.selectionEndPoint, false);
-        if (this.selectionStyle === 1) {
-            this.ellipseService.secondaryColor = 'black';
-            this.ellipseService.setStyle(0);
-            this.ellipseService.drawEllipse(this.drawingService.previewCtx, this.selectionStartPoint, this.selectionEndPoint, false, false);
-        }
-    }
-
-    eraseSelectionFromBase(endPos: Vec2): void {
-        if (endPos) {
-            this.drawingService.baseCtx.beginPath();
-            this.drawingService.baseCtx.fillStyle = 'white';
-            switch (this.selectionStyle) {
-                case 0:
-                    this.drawingService.baseCtx.rect(this.selectionStartPoint.x, this.selectionStartPoint.y, this.width, this.height);
-                    break;
-                case 1:
-                    this.ellipseService.setStyle(2);
-                    this.ellipseService.primaryColor = 'white';
-                    let toCircle = false;
-                    if (this.height === this.width) toCircle = true;
-                    this.ellipseService.drawEllipse(this.drawingService.baseCtx, this.selectionStartPoint, endPos, toCircle, false);
-                    break;
-            }
-            this.drawingService.baseCtx.fill();
-            this.drawingService.baseCtx.closePath();
-            this.firstSelectionMove = false;
-        }
-    }
 
     selectAllCanvas(): void {
         this.selectionStyle = 0;
@@ -435,38 +344,7 @@ export class SelectionService extends Tool {
         this.selectionActivated = true;
     }
 
-    async delay(ms: number): Promise<void> {
-        return new Promise((resolve) => setTimeout(resolve, ms));
-    }
-
-    async moveSelectionWithKeys(): Promise<void> {
-        this.offsetX = 0;
-        this.offsetY = 0;
-
-        if (!this.moveDelayActive) {
-            this.moveDelayActive = true;
-            if (this.keysDown.ArrowRight) {
-                this.selectionStartPoint.x += MOVEMENT_OFFSET;
-            }
-            if (this.keysDown.ArrowLeft) {
-                this.selectionStartPoint.x -= MOVEMENT_OFFSET;
-            }
-            if (this.keysDown.ArrowUp) {
-                this.selectionStartPoint.y -= MOVEMENT_OFFSET;
-            }
-
-            if (this.keysDown.ArrowDown) {
-                this.selectionStartPoint.y += MOVEMENT_OFFSET;
-            }
-
-            this.moveSelection(this.selectionStartPoint);
-            if (!this.continuousMove) {
-                await this.delay(INIT_MOVE_DELAY);
-                this.continuousMove = true;
-            } else await this.delay(CONTINUOUS_MOVE_DELAY);
-            this.moveDelayActive = false;
-        }
-    }
+ 
 
     clipImageWithEllipse(): void {
         this.ellipseService.secondaryColor = 'rgba(255,255,255,0)';
@@ -510,5 +388,27 @@ export class SelectionService extends Tool {
         this.saveSelection();
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.rectangleService.drawRectangle(this.drawingService.previewCtx, this.selectionStartPoint, this.selectionEndPoint, false);
+    }
+
+    eraseSelectionFromBase(endPos: Vec2): void {
+        if (endPos) {
+            this.drawingService.baseCtx.beginPath();
+            this.drawingService.baseCtx.fillStyle = 'white';
+            switch (this.selectionStyle) {
+                case 0:
+                    this.drawingService.baseCtx.rect(this.selectionStartPoint.x, this.selectionStartPoint.y, this.width, this.height);
+                    break;
+                case 1:
+                    this.ellipseService.setStyle(2);
+                    this.ellipseService.primaryColor = 'white';
+                    let toCircle = false;
+                    if (this.height === this.width) toCircle = true;
+                    this.ellipseService.drawEllipse(this.drawingService.baseCtx, this.selectionStartPoint, endPos, toCircle, false);
+                    break;
+            }
+            this.drawingService.baseCtx.fill();
+            this.drawingService.baseCtx.closePath();
+            this.firstSelectionMove = false;
+        }
     }
 }
