@@ -1,12 +1,12 @@
 // tslint:disable:max-file-line-count
-import { DrawingService } from '@app/services/drawing/drawing.service';
-import { EllipseService } from '@app/services/tools/ellipse/ellipse.service';
 import { Injectable } from '@angular/core';
 import { Movable } from '@app/classes/movable';
-import { RectangleService, RectangleStyle } from '@app/services/tools/rectangle/rectangle.service';
 import { SelectionCommand } from '@app/classes/selection-command';
-import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { Vec2 } from '@app/classes/vec2';
+import { DrawingService } from '@app/services/drawing/drawing.service';
+import { EllipseService } from '@app/services/tools/ellipse/ellipse.service';
+import { RectangleService, RectangleStyle } from '@app/services/tools/rectangle/rectangle.service';
+import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 export enum MouseButton {
     Left = 0,
     Middle = 1,

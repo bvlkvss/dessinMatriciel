@@ -1,6 +1,6 @@
-import { DrawingService } from '@app/services/drawing/drawing.service';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
+import { DrawingService } from '@app/services/drawing/drawing.service';
 
 const HANDLE_LENGTH = 6;
 const HANDLE_OFFSET = HANDLE_LENGTH / 2;
