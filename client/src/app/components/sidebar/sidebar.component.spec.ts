@@ -9,6 +9,7 @@ import { EllipseService } from '@app/services/tools/ellipse/ellipse.service';
 import { EraserService } from '@app/services/tools/eraser/eraser-service';
 import { GridService } from '@app/services/tools/grid/grid.service';
 import { LineService } from '@app/services/tools/line/line.service';
+import { MagicWandService } from '@app/services/tools/magic-wand/magic-wand.service';
 import { PaintBucketService } from '@app/services/tools/paint-bucket/paint-bucket.service';
 import { PencilService } from '@app/services/tools/pencil/pencil-service';
 import { PipetteService } from '@app/services/tools/pipette/pipette.service';
@@ -42,6 +43,7 @@ describe('SidebarComponent', () => {
     let textStub: TextService;
     let matDialogSpy: jasmine.SpyObj<MatDialog>;
     let gridStub:GridService;
+    let magicWandStub: MagicWandService;
 
     beforeEach(async(() => {
         drawServiceMock = new MockDrawingService();
@@ -57,7 +59,8 @@ describe('SidebarComponent', () => {
         selectionStub = new SelectionService(drawServiceMock, UndoRedoServiceMock);
         textStub = new TextService(drawServiceMock);
         gridStub = new GridService(drawServiceMock);
-        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub, selectionStub, paintBucketStub, polygonStub, pipetteStub, textStub, plumeStub, gridStub);
+        magicWandStub = new MagicWandService(drawServiceMock, UndoRedoServiceMock);
+        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub, selectionStub, paintBucketStub, polygonStub, pipetteStub, textStub, plumeStub, gridStub, magicWandStub);
         toolManagerStub.currentTool = pencilStub;
         matDialogSpy = jasmine.createSpyObj('MatDialog', ['open']);
         TestBed.configureTestingModule({
@@ -175,7 +178,7 @@ describe('SidebarComponent', () => {
     });
 
     it('should call selectAllCanvas when selectAll is called', () => {
-        ((component as any).tools.currentTool as SelectionService).selectAllCanvas = jasmine.createSpy()
+        ((component as any).tools.currentTool as SelectionService).selectAllCanvas = jasmine.createSpy();
         component.selectAll();
         expect(((component as any).tools.currentTool as SelectionService).selectAllCanvas).toHaveBeenCalled();
     });

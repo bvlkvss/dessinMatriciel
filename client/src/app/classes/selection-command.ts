@@ -1,6 +1,6 @@
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { SelectionService } from '@app/services/tools/selection/selection.service';
 import { Command } from './command';
+import { Movable } from './movable';
 import { Vec2 } from './vec2';
 
 export class SelectionCommand extends Command {
@@ -15,7 +15,7 @@ export class SelectionCommand extends Command {
 
     isResize: boolean = false;
 
-    constructor(startPosErase: Vec2, protected tool: SelectionService, protected drawingService: DrawingService) {
+    constructor(startPosErase: Vec2, protected tool: Movable, protected drawingService: DrawingService) {
         super();
         this.startPosErase = startPosErase;
     }

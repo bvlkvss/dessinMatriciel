@@ -2,6 +2,7 @@ import { Color } from '@app/classes/color';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 const DEFAULT_COLOR = '#000000';
+const RGBA_NUMBER_OF_COMPONENTS = 4;
 // Ceci est justifié vu qu'on a des fonctions qui seront gérés par les classes enfant
 // tslint:disable:no-empty
 export abstract class Tool {
@@ -56,5 +57,70 @@ export abstract class Tool {
 
     getLineWidth(): number {
         return this.lineWidth;
+    }
+
+    protected getMax(arr: number[]): number {
+        let len = arr.length;
+        let max = -Infinity;
+
+        while (len--) {
+            max = arr[len] > max ? arr[len] : max;
+        }
+        return max;
+    }
+
+    protected getMin(arr: number[]): number {
+        let len = arr.length;
+        let min = Infinity;
+
+        while (len--) {
+            min = arr[len] < min ? arr[len] : min;
+        }
+        return min;
+    }
+
+    protected getActualColor(position: Vec2): Color {
+        const imageData = this.drawingService.baseCtx.getImageData(position.x, position.y, 1, 1);
+        return this.getColorFromData(imageData);
+    }
+
+    protected getColorFromData(imageData: ImageData): Color {
+        // tslint:disable:no-magic-numbers
+        let redData = 0;
+        let greenData = 0;
+        let blueData = 0;
+        let opacityData = 0;
+        for (let j = 0; j < imageData.data.length; j += RGBA_NUMBER_OF_COMPONENTS) {
+            redData = imageData.data[j];
+            greenData = imageData.data[j + 1];
+            blueData = imageData.data[j + 2];
+            opacityData = imageData.data[j + 3];
+        }
+        return { red: redData, green: greenData, blue: blueData, opacity: opacityData };
+    }
+
+    protected areColorsMatching(color: Color, imageData: ImageData, position: number, tolerance: number = 0): boolean {
+        let areColorsMatching = true;
+        const pixelRed = imageData.data[position];
+        const pixelGreen = imageData.data[position + 1];
+        const pixelBlue = imageData.data[position + 2];
+
+        areColorsMatching = areColorsMatching && pixelRed >= color.red - tolerance && pixelRed <= color.red + tolerance;
+        areColorsMatching = areColorsMatching && pixelGreen >= color.green - tolerance && pixelGreen <= color.green + tolerance;
+        areColorsMatching = areColorsMatching && pixelBlue >= color.blue - tolerance && pixelBlue <= color.blue + tolerance;
+        return areColorsMatching;
+    }
+
+    protected fillPixel(imageData: ImageData, position: number): void {
+        const color: Color = this.hexToColor(this.primaryColor);
+        imageData.data[position] = color.red;
+        imageData.data[position + 1] = color.green;
+        imageData.data[position + 2] = color.blue;
+    }
+
+    protected getPositionFromPixel(pixel: number, width: number): Vec2 {
+        const x = (pixel / RGBA_NUMBER_OF_COMPONENTS) % width;
+        const y = Math.floor(pixel / RGBA_NUMBER_OF_COMPONENTS / width);
+        return { x, y };
     }
 }
