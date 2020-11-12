@@ -57,6 +57,7 @@ export class SelectionService extends Movable {
         this.ellipseService.primaryColor = 'black';
         this.selectionActivated = false;
         this.toolAttributes = [];
+        this.currenthandle=DEFAULT_HANDLE_INDEX;
     }
 
     onMouseDown(event: MouseEvent): void {
@@ -100,7 +101,7 @@ export class SelectionService extends Movable {
         if (this.selectionStyle === 1) {
             this.clipImageWithEllipse();
         } else {
-            this.drawingService.baseCtx.drawImage(this.selectionData, this.selectionStartPoint.x, this.selectionStartPoint.y);
+            this.drawingService.baseCtx.drawImage(this.selectionData, this.selectionStartPoint.x, this.selectionStartPoint.y, this.width,this.height);
         }
         if (this.selectionCommand) {
             this.selectionCommand.setStartPos(this.selectionStartPoint);
@@ -160,6 +161,7 @@ export class SelectionService extends Movable {
     onMouseUp(event: MouseEvent): void {
         this.mouseUpCoord = this.getPositionFromMouse(event);
         if (this.mouseDown && this.mouseUpCoord.x !== this.selectionStartPoint.x && this.mouseUpCoord.y !== this.selectionStartPoint.y) {
+
             if (!this.selectionActivated && this.rectangleService.isOut) {
                 this.selectionEndPoint = this.rectangleService.mouseOutCoord;
             } else {
@@ -171,8 +173,9 @@ export class SelectionService extends Movable {
             this.width = Math.abs(this.rectangleService.width);
             this.height = Math.abs(this.rectangleService.height);
             this.updateSelectionNodes();
-
+            if(!this.selectionActivated){
             this.saveSelection();
+            
             if (this.selectionStyle === 1) {
                 this.clipImageWithEllipse();
             } else {
@@ -188,6 +191,8 @@ export class SelectionService extends Movable {
             this.drawResizingHandles();
             this.selectionActivated = true;
             this.mouseDown = false;
+            }
+        
         }
         this.rectangleService.mouseDown = false;
         this.rectangleService.toSquare = false;
@@ -197,13 +202,18 @@ export class SelectionService extends Movable {
 
     onMouseMove(event: MouseEvent): void {
         this.currentPos = this.getPositionFromMouse(event);
-
+        
         if (this.selectionActivated && this.mouseDown) {
             this.resizeSelection();
-
-            if (this.selectionStyle === 1) {
-                this.ellipseService.drawEllipse(this.drawingService.previewCtx, this.selectionStartPoint, this.selectionEndPoint, false, false);
-            }
+            this.ellipseService.setStyle(0);
+            if (this.selectionStyle === 1)
+                this.ellipseService.drawEllipse(
+                    this.drawingService.previewCtx,
+                    this.selectionStartPoint,
+                    this.currentPos,
+                    this.rectangleService.toSquare,
+                    false,
+                );
             this.updateResizingHandles();
             this.drawResizingHandles();
             return;
@@ -243,8 +253,10 @@ export class SelectionService extends Movable {
             this.ellipseService.drawEllipse(this.drawingService.previewCtx, this.selectionStartPoint, this.selectionEndPoint, false, false);
 
         this.drawingService.previewCtx.clip();
-        this.drawingService.previewCtx.drawImage(this.selectionData, this.selectionStartPoint.x, this.selectionStartPoint.y);
+        this.drawingService.previewCtx.drawImage(this.selectionData, this.selectionStartPoint.x, this.selectionStartPoint.y, this.width,this.height);
         this.drawingService.previewCtx.restore();
+        this.width=this.selectionEndPoint.x-this.selectionStartPoint.x;
+        this.height=this.selectionEndPoint.y-this.selectionStartPoint.y;
         this.updateResizingHandles();
         this.drawResizingHandles();
         this.rectangleService.drawRectangle(this.drawingService.previewCtx, this.selectionStartPoint, this.selectionEndPoint, false);
@@ -339,7 +351,7 @@ export class SelectionService extends Movable {
         this.ellipseService.drawEllipse(this.drawingService.baseCtx, this.selectionStartPoint, this.selectionEndPoint, false, false);
         this.drawingService.baseCtx.save();
         this.drawingService.baseCtx.clip();
-        this.drawingService.baseCtx.drawImage(this.selectionData, this.selectionStartPoint.x, this.selectionStartPoint.y);
+        this.drawingService.baseCtx.drawImage(this.selectionData, this.selectionStartPoint.x, this.selectionStartPoint.y, this.width,this.height);
         this.drawingService.baseCtx.restore();
         this.ellipseService.secondaryColor = 'black';
     }
@@ -373,9 +385,9 @@ export class SelectionService extends Movable {
                 this.selectionEndPoint = this.currentPos;
                 break;
         }
-        this.saveSelection();
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.rectangleService.drawRectangle(this.drawingService.previewCtx, this.selectionStartPoint, this.selectionEndPoint, false);
+        this.redrawSelection();
     }
 
     eraseSelectionFromBase(endPos: Vec2): void {
