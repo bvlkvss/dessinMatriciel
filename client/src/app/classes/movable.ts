@@ -7,6 +7,7 @@ const HANDLE_OFFSET = HANDLE_LENGTH / 2;
 const MOVEMENT_OFFSET = 3;
 const INIT_MOVE_DELAY = 500;
 const CONTINUOUS_MOVE_DELAY = 100;
+const DEFAULT_DEGREE_STEP = 15;
 export class Movable extends Tool {
     moveDelayActive: boolean;
     continuousMove: boolean;
@@ -19,6 +20,8 @@ export class Movable extends Tool {
     width: number;
     height: number;
     resizingHandles: Vec2[];
+    rotatedResizingHandles: Vec2[] = [];
+    degres: number = 0;
 
     constructor(drawingService: DrawingService) {
         super(drawingService);
@@ -82,7 +85,6 @@ export class Movable extends Tool {
             this.moveDelayActive = false;
         }
     }
-
     updateResizingHandles(): void {
         this.resizingHandles = [];
 
@@ -133,6 +135,71 @@ export class Movable extends Tool {
         });
     }
 
+    updateDegree(event: any, alt: boolean): void {
+        if (event.wheelDelta > 0) {
+            if (alt && this.degres < DEFAULT_DEGREE_STEP) {
+                ++this.degres;
+            } else if (!alt) {
+                this.degres += DEFAULT_DEGREE_STEP;
+            }
+        } else {
+            if (alt && this.degres > 0) {
+                --this.degres;
+            } else if (!alt) {
+                this.degres -= DEFAULT_DEGREE_STEP;
+            }
+        }
+    }
+    updateRotatedResizingHandles(): void {
+        this.rotatedResizingHandles = [];
+
+        /*
+  1 2 3
+  4   5
+  6 7 8
+*/
+        // 1
+        this.rotatedResizingHandles.push({
+            x: -this.width / 2 - HANDLE_OFFSET,
+            y: -this.height / 2 - HANDLE_OFFSET,
+        });
+        // 2
+        this.rotatedResizingHandles.push({
+            x: -HANDLE_OFFSET,
+            y: -this.height / 2 - HANDLE_OFFSET,
+        });
+        // 3
+        this.rotatedResizingHandles.push({
+            x: this.width / 2 - HANDLE_OFFSET,
+            y: -this.height / 2 - HANDLE_OFFSET,
+        });
+        // 4
+        this.rotatedResizingHandles.push({
+            x: -this.width / 2 - HANDLE_OFFSET,
+            y: -HANDLE_OFFSET,
+        });
+        // 5
+        this.rotatedResizingHandles.push({
+            x: this.width / 2 - HANDLE_OFFSET,
+            y: -HANDLE_OFFSET,
+        });
+        // 6
+        this.rotatedResizingHandles.push({
+            x: -this.width / 2 - HANDLE_OFFSET,
+            y: this.height / 2 - HANDLE_OFFSET,
+        });
+        // 7
+        this.rotatedResizingHandles.push({
+            x: -HANDLE_OFFSET,
+            y: this.height / 2 - HANDLE_OFFSET,
+        });
+        // 8
+        this.rotatedResizingHandles.push({
+            x: this.width / 2 - HANDLE_OFFSET,
+            y: this.height / 2 - HANDLE_OFFSET,
+        });
+    }
+
     drawResizingHandles(): void {
         this.drawingService.previewCtx.save();
         this.drawingService.previewCtx.beginPath();
@@ -140,7 +207,23 @@ export class Movable extends Tool {
         this.drawingService.previewCtx.strokeStyle = 'blue';
         this.drawingService.previewCtx.lineWidth = 2;
         this.drawingService.previewCtx.setLineDash([0, 0]);
-        for (const handle of this.resizingHandles) {
+        for (const handle of this.rotatedResizingHandles) {
+            this.drawingService.previewCtx.rect(handle.x, handle.y, HANDLE_LENGTH, HANDLE_LENGTH);
+        }
+        this.drawingService.previewCtx.stroke();
+        this.drawingService.previewCtx.fill();
+        this.drawingService.previewCtx.closePath();
+        this.drawingService.previewCtx.restore();
+    }
+
+    drawRotatedHandles(): void {
+        this.drawingService.previewCtx.save();
+        this.drawingService.previewCtx.beginPath();
+        this.drawingService.previewCtx.fillStyle = '#ffffff';
+        this.drawingService.previewCtx.strokeStyle = 'blue';
+        this.drawingService.previewCtx.lineWidth = 2;
+        this.drawingService.previewCtx.setLineDash([0, 0]);
+        for (const handle of this.rotatedResizingHandles) {
             this.drawingService.previewCtx.rect(handle.x, handle.y, HANDLE_LENGTH, HANDLE_LENGTH);
         }
         this.drawingService.previewCtx.stroke();

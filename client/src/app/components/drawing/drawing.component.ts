@@ -25,13 +25,14 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     private baseCtx: CanvasRenderingContext2D;
     private previewCtx: CanvasRenderingContext2D;
     private mouseFired: boolean;
+    private altkey: boolean;
 
     constructor(
         private drawingService: DrawingService,
         private tools: ToolsManagerService,
         private resizer: ResizingService,
         private invoker: UndoRedoService,
-    ) {}
+    ) { }
 
     ngOnInit(): void {
         this.drawingService.resizeCanvas();
@@ -91,6 +92,14 @@ export class DrawingComponent implements AfterViewInit, OnInit {
             this.resizer.stopResize(event, this.baseCanvas.nativeElement);
             this.previewCanvas.nativeElement.style.borderBottom = '2px solid #000000';
             this.previewCanvas.nativeElement.style.borderRight = '2px solid #000000';
+        }
+    }
+    @HostListener('window : mousewheel', ['$event'])
+    updateDegree(event: WheelEvent): void {
+        if (this.tools.getTools().get('selection') === this.tools.currentTool) {
+            const tool = this.tools.currentTool as SelectionService;
+            tool.updateDegree(event,this.altkey);
+            tool.updateSelection();
         }
     }
 
@@ -158,11 +167,13 @@ export class DrawingComponent implements AfterViewInit, OnInit {
 
     @HostListener('document:keyup', ['$event'])
     onKeyUp(event: KeyboardEvent): void {
+        this.altkey = event.altKey;
         this.tools.currentTool.onKeyUp(event);
     }
 
     @HostListener('window:keydown', ['$event'])
     onkeyDownWindow(event: KeyboardEvent): void {
+        this.altkey = event.altKey;
         if (event.ctrlKey && event.key === 'o') {
             event.preventDefault();
             event.stopPropagation();
@@ -174,6 +185,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
             this.tools.currentTool = this.keyBindings.get('r') as Tool;
             this.tools.currentTool.onKeyDown(event);
         }
+
     }
 
     @HostListener('keydown', ['$event'])
