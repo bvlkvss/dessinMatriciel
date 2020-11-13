@@ -22,6 +22,7 @@ export class Movable extends Tool {
     resizingHandles: Vec2[];
     rotatedResizingHandles: Vec2[] = [];
     degres: number = 0;
+    signe: Vec2 = { x: 1, y: 1 };
 
     constructor(drawingService: DrawingService) {
         super(drawingService);
@@ -33,6 +34,8 @@ export class Movable extends Tool {
     }
 
     updateSelectionNodes(): void {
+        this.signe.x = Math.sign(-this.selectionEndPoint.x + this.selectionStartPoint.x);
+        this.signe.y = Math.sign(-this.selectionEndPoint.y + this.selectionStartPoint.y);
         if (this.selectionEndPoint.y < this.selectionStartPoint.y) {
             this.selectionEndPoint.y = this.selectionStartPoint.y;
             this.selectionStartPoint.y -= this.height;
