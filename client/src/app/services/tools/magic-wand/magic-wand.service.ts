@@ -1,4 +1,4 @@
-/*import { Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Color } from '@app/classes/color';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -15,7 +15,7 @@ export enum MouseButton {
 const RGBA_NUMBER_OF_COMPONENTS = 4;
 //const MAX_8BIT_NBR = 255;
 const MIN_TOLERANCE = 0;
-const MAX_TOLERANCE = 100;
+//const MAX_TOLERANCE = 100;
 
 @Injectable({
     providedIn: 'root',
@@ -29,15 +29,17 @@ export class MagicWandService extends PaintBucketService {
         super(drawingService, invoker);
         this.tolerance = MIN_TOLERANCE;
         this.magicWandCanvas = document.createElement('canvas');
-        this.magicWandCanvas.width = this.drawingService.canvas.width;
-        this.magicWandCanvas.height = this.drawingService.canvas.height;
+       
         this.magicWandCtx = this.magicWandCanvas.getContext('2d') as CanvasRenderingContext2D;
         this.selectionData = [];
     }
 
     onRightClick(event: MouseEvent): void {}
 
-    onClick(event: MouseEvent): void {}
+    onClick(event: MouseEvent): void {
+        this.magicWandCanvas.width = this.drawingService.canvas.width;
+        this.magicWandCanvas.height = this.drawingService.canvas.height;
+    }
 
     resetSelectionData(){
       this.selectionData = [];
@@ -45,16 +47,40 @@ export class MagicWandService extends PaintBucketService {
 
   
     drawSelectionOnWandCanvas():void {
+        let ctx = this.magicWandCtx;
+        let canvas = this.magicWandCanvas;
         let imageData = this.magicWandCtx.getImageData(0, 0, this.magicWandCanvas.width, this.magicWandCanvas.height);
         for (let i = 0; i < this.selectionData.length; i++) {
             imageData.data[this.selectionData[i]] = this.selectionData[i];
         }
+        
+        let dArr = [-1,-1, 0,-1, 1,-1, -1,0, 1,0, -1,1, 0,1, 1,1], // offset array
+        s = 2,  // thickness scale
+        i = 0  // iterator
+    
+        // draw images at offsets from the array scaled by s
+        for(; i < dArr.length; i += 2)
+            this.magicWandCtx.putImageData(imageData, 0 + dArr[i]*s, 0 + dArr[i+1]*s);
+    
+        // fill with color
+        ctx.globalCompositeOperation = "source-in";
+        ctx.fillStyle = "black";
+        ctx.fillRect(0,0,canvas.width, canvas.height);
+    
+        // draw original image in normal mode
+        ctx.globalCompositeOperation = "source-over";
         this.magicWandCtx.putImageData(imageData, 0, 0);
     }
 
-    //Implement
-    drawDashOnSelectionContour() {
+    setCanvasHeightAndWidth(modifiedPixels:Vec2[]){
+        let firstPoint = modifiedPixels[0];
+        let lastPoint = modifiedPixels[modifiedPixels.length - 1];
 
+        let minWidth = lastPoint.x - firstPoint.x;
+        let minHeight = lastPoint.x - firstPoint.x; 
+        
+        this.magicWandCanvas.height = minHeight;
+        this.magicWandCanvas.width = minWidth;
     }
 
     getContiguousPixels(position: Vec2): Vec2[] {
@@ -107,4 +133,3 @@ export class MagicWandService extends PaintBucketService {
         return modifiedPixels;
     }
 }
-*/
