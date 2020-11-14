@@ -25,6 +25,12 @@ export class MagicWandService extends PaintBucketService {
     magicWandCanvas: HTMLCanvasElement;
     magicWandCtx: CanvasRenderingContext2D;
     selectionData: number[];
+    currentPos: Vec2;
+    selectionStartPoint:Vec2;
+    selectionEndPoint:Vec2;
+    selectionMinWidth:number;
+    selectionMinHeight:number;
+
     constructor(drawingService: DrawingService, protected invoker: UndoRedoService) {
         super(drawingService, invoker);
         this.tolerance = MIN_TOLERANCE;
@@ -37,50 +43,85 @@ export class MagicWandService extends PaintBucketService {
     onRightClick(event: MouseEvent): void {}
 
     onClick(event: MouseEvent): void {
+        console.log("CALLED");
         this.magicWandCanvas.width = this.drawingService.canvas.width;
         this.magicWandCanvas.height = this.drawingService.canvas.height;
+        console.log("CALLING GETPOSFROMMOUSE");
+        this.currentPos = this.getPositionFromMouse(event);
+        console.log('CURRENT: ' + this.currentPos.x + ' '+ this.currentPos.y);
+        let modifiedPixels = this.getContiguousPixels(this.currentPos);
+        console.log("CALLING DRAWSELECTIONWAND");
+        this.saveSelection(modifiedPixels);
+        console.log("CALLING PREVIEW");
+        this.drawingService.baseCtx.drawImage(this.magicWandCanvas,200,200);
     }
 
+    
+    
+    setFirstAndLastPosition(modifiedPixels:Vec2[]){
+       let xArray = []
+       let yArray = []
+       for(let i = 0; i<modifiedPixels.length; i++){
+            let pos = modifiedPixels[i]
+            xArray.push(pos.x);
+            yArray.push(pos.y);
+       }
+       
+       let minX = Math.min(...xArray);
+       let minY = Math.min(...yArray);
+       let maxX = Math.max(...xArray);
+       let maxY = Math.max(...yArray);
+
+       this.selectionStartPoint = {x: minX, y:minY};
+       this.selectionEndPoint = {x: maxX, y:maxY};
+       console.log('START: '+ this.selectionStartPoint)
+    }
+    
     resetSelectionData(){
       this.selectionData = [];
     }
 
-  
-    drawSelectionOnWandCanvas():void {
-        let ctx = this.magicWandCtx;
-        let canvas = this.magicWandCanvas;
-        let imageData = this.magicWandCtx.getImageData(0, 0, this.magicWandCanvas.width, this.magicWandCanvas.height);
-        for (let i = 0; i < this.selectionData.length; i++) {
-            imageData.data[this.selectionData[i]] = this.selectionData[i];
-        }
-        
-        let dArr = [-1,-1, 0,-1, 1,-1, -1,0, 1,0, -1,1, 0,1, 1,1], // offset array
-        s = 2,  // thickness scale
-        i = 0  // iterator
-    
-        // draw images at offsets from the array scaled by s
-        for(; i < dArr.length; i += 2)
-            this.magicWandCtx.putImageData(imageData, 0 + dArr[i]*s, 0 + dArr[i+1]*s);
-    
-        // fill with color
-        ctx.globalCompositeOperation = "source-in";
-        ctx.fillStyle = "black";
-        ctx.fillRect(0,0,canvas.width, canvas.height);
-    
-        // draw original image in normal mode
-        ctx.globalCompositeOperation = "source-over";
-        this.magicWandCtx.putImageData(imageData, 0, 0);
+    saveSelection(modifiedPixels:Vec2[]){
+        this.drawOnWandCanvas();
+        this.cropWandCanvas(modifiedPixels);
     }
 
-    setCanvasHeightAndWidth(modifiedPixels:Vec2[]){
-        let firstPoint = modifiedPixels[0];
-        let lastPoint = modifiedPixels[modifiedPixels.length - 1];
+    drawOnWandCanvas(){
+        let baseImageData = this.drawingService.baseCtx.getImageData(0,0,this.drawingService.canvas.width, this.drawingService.canvas.height);
+        let imageData = this.magicWandCtx.getImageData(0,0,this.magicWandCanvas.width, this.magicWandCanvas.height);
+        for(let i = 0; i<this.selectionData.length; i++){
+            let position = this.selectionData[i];
+            imageData.data[position] = baseImageData.data[position];
+            imageData.data[position+1] = baseImageData.data[position+1];
+            imageData.data[position+2] = baseImageData.data[position+2];
+            imageData.data[position+3] = baseImageData.data[position+3];
+        }
+        this.magicWandCtx.putImageData(imageData,0,0);
+    }
 
-        let minWidth = lastPoint.x - firstPoint.x;
-        let minHeight = lastPoint.x - firstPoint.x; 
+    
+    cropWandCanvas(modifiedPixels:Vec2[]){
+        this.setSelectionProperties(modifiedPixels);
+        let x = this.selectionStartPoint.x;
+        let y = this.selectionStartPoint.y;
+        console.log('x: '+x+' y: '+y);
+        console.log('width: '+this.selectionMinWidth+' height: '+this.selectionMinHeight);
         
-        this.magicWandCanvas.height = minHeight;
-        this.magicWandCanvas.width = minWidth;
+        let imageData = this.magicWandCtx.getImageData(x, y, this.selectionMinWidth, this.selectionMinHeight);
+        this.magicWandCtx.canvas.width = this.selectionMinWidth;
+        this.magicWandCtx.canvas.height = this.selectionMinHeight;
+        this.magicWandCtx.clearRect(0,0,this.selectionMinWidth,this.selectionMinHeight);
+        this.magicWandCtx.putImageData(imageData,0,0);
+    }
+
+    setSelectionProperties(modifiedPixels:Vec2[]){
+       this.setFirstAndLastPosition(modifiedPixels);
+
+        let minWidth = this.selectionEndPoint.x - this.selectionStartPoint.x;
+        let minHeight = this.selectionEndPoint.y - this.selectionStartPoint.y; 
+        
+        this.selectionMinHeight = minHeight;
+        this.selectionMinWidth = minWidth;
     }
 
     getContiguousPixels(position: Vec2): Vec2[] {
@@ -105,8 +146,9 @@ export class MagicWandService extends PaintBucketService {
             let isLeftReached = false;
             let isRightReached = false;
             while (newPosition.y++ < canvas.height - 1 && this.areColorsMatching(startingColor, imageData, pixelPosition)) {
-                modifiedPixels.push({ x: newPosition.x, y: newPosition.y });
+                this.fillPixel(imageData, pixelPosition);
                 this.selectionData.push(pixelPosition);
+                modifiedPixels.push({ x: newPosition.x, y: newPosition.y });
                 if (newPosition.x > 0) {
                     if (this.areColorsMatching(startingColor, imageData, pixelPosition - RGBA_NUMBER_OF_COMPONENTS)) {
                         if (!isLeftReached) {
