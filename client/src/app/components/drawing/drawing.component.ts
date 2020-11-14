@@ -98,8 +98,8 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     updateDegree(event: WheelEvent): void {
         if (this.tools.getTools().get('selection') === this.tools.currentTool) {
             const tool = this.tools.currentTool as SelectionService;
-            tool.updateDegree(event,this.altkey);
-            tool.updateSelection();
+            tool.updateDegree(event, this.altkey);
+            tool.redrawSelection();
         }
     }
 

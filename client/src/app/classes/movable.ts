@@ -140,15 +140,15 @@ export class Movable extends Tool {
 
     updateDegree(event: any, alt: boolean): void {
         if (event.wheelDelta > 0) {
-            if (alt && this.degres < DEFAULT_DEGREE_STEP) {
+            if (alt) {
                 ++this.degres;
-            } else if (!alt) {
+            } else {
                 this.degres += DEFAULT_DEGREE_STEP;
             }
         } else {
-            if (alt && this.degres > 0) {
+            if (alt) {
                 --this.degres;
-            } else if (!alt) {
+            } else {
                 this.degres -= DEFAULT_DEGREE_STEP;
             }
         }
