@@ -20,7 +20,7 @@ export class Movable extends Tool {
     width: number;
     height: number;
     resizingHandles: Vec2[];
-    rotatedResizingHandles: Vec2[] = [];
+    handlesCentreReference: Vec2[] = [];
     degres: number = 0;
     signe: Vec2 = { x: 1, y: 1 };
 
@@ -31,6 +31,7 @@ export class Movable extends Tool {
         this.moveDelayActive = false;
         this.continuousMove = false;
         this.firstSelectionMove = true;
+        this.SetHandlesCentreReference();
     }
 
     updateSelectionNodes(): void {
@@ -88,6 +89,15 @@ export class Movable extends Tool {
             this.moveDelayActive = false;
         }
     }
+
+    getRotatedHandlePos(element: Vec2): Vec2 {
+        const tempX = element.x - (this.selectionStartPoint.x + Math.abs(this.width / 2));
+        const tempY = element.y - (this.selectionStartPoint.y + Math.abs(this.height / 2));
+        const rotatedX = tempX * Math.cos((this.degres * Math.PI) / 180) - tempY * Math.sin((this.degres * Math.PI) / 180);
+        const rotatedY = tempY * Math.cos((this.degres * Math.PI) / 180) + tempX * Math.sin((this.degres * Math.PI) / 180);
+        return { x: rotatedX + this.selectionStartPoint.x + this.width / 2, y: rotatedY + this.selectionStartPoint.y + this.height / 2 } as Vec2;
+    }
+
     updateResizingHandles(): void {
         this.resizingHandles = [];
 
@@ -153,8 +163,8 @@ export class Movable extends Tool {
             }
         }
     }
-    updateRotatedResizingHandles(): void {
-        this.rotatedResizingHandles = [];
+    SetHandlesCentreReference(): void {
+        this.handlesCentreReference = [];
 
         /*
   1 2 3
@@ -162,42 +172,42 @@ export class Movable extends Tool {
   6 7 8
 */
         // 1
-        this.rotatedResizingHandles.push({
+        this.handlesCentreReference.push({
             x: -this.width / 2 - HANDLE_OFFSET,
             y: -this.height / 2 - HANDLE_OFFSET,
         });
         // 2
-        this.rotatedResizingHandles.push({
+        this.handlesCentreReference.push({
             x: -HANDLE_OFFSET,
             y: -this.height / 2 - HANDLE_OFFSET,
         });
         // 3
-        this.rotatedResizingHandles.push({
+        this.handlesCentreReference.push({
             x: this.width / 2 - HANDLE_OFFSET,
             y: -this.height / 2 - HANDLE_OFFSET,
         });
         // 4
-        this.rotatedResizingHandles.push({
+        this.handlesCentreReference.push({
             x: -this.width / 2 - HANDLE_OFFSET,
             y: -HANDLE_OFFSET,
         });
         // 5
-        this.rotatedResizingHandles.push({
+        this.handlesCentreReference.push({
             x: this.width / 2 - HANDLE_OFFSET,
             y: -HANDLE_OFFSET,
         });
         // 6
-        this.rotatedResizingHandles.push({
+        this.handlesCentreReference.push({
             x: -this.width / 2 - HANDLE_OFFSET,
             y: this.height / 2 - HANDLE_OFFSET,
         });
         // 7
-        this.rotatedResizingHandles.push({
+        this.handlesCentreReference.push({
             x: -HANDLE_OFFSET,
             y: this.height / 2 - HANDLE_OFFSET,
         });
         // 8
-        this.rotatedResizingHandles.push({
+        this.handlesCentreReference.push({
             x: this.width / 2 - HANDLE_OFFSET,
             y: this.height / 2 - HANDLE_OFFSET,
         });
@@ -210,7 +220,7 @@ export class Movable extends Tool {
         this.drawingService.previewCtx.strokeStyle = 'blue';
         this.drawingService.previewCtx.lineWidth = 2;
         this.drawingService.previewCtx.setLineDash([0, 0]);
-        for (const handle of this.rotatedResizingHandles) {
+        for (const handle of this.handlesCentreReference) {
             this.drawingService.previewCtx.rect(handle.x, handle.y, HANDLE_LENGTH, HANDLE_LENGTH);
         }
         this.drawingService.previewCtx.stroke();
@@ -226,7 +236,7 @@ export class Movable extends Tool {
         this.drawingService.previewCtx.strokeStyle = 'blue';
         this.drawingService.previewCtx.lineWidth = 2;
         this.drawingService.previewCtx.setLineDash([0, 0]);
-        for (const handle of this.rotatedResizingHandles) {
+        for (const handle of this.handlesCentreReference) {
             this.drawingService.previewCtx.rect(handle.x, handle.y, HANDLE_LENGTH, HANDLE_LENGTH);
         }
         this.drawingService.previewCtx.stroke();
