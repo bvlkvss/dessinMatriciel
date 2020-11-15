@@ -89,7 +89,6 @@ export class ResizingService {
         } else if (calculatedHeight >= MIN_SIZE) {
             this.resizeFromBottom(event, div, preview);
         }
-
         this.isMaximazed = false;
     }
 

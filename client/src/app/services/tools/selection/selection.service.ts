@@ -108,7 +108,7 @@ export class SelectionService extends Movable {
         this.drawingService.baseCtx.translate(x + this.rectangleService.width / 2, y + this.rectangleService.height / 2);
         this.drawingService.baseCtx.rotate((this.degres * Math.PI) / 180);
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
-        //this.drawingService.baseCtx.save();
+        // this.drawingService.baseCtx.save();
         if (this.selectionStyle === 1) {
             this.clipImageWithEllipse();
         } else {
@@ -130,7 +130,7 @@ export class SelectionService extends Movable {
             this.invoker.setIsAllowed(true);
         }
         this.drawingService.baseCtx.restore();
-        //this.drawingService.baseCtx.restore();
+        // this.drawingService.baseCtx.restore();
 
         this.resetSelection();
         this.selectionActivated = false;
@@ -218,15 +218,15 @@ export class SelectionService extends Movable {
             this.drawingService.baseCtx.rotate((this.degres * Math.PI) / 180);
             this.clipImageWithEllipse();
             this.drawingService.baseCtx.restore();
-        } else {
-            this.drawingService.previewCtx.drawImage(
-                this.selectionData,
-                (this.signe.x * this.rectangleService.width) / 2,
-                (this.signe.y * this.rectangleService.height) / 2,
-                Math.abs(this.rectangleService.width),
-                Math.abs(this.rectangleService.height),
-            );
         }
+
+        this.drawingService.previewCtx.drawImage(
+            this.selectionData,
+            (this.signe.x * this.rectangleService.width) / 2,
+            (this.signe.y * this.rectangleService.height) / 2,
+            Math.abs(this.rectangleService.width),
+            Math.abs(this.rectangleService.height),
+        );
         this.rectangleService.drawRectangle(
             this.drawingService.previewCtx,
             {
@@ -259,8 +259,14 @@ export class SelectionService extends Movable {
             if (this.selectionStyle === 1)
                 this.ellipseService.drawEllipse(
                     this.drawingService.previewCtx,
-                    this.selectionStartPoint,
-                    this.currentPos,
+                    {
+                        x: -this.rectangleService.width / 2,
+                        y: -this.rectangleService.height / 2,
+                    } as Vec2,
+                    {
+                        x: this.rectangleService.width / 2,
+                        y: this.rectangleService.height / 2,
+                    } as Vec2,
                     this.rectangleService.toSquare,
                     false,
                 );
@@ -302,7 +308,7 @@ export class SelectionService extends Movable {
         this.drawingService.previewCtx.translate(x + this.rectangleService.width / 2, y + this.rectangleService.height / 2);
         this.drawingService.previewCtx.rotate((this.degres * Math.PI) / 180);
         this.drawingService.previewCtx.save();
-        if (this.selectionStyle === 1)
+        if (this.selectionStyle === 1) {
             this.ellipseService.drawEllipse(
                 this.drawingService.previewCtx,
                 {
@@ -316,6 +322,7 @@ export class SelectionService extends Movable {
                 false,
                 false,
             );
+        }
         this.drawingService.previewCtx.clip();
         this.drawingService.previewCtx.drawImage(
             this.selectionData,
@@ -360,7 +367,6 @@ export class SelectionService extends Movable {
             );
         }
         this.drawingService.previewCtx.restore();
-        // this.drawingService.previewCtx.restore();
     }
 
     mouseDownOnHandle(mousedownpos: Vec2): number {
@@ -491,7 +497,8 @@ export class SelectionService extends Movable {
             case HANDLES.five:
                 this.selectionEndPoint.x = this.currentPos.x;
                 break;
-                this.rectangleService.drawRectangle(this.drawingService.previewCtx, this.selectionStartPoint, this.selectionEndPoint, false);
+            case HANDLES.six:
+                this.selectionStartPoint.x = this.currentPos.x;
                 this.selectionEndPoint.y = this.currentPos.y;
                 break;
             case HANDLES.seven:
@@ -501,8 +508,10 @@ export class SelectionService extends Movable {
                 this.selectionEndPoint = this.currentPos;
                 break;
         }
+
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.rectangleService.drawRectangle(this.drawingService.previewCtx, this.selectionStartPoint, this.selectionEndPoint, false);
+        this.updateSelectionNodes();
         this.redrawSelection();
     }
 

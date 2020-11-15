@@ -98,6 +98,14 @@ export class Movable extends Tool {
         return { x: rotatedX + this.selectionStartPoint.x + this.width / 2, y: rotatedY + this.selectionStartPoint.y + this.height / 2 } as Vec2;
     }
 
+    getUnrotatedPos(element: Vec2): Vec2 {
+        const tempX = element.x - (this.selectionStartPoint.x + Math.abs(this.width / 2));
+        const tempY = element.y - (this.selectionStartPoint.y + Math.abs(this.height / 2));
+        const rotatedX = tempX * Math.cos((this.degres * Math.PI) / 180) + tempY * Math.sin((this.degres * Math.PI) / 180);
+        const rotatedY = tempY * Math.cos((this.degres * Math.PI) / 180) - tempX * Math.sin((this.degres * Math.PI) / 180);
+        return { x: rotatedX + this.selectionStartPoint.x + this.width / 2, y: rotatedY + this.selectionStartPoint.y + this.height / 2 } as Vec2;
+    }
+
     updateResizingHandles(): void {
         this.resizingHandles = [];
 

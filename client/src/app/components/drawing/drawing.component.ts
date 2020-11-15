@@ -185,7 +185,6 @@ export class DrawingComponent implements AfterViewInit, OnInit {
             this.tools.currentTool = this.keyBindings.get('r') as Tool;
             this.tools.currentTool.onKeyDown(event);
         }
-
     }
 
     @HostListener('keydown', ['$event'])
