@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Color } from '@app/classes/color';
+import { Movable } from '@app/classes/movable';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
-import { PaintBucketService } from '../paint-bucket/paint-bucket.service';
 
 export enum MouseButton {
     Left = 0,
@@ -14,54 +13,109 @@ export enum MouseButton {
 }
 const RGBA_NUMBER_OF_COMPONENTS = 4;
 //const MAX_8BIT_NBR = 255;
-const MIN_TOLERANCE = 0;
-//const MAX_TOLERANCE = 100;
 
-@Injectable({
-    providedIn: 'root',
-})
-export class MagicWandService extends PaintBucketService {
-    tolerance: number;
-    magicWandCanvas: HTMLCanvasElement;
-    magicWandCtx: CanvasRenderingContext2D;
-    selectionData: number[];
-    currentPos: Vec2;
+interface SelectionData {
+    canvas: HTMLCanvasElement;
     selectionStartPoint: Vec2;
     selectionEndPoint: Vec2;
     selectionMinWidth: number;
     selectionMinHeight: number;
-    startingColor:Color;
+}
 
-    constructor(drawingService: DrawingService, protected invoker: UndoRedoService) {
-        super(drawingService, invoker);
-        this.tolerance = MIN_TOLERANCE;
+@Injectable({
+    providedIn: 'root',
+})
+export class MagicWandService extends Movable {
+    private magicWandCanvas: HTMLCanvasElement;
+    private magicWandCtx: CanvasRenderingContext2D;
+    private selectionPixels: number[];
+    selectionMinWidth: number;
+    selectionMinHeight: number;
+    startingColor: Color;
+    nonContiguousSelectionDataArray: SelectionData[];
+
+    constructor(drawingService: DrawingService) {
+        super(drawingService);
         this.magicWandCanvas = document.createElement('canvas');
 
         this.magicWandCtx = this.magicWandCanvas.getContext('2d') as CanvasRenderingContext2D;
-        this.selectionData = [];
+        this.selectionPixels = [];
+        this.nonContiguousSelectionDataArray = [];
+        this.toolAttributes = [];
     }
 
-    onRightClick(event: MouseEvent): void {}
-
-    onClick(event: MouseEvent): void {
-        console.log('CALLED');
+    onRightClick(event: MouseEvent): void {
         this.magicWandCanvas.width = this.drawingService.canvas.width;
         this.magicWandCanvas.height = this.drawingService.canvas.height;
-        console.log('CALLING GETPOSFROMMOUSE');
         this.currentPos = this.getPositionFromMouse(event);
-        console.log('CURRENT: ' + this.currentPos.x + ' ' + this.currentPos.y);
-        let modifiedPixels = this.getContiguousPixels(this.currentPos);
-        console.log('CALLING DRAWSELECTIONWAND');
-        this.saveSelection(modifiedPixels);
-        console.log('CALLING PREVIEW');
-        this.drawingService.baseCtx.drawImage(this.magicWandCanvas, 200, 200);
-        this.getContour();
+        this.getNonContiguousPixels(this.currentPos);
+        console.log('CALLED');
     }
 
-    getContour() {
+    onClick(event: MouseEvent): void {
+        this.magicWandCanvas.width = this.drawingService.canvas.width;
+        this.magicWandCanvas.height = this.drawingService.canvas.height;
+        this.currentPos = this.getPositionFromMouse(event);
+        let modifiedPixels = this.getContiguousPixels(this.currentPos);
+        this.saveSelection(modifiedPixels);
+        this.drawContour(this.magicWandCanvas);
+    }
+
+    private getNonContiguousPixels(position: Vec2) {
+        const startingColor: Color = this.getActualColor(position);
+        let canvas = this.drawingService.baseCtx.canvas;
+        let imageData = this.drawingService.baseCtx.getImageData(0, 0, canvas.width, canvas.height);
+        let allCheckedPixels = [];
+        let modifiedPixels = this.getContiguousPixels(position);
+        this.saveSelection(modifiedPixels);
+        let j = 0;
+        let nonContiguousData = {
+            canvas: this.magicWandCanvas,
+            selectionStartPoint: this.selectionStartPoint,
+            selectionEndPoint: this.selectionEndPoint,
+            selectionMinWidth: this.selectionMinWidth,
+            selectionMinHeight: this.selectionMinHeight,
+        };
+        this.nonContiguousSelectionDataArray.push(nonContiguousData);
+        this.drawContour(this.nonContiguousSelectionDataArray[j].canvas);
+        allCheckedPixels.push(...this.selectionPixels);
+        for (let i = 0; i < imageData.data.length; i += 4) {
+            if (!allCheckedPixels.includes(i) && this.areColorsMatching(startingColor, imageData, i)) {
+                this.resetMagicWandCanvas();
+                console.log('Called');
+                this.resetSelectionPixels();
+                let x = (i / 4) % canvas.width;
+                let y = Math.floor(i / 4 / canvas.width);
+                let newPos: Vec2 = { x: x, y: y };
+                modifiedPixels = this.getContiguousPixels(newPos);
+                this.saveSelection(modifiedPixels);
+                nonContiguousData = {
+                    canvas: this.magicWandCanvas,
+                    selectionStartPoint: this.selectionStartPoint,
+                    selectionEndPoint: this.selectionEndPoint,
+                    selectionMinWidth: this.selectionMinWidth,
+                    selectionMinHeight: this.selectionMinHeight,
+                };
+                this.nonContiguousSelectionDataArray.push(nonContiguousData);
+                this.drawContour(this.nonContiguousSelectionDataArray[++j].canvas);
+                allCheckedPixels.push(...this.selectionPixels);
+            }
+        }
+    }
+
+    private resetMagicWandCanvas() {
+        this.magicWandCanvas.width = this.drawingService.canvas.width;
+        this.magicWandCanvas.height = this.drawingService.canvas.height;
+        this.magicWandCtx.clearRect(0, 0, this.magicWandCanvas.width, this.magicWandCanvas.height);
+    }
+
+    private drawContour(canvas: HTMLCanvasElement) {
+        console.log('this is called');
         let context = this.drawingService.previewCtx;
-        (this.startingColor.red == 0 && this.startingColor.green == 0 && this.startingColor.blue == 0) ? context.shadowColor = 'red' : context.shadowColor = 'black';
-        
+        this.startingColor.red == 0 && this.startingColor.green == 0 && this.startingColor.blue == 0
+            ? (context.shadowColor = 'red')
+            : (context.shadowColor = 'black');
+
         // X offset loop
         for (var x = -2; x <= 2; x++) {
             // Y offset loop
@@ -71,18 +125,12 @@ export class MagicWandService extends PaintBucketService {
                 context.shadowOffsetY = y;
 
                 // Draw image with shadow
-                context.drawImage(
-                    this.magicWandCanvas,
-                    this.selectionStartPoint.x,
-                    this.selectionStartPoint.y,
-                    this.selectionMinWidth,
-                    this.selectionMinHeight,
-                );
+                context.drawImage(canvas, this.selectionStartPoint.x, this.selectionStartPoint.y, this.selectionMinWidth, this.selectionMinHeight);
             }
         }
     }
 
-    setFirstAndLastPosition(modifiedPixels: Vec2[]) {
+    private setFirstAndLastPosition(modifiedPixels: Vec2[]) {
         let xArray = [];
         let yArray = [];
         for (let i = 0; i < modifiedPixels.length; i++) {
@@ -98,23 +146,22 @@ export class MagicWandService extends PaintBucketService {
 
         this.selectionStartPoint = { x: minX, y: minY };
         this.selectionEndPoint = { x: maxX, y: maxY };
-        console.log('START: ' + this.selectionStartPoint);
     }
 
-    resetSelectionData() {
-        this.selectionData = [];
+    private resetSelectionPixels() {
+        this.selectionPixels = [];
     }
 
-    saveSelection(modifiedPixels: Vec2[]) {
+    private saveSelection(modifiedPixels: Vec2[]) {
         this.drawOnWandCanvas();
         this.cropWandCanvas(modifiedPixels);
     }
 
-    drawOnWandCanvas() {
+    private drawOnWandCanvas() {
         let baseImageData = this.drawingService.baseCtx.getImageData(0, 0, this.drawingService.canvas.width, this.drawingService.canvas.height);
         let imageData = this.magicWandCtx.getImageData(0, 0, this.magicWandCanvas.width, this.magicWandCanvas.height);
-        for (let i = 0; i < this.selectionData.length; i++) {
-            let position = this.selectionData[i];
+        for (let i = 0; i < this.selectionPixels.length; i++) {
+            let position = this.selectionPixels[i];
             imageData.data[position] = baseImageData.data[position];
             imageData.data[position + 1] = baseImageData.data[position + 1];
             imageData.data[position + 2] = baseImageData.data[position + 2];
@@ -123,12 +170,12 @@ export class MagicWandService extends PaintBucketService {
         this.magicWandCtx.putImageData(imageData, 0, 0);
     }
 
-    cropWandCanvas(modifiedPixels: Vec2[]) {
+    private cropWandCanvas(modifiedPixels: Vec2[]) {
         this.setSelectionProperties(modifiedPixels);
         let x = this.selectionStartPoint.x;
         let y = this.selectionStartPoint.y;
-        console.log('x: ' + x + ' y: ' + y);
-        console.log('width: ' + this.selectionMinWidth + ' height: ' + this.selectionMinHeight);
+        //console.log('x: ' + x + ' y: ' + y);
+        //console.log('width: ' + this.selectionMinWidth + ' height: ' + this.selectionMinHeight);
 
         let imageData = this.magicWandCtx.getImageData(x, y, this.selectionMinWidth, this.selectionMinHeight);
         this.magicWandCtx.canvas.width = this.selectionMinWidth;
@@ -137,7 +184,7 @@ export class MagicWandService extends PaintBucketService {
         this.magicWandCtx.putImageData(imageData, 0, 0);
     }
 
-    setSelectionProperties(modifiedPixels: Vec2[]) {
+    private setSelectionProperties(modifiedPixels: Vec2[]) {
         this.setFirstAndLastPosition(modifiedPixels);
 
         let minWidth = this.selectionEndPoint.x - this.selectionStartPoint.x;
@@ -145,9 +192,10 @@ export class MagicWandService extends PaintBucketService {
 
         this.selectionMinHeight = minHeight;
         this.selectionMinWidth = minWidth;
+        console.log('minWidth: ' + this.selectionMinWidth);
     }
 
-    getContiguousPixels(position: Vec2): Vec2[] {
+    private getContiguousPixels(position: Vec2): Vec2[] {
         this.startingColor = this.getActualColor(position);
         const pixelStack = [position];
         const canvas: HTMLCanvasElement = this.drawingService.canvas;
@@ -179,7 +227,7 @@ export class MagicWandService extends PaintBucketService {
             let isRightReached = false;
             while (newPosition.y++ < canvas.height - 1 && this.areColorsMatching(this.startingColor, imageData, pixelPosition)) {
                 this.fillPixel(imageData, pixelPosition);
-                this.selectionData.push(pixelPosition);
+                this.selectionPixels.push(pixelPosition);
                 modifiedPixels.push({ x: newPosition.x, y: newPosition.y });
                 if (newPosition.x > 0) {
                     if (this.areColorsMatching(this.startingColor, imageData, pixelPosition - RGBA_NUMBER_OF_COMPONENTS)) {

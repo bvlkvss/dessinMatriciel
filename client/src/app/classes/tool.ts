@@ -78,4 +78,24 @@ export abstract class Tool {
         }
         return { red: redData, green: greenData, blue: blueData, opacity: opacityData };
     }
+
+    protected areColorsMatching(color: Color, imageData: ImageData, position: number, tolerance = 0): boolean {
+        let areColorsMatching = true;
+        //const tolerance = this.toleranceToRGBAValue();
+        const pixelRed = imageData.data[position];
+        const pixelGreen = imageData.data[position + 1];
+        const pixelBlue = imageData.data[position + 2];
+
+        areColorsMatching = areColorsMatching && pixelRed >= color.red - tolerance && pixelRed <= color.red + tolerance;
+        areColorsMatching = areColorsMatching && pixelGreen >= color.green - tolerance && pixelGreen <= color.green + tolerance;
+        areColorsMatching = areColorsMatching && pixelBlue >= color.blue - tolerance && pixelBlue <= color.blue + tolerance;
+        return areColorsMatching;
+    }
+
+    protected fillPixel(imageData: ImageData, position: number): void {
+        const color: Color = this.hexToColor(this.primaryColor);
+        imageData.data[position] = color.red;
+        imageData.data[position + 1] = color.green;
+        imageData.data[position + 2] = color.blue;
+    }
 }
