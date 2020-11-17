@@ -22,6 +22,8 @@ export class MagicWandService extends Tool {
     private magicWandCanvas: HTMLCanvasElement;
     private magicWandCtx: CanvasRenderingContext2D;
     private selectionPixels: number[];
+    selectionStartPoint:Vec2;
+    selectionEndPoint:Vec2;
     selectionMinWidth: number;
     selectionMinHeight: number;
     startingColor: Color;
@@ -32,7 +34,6 @@ export class MagicWandService extends Tool {
     constructor(drawingService: DrawingService) {
         super(drawingService);
         this.magicWandCanvas = document.createElement('canvas');
-
         this.magicWandCtx = this.magicWandCanvas.getContext('2d') as CanvasRenderingContext2D;
         this.selectionPixels = [];
         this.nonContiguousSelectionDataArray = [];
