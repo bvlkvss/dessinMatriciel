@@ -23,6 +23,8 @@ export class Movable extends Tool {
     degres: number = 0;
     flipedV: boolean = false;
     flipedH: boolean = false;
+    flipCase: number = 0;
+    selectionData: HTMLCanvasElement;
 
     constructor(drawingService: DrawingService) {
         super(drawingService);
@@ -35,14 +37,15 @@ export class Movable extends Tool {
 
     updateSelectionNodes(): number {
         let i = 0;
+        console.log('update node called');
         if (this.selectionEndPoint.y < this.selectionStartPoint.y) {
             this.selectionEndPoint.y = this.selectionStartPoint.y;
-            this.selectionStartPoint.y -= this.height;
+            this.selectionStartPoint.y -= Math.abs(this.height);
             i++;
         }
         if (this.selectionEndPoint.x < this.selectionStartPoint.x) {
             this.selectionEndPoint.x = this.selectionStartPoint.x;
-            this.selectionStartPoint.x -= this.width;
+            this.selectionStartPoint.x -= Math.abs(this.width);
             i += 2;
         }
         return i;
@@ -64,6 +67,7 @@ export class Movable extends Tool {
             i += 2;
             this.flipedV = false;
         }
+        console.log('check flip = ', i);
         return i;
     }
 
@@ -76,14 +80,43 @@ export class Movable extends Tool {
     }
 
     getRotatedPos(element: Vec2): Vec2 {
-        const tempX = element.x - (this.selectionStartPoint.x + Math.abs(this.width / 2));
-        const tempY = element.y - (this.selectionStartPoint.y + Math.abs(this.height / 2));
+        const tempX = element.x - (this.selectionStartPoint.x + this.width / 2);
+        const tempY = element.y - (this.selectionStartPoint.y + this.height / 2);
         const rotatedX = tempX * Math.cos((this.degres * Math.PI) / 180) - tempY * Math.sin((this.degres * Math.PI) / 180);
         const rotatedY = tempY * Math.cos((this.degres * Math.PI) / 180) + tempX * Math.sin((this.degres * Math.PI) / 180);
         return {
             x: rotatedX + this.selectionStartPoint.x + this.width / 2,
             y: rotatedY + this.selectionStartPoint.y + this.height / 2,
         } as Vec2;
+    }
+
+
+    flipSelection(): void {
+        let scale: Vec2 = { x: 0, y: 0 };
+        let translateVec: Vec2 = { x: 0, y: 0 };
+        switch (this.checkFlip()) {
+            case 1:
+                scale = { x: -1, y: 1 };
+                translateVec = { x: this.selectionData.width, y: 0 };
+                break;
+            case 2:
+                scale = { x: 1, y: -1 };
+                translateVec = { x: 0, y: this.selectionData.height };
+                break;
+            case 3:
+                scale = { x: -1, y: -1 };
+                translateVec = { x: this.selectionData.width, y: this.selectionData.height };
+                break;
+        }
+        this.flipData(translateVec, scale);
+    }
+
+    flipData(translateVec: Vec2, scale: Vec2): void {
+        (this.selectionData.getContext('2d') as CanvasRenderingContext2D).save();
+        (this.selectionData.getContext('2d') as CanvasRenderingContext2D).translate(translateVec.x, translateVec.y);
+        (this.selectionData.getContext('2d') as CanvasRenderingContext2D).scale(scale.x, scale.y);
+        (this.selectionData.getContext('2d') as CanvasRenderingContext2D).drawImage(this.selectionData, 0, 0);
+        (this.selectionData.getContext('2d') as CanvasRenderingContext2D).restore();
     }
 
     moveSelection(endpoint: Vec2): void {
@@ -187,11 +220,16 @@ export class Movable extends Tool {
         this.drawingService.previewCtx.lineWidth = 2;
         this.drawingService.previewCtx.setLineDash([0, 0]);
         for (const handle of this.resizingHandles) {
-            // this.drawingService.previewCtx.save();
-            // this.drawingService.previewCtx.translate(handle.x + HANDLE_LENGTH / 2, handle.y + HANDLE_LENGTH / 2);
-            // this.drawingService.previewCtx.rotate((this.degres * Math.PI) / 180);
-            this.drawingService.previewCtx.rect(handle.x, handle.y, HANDLE_LENGTH, HANDLE_LENGTH);
-            // this.drawingService.previewCtx.restore();
+            this.drawingService.previewCtx.save();
+            this.drawingService.previewCtx.translate(this.selectionStartPoint.x + this.width / 2, this.selectionStartPoint.y + this.height / 2);
+            this.drawingService.previewCtx.rotate((this.degres * Math.PI) / 180);
+            this.drawingService.previewCtx.rect(
+                this.selectionStartPoint.x + this.width / 2 - HANDLE_OFFSET - handle.x,
+                this.selectionStartPoint.y + this.height / 2 - HANDLE_OFFSET - handle.y,
+                HANDLE_LENGTH,
+                HANDLE_LENGTH,
+            );
+            this.drawingService.previewCtx.restore();
         }
         this.drawingService.previewCtx.stroke();
         this.drawingService.previewCtx.fill();

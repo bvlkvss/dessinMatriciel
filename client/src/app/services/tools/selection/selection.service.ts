@@ -38,7 +38,6 @@ export class SelectionService extends Movable {
 
     selectionCommand: SelectionCommand;
     selectionActivated: boolean;
-    selectionData: HTMLCanvasElement;
     selectionCanvas: HTMLCanvasElement;
     currenthandle: number;
     width: number;
@@ -79,21 +78,14 @@ export class SelectionService extends Movable {
             this.mouseDownCoord = this.getPositionFromMouse(event);
 
             if (this.selectionActivated) {
-                console.log(
-                    'endpoint',
-                    this.selectionEndPoint,
-                    'startpoint;',
-                    this.selectionStartPoint,
-                    'mousedown;',
-                    this.mouseDownCoord,
-                    'here zabi',
-                );
+                console.log(this.selectionStartPoint, 'vs', this.getRotatedPos(this.selectionStartPoint), 'mouscoord=', this.mouseDownCoord);
                 if (this.mouseDownOnHandle(this.mouseDownCoord) !== DEFAULT_HANDLE_INDEX) {
                     this.currenthandle = this.mouseDownOnHandle(this.mouseDownCoord);
                     this.invoker.ClearRedo();
                     this.invoker.setIsAllowed(false);
                     return;
                 } else if (
+                    // TODO : CHANGE START IF ROTATED
                     this.mouseDownCoord.x >= this.selectionStartPoint.x &&
                     this.mouseDownCoord.x <= this.selectionEndPoint.x &&
                     this.mouseDownCoord.y >= this.selectionStartPoint.y &&
@@ -183,7 +175,7 @@ export class SelectionService extends Movable {
 
     onMouseUp(event: MouseEvent): void {
         this.mouseUpCoord = this.getPositionFromMouse(event);
-        if (this.mouseDown && this.mouseUpCoord.x !== this.selectionStartPoint.x && this.mouseUpCoord.y !== this.selectionStartPoint.y) {
+        if (this.mouseDown) {
             if (!this.selectionActivated && this.rectangleService.isOut) {
                 this.selectionEndPoint = this.rectangleService.mouseOutCoord;
             } else if (!this.selectionActivated) {
@@ -199,7 +191,7 @@ export class SelectionService extends Movable {
                 this.saveSelection();
 
                 if (this.selectionStyle === 1) {
-                    //this.clipImageWithEllipse(); CA SERT A RIEN POURQUOI TU DESSINE SUR LE BASE ?
+                    // this.clipImageWithEllipse(); CA SERT A RIEN POURQUOI TU DESSINE SUR LE BASE ?
                 } else {
                     this.drawingService.previewCtx.drawImage(this.selectionData, this.selectionStartPoint.x, this.selectionStartPoint.y);
                 }
@@ -219,6 +211,8 @@ export class SelectionService extends Movable {
         this.rectangleService.toSquare = false;
         this.mouseDown = false;
         this.mouseDownInsideSelection = false;
+        this.flipedH = false;
+        this.flipedV = false;
         this.currenthandle = DEFAULT_HANDLE_INDEX;
     }
 
@@ -236,8 +230,6 @@ export class SelectionService extends Movable {
                     this.rectangleService.toSquare,
                     false,
                 );
-            this.updateResizingHandles();
-            this.drawResizingHandles();
             return;
         }
 
@@ -270,21 +262,17 @@ export class SelectionService extends Movable {
             this.selectionCommand.setEndPosErase(this.selectionEndPoint);
             this.eraseSelectionFromBase(this.selectionEndPoint);
         }
-
-        // this.drawingService.clearCanvasthis.drawingService.previewCtx
         this.width = this.selectionEndPoint.x - this.selectionStartPoint.x;
         this.height = this.selectionEndPoint.y - this.selectionStartPoint.y;
-
-        // let hScale:number;
         if (this.rectangleService.toSquare) {
             this.width = Math.min(this.width, this.height);
             this.height = this.width;
         }
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.drawingService.previewCtx.save();
-        this.drawingService.previewCtx.save();
         const posx = -this.width / 2;
         const posy = -this.height / 2;
+        this.drawingService.previewCtx.save();
         this.drawingService.previewCtx.translate(this.selectionStartPoint.x + this.width / 2, this.selectionStartPoint.y + this.height / 2);
         this.drawingService.previewCtx.rotate((this.degres * Math.PI) / 180);
         if (this.selectionStyle === 1) {
@@ -304,31 +292,7 @@ export class SelectionService extends Movable {
             this.drawingService.previewCtx.clip();
         }
 
-        const flipValue = this.checkFlip();
-        if (flipValue === 1) {
-            (this.selectionData.getContext('2d') as CanvasRenderingContext2D).save();
-            (this.selectionData.getContext('2d') as CanvasRenderingContext2D).translate(this.selectionData.width, 0);
-            // this.drawingService.clearCanvas(this.selectionData.getContext("2d") as CanvasRenderingContext2D);
-            (this.selectionData.getContext('2d') as CanvasRenderingContext2D).scale(-1, 1);
-            (this.selectionData.getContext('2d') as CanvasRenderingContext2D).drawImage(this.selectionData, 0, 0);
-            this.hFlip = true;
-            (this.selectionData.getContext('2d') as CanvasRenderingContext2D).restore();
-        } else if (flipValue === 2) {
-            (this.selectionData.getContext('2d') as CanvasRenderingContext2D).save();
-            (this.selectionData.getContext('2d') as CanvasRenderingContext2D).translate(0, this.selectionData.height);
-            (this.selectionData.getContext('2d') as CanvasRenderingContext2D).scale(1, -1);
-            (this.selectionData.getContext('2d') as CanvasRenderingContext2D).drawImage(this.selectionData, 0, 0);
-            console.log('fliph');
-            (this.selectionData.getContext('2d') as CanvasRenderingContext2D).restore();
-        } else if (flipValue === 3) {
-            (this.selectionData.getContext('2d') as CanvasRenderingContext2D).save();
-            (this.selectionData.getContext('2d') as CanvasRenderingContext2D).translate(this.selectionData.width, this.selectionData.height);
-            (this.selectionData.getContext('2d') as CanvasRenderingContext2D).scale(-1, -1);
-            (this.selectionData.getContext('2d') as CanvasRenderingContext2D).drawImage(this.selectionData, 0, 0);
-            console.log('flipD');
-            (this.selectionData.getContext('2d') as CanvasRenderingContext2D).restore();
-        }
-        // let selectiontemp=this.selectionData;
+        this.flipSelection();
         this.drawingService.previewCtx.drawImage(this.selectionData, posx, posy, this.width, this.height);
         this.rectangleService.drawRectangle(
             this.drawingService.previewCtx,
@@ -350,12 +314,14 @@ export class SelectionService extends Movable {
 
     mouseDownOnHandle(mousedownpos: Vec2): number {
         for (let i = 0; i < this.resizingHandles.length; i++) {
+            const rotHandle = this.getRotatedPos(this.resizingHandles[i]);
             if (
-                mousedownpos.x >= this.resizingHandles[i].x &&
-                mousedownpos.x <= this.resizingHandles[i].x + HANDLE_LENGTH &&
-                mousedownpos.y >= this.resizingHandles[i].y &&
-                mousedownpos.y <= this.resizingHandles[i].y + HANDLE_LENGTH
+                mousedownpos.x >= rotHandle.x &&
+                mousedownpos.x <= rotHandle.x + HANDLE_LENGTH &&
+                mousedownpos.y >= rotHandle.y &&
+                mousedownpos.y <= rotHandle.y + HANDLE_LENGTH
             ) {
+                console.log('handle = ', i + 1);
                 return i + 1;
             }
         }
@@ -526,6 +492,7 @@ import { EllipseService } from '@app/services/tools/ellipse/ellipse.service';
 import { RectangleService, RectangleStyle } from '@app/services/tools/rectangle/rectangle.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { ColorSliderComponent } from '@app/components/color-picker/color-slider/color-slider.component';
+import { Vec2 } from '../../../classes/vec2';
 export enum MouseButton {
     Left = 0,
     Middle = 1,
