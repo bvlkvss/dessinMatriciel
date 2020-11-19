@@ -1,13 +1,16 @@
-import { Movable } from '../../../classes/movable';
-import { Vec2 } from '../../../classes/vec2';
-import { DrawingService } from '../../drawing/drawing.service';
+import { Movable } from '@app/classes/movable';
+import { Vec2 } from '@app/classes/vec2';
+import { DrawingService } from '@app/services/drawing/drawing.service';
 export class MagicWandSelection extends Movable {
-        canvas:HTMLCanvasElement
-    constructor(drawingService: DrawingService, canvas: HTMLCanvasElement,
+    canvas: HTMLCanvasElement;
+    constructor(
+        drawingService: DrawingService,
+        canvas: HTMLCanvasElement,
         selectionStartPoint: Vec2,
         selectionEndPoint: Vec2,
         width: number,
-        height: number) {
+        height: number,
+    ) {
         super(drawingService);
         this.canvas = canvas;
         this.selectionStartPoint = selectionStartPoint;

@@ -79,9 +79,8 @@ export abstract class Tool {
         return { red: redData, green: greenData, blue: blueData, opacity: opacityData };
     }
 
-    protected areColorsMatching(color: Color, imageData: ImageData, position: number, tolerance = 0): boolean {
+    protected areColorsMatching(color: Color, imageData: ImageData, position: number, tolerance: number = 0): boolean {
         let areColorsMatching = true;
-        //const tolerance = this.toleranceToRGBAValue();
         const pixelRed = imageData.data[position];
         const pixelGreen = imageData.data[position + 1];
         const pixelBlue = imageData.data[position + 2];

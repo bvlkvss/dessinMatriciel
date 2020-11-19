@@ -96,30 +96,18 @@ export class PaintBucketService extends Tool {
             }
             pixelPosition += canvas.width * RGBA_NUMBER_OF_COMPONENTS;
             ++newPosition.y;
-            let isLeftReached = false;
-            let isRightReached = false;
+
             while (newPosition.y++ < canvas.height - 1 && this.areColorsMatching(startingColor, imageData, pixelPosition, tolerance)) {
                 this.fillPixel(imageData, pixelPosition);
-                if (newPosition.x > 0) {
-                    if (this.areColorsMatching(startingColor, imageData, pixelPosition - RGBA_NUMBER_OF_COMPONENTS, tolerance)) {
-                        if (!isLeftReached) {
-                            pixelStack.push({ x: newPosition.x - 1, y: newPosition.y });
-                            isLeftReached = true;
-                        }
-                    } else if (isLeftReached) {
-                        isLeftReached = false;
-                    }
-                }
-                if (newPosition.x < canvas.width - 1) {
-                    if (this.areColorsMatching(startingColor, imageData, pixelPosition + RGBA_NUMBER_OF_COMPONENTS, tolerance)) {
-                        if (!isRightReached) {
-                            pixelStack.push({ x: newPosition.x + 1, y: newPosition.y });
-                            isRightReached = true;
-                        }
-                    } else if (isLeftReached) {
-                        isRightReached = false;
-                    }
-                }
+                if (newPosition.x > 0 && this.areColorsMatching(startingColor, imageData, pixelPosition - RGBA_NUMBER_OF_COMPONENTS, tolerance))
+                    pixelStack.push({ x: newPosition.x - 1, y: newPosition.y });
+
+                if (
+                    newPosition.x < canvas.width - 1 &&
+                    this.areColorsMatching(startingColor, imageData, pixelPosition + RGBA_NUMBER_OF_COMPONENTS, tolerance)
+                )
+                    pixelStack.push({ x: newPosition.x + 1, y: newPosition.y });
+
                 pixelPosition += canvas.width * RGBA_NUMBER_OF_COMPONENTS;
             }
         }
