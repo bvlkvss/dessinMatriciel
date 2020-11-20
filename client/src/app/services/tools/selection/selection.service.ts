@@ -175,7 +175,7 @@ export class SelectionService extends Movable {
 
     onMouseUp(event: MouseEvent): void {
         this.mouseUpCoord = this.getPositionFromMouse(event);
-        if (this.mouseDown) {
+        if (this.mouseDown && this.mouseUpCoord.x !== this.selectionStartPoint.x && this.mouseUpCoord.y !== this.selectionStartPoint.y) {
             if (!this.selectionActivated && this.rectangleService.isOut) {
                 this.selectionEndPoint = this.rectangleService.mouseOutCoord;
             } else if (!this.selectionActivated) {
@@ -264,7 +264,12 @@ export class SelectionService extends Movable {
         }
         this.width = this.selectionEndPoint.x - this.selectionStartPoint.x;
         this.height = this.selectionEndPoint.y - this.selectionStartPoint.y;
+
         if (this.rectangleService.toSquare) {
+            if(Math.abs(this.resizingHandles[this.currenthandle-1].x-this.selectionStartPoint.x)<Math.abs(this.resizingHandles[this.currenthandle-1].x-this.selectionEndPoint.x)){
+                console.log("x==x");
+                this.selectionStartPoint.x+=this.width-Math.min(this.width, this.height);
+            }
             this.width = Math.min(this.width, this.height);
             this.height = this.width;
         }
@@ -455,6 +460,7 @@ export class SelectionService extends Movable {
                 this.selectionEndPoint = this.currentPos;
                 break;
         }
+
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.rectangleService.drawRectangle(this.drawingService.previewCtx, this.selectionStartPoint, this.selectionEndPoint, false);
         this.redrawSelection();
