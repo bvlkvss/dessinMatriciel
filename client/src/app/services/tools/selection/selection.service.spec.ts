@@ -134,7 +134,7 @@ describe('SelectionService', () => {
     expect((service as any).resizingHandles).toEqual(handlesBeforeUpdate);
   });
 
-  it('onmousemove should call eraseSelectionFromBase if its the first move', () => {
+  it('moveSelection should call eraseSelectionFromBase if its the first move', () => {
 
     (service as any).drawingService.previewCtx.drawImage = jasmine.createSpy().and.callFake(function () {
     });
@@ -144,9 +144,9 @@ describe('SelectionService', () => {
     service.offsetX = 15;
     service.offsetY = 6;
     service.firstSelectionMove = true;
-    service.mouseDownInsideSelection= true;
+    let currentPos = { x: 30, y: 20 };
 
-    service.onMouseMove(mouseEvent);
+    service.moveSelection(currentPos);
 
     expect(eraseSelectionFromBaseSpy).toHaveBeenCalled();
 
@@ -170,7 +170,7 @@ describe('SelectionService', () => {
 
   });
 
-  it('redrawSelection should clip image', () => {
+  it('moveSelection should clip image', () => {
 
     (service as any).drawingService.previewCtx.drawImage = jasmine.createSpy().and.callFake(function () {
     });
@@ -184,12 +184,10 @@ describe('SelectionService', () => {
     service.rectangleService.height = 50;
     service.offsetX = 15;
     service.offsetY = 6;
+    let currentPos = { x: 30, y: 20 };
     service.firstSelectionMove = false;
-    service.mouseDownInsideSelection=true;
-    service.selectionStartPoint = { x: 30, y: 20 };
-    service.selectionEndPoint = { x: 70, y: 35 };
 
-    service.redrawSelection();
+    service.moveSelection(currentPos);
 
     expect(clipMock).toHaveBeenCalled();
 
@@ -394,8 +392,8 @@ describe('SelectionService', () => {
     service.offsetY = 6;
     service.selectionStartPoint = { x: 5, y: 66 };
     service.selectionEndPoint = { x: 26, y: 95 };
-    service.width = 26 - 5;
-    service.height = 95 - 66;
+    service.rectangleService.width = 26 - 5;
+    service.rectangleService.height = 95 - 66;
     service.currenthandle = -1;
     service.selectionActivated = true;
 
@@ -1047,14 +1045,13 @@ describe('SelectionService', () => {
     service.offsetX = 15;
     service.offsetY = 6;
     service.selectionStartPoint = { x: 5, y: 66 };
-    service.rectangleService.width = 20 - 5;
-    service.rectangleService.height = 80 - 66;
+    service.rectangleService.width = 26 - 5;
+    service.rectangleService.height = 95 - 66;
     service.currenthandle = 8;
     service.selectionActivated = false;
     service.rectangleService.isOut = false;
     service.selectionStyle = 0;
     service.mouseDown = true;
-    service.isOut=false;
 
 
     let mouseUpEvent = {
@@ -1325,17 +1322,14 @@ describe('SelectionService', () => {
     service.currentPos = { x: 20, y: 54 };
     service.mouseDown = true;
     service.selectionActivated = true;
-    service.selectionStyle = 0;
-    let redrawSelectionMock = spyOn((service as any), "redrawSelection");
-    redrawSelectionMock.and.callFake(function () {
-    });
+    service.selectionStyle = 1;
 
     let moveSelectionWithKeysSpy = spyOn((service as any), "moveSelectionWithKeys");
 
 
     const event = new KeyboardEvent('document:keydown', {
       key: 'ArrowLeft',
-      shiftKey: false,
+      shiftKey: true,
     });
 
     service.onKeyDown(event);

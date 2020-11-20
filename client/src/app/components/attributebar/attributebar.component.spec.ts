@@ -12,6 +12,7 @@ import { Arguments, PipetteService } from '@app/services/tools/pipette/pipette.s
 import { PolygonService } from '@app/services/tools/polygon/polygon.service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle.service';
 import { SelectionService } from '@app/services/tools/selection/selection.service';
+import { TextService } from '@app/services/tools/text/text.service';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { of } from 'rxjs';
@@ -47,12 +48,13 @@ describe('AttributebarComponent', () => {
     let selectionStub: SelectionService;
     let polygonStub: PolygonService;
     let UndoRedoServiceMock: MockUndoRedoService;
+    let textStub: TextService;
 
     beforeEach(async(() => {
         mouseEvent = (new MouseEvent('click', { clientX: 5, clientY: 5 }));
         drawServiceMock = new MockDrawingService();
         UndoRedoServiceMock = new MockUndoRedoService(drawServiceMock);
-        polygonStub = new PolygonService(drawServiceMock,UndoRedoServiceMock);
+        polygonStub = new PolygonService(drawServiceMock, UndoRedoServiceMock);
         pencilStub = new PencilService(drawServiceMock, UndoRedoServiceMock);
         brushStub = new BrushService(drawServiceMock, UndoRedoServiceMock);
         rectangleStub = new RectangleService(drawServiceMock, UndoRedoServiceMock);
@@ -60,9 +62,8 @@ describe('AttributebarComponent', () => {
         ellipseStub = new EllipseService(drawServiceMock, UndoRedoServiceMock);
         eraserStub = new EraserService(drawServiceMock, UndoRedoServiceMock);
         pipetteStub = new PipetteService(drawServiceMock);
-
-        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub, selectionStub,paintBucketStub, polygonStub, pipetteStub);
-        TestBed.configureTestingModule({
+        textStub = new TextService(drawServiceMock);
+        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub, selectionStub, paintBucketStub, polygonStub, pipetteStub, textStub); TestBed.configureTestingModule({
             declarations: [AttributebarComponent],
             providers: [{ provide: ToolsManagerService, useValue: toolManagerStub }, { provide: PipetteService, useValue: pipetteStub }],
         }).compileComponents();
@@ -253,7 +254,7 @@ describe('AttributebarComponent', () => {
         expect(observerSpy).toHaveBeenCalled();
         expect(component.circleIsShown).toEqual(false);
     });
-    
+
     it('ngAfterViewInit should call drawImage and drawPixelContour  ', () => {
 
         const arg: Arguments = { image: new Image(), event: mouseEvent }

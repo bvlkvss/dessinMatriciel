@@ -33,6 +33,65 @@
     -webkit-transition: 0.2s;
     transition: opacity 0.2s;
 }
+#policeContainer {
+    padding: 5px;
+    position: relative;
+    margin-bottom: 2px;
+    -webkit-box-shadow: inset 0px 64px 59px -71px rgba(255, 255, 255, 0.3);
+    -moz-box-shadow: inset 0px 64px 59px -71px rgba(255, 255, 255, 0.3);
+    box-shadow: inset 0px 64px 59px -71px rgba(255, 255, 255, 0.3);
+    height: 160px;
+}
+::ng-deep .mat-form-field-label {
+    /*change color of label*/
+    color: black;
+}
+::ng-deep .mat-form-field-label {
+    /*change color of label*/
+    color: white;
+}
+::ng-deep.mat-form-field-type-mat-select:not(.mat-form-field-disabled) .mat-form-field-flex {
+    cursor: pointer;
+    background-color: transparent;
+}
+::ng-deep .mat-select-arrow {
+    color: white;
+}
+::ng-deep .mat-button-toggle-standalone,
+.mat-button-toggle-group {
+    bottom: 35px;
+}
+::ng-deep .mat-button-focus-overlay {
+    display: none;
+}
+::ng-deep.mat-button-toggle-checked.mat-button-toggle-appearance-standard {
+    color: rgba(0, 0, 0, 0.87);
+    background-color: rgba(255, 255, 255, 0.9);
+}
+::ng-deep .mat-button-toggle-appearance-standard {
+    color: white;
+    background: transparent;
+}
+::ng-deep .mat-select-value-text {
+    color: #bfc5cc;
+}
+::ng-deep.mat-form-field-underline {
+    /*change color of underline*/
+    background-color: white;
+}
+
+::ng-deep.mat-form-field-ripple {
+    /*change color of underline when focused*/
+    background-color: white;
+}
+
+.mat-form-field {
+    display: inline-block;
+    position: relative;
+    text-align: left;
+    bottom: 18px;
+    width: 100%;
+}
 
 .size-slider::-webkit-slider-thumb {
     -webkit-appearance: none;
@@ -289,7 +348,7 @@
     }
     input[type='checkbox'] {
         visibility: hidden;
-        &:checked+label {
+        &:checked + label {
             left: 37px;
         }
         input[type='checkbox']:not(:checked) {
@@ -382,7 +441,7 @@
     left: 6%;
 }
 
-.triangleSelectable{
+.triangleSelectable {
     &:hover {
         cursor: pointer;
     }

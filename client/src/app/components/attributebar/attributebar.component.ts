@@ -1,7 +1,10 @@
 import { AfterViewChecked, AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { MatButtonToggleChange } from '@angular/material/button-toggle';
+import { MatSelectChange } from '@angular/material/select';
 import { Tool } from '@app/classes/tool';
 import { BrushService } from '@app/services/tools/brush/brush.service';
 import { Arguments, PipetteService } from '@app/services/tools/pipette/pipette.service';
+import { TextService } from '@app/services/tools/text/text.service';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
 
 const MAX_WIDTH_VALUE = 100;
@@ -24,6 +27,9 @@ export class AttributebarComponent implements OnInit, AfterViewChecked, AfterVie
     idStyleRectangle: number = 2;
     idStyleBrush: number = 1;
     tolerance: string = '0';
+    selectedValue: string;
+    polices: string[] = ["Arial", 'Times New Roman', 'Courier New', 'Verdana'];
+
     circleIsShown: boolean = true;
     @ViewChild('pipette', { static: false }) pipetteCanvas: ElementRef<HTMLCanvasElement>;
     pipetteCtx: CanvasRenderingContext2D;
@@ -50,6 +56,7 @@ export class AttributebarComponent implements OnInit, AfterViewChecked, AfterVie
             this.circleIsShown = isShown;
         });
     }
+
     ngAfterViewInit(): void {
         this.pipetteService.getPipetteObservable().subscribe((arg: Arguments) => {
             this.pipetteCtx = this.pipetteCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
@@ -87,6 +94,20 @@ export class AttributebarComponent implements OnInit, AfterViewChecked, AfterVie
             IMAGE_ZOOM,
             IMAGE_ZOOM,
         );
+    }
+    setFontStyle(style: MatButtonToggleChange): void {
+        let tmpStyle: string = "";
+        style.value.forEach((fontStyle: string) => {
+            tmpStyle += fontStyle + " ";
+        });
+        (this.tools.currentTool as TextService).setFontStyle(tmpStyle);
+    }
+    setAllignement(allignement: any): void {
+        (this.tools.currentTool as TextService).setAllignement(allignement.value);
+
+    }
+    setFontFamily(fontFamily: MatSelectChange): void {
+        (this.tools.currentTool as TextService).setFontText(fontFamily.value);
     }
     changeStyle(styleToChangeId: string, styleId: number): void {
         const shapeStyle = document.querySelector('#style' + styleId) as HTMLElement;

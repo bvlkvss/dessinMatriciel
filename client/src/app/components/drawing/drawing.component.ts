@@ -3,6 +3,7 @@ import { Tool } from '@app/classes/tool';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ResizingService } from '@app/services/resizing/resizing.service';
 import { SelectionService } from '@app/services/tools/selection/selection.service';
+import { TextService } from '@app/services/tools/text/text.service';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
@@ -31,7 +32,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         private tools: ToolsManagerService,
         private resizer: ResizingService,
         private invoker: UndoRedoService,
-    ) {}
+    ) { }
 
     ngOnInit(): void {
         this.drawingService.resizeCanvas();
@@ -49,7 +50,9 @@ export class DrawingComponent implements AfterViewInit, OnInit {
             .set('3', this.tools.getTools().get('polygon') as Tool)
             .set('r', this.tools.getTools().get('selection') as Tool)
             .set('s', this.tools.getTools().get('selection') as Tool)
-            .set('i', this.tools.getTools().get('pipette') as Tool);
+            .set('i', this.tools.getTools().get('pipette') as Tool)
+            .set('t', this.tools.getTools().get('text') as Tool);
+
 
         this.baseCtx = this.baseCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.previewCtx = this.previewCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
@@ -175,22 +178,25 @@ export class DrawingComponent implements AfterViewInit, OnInit {
             this.tools.currentTool.onKeyDown(event);
         }
     }
-
     @HostListener('keydown', ['$event'])
     onKeyDown(event: KeyboardEvent): void {
-        if (event.ctrlKey && event.key === 'o') {
-            return;
-        } else if (this.keyBindings.has(event.key)) {
-            this.drawingService.restoreCanvasState();
-            this.tools.currentTool = this.keyBindings.get(event.key) as Tool;
-            if (event.key === 'r') {
-                (this.tools.currentTool as SelectionService).selectionStyle = 0;
-                (this.tools.currentTool as SelectionService).resetSelection();
-            } else if (event.key === 's') {
-                (this.tools.currentTool as SelectionService).selectionStyle = 1;
-                (this.tools.currentTool as SelectionService).resetSelection();
-            }
-        } else this.tools.currentTool.onKeyDown(event);
+        if (!(this.tools.currentTool instanceof TextService)) {
+            if (event.ctrlKey && event.key === 'o') {
+                return;
+            } else if (this.keyBindings.has(event.key)) {
+                this.drawingService.restoreCanvasState();
+                this.tools.currentTool = this.keyBindings.get(event.key) as Tool;
+                if (event.key === 'r') {
+                    (this.tools.currentTool as SelectionService).selectionStyle = 0;
+                    (this.tools.currentTool as SelectionService).resetSelection();
+                } else if (event.key === 's') {
+                    (this.tools.currentTool as SelectionService).selectionStyle = 1;
+                    (this.tools.currentTool as SelectionService).resetSelection();
+                }
+            } else this.tools.currentTool.onKeyDown(event);
+        }
+        else
+            this.tools.currentTool.onKeyDown(event);
     }
 
     get width(): number {
