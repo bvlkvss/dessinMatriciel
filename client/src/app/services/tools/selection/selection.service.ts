@@ -266,9 +266,14 @@ export class SelectionService extends Movable {
         this.height = this.selectionEndPoint.y - this.selectionStartPoint.y;
 
         if (this.rectangleService.toSquare) {
-            if(Math.abs(this.resizingHandles[this.currenthandle-1].x-this.selectionStartPoint.x)<Math.abs(this.resizingHandles[this.currenthandle-1].x-this.selectionEndPoint.x)){
+            //if(Math.abs(this.resizingHandles[this.currenthandle-1].x-this.selectionStartPoint.x)<Math.abs(this.resizingHandles[this.currenthandle-1].x-this.selectionEndPoint.x)){
+            if (this.currenthandle==1 || this.currenthandle==4 || this.currenthandle==6){
                 console.log("x==x");
                 this.selectionStartPoint.x+=this.width-Math.min(this.width, this.height);
+            }
+            if (this.currenthandle==1 || this.currenthandle==2|| this.currenthandle==3){
+                console.log("yyyyyyyyyy")
+                this.selectionStartPoint.y+=this.height-Math.min(this.width, this.height);
             }
             this.width = Math.min(this.width, this.height);
             this.height = this.width;
