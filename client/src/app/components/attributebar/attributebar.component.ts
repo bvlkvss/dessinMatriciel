@@ -219,7 +219,6 @@ export class AttributebarComponent implements OnInit, AfterViewChecked, AfterVie
         this.angleValue = id;
         const plume = this.tools.currentTool as PlumeService;
         plume.setAngle(Number(this.angleValue));
-        //plume.sendMessage(this.angleValue);
     }
 
     setLineWidth(input: string): void {
