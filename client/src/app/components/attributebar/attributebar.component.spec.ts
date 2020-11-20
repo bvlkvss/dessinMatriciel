@@ -8,6 +8,7 @@ import { EraserService } from '@app/services/tools/eraser/eraser-service';
 import { LineService } from '@app/services/tools/line/line.service';
 import { PaintBucketService } from '@app/services/tools/paint-bucket/paint-bucket.service';
 import { PencilService } from '@app/services/tools/pencil/pencil-service';
+import { PlumeService } from '@app/services/tools/plume/plume.service';
 import { Arguments, PipetteService } from '@app/services/tools/pipette/pipette.service';
 import { PolygonService } from '@app/services/tools/polygon/polygon.service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle.service';
@@ -37,6 +38,7 @@ describe('AttributebarComponent', () => {
     let toolManagerStub: ToolsManagerService;
     let pencilStub: PencilService;
     let pipetteStub: PipetteService;
+    let plumeStub: PlumeService
 
     let brushStub: BrushService;
     let rectangleStub: RectangleService;
@@ -63,7 +65,7 @@ describe('AttributebarComponent', () => {
         eraserStub = new EraserService(drawServiceMock, UndoRedoServiceMock);
         pipetteStub = new PipetteService(drawServiceMock);
         textStub = new TextService(drawServiceMock);
-        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub, selectionStub, paintBucketStub, polygonStub, pipetteStub, textStub); TestBed.configureTestingModule({
+        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub, selectionStub, paintBucketStub, polygonStub, pipetteStub, textStub, plumeStub); TestBed.configureTestingModule({
             declarations: [AttributebarComponent],
             providers: [{ provide: ToolsManagerService, useValue: toolManagerStub }, { provide: PipetteService, useValue: pipetteStub }],
         }).compileComponents();
@@ -286,5 +288,17 @@ describe('AttributebarComponent', () => {
 
 
 
+    });
+
+    it('should set lenghtValue to given value when setlignLenght is called', () => {
+        (toolManagerStub.currentTool as PlumeService).setLineLength = jasmine.createSpy('setLineLength');
+        component.setLineLength('5');
+        expect(component.lenghtValue).toEqual('5');
+    });
+
+    it('should set angleValue to given value when setAngle is called', () => {
+        (toolManagerStub.currentTool as PlumeService).setAngle = jasmine.createSpy('setangle');
+        component.setAngle('5');
+        expect(component.angleValue).toEqual('5');
     });
 });
