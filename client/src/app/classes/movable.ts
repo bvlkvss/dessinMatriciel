@@ -1,6 +1,10 @@
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { EllipseService } from '@app/services/tools/ellipse/ellipse.service';
+import { RectangleService, RectangleStyle } from '@app/services/tools/rectangle/rectangle.service';
+import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
+import { SelectionCommand } from './selection-command';
 
 const HANDLE_LENGTH = 6;
 const HANDLE_OFFSET = HANDLE_LENGTH / 2;
@@ -8,7 +12,21 @@ const MOVEMENT_OFFSET = 3;
 const INIT_MOVE_DELAY = 500;
 const CONTINUOUS_MOVE_DELAY = 100;
 const DEFAULT_DEGREE_STEP = 15;
-export class Movable extends Tool {
+export const DEFAULT_HANDLE_INDEX = -1;
+enum HANDLES {
+    one = 1,
+    two = 2,
+    three = 3,
+    four = 4,
+    five = 5,
+    six = 6,
+    seven = 7,
+    eight = 8,
+}
+export abstract class Movable extends Tool {
+    ellipseService: EllipseService;
+    rectangleService: RectangleService;
+    currenthandle: number;
     moveDelayActive: boolean;
     continuousMove: boolean;
     selectionStartPoint: Vec2;
@@ -25,14 +43,57 @@ export class Movable extends Tool {
     flipedH: boolean = false;
     flipCase: number = 0;
     selectionData: HTMLCanvasElement;
+    selectionCommand: SelectionCommand;
+    selectionStyle: number;
+    selectionActivated: boolean;
 
-    constructor(drawingService: DrawingService) {
+    constructor(drawingService: DrawingService, protected invoker: UndoRedoService) {
         super(drawingService);
         this.resizingHandles = [];
         this.keysDown = {};
         this.moveDelayActive = false;
         this.continuousMove = false;
         this.firstSelectionMove = true;
+        this.currenthandle = DEFAULT_HANDLE_INDEX;
+        this.rectangleService = new RectangleService(drawingService, this.invoker);
+        this.rectangleService.setStyle(RectangleStyle.Selection);
+        this.rectangleService.lineDash = true;
+        this.selectionStyle = 1;
+        this.ellipseService = new EllipseService(drawingService, this.invoker);
+        this.ellipseService.setStyle(0);
+        this.ellipseService.secondaryColor = 'black';
+        this.ellipseService.primaryColor = 'black';
+        this.selectionActivated = false;
+    }
+
+    eraseSelectionFromBase(endPos: Vec2): void{};
+    clipImageWithEllipse(): void{};
+    resetSelection(): void{};
+
+    protected drawSelectionOnBase(): void {
+        this.drawingService.baseCtx.save();
+        this.drawingService.baseCtx.translate(this.selectionStartPoint.x + this.width / 2, this.selectionStartPoint.y + this.height / 2);
+        this.drawingService.baseCtx.rotate((this.degres * Math.PI) / 180);
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        if (this.selectionStyle === 1) {
+            this.clipImageWithEllipse();
+        } else {
+            this.drawingService.baseCtx.drawImage(this.selectionData, -this.width / 2, -this.height / 2, Math.abs(this.width), Math.abs(this.height));
+        }
+        if (this.selectionCommand) {
+            this.selectionCommand.setStartPos(this.selectionStartPoint);
+            this.selectionCommand.setEndPos(this.selectionEndPoint);
+            this.selectionCommand.setSelectionStyle(this.selectionStyle);
+            this.selectionCommand.setSize(this.width, this.height);
+            this.selectionCommand.setCanvas(this.selectionData);
+            this.invoker.addToUndo(this.selectionCommand);
+            this.invoker.setIsAllowed(true);
+        }
+        this.drawingService.baseCtx.restore();
+        // this.drawingService.baseCtx.restore();
+
+        this.resetSelection();
+        this.selectionActivated = false;
     }
 
     updateSelectionNodes(): number {
@@ -236,7 +297,41 @@ export class Movable extends Tool {
         this.drawingService.previewCtx.closePath();
         this.drawingService.previewCtx.restore();
     }
+    resizeSelection(): void {
+        // const currentUnRotated = this.getUnrotatedPos(this.currentPos);
+        switch (this.currenthandle) {
+            case HANDLES.one:
+                this.selectionStartPoint = this.currentPos;
+                break;
+            case HANDLES.two:
+                this.selectionStartPoint.y = this.currentPos.y;
+                break;
+            case HANDLES.three:
+                this.selectionStartPoint.y = this.currentPos.y;
+                this.selectionEndPoint.x = this.currentPos.x;
+                break;
+            case HANDLES.four:
+                this.selectionStartPoint.x = this.currentPos.x;
+                break;
+            case HANDLES.five:
+                this.selectionEndPoint.x = this.currentPos.x;
+                break;
+            case HANDLES.six:
+                this.selectionStartPoint.x = this.currentPos.x;
+                this.selectionEndPoint.y = this.currentPos.y;
+                break;
+            case HANDLES.seven:
+                this.selectionEndPoint.y = this.currentPos.y;
+                break;
+            case HANDLES.eight:
+                this.selectionEndPoint = this.currentPos;
+                break;
+        }
 
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        this.rectangleService.drawRectangle(this.drawingService.previewCtx, this.selectionStartPoint, this.selectionEndPoint, false);
+        this.redrawSelection();
+    }
     updateDegree(event: any, alt: boolean): void {
         if (event.wheelDelta > 0) {
             if (alt) {
@@ -252,275 +347,87 @@ export class Movable extends Tool {
             }
         }
     }
-}
-/*import { Tool } from '@app/classes/tool';
-import { Vec2 } from '@app/classes/vec2';
-import { DrawingService } from '@app/services/drawing/drawing.service';
-
-const HANDLE_LENGTH = 6;
-const HANDLE_OFFSET = HANDLE_LENGTH / 2;
-const MOVEMENT_OFFSET = 3;
-const INIT_MOVE_DELAY = 500;
-const CONTINUOUS_MOVE_DELAY = 100;
-const DEFAULT_DEGREE_STEP = 15;
-export class Movable extends Tool {
-    moveDelayActive: boolean;
-    continuousMove: boolean;
-    selectionStartPoint: Vec2;
-    selectionEndPoint: Vec2;
-    firstSelectionMove: boolean;
-    offsetX: number;
-    offsetY: number;
-    keysDown: { [key: string]: boolean };
-    width: number;
-    height: number;
-    resizingHandles: Vec2[];
-    handlesCentreReference: Vec2[] = [];
-    degres: number = 0;
-    signe: Vec2 = { x: 1, y: 1 };
-
-    constructor(drawingService: DrawingService) {
-        super(drawingService);
-        this.resizingHandles = [];
-        this.keysDown = {};
-        this.moveDelayActive = false;
-        this.continuousMove = false;
-        this.firstSelectionMove = true;
-        this.SetHandlesCentreReference();
-    }
-
-    updateSelectionNodes(): void {
-        this.signe.x = Math.sign(-this.selectionEndPoint.x + this.selectionStartPoint.x);
-        this.signe.y = Math.sign(-this.selectionEndPoint.y + this.selectionStartPoint.y);
-        if (this.selectionEndPoint.y < this.selectionStartPoint.y) {
-            this.selectionEndPoint.y = this.selectionStartPoint.y;
-            this.selectionStartPoint.y -= this.height;
+    redrawSelection(): void {
+        if (this.firstSelectionMove) {
+            this.selectionCommand = new SelectionCommand(this.selectionStartPoint, this, this.drawingService);
+            this.selectionCommand.setEndPosErase(this.selectionEndPoint);
+            this.eraseSelectionFromBase(this.selectionEndPoint);
         }
-        if (this.selectionEndPoint.x < this.selectionStartPoint.x) {
-            this.selectionEndPoint.x = this.selectionStartPoint.x;
-            this.selectionStartPoint.x -= this.width;
+        this.width = this.selectionEndPoint.x - this.selectionStartPoint.x;
+        this.height = this.selectionEndPoint.y - this.selectionStartPoint.y;
+    
+        if (this.rectangleService.toSquare) {
+            //if(Math.abs(this.resizingHandles[this.currenthandle-1].x-this.selectionStartPoint.x)<Math.abs(this.resizingHandles[this.currenthandle-1].x-this.selectionEndPoint.x)){
+            if (this.currenthandle==1 || this.currenthandle==4 || this.currenthandle==6){
+                console.log("x==x");
+                this.selectionStartPoint.x+=this.width-Math.min(this.width, this.height);
+            }
+            if (this.currenthandle==1 || this.currenthandle==2|| this.currenthandle==3){
+                console.log("yyyyyyyyyy")
+                this.selectionStartPoint.y+=this.height-Math.min(this.width, this.height);
+            }
+            this.width = Math.min(this.width, this.height);
+            this.height = this.width;
         }
-    }
-
-    moveSelection(endpoint: Vec2): void {
-        //this.drawingService.clearCanvas(this.drawingService.previewCtx);
-
-        this.selectionStartPoint = { x: endpoint.x - this.offsetX, y: endpoint.y - this.offsetY };
-        this.selectionEndPoint = {
-            x: this.selectionStartPoint.x + this.width,
-            y: this.selectionStartPoint.y + this.height,
-        };
-    }
-
-    async delay(ms: number): Promise<void> {
-        return new Promise((resolve) => setTimeout(resolve, ms));
-    }
-
-    async moveSelectionWithKeys(): Promise<void> {
-        this.offsetX = 0;
-        this.offsetY = 0;
-
-        if (!this.moveDelayActive) {
-            this.moveDelayActive = true;
-            if (this.keysDown.ArrowRight) {
-                this.selectionStartPoint.x += MOVEMENT_OFFSET;
-            }
-            if (this.keysDown.ArrowLeft) {
-                this.selectionStartPoint.x -= MOVEMENT_OFFSET;
-            }
-            if (this.keysDown.ArrowUp) {
-                this.selectionStartPoint.y -= MOVEMENT_OFFSET;
-            }
-
-            if (this.keysDown.ArrowDown) {
-                this.selectionStartPoint.y += MOVEMENT_OFFSET;
-            }
-
-            this.moveSelection(this.selectionStartPoint);
-            if (!this.continuousMove) {
-                await this.delay(INIT_MOVE_DELAY);
-                this.continuousMove = true;
-            } else await this.delay(CONTINUOUS_MOVE_DELAY);
-            this.moveDelayActive = false;
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        this.drawingService.previewCtx.save();
+        const posx = -this.width / 2;
+        const posy = -this.height / 2;
+        this.drawingService.previewCtx.save();
+        this.drawingService.previewCtx.translate(this.selectionStartPoint.x + this.width / 2, this.selectionStartPoint.y + this.height / 2);
+        this.drawingService.previewCtx.rotate((this.degres * Math.PI) / 180);
+        if (this.selectionStyle === 1) {
+            this.ellipseService.drawEllipse(
+                this.drawingService.previewCtx,
+                {
+                    x: -this.width / 2,
+                    y: -this.height / 2,
+                } as Vec2,
+                {
+                    x: this.width / 2,
+                    y: this.height / 2,
+                } as Vec2,
+                false,
+                false,
+            );
+            this.drawingService.previewCtx.clip();
         }
+    
+        this.flipSelection();
+        this.drawingService.previewCtx.drawImage(this.selectionData, posx, posy, this.width, this.height);
+        this.rectangleService.drawRectangle(
+            this.drawingService.previewCtx,
+            {
+                x: -posx,
+                y: -posy,
+            } as Vec2,
+            {
+                x: posx,
+                y: posy,
+            } as Vec2,
+            false,
+        );
+        this.drawingService.previewCtx.restore();
+        this.drawingService.previewCtx.restore();
+        this.updateResizingHandles();
+        this.drawResizingHandles();
     }
-
-    getRotatedHandlePos(element: Vec2): Vec2 {
-        const tempX = element.x - (this.selectionStartPoint.x + Math.abs(this.width / 2));
-        const tempY = element.y - (this.selectionStartPoint.y + Math.abs(this.height / 2));
-        const rotatedX = tempX * Math.cos((this.degres * Math.PI) / 180) - tempY * Math.sin((this.degres * Math.PI) / 180);
-        const rotatedY = tempY * Math.cos((this.degres * Math.PI) / 180) + tempX * Math.sin((this.degres * Math.PI) / 180);
-        return { x: rotatedX + this.selectionStartPoint.x + this.width / 2, y: rotatedY + this.selectionStartPoint.y + this.height / 2 } as Vec2;
-    }
-
-    getUnrotatedPos(element: Vec2): Vec2 {
-        const tempX = element.x - (this.selectionStartPoint.x + Math.abs(this.width / 2));
-        const tempY = element.y - (this.selectionStartPoint.y + Math.abs(this.height / 2));
-        const rotatedX = tempX * Math.cos((this.degres * Math.PI) / 180) + tempY * Math.sin((this.degres * Math.PI) / 180);
-        const rotatedY = tempY * Math.cos((this.degres * Math.PI) / 180) - tempX * Math.sin((this.degres * Math.PI) / 180);
-        return { x: rotatedX + this.selectionStartPoint.x + this.width / 2, y: rotatedY + this.selectionStartPoint.y + this.height / 2 } as Vec2;
-    }
-
-    updateResizingHandles(): void {
-        this.resizingHandles = [];
-
-        /*
-  1 2 3
-  4   5
-  6 7 8
-*/
-// 1
-/*this.resizingHandles.push(
-    this.getRotatedHandlePos({
-        x: this.selectionStartPoint.x - HANDLE_OFFSET,
-        y: this.selectionStartPoint.y - HANDLE_OFFSET,
-    }),
-);
-// 2
-this.resizingHandles.push(
-    this.getRotatedHandlePos({
-        x: this.selectionStartPoint.x + this.width / 2 - HANDLE_OFFSET,
-        y: this.selectionStartPoint.y - HANDLE_OFFSET,
-    }),
-);
-// 3
-this.resizingHandles.push(
-    this.getRotatedHandlePos({
-        x: this.selectionStartPoint.x + this.width - HANDLE_OFFSET,
-        y: this.selectionStartPoint.y - HANDLE_OFFSET,
-    }),
-);
-// 4
-this.resizingHandles.push(
-    this.getRotatedHandlePos({
-        x: this.selectionStartPoint.x - HANDLE_OFFSET,
-        y: this.selectionStartPoint.y + this.height / 2 - HANDLE_OFFSET,
-    }),
-);
-// 5
-this.resizingHandles.push(
-    this.getRotatedHandlePos({
-        x: this.selectionStartPoint.x + this.width - HANDLE_OFFSET,
-        y: this.selectionStartPoint.y - HANDLE_OFFSET + this.height / 2,
-    }),
-);
-// 6
-this.resizingHandles.push(
-    this.getRotatedHandlePos({
-        x: this.selectionStartPoint.x - HANDLE_OFFSET,
-        y: this.selectionStartPoint.y - HANDLE_OFFSET + this.height,
-    }),
-);
-// 7
-this.resizingHandles.push(
-    this.getRotatedHandlePos({
-        x: this.selectionStartPoint.x + this.width / 2 - HANDLE_OFFSET,
-        y: this.selectionStartPoint.y + this.height - HANDLE_OFFSET,
-    }),
-);
-// 8
-this.resizingHandles.push(
-    this.getRotatedHandlePos({
-        x: this.selectionStartPoint.x + this.width - HANDLE_OFFSET,
-        y: this.selectionStartPoint.y + this.height - HANDLE_OFFSET,
-    }),
-);
-}
-
-updateDegree(event: any, alt: boolean): void {
-if (event.wheelDelta > 0) {
-    if (alt) {
-        ++this.degres;
-    } else {
-        this.degres += DEFAULT_DEGREE_STEP;
-    }
-} else {
-    if (alt) {
-        --this.degres;
-    } else {
-        this.degres -= DEFAULT_DEGREE_STEP;
+    
+    mouseDownOnHandle(mousedownpos: Vec2): number {
+        for (let i = 0; i < this.resizingHandles.length; i++) {
+            const rotHandle = this.getRotatedPos(this.resizingHandles[i]);
+            if (
+                mousedownpos.x >= rotHandle.x &&
+                mousedownpos.x <= rotHandle.x + HANDLE_LENGTH &&
+                mousedownpos.y >= rotHandle.y &&
+                mousedownpos.y <= rotHandle.y + HANDLE_LENGTH
+            ) {
+                console.log('handle = ', i + 1);
+                return i + 1;
+            }
+        }
+        // mouse not on any handle
+        return DEFAULT_HANDLE_INDEX;
     }
 }
-}
-SetHandlesCentreReference(): void {
-this.handlesCentreReference = [];
 
-/*
-1 2 3
-4   5
-6 7 8
-*/
-// 1
-/*this.handlesCentreReference.push({
-    x: -this.width / 2 - HANDLE_OFFSET,
-    y: -this.height / 2 - HANDLE_OFFSET,
-});
-// 2
-this.handlesCentreReference.push({
-    x: -HANDLE_OFFSET,
-    y: -this.height / 2 - HANDLE_OFFSET,
-});
-// 3
-this.handlesCentreReference.push({
-    x: this.width / 2 - HANDLE_OFFSET,
-    y: -this.height / 2 - HANDLE_OFFSET,
-});
-// 4
-this.handlesCentreReference.push({
-    x: -this.width / 2 - HANDLE_OFFSET,
-    y: -HANDLE_OFFSET,
-});
-// 5
-this.handlesCentreReference.push({
-    x: this.width / 2 - HANDLE_OFFSET,
-    y: -HANDLE_OFFSET,
-});
-// 6
-this.handlesCentreReference.push({
-    x: -this.width / 2 - HANDLE_OFFSET,
-    y: this.height / 2 - HANDLE_OFFSET,
-});
-// 7
-this.handlesCentreReference.push({
-    x: -HANDLE_OFFSET,
-    y: this.height / 2 - HANDLE_OFFSET,
-});
-// 8
-this.handlesCentreReference.push({
-    x: this.width / 2 - HANDLE_OFFSET,
-    y: this.height / 2 - HANDLE_OFFSET,
-});
-}
-
-drawResizingHandles(): void {
-this.drawingService.previewCtx.save();
-this.drawingService.previewCtx.beginPath();
-this.drawingService.previewCtx.fillStyle = '#ffffff';
-this.drawingService.previewCtx.strokeStyle = 'blue';
-this.drawingService.previewCtx.lineWidth = 2;
-this.drawingService.previewCtx.setLineDash([0, 0]);
-for (const handle of this.resizingHandles) {
-    this.drawingService.previewCtx.rect(handle.x, handle.y, HANDLE_LENGTH, HANDLE_LENGTH);
-}
-this.drawingService.previewCtx.stroke();
-this.drawingService.previewCtx.fill();
-this.drawingService.previewCtx.closePath();
-this.drawingService.previewCtx.restore();
-}
-
-drawRotatedHandles(): void {
-this.drawingService.previewCtx.save();
-this.drawingService.previewCtx.beginPath();
-this.drawingService.previewCtx.fillStyle = '#ffffff';
-this.drawingService.previewCtx.strokeStyle = 'blue';
-this.drawingService.previewCtx.lineWidth = 2;
-this.drawingService.previewCtx.setLineDash([0, 0]);
-for (const handle of this.handlesCentreReference) {
-    this.drawingService.previewCtx.rect(handle.x, handle.y, HANDLE_LENGTH, HANDLE_LENGTH);
-}
-this.drawingService.previewCtx.stroke();
-this.drawingService.previewCtx.fill();
-this.drawingService.previewCtx.closePath();
-this.drawingService.previewCtx.restore();
-}
-}*/

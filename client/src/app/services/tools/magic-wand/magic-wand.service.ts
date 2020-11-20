@@ -3,6 +3,7 @@ import { Color } from '@app/classes/color';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { MagicWandSelection } from './magic-wand-selection';
 
 export enum MouseButton {
@@ -29,7 +30,8 @@ export class MagicWandService extends Tool {
     nonContiguousSelectionDataArray: MagicWandSelection[];
     contiguousMagicSelectionObj: MagicWandSelection;
     isSelectionActivated: boolean;
-    constructor(drawingService: DrawingService) {
+    invoker: UndoRedoService;
+    constructor(drawingService: DrawingService, invoker: UndoRedoService) {
         super(drawingService);
         this.magicWandCanvas = document.createElement('canvas');
         this.magicWandCtx = this.magicWandCanvas.getContext('2d') as CanvasRenderingContext2D;
@@ -37,6 +39,7 @@ export class MagicWandService extends Tool {
         this.nonContiguousSelectionDataArray = [];
         this.toolAttributes = [];
         this.isSelectionActivated = false;
+        this.invoker = invoker;
     }
 
     onMouseDown(event: MouseEvent): void {
@@ -81,6 +84,7 @@ export class MagicWandService extends Tool {
     private createSelectionData(): MagicWandSelection {
         return new MagicWandSelection(
             this.drawingService,
+            this.invoker,
             this.magicWandCanvas,
             this.selectionStartPoint,
             this.selectionEndPoint,
