@@ -66,9 +66,9 @@ export abstract class Movable extends Tool {
         this.selectionActivated = false;
     }
 
-    eraseSelectionFromBase(endPos: Vec2): void{};
-    clipImageWithEllipse(): void{};
-    resetSelection(): void{};
+    eraseSelectionFromBase(endPos: Vec2): void { }
+    clipImageWithEllipse(): void { }
+    resetSelection(): void { }
 
     protected drawSelectionOnBase(): void {
         this.drawingService.baseCtx.save();
@@ -133,10 +133,10 @@ export abstract class Movable extends Tool {
     }
 
     getUnrotatedPos(element: Vec2): Vec2 {
-        const tempX = element.x - (this.selectionStartPoint.x + Math.abs(this.width / 2));
-        const tempY = element.y - (this.selectionStartPoint.y + Math.abs(this.height / 2));
-        const rotatedX = tempX * Math.cos((0 * Math.PI) / 180) + tempY * Math.sin((0 * Math.PI) / 180);
-        const rotatedY = tempY * Math.cos((0 * Math.PI) / 180) - tempX * Math.sin((0 * Math.PI) / 180);
+        const tempX = element.x - (this.selectionStartPoint.x + this.width / 2);
+        const tempY = element.y - (this.selectionStartPoint.y + this.height / 2);
+        const rotatedX = tempX * Math.cos((this.degres * Math.PI) / 180) + tempY * Math.sin((this.degres * Math.PI) / 180);
+        const rotatedY = tempY * Math.cos((this.degres * Math.PI) / 180) - tempX * Math.sin((this.degres * Math.PI) / 180);
         return { x: rotatedX + this.selectionStartPoint.x + this.width / 2, y: rotatedY + this.selectionStartPoint.y + this.height / 2 } as Vec2;
     }
 
@@ -150,7 +150,6 @@ export abstract class Movable extends Tool {
             y: rotatedY + this.selectionStartPoint.y + this.height / 2,
         } as Vec2;
     }
-
 
     flipSelection(): void {
         let scale: Vec2 = { x: 0, y: 0 };
@@ -285,8 +284,8 @@ export abstract class Movable extends Tool {
             this.drawingService.previewCtx.translate(this.selectionStartPoint.x + this.width / 2, this.selectionStartPoint.y + this.height / 2);
             this.drawingService.previewCtx.rotate((this.degres * Math.PI) / 180);
             this.drawingService.previewCtx.rect(
-                this.selectionStartPoint.x + this.width / 2 - HANDLE_OFFSET - handle.x,
-                this.selectionStartPoint.y + this.height / 2 - HANDLE_OFFSET - handle.y,
+                this.selectionStartPoint.x + this.width / 2 - 2 * HANDLE_OFFSET - handle.x,
+                this.selectionStartPoint.y + this.height / 2 - 2 * HANDLE_OFFSET - handle.y,
                 HANDLE_LENGTH,
                 HANDLE_LENGTH,
             );
@@ -298,33 +297,33 @@ export abstract class Movable extends Tool {
         this.drawingService.previewCtx.restore();
     }
     resizeSelection(): void {
-        // const currentUnRotated = this.getUnrotatedPos(this.currentPos);
+        const currentUnRotated = this.getUnrotatedPos(this.currentPos);
         switch (this.currenthandle) {
             case HANDLES.one:
-                this.selectionStartPoint = this.currentPos;
+                this.selectionStartPoint = currentUnRotated;
                 break;
             case HANDLES.two:
-                this.selectionStartPoint.y = this.currentPos.y;
+                this.selectionStartPoint.y = currentUnRotated.y;
                 break;
             case HANDLES.three:
-                this.selectionStartPoint.y = this.currentPos.y;
-                this.selectionEndPoint.x = this.currentPos.x;
+                this.selectionStartPoint.y = currentUnRotated.y;
+                this.selectionEndPoint.x = currentUnRotated.x;
                 break;
             case HANDLES.four:
-                this.selectionStartPoint.x = this.currentPos.x;
+                this.selectionStartPoint.x = currentUnRotated.x;
                 break;
             case HANDLES.five:
-                this.selectionEndPoint.x = this.currentPos.x;
+                this.selectionEndPoint.x = currentUnRotated.x;
                 break;
             case HANDLES.six:
-                this.selectionStartPoint.x = this.currentPos.x;
-                this.selectionEndPoint.y = this.currentPos.y;
+                this.selectionStartPoint.x = currentUnRotated.x;
+                this.selectionEndPoint.y = currentUnRotated.y;
                 break;
             case HANDLES.seven:
-                this.selectionEndPoint.y = this.currentPos.y;
+                this.selectionEndPoint.y = currentUnRotated.y;
                 break;
             case HANDLES.eight:
-                this.selectionEndPoint = this.currentPos;
+                this.selectionEndPoint = currentUnRotated;
                 break;
         }
 
@@ -355,16 +354,16 @@ export abstract class Movable extends Tool {
         }
         this.width = this.selectionEndPoint.x - this.selectionStartPoint.x;
         this.height = this.selectionEndPoint.y - this.selectionStartPoint.y;
-    
+
         if (this.rectangleService.toSquare) {
-            //if(Math.abs(this.resizingHandles[this.currenthandle-1].x-this.selectionStartPoint.x)<Math.abs(this.resizingHandles[this.currenthandle-1].x-this.selectionEndPoint.x)){
-            if (this.currenthandle==1 || this.currenthandle==4 || this.currenthandle==6){
-                console.log("x==x");
-                this.selectionStartPoint.x+=this.width-Math.min(this.width, this.height);
+            // if(Math.abs(this.resizingHandles[this.currenthandle-1].x-this.selectionStartPoint.x)<Math.abs(this.resizingHandles[this.currenthandle-1].x-this.selectionEndPoint.x)){
+            if (this.currenthandle === 1 || this.currenthandle === 4 || this.currenthandle === 6) {
+                console.log('x==x');
+                this.selectionStartPoint.x += this.width - Math.min(this.width, this.height);
             }
-            if (this.currenthandle==1 || this.currenthandle==2|| this.currenthandle==3){
-                console.log("yyyyyyyyyy")
-                this.selectionStartPoint.y+=this.height-Math.min(this.width, this.height);
+            if (this.currenthandle === 1 || this.currenthandle === 2 || this.currenthandle === 3) {
+                console.log('yyyyyyyyyy');
+                this.selectionStartPoint.y += this.height - Math.min(this.width, this.height);
             }
             this.width = Math.min(this.width, this.height);
             this.height = this.width;
@@ -392,7 +391,7 @@ export abstract class Movable extends Tool {
             );
             this.drawingService.previewCtx.clip();
         }
-    
+
         this.flipSelection();
         this.drawingService.previewCtx.drawImage(this.selectionData, posx, posy, this.width, this.height);
         this.rectangleService.drawRectangle(
@@ -412,17 +411,22 @@ export abstract class Movable extends Tool {
         this.updateResizingHandles();
         this.drawResizingHandles();
     }
-    
+
     mouseDownOnHandle(mousedownpos: Vec2): number {
+        // this.drawingService.clearCanvas(this.drawingService.baseCtx);
         for (let i = 0; i < this.resizingHandles.length; i++) {
-            const rotHandle = this.getRotatedPos(this.resizingHandles[i]);
+            console.log(this.degres);
+            // const rotHandle = this.getRotatedPos(this.resizingHandles[i]);
             if (
-                mousedownpos.x >= rotHandle.x &&
-                mousedownpos.x <= rotHandle.x + HANDLE_LENGTH &&
-                mousedownpos.y >= rotHandle.y &&
-                mousedownpos.y <= rotHandle.y + HANDLE_LENGTH
+                this.getUnrotatedPos(mousedownpos).x >= this.resizingHandles[i].x &&
+                this.getUnrotatedPos(mousedownpos).x <= this.resizingHandles[i].x + HANDLE_LENGTH &&
+                this.getUnrotatedPos(mousedownpos).y >= this.resizingHandles[i].y &&
+                this.getUnrotatedPos(mousedownpos).y <= this.resizingHandles[i].y + HANDLE_LENGTH
             ) {
-                console.log('handle = ', i + 1);
+                //const indexList = this.listHandleS.indexOf(i + 1);
+                //console.log(indexList, 'on list index');
+                //const index = this.listHandleS[(indexList + 2 * (this.degres % 360) / 90) % this.listHandleS.length];
+                //console.log('handle = ', index);
                 return i + 1;
             }
         }
@@ -430,4 +434,3 @@ export abstract class Movable extends Tool {
         return DEFAULT_HANDLE_INDEX;
     }
 }
-

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Movable, DEFAULT_HANDLE_INDEX } from '@app/classes/movable';
+import { DEFAULT_HANDLE_INDEX, Movable } from '@app/classes/movable';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
@@ -56,10 +56,10 @@ export class SelectionService extends Movable {
                     return;
                 } else if (
                     // TODO : CHANGE START IF ROTATED
-                    this.mouseDownCoord.x >= this.selectionStartPoint.x &&
-                    this.mouseDownCoord.x <= this.selectionEndPoint.x &&
-                    this.mouseDownCoord.y >= this.selectionStartPoint.y &&
-                    this.mouseDownCoord.y <= this.selectionEndPoint.y
+                    this.getUnrotatedPos(this.mouseDownCoord).x >= this.selectionStartPoint.x &&
+                    this.getUnrotatedPos(this.mouseDownCoord).x <= this.selectionEndPoint.x &&
+                    this.getUnrotatedPos(this.mouseDownCoord).y >= this.selectionStartPoint.y &&
+                    this.getUnrotatedPos(this.mouseDownCoord).y <= this.selectionEndPoint.y
                 ) {
                     this.invoker.ClearRedo();
                     this.invoker.setIsAllowed(false);
