@@ -17,7 +17,6 @@ export enum MouseButton {
 })
 export class SelectionService extends Movable {
     mouseUpCoord: Vec2;
-    mouseDownInsideSelection: boolean;
     selectionActivated: boolean;
     selectionCanvas: HTMLCanvasElement;
     width: number;
@@ -185,7 +184,6 @@ export class SelectionService extends Movable {
             if (this.selectionStyle === 1) {
                 this.ellipseService.secondaryColor = 'black';
                 this.ellipseService.setStyle(0);
-                // this.ellipseService.drawEllipse(this.drawingService.previewCtx, this.selectionStartPoint, this.selectionEndPoint, false, false);
             }
         } else if (this.mouseDown) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);

@@ -5,6 +5,7 @@ import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { MagicWandSelection } from './magic-wand-selection';
+import { DEFAULT_HANDLE_INDEX } from '@app/classes/movable';
 
 export enum MouseButton {
     Left = 0,
@@ -28,9 +29,10 @@ export class MagicWandService extends Tool {
     selectionMinHeight: number;
     startingColor: Color;
     nonContiguousSelectionDataArray: MagicWandSelection[];
-    contiguousMagicSelectionObj: MagicWandSelection;
-    isSelectionActivated: boolean;
+    magicSelectionObj: MagicWandSelection;
+    isMagicSelectionActivated: boolean;
     invoker: UndoRedoService;
+    deactivateAfterClick: boolean;
     constructor(drawingService: DrawingService, invoker: UndoRedoService) {
         super(drawingService);
         this.magicWandCanvas = document.createElement('canvas');
@@ -38,47 +40,126 @@ export class MagicWandService extends Tool {
         this.selectionPixels = [];
         this.nonContiguousSelectionDataArray = [];
         this.toolAttributes = [];
-        this.isSelectionActivated = false;
+        this.isMagicSelectionActivated = false;
         this.invoker = invoker;
     }
 
     onMouseDown(event: MouseEvent): void {
-        if (this.isSelectionActivated) {
+        if (this.isMagicSelectionActivated) {
             this.mouseDown = event.button === MouseButton.Left;
+            if (this.mouseDown) {
+                this.mouseDownCoord = this.getPositionFromMouse(event);
+                const obj = this.magicSelectionObj;
+                if (obj.mouseDownOnHandle(this.mouseDownCoord) !== DEFAULT_HANDLE_INDEX) {
+                    obj.currenthandle = obj.mouseDownOnHandle(this.mouseDownCoord);
+                    this.invoker.ClearRedo();
+                    this.invoker.setIsAllowed(false);
+                    return;
+                } else if (
+                    obj.getUnrotatedPos(this.mouseDownCoord).x >= obj.selectionStartPoint.x &&
+                    obj.getUnrotatedPos(this.mouseDownCoord).x <= obj.selectionEndPoint.x &&
+                    obj.getUnrotatedPos(this.mouseDownCoord).y >= obj.selectionStartPoint.y &&
+                    obj.getUnrotatedPos(this.mouseDownCoord).y <= obj.selectionEndPoint.y
+                ) {
+                    this.invoker.ClearRedo();
+                    this.invoker.setIsAllowed(false);
+                    obj.mouseDownInsideSelection = true;
+                    //this.mouseDown = false;
+                    obj.offsetX = this.mouseDownCoord.x - this.selectionStartPoint.x;
+                    obj.offsetY = this.mouseDownCoord.y - this.selectionStartPoint.y;
+                    return;
+                } else {
+                    obj.drawSelectionOnBase();
+                    obj.degres = 0;
+                    this.clearSelection();
+                    this.deactivateAfterClick = true;
+                }
+            }
+        }
+    }
+
+    onMouseUp(event: MouseEvent): void {
+        if (this.mouseDown) {
+            const obj = this.magicSelectionObj;
+            obj.updateSelectionNodes();
+
+            obj.rectangleService.mouseDown = false;
+            obj.rectangleService.toSquare = false;
+            obj.mouseDownInsideSelection = false;
+            obj.flipedH = false;
+            obj.flipedV = false;
+            obj.currenthandle = DEFAULT_HANDLE_INDEX;
+            this.mouseDown = false;
+        }
+    }
+
+    onMouseMove(event: MouseEvent): void {
+        if (this.isMagicSelectionActivated && this.mouseDown) {
+            const obj = this.magicSelectionObj;
+            obj.currentPos = this.getPositionFromMouse(event);
+            if (this.isMagicSelectionActivated && this.mouseDown) {
+                obj.resizeSelection();
+            }
+
+            if (obj.mouseDownInsideSelection) {
+                obj.moveSelection(obj.currentPos);
+                obj.redrawSelection();
+            }
         }
     }
 
     onClick(event: MouseEvent): void {
-        this.magicWandCanvas.width = this.drawingService.canvas.width;
-        this.magicWandCanvas.height = this.drawingService.canvas.height;
-        this.currentPos = this.getPositionFromMouse(event);
-        const modifiedPixels = this.getContiguousPixels(this.currentPos);
-        this.saveSelection(modifiedPixels);
-        this.drawContour(this.magicWandCanvas);
+        if (!this.isMagicSelectionActivated) {
+            this.magicWandCanvas.width = this.drawingService.canvas.width;
+            this.magicWandCanvas.height = this.drawingService.canvas.height;
+            this.currentPos = this.getPositionFromMouse(event);
+            const modifiedPixels = this.getContiguousPixels(this.currentPos);
+            this.saveSelection(modifiedPixels);
+            this.drawContour(this.magicWandCanvas);
 
-        this.contiguousMagicSelectionObj = this.createSelectionData();
-        this.contiguousMagicSelectionObj.updateResizingHandles();
-        this.contiguousMagicSelectionObj.drawResizingHandles();
-        this.isSelectionActivated = true;
+            this.magicSelectionObj = this.createSelectionData();
+            this.createEnglobingBox();
+            this.magicSelectionObj.updateResizingHandles();
+            this.magicSelectionObj.drawResizingHandles();
+            console.log("called");
+            this.isMagicSelectionActivated = true;
+        }
+        if (this.deactivateAfterClick ){
+            this.isMagicSelectionActivated = false;
+            this.deactivateAfterClick = false;
+        }
     }
 
     onRightClick(event: MouseEvent): void {
+        if (!this.isMagicSelectionActivated) {
         this.magicWandCanvas.width = this.drawingService.canvas.width;
         this.magicWandCanvas.height = this.drawingService.canvas.height;
         this.currentPos = this.getPositionFromMouse(event);
         const modifiedPixels = this.getNonContiguousPixels(this.currentPos);
         this.saveSelection(modifiedPixels);
         this.drawContour(this.magicWandCanvas);
+        this.magicSelectionObj = this.createSelectionData();
+        this.createEnglobingBox();
+        this.magicSelectionObj.updateResizingHandles();
+        this.magicSelectionObj.drawResizingHandles();
+        this.isMagicSelectionActivated = true;
+        }
+    }
+    
 
-        this.contiguousMagicSelectionObj = this.createSelectionData();
-        this.contiguousMagicSelectionObj.updateResizingHandles();
-        this.contiguousMagicSelectionObj.drawResizingHandles();
-        this.isSelectionActivated = true;
+    createEnglobingBox() {
+        this.magicSelectionObj.rectangleService.drawRectangle(
+            this.drawingService.previewCtx,
+            this.selectionStartPoint,
+            this.selectionEndPoint,
+            this.magicSelectionObj.rectangleService.toSquare,
+        );
     }
 
     clearSelection(): void {
         this.resetMagicWandCanvas();
         this.resetSelectionPixels();
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
     }
 
     private createSelectionData(): MagicWandSelection {
@@ -90,6 +171,7 @@ export class MagicWandService extends Tool {
             this.selectionEndPoint,
             this.selectionMinWidth,
             this.selectionMinHeight,
+            this.selectionPixels
         );
     }
 
@@ -211,6 +293,7 @@ export class MagicWandService extends Tool {
         const modifiedPixels = [];
 
         // so we do not have inifinite loop when primaryColor is the same as startingColor;
+        const tempColor = this.primaryColor;
         this.primaryColor = '#000000';
         const startingPixelPosition: number = (position.y * canvas.width + position.x) * RGBA_NUMBER_OF_COMPONENTS;
         const isColorTheSame: boolean = this.areColorsMatching(this.hexToColor(this.primaryColor), imageData, startingPixelPosition);
@@ -242,6 +325,7 @@ export class MagicWandService extends Tool {
                 pixelPosition += canvas.width * RGBA_NUMBER_OF_COMPONENTS;
             }
         }
+        this.primaryColor = tempColor;
         return modifiedPixels;
     }
 }

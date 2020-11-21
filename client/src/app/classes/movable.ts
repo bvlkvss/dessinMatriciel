@@ -46,6 +46,7 @@ export abstract class Movable extends Tool {
     selectionCommand: SelectionCommand;
     selectionStyle: number;
     selectionActivated: boolean;
+    mouseDownInsideSelection: boolean;
 
     constructor(drawingService: DrawingService, protected invoker: UndoRedoService) {
         super(drawingService);
@@ -90,15 +91,12 @@ export abstract class Movable extends Tool {
             this.invoker.setIsAllowed(true);
         }
         this.drawingService.baseCtx.restore();
-        // this.drawingService.baseCtx.restore();
-
         this.resetSelection();
         this.selectionActivated = false;
     }
 
     updateSelectionNodes(): number {
         let i = 0;
-        console.log('update node called');
         if (this.selectionEndPoint.y < this.selectionStartPoint.y) {
             this.selectionEndPoint.y = this.selectionStartPoint.y;
             this.selectionStartPoint.y -= Math.abs(this.height);
@@ -128,7 +126,6 @@ export abstract class Movable extends Tool {
             i += 2;
             this.flipedV = false;
         }
-        console.log('check flip = ', i);
         return i;
     }
 
@@ -172,10 +169,15 @@ export abstract class Movable extends Tool {
     }
 
     flipData(translateVec: Vec2, scale: Vec2): void {
+        let tempCanvas = document.createElement('canvas');
+        tempCanvas.width = this.selectionData.width;
+        tempCanvas.height = this.selectionData.height;
+        (tempCanvas.getContext('2d') as CanvasRenderingContext2D).drawImage(this.selectionData,0,0);
         (this.selectionData.getContext('2d') as CanvasRenderingContext2D).save();
         (this.selectionData.getContext('2d') as CanvasRenderingContext2D).translate(translateVec.x, translateVec.y);
         (this.selectionData.getContext('2d') as CanvasRenderingContext2D).scale(scale.x, scale.y);
-        (this.selectionData.getContext('2d') as CanvasRenderingContext2D).drawImage(this.selectionData, 0, 0);
+        this.drawingService.clearCanvas((this.selectionData.getContext('2d') as CanvasRenderingContext2D));
+        (this.selectionData.getContext('2d') as CanvasRenderingContext2D).drawImage(tempCanvas, 0, 0);
         (this.selectionData.getContext('2d') as CanvasRenderingContext2D).restore();
     }
 
