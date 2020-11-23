@@ -209,13 +209,33 @@ export class MagicWandService extends Tool {
             yArray.push(modifiedPixel.y);
         }
 
-        const minX = Math.min(...xArray);
-        const minY = Math.min(...yArray);
-        const maxX = Math.max(...xArray);
-        const maxY = Math.max(...yArray);
+        const minX = this.getMin(xArray);
+        const minY = this.getMin(yArray);
+        const maxX = this.getMax(xArray);
+        const maxY = this.getMax(yArray);
 
         this.selectionStartPoint = { x: minX, y: minY };
         this.selectionEndPoint = { x: maxX, y: maxY };
+    }
+
+    private getMax(arr:number[]) {
+        let len = arr.length;
+        let max = -Infinity;
+    
+        while (len--) {
+            max = arr[len] > max ? arr[len] : max;
+        }
+        return max;
+    }
+
+    private getMin(arr:number[]) {
+        let len = arr.length;
+        let min = Infinity;
+    
+        while (len--) {
+            min = arr[len] < min ? arr[len] : min;
+        }
+        return min;
     }
 
     private resetSelectionPixels(): void {
