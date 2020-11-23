@@ -2,6 +2,7 @@ import { AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild }
 import { Tool } from '@app/classes/tool';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ResizingService } from '@app/services/resizing/resizing.service';
+import { MagicWandService } from '@app/services/tools/magic-wand/magic-wand.service';
 import { SelectionService } from '@app/services/tools/selection/selection.service';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
@@ -101,6 +102,11 @@ export class DrawingComponent implements AfterViewInit, OnInit {
             const tool = this.tools.currentTool as SelectionService;
             tool.updateDegree(event, this.altkey);
             tool.redrawSelection();
+        }
+        else if (this.tools.getTools().get('magic-wand') === this.tools.currentTool) {
+            const tool = this.tools.currentTool as MagicWandService;
+            tool.magicSelectionObj.updateDegree(event, this.altkey);
+            tool.magicSelectionObj.redrawSelection();
         }
     }
 

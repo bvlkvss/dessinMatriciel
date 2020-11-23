@@ -65,8 +65,8 @@ export class MagicWandService extends Tool {
                     this.invoker.setIsAllowed(false);
                     obj.mouseDownInsideSelection = true;
                     //this.mouseDown = false;
-                    obj.offsetX = this.mouseDownCoord.x - this.selectionStartPoint.x;
-                    obj.offsetY = this.mouseDownCoord.y - this.selectionStartPoint.y;
+                    obj.offsetX = this.mouseDownCoord.x - obj.selectionStartPoint.x;
+                    obj.offsetY = this.mouseDownCoord.y - obj.selectionStartPoint.y;
                     return;
                 } else {
                     obj.drawSelectionOnBase();
