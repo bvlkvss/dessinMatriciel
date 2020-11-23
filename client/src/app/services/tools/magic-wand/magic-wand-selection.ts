@@ -4,6 +4,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 export class MagicWandSelection extends Movable {
     selectionPixels: number[];
+    isActive:boolean;
     constructor(
         drawingService: DrawingService,
         invoker: UndoRedoService,
@@ -13,6 +14,7 @@ export class MagicWandSelection extends Movable {
         width: number,
         height: number,
         selectionPixels: number[],
+        isActive:boolean,
     ) {
         super(drawingService, invoker);
         this.selectionData = canvas;
@@ -22,6 +24,7 @@ export class MagicWandSelection extends Movable {
         this.height = height;
         this.selectionStyle = 0;
         this.selectionPixels = selectionPixels;
+        this.isActive = isActive;
     }
     eraseSelectionFromBase(endPos: Vec2): void {
         const ctx = this.drawingService.baseCtx;

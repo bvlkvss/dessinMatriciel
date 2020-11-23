@@ -104,8 +104,10 @@ export class DrawingComponent implements AfterViewInit, OnInit {
             tool.redrawSelection(true);
         } else if (this.tools.getTools().get('magic-wand') === this.tools.currentTool) {
             const tool = this.tools.currentTool as MagicWandService;
+            if(tool.magicSelectionObj.isActive){
             tool.magicSelectionObj.updateDegree(event, this.altkey);
             tool.magicSelectionObj.redrawSelection();
+            }
         }
     }
 

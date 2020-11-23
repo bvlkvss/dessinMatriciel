@@ -117,11 +117,11 @@ export class MagicWandService extends Tool {
             this.saveSelection(modifiedPixels);
             this.drawContour(this.magicWandCanvas);
 
-            this.magicSelectionObj = this.createSelectionData();
+            this.magicSelectionObj = this.createSelectionObj();
+            console.log(this.magicSelectionObj.isActive)
             this.createEnglobingBox();
             this.magicSelectionObj.updateResizingHandles();
             this.magicSelectionObj.drawResizingHandles();
-            console.log("called");
             this.isMagicSelectionActivated = true;
         }
         if (this.deactivateAfterClick ){
@@ -138,7 +138,7 @@ export class MagicWandService extends Tool {
         const modifiedPixels = this.getNonContiguousPixels(this.currentPos);
         this.saveSelection(modifiedPixels);
         this.drawContour(this.magicWandCanvas);
-        this.magicSelectionObj = this.createSelectionData();
+        this.magicSelectionObj = this.createSelectionObj();
         this.createEnglobingBox();
         this.magicSelectionObj.updateResizingHandles();
         this.magicSelectionObj.drawResizingHandles();
@@ -159,10 +159,11 @@ export class MagicWandService extends Tool {
     clearSelection(): void {
         this.resetMagicWandCanvas();
         this.resetSelectionPixels();
+        this.magicSelectionObj.isActive = false;
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
     }
 
-    private createSelectionData(): MagicWandSelection {
+    private createSelectionObj(): MagicWandSelection {
         return new MagicWandSelection(
             this.drawingService,
             this.invoker,
@@ -171,7 +172,8 @@ export class MagicWandService extends Tool {
             this.selectionEndPoint,
             this.selectionMinWidth,
             this.selectionMinHeight,
-            this.selectionPixels
+            this.selectionPixels,
+            true
         );
     }
 
