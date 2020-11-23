@@ -21,18 +21,18 @@ export class MagicWandSelection extends Movable {
         this.width = width;
         this.height = height;
         this.selectionStyle = 0;
-        this.selectionPixels = selectionPixels
+        this.selectionPixels = selectionPixels;
     }
-    eraseSelectionFromBase(endPos:Vec2): void {
+    eraseSelectionFromBase(endPos: Vec2): void {
         const ctx = this.drawingService.baseCtx;
-        const imData = ctx.getImageData(0,0,ctx.canvas.width, ctx.canvas.height);
+        const imData = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
         const tempColor = this.primaryColor;
         this.primaryColor = '#ffffff';
-        for (let pixel of this.selectionPixels){
-            this.fillPixel(imData,pixel);
+        for (const pixel of this.selectionPixels) {
+            this.fillPixel(imData, pixel);
         }
         this.primaryColor = tempColor;
-        ctx.putImageData(imData, 0,0);
+        ctx.putImageData(imData, 0, 0);
         this.firstSelectionMove = false;
     }
 
@@ -41,9 +41,9 @@ export class MagicWandSelection extends Movable {
         this.drawingService.baseCtx.translate(this.selectionStartPoint.x + this.width / 2, this.selectionStartPoint.y + this.height / 2);
         this.drawingService.baseCtx.rotate((this.degres * Math.PI) / 180);
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
-      
+
         this.drawingService.baseCtx.drawImage(this.selectionData, -this.width / 2, -this.height / 2, Math.abs(this.width), Math.abs(this.height));
-        
+
         if (this.selectionCommand) {
             this.selectionCommand.setStartPos(this.selectionStartPoint);
             this.selectionCommand.setEndPos(this.selectionEndPoint);
@@ -56,5 +56,5 @@ export class MagicWandSelection extends Movable {
         this.drawingService.baseCtx.restore();
         this.resetSelection();
         this.selectionActivated = false;
-     }
+    }
 }
