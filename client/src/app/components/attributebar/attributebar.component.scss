@@ -46,6 +46,9 @@
     /*change color of label*/
     color: black;
 }
+::ng-deep .mat-button-toggle-group-appearance-standard .mat-button-toggle + .mat-button-toggle {
+    border-left: solid 1px rgba(255, 255, 255, 0.9);
+}
 ::ng-deep .mat-form-field-label {
     /*change color of label*/
     color: white;
@@ -60,6 +63,10 @@
 ::ng-deep .mat-button-toggle-standalone,
 .mat-button-toggle-group {
     bottom: 35px;
+    border-color: rgba(255, 255, 255, 0.9);
+}
+#allignement {
+    left: 6px;
 }
 ::ng-deep .mat-button-focus-overlay {
     display: none;

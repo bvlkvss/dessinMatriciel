@@ -78,6 +78,7 @@ describe('DrawingComponent', () => {
     }));
 
     beforeEach(() => {
+        
         fixture = TestBed.createComponent(DrawingComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();

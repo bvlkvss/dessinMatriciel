@@ -204,12 +204,6 @@ describe('AttributebarComponent', () => {
         component.toggleList('5');
         expect(querySelectorSpy).toHaveBeenCalled();
     });
-    /*   it('onMouseOut should  change  this.circleIsShown to false  ', () => {
-   
-           fixture.detectChanges();
-           pipetteStub.onMouseOut(event);
-           expect(component.circleIsShown).toEqual(false);
-       });*/
     it(' pickColor should call toolManager"s setColor    ', () => {
         let canvas: HTMLCanvasElement = document.createElement("canvas");
         component.pipetteCanvas = new ElementRef<HTMLCanvasElement>(canvas);
@@ -241,11 +235,10 @@ describe('AttributebarComponent', () => {
     });
     it('onClick should call pickColor  ', () => {
         let observerSpy = spyOn<any>(pipetteStub, 'getColorObservable').and.returnValue(of(false));
-        let spy = spyOn<any>(component, 'pickColor').and.callThrough();
+        let spy = spyOn<any>(component, 'pickColor').and.stub();
         component.onClick();
         expect(spy).toHaveBeenCalled();
         expect(observerSpy).toHaveBeenCalled();
-
 
     });
     it('DisplayCircle should set circleIsShown to the right value  ', () => {

@@ -30,7 +30,7 @@ export class TextService extends Tool {
   rectWidth: number = DEFAULT_BOX_WIDTH;
   constructor(drawingService: DrawingService) {
     super(drawingService);
-    this.lineWidth = 0;
+    this.lineWidth = 30;
     this.lines.push("");
     this.toolAttributes = ['textPolice'];
   }
@@ -83,10 +83,6 @@ export class TextService extends Tool {
     this.rectWidth = DEFAULT_BOX_WIDTH;
     this.isRighting = true;
     this.rectStartPoint = { x: this.mouseDownCoord.x, y: this.mouseDownCoord.y - this.fontSize };
-    if (this.fontSize >= 50) {
-      this.textPosition.y -= this.fontSize * 0.6;
-      this.firstCursorPosition.y -= this.fontSize * 0.5;
-    }
     this.rectEndPoint = { x: this.mouseDownCoord.x + this.rectWidth + 8, y: this.mouseDownCoord.y + 10 };
     this.drawTextBox();
     this.firstClick = false;
@@ -102,7 +98,7 @@ export class TextService extends Tool {
     let widthToAdd = this.fontSize >= 55 ? textMeasure * 0.070 : textMeasure * 0.065;
     if (widthToAdd <= 8)
       widthToAdd = 12;
-    this.rectHeight = this.fontSize >= 60 ? this.fontSize * this.lines.length + this.fontSize / 4 : this.fontSize * this.lines.length + this.fontSize / 2;
+    this.rectHeight = this.fontSize >= 60 ? this.fontSize * this.lines.length + this.fontSize / 4 : this.fontSize * this.lines.length + this.fontSize / 3;
     ctx.strokeStyle = "blue";
     if (textMeasure > DEFAULT_BOX_WIDTH) {
       this.rectWidth = textMeasure;
@@ -120,10 +116,7 @@ export class TextService extends Tool {
   private writeText(ctx: CanvasRenderingContext2D, position: Vec2): void {
     ctx.fillStyle = this.primaryColor;
     ctx.font = this.fontStyle + " " + this.fontSize + 'px ' + this.fontText;
-    let heightToAdd = this.fontSize >= 50 ? this.fontSize * 0.6 : (0.2 * this.fontSize);
-
     if (position) {
-      position.y += heightToAdd;
       this.lines.forEach((line) => {
         let tmpPosition = { ...position };
         position = this.alignSingleLine(line, { ...position });
@@ -145,6 +138,7 @@ export class TextService extends Tool {
   private drawTextBox(): void {
     this.drawingService.clearCanvas(this.drawingService.previewCtx);
     this.drawBox(this.drawingService.previewCtx, this.rectStartPoint);
+    this.textPosition.y = this.rectStartPoint.y + this.fontSize;
     this.writeText(this.drawingService.previewCtx, { ... this.textPosition });
     if (this.isCursorMoving)
       this.drawCursor(this.drawingService.previewCtx, false);
@@ -180,9 +174,8 @@ export class TextService extends Tool {
     this.isBlank = !this.isBlank;
     let position: Vec2 = { x: 0, y: 0 };
     const firstPart = this.lines[this.currentLinePosition].substr(0, this.currentChar);
-    let heightToAdd = this.fontSize >= 50 ? this.fontSize * 0.45 : (0.15 * this.fontSize);
     position.x = this.firstCursorPosition.x + this.measureText(firstPart)
-    position.y = this.firstCursorPosition.y + this.currentLinePosition * this.fontSize + heightToAdd;
+    position.y = this.textPosition.y + this.currentLinePosition * this.fontSize - 0.1 * this.fontSize;
     if (this.fontSize <= 15)
       position.x += 3;
     ctx.font = this.fontStyle + " " + this.fontText;
@@ -226,9 +219,15 @@ export class TextService extends Tool {
     if (this.lines[this.currentLinePosition].length !== this.currentChar) {
       const leftPart: string = this.lines[this.currentLinePosition].substring(0, this.currentChar);
       const rightPart: string = this.lines[this.currentLinePosition].substring(this.currentChar + 1);
-      this.lines[this.currentLinePosition] = leftPart + "" + rightPart;
+      this.lines[this.currentLinePosition] = leftPart + '' + rightPart;
+    } else {
+      if (this.lines[this.currentLinePosition + 1] !== undefined) {
+        this.lines[this.currentLinePosition] += this.lines[this.currentLinePosition + 1];
+        this.lines.splice(this.currentLinePosition + 1, 1);
+      }
     }
   }
+
 
   private printableKeyTreatment(event: KeyboardEvent) {
     const leftPart = this.lines[this.currentLinePosition].substr(0, this.currentChar);

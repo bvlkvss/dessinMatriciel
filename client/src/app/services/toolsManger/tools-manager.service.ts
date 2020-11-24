@@ -48,7 +48,7 @@ export class ToolsManagerService {
             ['text', textService],
 
         ]);
-        this.currentTool = this.tools.get('text') as Tool;
+        this.currentTool = this.tools.get('pencil') as Tool;
     }
 
     setTools(name: string): void {

@@ -6,7 +6,6 @@ describe('TextService', () => {
   let service: TextService;
   let mouseEvent: MouseEvent;
   let drawServiceSpy: jasmine.SpyObj<DrawingService>;
-
   let baseCtxStub: CanvasRenderingContext2D;
   let previewCtxStub: CanvasRenderingContext2D;
 
@@ -51,11 +50,13 @@ describe('TextService', () => {
     const returnedValue: boolean = service['isInsideRect']();
     expect(returnedValue).toEqual(false);
   });
-  it('drawTextBox should call wrtieText,drawBox and drawCursor if cursorisMoving', () => {
+  it('drawTextBox should call writeText,drawBox and drawCursor if cursorisMoving', () => {
     const drawBoxSpy = spyOn<any>(service, "drawBox").and.stub();
     const writeTextSpy = spyOn<any>(service, "writeText").and.stub();
     const drawCursorSpy = spyOn<any>(service, "drawCursor").and.stub();
     service.isCursorMoving = true;
+    service.textPosition = service.rectStartPoint = { x: 222, y: 123 };
+    service.fontSize = 20;
     service["drawTextBox"]();
     expect(writeTextSpy).toHaveBeenCalled();
     expect(drawCursorSpy).toHaveBeenCalled();
@@ -67,6 +68,8 @@ describe('TextService', () => {
     spyOn<any>(service, "drawBox").and.stub();
     spyOn<any>(service, "writeText").and.stub();
     service.isCursorMoving = false;
+    service.textPosition = service.rectStartPoint = { x: 222, y: 123 };
+    service.fontSize = 20;
     service["drawTextBox"]();
     expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
     expect(drawCursorSpy).not.toHaveBeenCalled();
@@ -219,28 +222,12 @@ describe('TextService', () => {
     expect(service.rectWidth).toEqual(200);
     expect(service.rectHeight).toEqual(60);
     expect(service.isRighting).toEqual(true);
-    expect(service.textPosition).toEqual({ x: 233, y: 102 });
-    expect(service.firstCursorPosition).toEqual({ x: 233, y: 107 });
+    expect(service.textPosition).toEqual({ x: 233, y: 132 });
+    expect(service.firstCursorPosition).toEqual({ x: 233, y: 132 });
     expect(service.rectStartPoint).toEqual({ x: 233, y: 82 });
     expect(service.rectEndPoint).toEqual({ x: 441, y: 142 });
     expect(service.firstClick).toEqual(false);
 
-    expect(drawTextBoxSpy).toHaveBeenCalled();
-  });
-  it('setToInitState should initialize attributes to the correct value', () => {
-    const drawTextBoxSpy = spyOn<any>(service, "drawTextBox").and.callFake(() => { return; });
-    //case where fontSize <50
-    service.fontSize = 20;
-    service.mouseDownCoord = { x: 233, y: 132 };
-    service["setToInitState"]();
-    expect(service.rectWidth).toEqual(200);
-    expect(service.rectHeight).toEqual(30);
-    expect(service.isRighting).toEqual(true);
-    expect(service.textPosition).toEqual({ x: 233, y: 132 });
-    expect(service.firstCursorPosition).toEqual({ x: 233, y: 132 });
-    expect(service.rectStartPoint).toEqual({ x: 233, y: 112 });
-    expect(service.rectEndPoint).toEqual({ x: 441, y: 142 });
-    expect(service.firstClick).toEqual(false);
     expect(drawTextBoxSpy).toHaveBeenCalled();
   });
   it('onKeyDown should call printableKeyTreatment if is righting and event key is a single char  ', () => {
@@ -404,6 +391,17 @@ describe('TextService', () => {
     expect(service.currentChar).toEqual(5);
     expect(service.lines[0]).toEqual("testOPrintable");
   });
+  it('deleteKeyTreatment should merge current and next lines if next  char is the last one on the current', () => {
+    service.currentChar = 6;
+    service.currentLinePosition = 0;
+    service.lines[0] = "testOf";
+    service.lines[1] = "Printable";
+    service["deleteKeyTreatment"]();
+    expect(service.currentChar).toEqual(6);
+    expect(service.lines[0]).toEqual("testOfPrintable");
+    expect(service.lines.length).toEqual(1);
+
+  });
   it('shiftVertically should shift to the next line at the specified position', () => {
     service.currentChar = 5;
     service.currentLinePosition = 0;
@@ -465,29 +463,130 @@ describe('TextService', () => {
     expect(service.currentLinePosition).toEqual(0);
 
   });
-  /*fit('onClick should change return the right text position depending on allignement', () => {
+  it('backSpaceKeyTreatment should merge the current and previous lines if the current char is at 0', () => {
     service.currentChar = 0;
     service.currentLinePosition = 1;
-    service.lines[0] = "first";
-    service.lines[1] = "second";
+    service.lines[0] = "testOf";
+    service.lines[1] = "BackSpace";
     service["backSpaceKeyTreatment"]();
-    expect(service.currentChar).toEqual(5);
-    expect(service.lines[0]).toEqual("firstsecond");
+    expect(service.currentChar).toEqual("testOf".length);
+    expect(service.lines[0]).toEqual("testOfBackSpace");
     expect(service.currentLinePosition).toEqual(0);
 
-  });*/
-  /* private enterKeyTreatment(): void {
-   const emptySpaceLeftLength: number = this.rectWidth - this.measureText(line);
-    let returnedPoint: Vec2 = { ...position };
-    this.firstCursorPosition = this.updateTextPosition(this.lines[this.currentLinePosition]);
-    switch (this.textAlignement) {
-      case "center":
-        returnedPoint.x += (emptySpaceLeftLength / 2); break;
-      case "right":
-        returnedPoint.x += emptySpaceLeftLength; break;
-      case "left":
-        this.firstCursorPosition.x = this.rectStartPoint.x; break;
-    }
-    return returnedPoint;
-  } */
+  });
+  it('drawCursor should draw the cursor at the right position', () => {
+    const measureTextSpy = spyOn<any>(service, "measureText").and.callFake(() => { return 50; });
+    const fillTextSpy = spyOn(baseCtxStub, "fillText").and.callThrough();
+    spyOn(baseCtxStub, "restore").and.callFake(() => { return; });
+    service.currentChar = 3;
+    service.fontSize = 15;
+    service.fontStyle = "bold";
+    service.fontText = "Arial";
+    service.firstCursorPosition = { x: 245, y: 111 };
+    service.textPosition = { x: 100, y: 111 }
+    service.currentLinePosition = 1;
+    service.lines[0] = "tesst";
+    service.lines[1] = "cursorTest";
+    service["drawCursor"](baseCtxStub, true);
+    expect(service.isBlank).toEqual(false);
+    expect(baseCtxStub.globalAlpha).toEqual(0);
+    expect(baseCtxStub.fillStyle).toEqual("#000000");
+    expect(fillTextSpy).toHaveBeenCalledWith("|", 297, 124.5);
+    expect(measureTextSpy).toHaveBeenCalled();
+  });
+  it('alignSingleLine should return the right point when allignement is left', () => {
+    const measureTextSpy = spyOn<any>(service, "measureText").and.callFake(() => { return 50; });
+    spyOn<any>(service, "updateTextPosition").and.callFake(() => { return { x: 12, y: 21 } });
+    const mockPosition = { x: 200, y: 198 };
+    service.rectWidth = 100;
+    service.rectStartPoint = { x: 30, y: 123 };
+    service.textAlignement = "left";
+    let returnedPoint = service["alignSingleLine"]("mockLine", mockPosition);
+    expect(returnedPoint).toEqual({ x: 200, y: 198 });
+    expect(service.firstCursorPosition).toEqual({ x: 30, y: 21 });
+    expect(measureTextSpy).toHaveBeenCalled();
+  });
+  it('alignSingleLine should return the right point when allignement is center', () => {
+    const measureTextSpy = spyOn<any>(service, "measureText").and.callFake(() => { return 50; });
+    spyOn<any>(service, "updateTextPosition").and.callFake(() => { return { x: 12, y: 21 } });
+    const mockPosition = { x: 200, y: 198 };
+    service.rectWidth = 100;
+    service.rectStartPoint = { x: 30, y: 123 };
+    service.textAlignement = "center";
+    let returnedPoint = service["alignSingleLine"]("mockLine", mockPosition);
+    expect(returnedPoint).toEqual({ x: 225, y: 198 });
+    expect(service.firstCursorPosition).toEqual({ x: 12, y: 21 });
+    expect(measureTextSpy).toHaveBeenCalled();
+  });
+  it('alignSingleLine should return the right point when allignement is center', () => {
+    const measureTextSpy = spyOn<any>(service, "measureText").and.callFake(() => { return 50; });
+    spyOn<any>(service, "updateTextPosition").and.callFake(() => { return { x: 12, y: 21 } });
+    const mockPosition = { x: 200, y: 198 };
+    service.rectWidth = 100;
+    service.rectStartPoint = { x: 30, y: 123 };
+    service.textAlignement = "right";
+    let returnedPoint = service["alignSingleLine"]("mockLine", mockPosition);
+    expect(returnedPoint).toEqual({ x: 250, y: 198 });
+    expect(service.firstCursorPosition).toEqual({ x: 12, y: 21 });
+    expect(measureTextSpy).toHaveBeenCalled();
+  });
+  it('drawBox should drawBox at specified position with font size 70', () => {
+    const findLongestLineSpy = spyOn<any>(service, "findLongestLine").and.callFake(() => { return 250; });
+    service.fontSize = 70;
+    service.lines = [" "];
+    service.rectEndPoint = { x: 0, y: 0 };
+    service.rectStartPoint = { x: 10, y: 20 };
+    const mockPosition = { x: 200, y: 198 };
+    service["drawBox"](baseCtxStub, mockPosition);
+    expect(service.rectWidth).toEqual(250);
+    expect(service.rectEndPoint).toEqual({ x: 268, y: 107.5 });
+    expect(service.rectHeight).toEqual(87.5);
+    expect(findLongestLineSpy).toHaveBeenCalled();
+  });
+  it('drawBox should drawBox at specified position with font size 30', () => {
+    const findLongestLineSpy = spyOn<any>(service, "findLongestLine").and.callFake(() => { return 50; });
+    service.fontSize = 30;
+    service.lines = [" "];
+    service.rectEndPoint = { x: 0, y: 0 };
+    const mockPosition = { x: 200, y: 198 };
+    service["drawBox"](baseCtxStub, mockPosition);
+    expect(service.rectWidth).toEqual(200);
+    expect(service.rectEndPoint).toEqual({ x: 0, y: 0 });
+    expect(service.rectHeight).toEqual(40);
+    expect(findLongestLineSpy).toHaveBeenCalled();
+  });
+  it('onClick should launch the setInterval if first click', () => {
+    const setToInitStateSpy = spyOn<any>(service, "setToInitState").and.stub();
+    const setIntervalSpy = spyOn<any>(global, "setInterval").and.callThrough();
+    const drawConfirmedTextSpy = spyOn<any>(service, "drawConfirmedText").and.stub();
+    service.isCursorMoving = false;
+    service.firstClick = true;
+    service["onClick"](mouseEvent);
+    expect(service.mouseDownCoord).toEqual({ x: mouseEvent.offsetX, y: mouseEvent.offsetY });
+    expect(setToInitStateSpy).toHaveBeenCalled();
+    expect(setIntervalSpy).toHaveBeenCalled();
+    expect(drawConfirmedTextSpy).toHaveBeenCalled();
+  });
+  it(' writeText should right the text and align it ', () => {
+    const alignSingleSpy = spyOn<any>(service, "alignSingleLine").and.callFake(() => { return { x: 200, y: 198 }; });
+    const mockPosition = { x: 200, y: 198 };
+    service.isCursorMoving = false;
+    service.lines = ["test", "test1"];
+    service.firstClick = true;
+    service["writeText"](baseCtxStub, mockPosition);
+    expect(alignSingleSpy).toHaveBeenCalledTimes(2);
+  });
+
+  /** private writeText(ctx: CanvasRenderingContext2D, position: Vec2): void {
+      ctx.fillStyle = this.primaryColor;
+      ctx.font = this.fontStyle + " " + this.fontSize + 'px ' + this.fontText;
+      if (position) {
+        this.lines.forEach((line) => {
+          let tmpPosition = { ...position };
+          position = this.alignSingleLine(line, { ...position });
+          ctx.fillText(line, position.x + 4, position.y);
+          position = { ...tmpPosition };
+          position.y += this.fontSize;
+        });
+      } */
 });
