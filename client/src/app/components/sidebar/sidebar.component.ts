@@ -6,6 +6,7 @@ import { SavingComponent } from '@app/components/saving/saving.component';
 import { UserGuideComponent } from '@app/components/user-guide/user-guide.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { SelectionService } from '@app/services/tools/selection/selection.service';
+import { TextService } from '@app/services/tools/text/text.service';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
@@ -111,6 +112,7 @@ export class SidebarComponent implements OnChanges {
 
     changeTools(name: string): void {
         this.drawingService.restoreCanvasState();
+        if (this.tools.currentTool instanceof TextService && name !== 'text') (this.tools.currentTool as TextService).drawConfirmedText(true);
         this.tools.setTools(name);
         const numberOfTools = document.getElementsByTagName('a').length;
 
