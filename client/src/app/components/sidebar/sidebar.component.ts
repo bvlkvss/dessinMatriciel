@@ -23,7 +23,7 @@ export class SidebarComponent implements OnChanges {
         protected drawingService: DrawingService,
         protected invoker: UndoRedoService,
         private dialog: MatDialog,
-    ) { }
+    ) {}
     @Input() primaryColor: string = this.tools.currentTool.primaryColor.slice(0, COLOR_STRING_LENGTH);
     @Input() secondaryColor: string = this.tools.currentTool.secondaryColor.slice(0, COLOR_STRING_LENGTH);
     isRevertClicked: boolean = false;
@@ -112,8 +112,7 @@ export class SidebarComponent implements OnChanges {
 
     changeTools(name: string): void {
         this.drawingService.restoreCanvasState();
-        if (this.tools.currentTool instanceof TextService && name != "text")
-            (this.tools.currentTool as TextService).drawConfirmedText(true);
+        if (this.tools.currentTool instanceof TextService && name !== 'text') (this.tools.currentTool as TextService).drawConfirmedText(true);
         this.tools.setTools(name);
         const numberOfTools = document.getElementsByTagName('a').length;
 

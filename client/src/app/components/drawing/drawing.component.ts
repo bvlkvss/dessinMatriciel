@@ -32,7 +32,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         private tools: ToolsManagerService,
         private resizer: ResizingService,
         private invoker: UndoRedoService,
-    ) { }
+    ) {}
 
     ngOnInit(): void {
         this.drawingService.resizeCanvas();
@@ -52,8 +52,6 @@ export class DrawingComponent implements AfterViewInit, OnInit {
             .set('s', this.tools.getTools().get('selection') as Tool)
             .set('i', this.tools.getTools().get('pipette') as Tool)
             .set('t', this.tools.getTools().get('text') as Tool);
-
-
         this.baseCtx = this.baseCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.previewCtx = this.previewCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.drawingService.baseCtx = this.baseCtx;
@@ -194,9 +192,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
                     (this.tools.currentTool as SelectionService).resetSelection();
                 }
             } else this.tools.currentTool.onKeyDown(event);
-        }
-        else
-            this.tools.currentTool.onKeyDown(event);
+        } else this.tools.currentTool.onKeyDown(event);
     }
 
     get width(): number {

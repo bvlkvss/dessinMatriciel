@@ -189,7 +189,12 @@ export class SelectionService extends Tool {
             } else {
                 this.drawingService.previewCtx.drawImage(this.selectionData, this.selectionStartPoint.x, this.selectionStartPoint.y);
             }
-            this.rectangleService.drawRectangle(this.drawingService.previewCtx, this.selectionStartPoint, this.selectionEndPoint, this.rectangleService.toSquare);
+            this.rectangleService.drawRectangle(
+                this.drawingService.previewCtx,
+                this.selectionStartPoint,
+                this.selectionEndPoint,
+                this.rectangleService.toSquare,
+            );
             this.updateResizingHandles();
             this.drawResizingHandles();
             this.selectionActivated = true;

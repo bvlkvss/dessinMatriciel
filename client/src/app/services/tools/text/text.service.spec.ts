@@ -1,3 +1,4 @@
+/* tslint:disable */
 import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from "@app/classes/canvas-test-helper";
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -491,7 +492,7 @@ describe('TextService', () => {
     expect(service.isBlank).toEqual(false);
     expect(baseCtxStub.globalAlpha).toEqual(0);
     expect(baseCtxStub.fillStyle).toEqual("#000000");
-    expect(fillTextSpy).toHaveBeenCalledWith("|", 297, 124.5);
+    expect(fillTextSpy).toHaveBeenCalledWith("|", 296, 124.5);
     expect(measureTextSpy).toHaveBeenCalled();
   });
   it('alignSingleLine should return the right point when allignement is left', () => {
@@ -552,7 +553,7 @@ describe('TextService', () => {
     service["drawBox"](baseCtxStub, mockPosition);
     expect(service.rectWidth).toEqual(200);
     expect(service.rectEndPoint).toEqual({ x: 0, y: 0 });
-    expect(service.rectHeight).toEqual(40);
+    expect(service.rectHeight).toBeCloseTo(40, 0);
     expect(findLongestLineSpy).toHaveBeenCalled();
   });
   it('onClick should launch the setInterval if first click', () => {

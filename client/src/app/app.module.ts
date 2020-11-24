@@ -28,8 +28,6 @@ import { MainPageComponent } from './components/main-page/main-page.component';
 import { SavingComponent } from './components/saving/saving.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { UserGuideComponent } from './components/user-guide/user-guide.component';
-
-
 @NgModule({
     declarations: [
         AppComponent,
@@ -67,4 +65,4 @@ import { UserGuideComponent } from './components/user-guide/user-guide.component
     providers: [],
     bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

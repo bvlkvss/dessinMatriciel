@@ -31,7 +31,6 @@ export class ToolsManagerService {
         polygonService: PolygonService,
         pipetteService: PipetteService,
         textService: TextService,
-
     ) {
         this.tools = new Map<string, Tool>([
             ['pencil', pencilService],
@@ -46,7 +45,6 @@ export class ToolsManagerService {
             ['polygon', polygonService],
             ['pipette', pipetteService],
             ['text', textService],
-
         ]);
         this.currentTool = this.tools.get('pencil') as Tool;
     }

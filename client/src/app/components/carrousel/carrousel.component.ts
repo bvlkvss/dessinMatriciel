@@ -57,7 +57,7 @@ export class CarrouselComponent implements OnInit, AfterViewChecked {
                 this.filter.drawingsToShow = this.drawingsToShow;
                 this.middlePosition = this.drawingsToShow.length - this.step + 1;
             },
-            (error) => {
+            () => {
                 this.spinnerVisible = false;
                 this.errorMessageVisible = true;
             },

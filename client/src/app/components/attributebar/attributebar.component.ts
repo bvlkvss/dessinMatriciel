@@ -28,7 +28,7 @@ export class AttributebarComponent implements OnInit, AfterViewChecked, AfterVie
     idStyleBrush: number = 1;
     tolerance: string = '0';
     selectedValue: string;
-    polices: string[] = ["Arial", 'Times New Roman', 'Courier New', 'Verdana'];
+    polices: string[] = ['Arial', 'Times New Roman', 'Courier New', 'Verdana'];
 
     circleIsShown: boolean = true;
     @ViewChild('pipette', { static: false }) pipetteCanvas: ElementRef<HTMLCanvasElement>;
@@ -96,15 +96,14 @@ export class AttributebarComponent implements OnInit, AfterViewChecked, AfterVie
         );
     }
     setFontStyle(style: MatButtonToggleChange): void {
-        let tmpStyle: string = "";
+        let tmpStyle = '';
         style.value.forEach((fontStyle: string) => {
-            tmpStyle += fontStyle + " ";
+            tmpStyle += fontStyle + ' ';
         });
         (this.tools.currentTool as TextService).setFontStyle(tmpStyle);
     }
-    setAllignement(allignement: any): void {
+    setAllignement(allignement: MatSelectChange): void {
         (this.tools.currentTool as TextService).setAllignement(allignement.value);
-
     }
     setFontFamily(fontFamily: MatSelectChange): void {
         (this.tools.currentTool as TextService).setFontText(fontFamily.value);
