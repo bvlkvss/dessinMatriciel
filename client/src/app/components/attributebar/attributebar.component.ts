@@ -28,7 +28,7 @@ export class AttributebarComponent implements OnInit, AfterViewChecked, AfterVie
     idStyleBrush: number = 1;
     tolerance: string = '0';
     selectedValue: string;
-    polices: string[] = ['Arial', 'Times New Roman', 'Courier New', 'Verdana'];
+    polices: string[] = ['Arial', 'Times New Roman', 'Courier New', 'Verdana', 'Comic Sans MS, cursive', 'Trebuchet MS, Helvetica'];
 
     circleIsShown: boolean = true;
     @ViewChild('pipette', { static: false }) pipetteCanvas: ElementRef<HTMLCanvasElement>;

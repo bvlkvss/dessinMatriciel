@@ -578,16 +578,4 @@ describe('TextService', () => {
     expect(alignSingleSpy).toHaveBeenCalledTimes(2);
   });
 
-  /** private writeText(ctx: CanvasRenderingContext2D, position: Vec2): void {
-      ctx.fillStyle = this.primaryColor;
-      ctx.font = this.fontStyle + " " + this.fontSize + 'px ' + this.fontText;
-      if (position) {
-        this.lines.forEach((line) => {
-          let tmpPosition = { ...position };
-          position = this.alignSingleLine(line, { ...position });
-          ctx.fillText(line, position.x + 4, position.y);
-          position = { ...tmpPosition };
-          position.y += this.fontSize;
-        });
-      } */
 });
