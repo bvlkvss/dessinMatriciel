@@ -15,6 +15,7 @@ export enum MouseButton {
     Forward = 4,
 }
 const RGBA_NUMBER_OF_COMPONENTS = 4;
+const OFFSET_FOR_SHADOW = 2;
 
 @Injectable({
     providedIn: 'root',
@@ -118,13 +119,12 @@ export class MagicWandService extends Tool {
             this.drawContour(this.magicWandCanvas);
 
             this.magicSelectionObj = this.createSelectionObj();
-            console.log(this.magicSelectionObj.isActive)
-            this.createEnglobingBox();
+            this.magicSelectionObj.createEnglobingBox();
             this.magicSelectionObj.updateResizingHandles();
             this.magicSelectionObj.drawResizingHandles();
             this.isMagicSelectionActivated = true;
         }
-        if (this.deactivateAfterClick ){
+        if (this.deactivateAfterClick) {
             this.isMagicSelectionActivated = false;
             this.deactivateAfterClick = false;
         }
@@ -132,31 +132,55 @@ export class MagicWandService extends Tool {
 
     onRightClick(event: MouseEvent): void {
         if (!this.isMagicSelectionActivated) {
-        this.magicWandCanvas.width = this.drawingService.canvas.width;
-        this.magicWandCanvas.height = this.drawingService.canvas.height;
-        this.currentPos = this.getPositionFromMouse(event);
-        const modifiedPixels = this.getNonContiguousPixels(this.currentPos);
-        this.saveSelection(modifiedPixels);
-        this.drawContour(this.magicWandCanvas);
-        this.magicSelectionObj = this.createSelectionObj();
-        this.createEnglobingBox();
-        this.magicSelectionObj.updateResizingHandles();
-        this.magicSelectionObj.drawResizingHandles();
-        this.isMagicSelectionActivated = true;
+            this.magicWandCanvas.width = this.drawingService.canvas.width;
+            this.magicWandCanvas.height = this.drawingService.canvas.height;
+            this.currentPos = this.getPositionFromMouse(event);
+            const modifiedPixels = this.getNonContiguousPixels(this.currentPos);
+            this.saveSelection(modifiedPixels);
+            this.drawContour(this.magicWandCanvas);
+            this.magicSelectionObj = this.createSelectionObj();
+            this.magicSelectionObj.createEnglobingBox();
+            this.magicSelectionObj.updateResizingHandles();
+            this.magicSelectionObj.drawResizingHandles();
+            this.isMagicSelectionActivated = true;
         }
     }
-    
 
-    createEnglobingBox() {
-        this.magicSelectionObj.rectangleService.drawRectangle(
-            this.drawingService.previewCtx,
-            this.selectionStartPoint,
-            this.selectionEndPoint,
-            this.magicSelectionObj.rectangleService.toSquare,
-        );
+    onKeyUp(event: KeyboardEvent): void {
+        const obj = this.magicSelectionObj;
+        if (!event.shiftKey && obj.currenthandle !== DEFAULT_HANDLE_INDEX) {
+            obj.rectangleService.toSquare = false;
+            obj.resizeSelection();
+        }
+        obj.keysDown[event.key] = event.type === 'keydown';
+        obj.mouseDownInsideSelection = false;
+        obj.continuousMove = !event.key.includes('Arrow');
     }
 
-    clearSelection(): void {
+    onKeyDown(event: KeyboardEvent): void {
+        const obj = this.magicSelectionObj;
+        if (event.key === 'Escape') {
+            obj.drawSelectionOnBase();
+            this.clearSelection();
+        } else {
+            if (obj.currenthandle !== DEFAULT_HANDLE_INDEX && event.shiftKey && this.mouseDown) {
+                obj.rectangleService.toSquare = true;
+                obj.resizeSelection();
+            }
+
+            obj.keysDown[event.key] = event.type === 'keydown';
+
+            if (event.key.includes('Arrow')) {
+                event.preventDefault();
+                event.stopPropagation();
+
+                obj.moveSelectionWithKeys();
+                obj.redrawSelection();
+            }
+        }
+    }
+
+    private clearSelection(): void {
         this.resetMagicWandCanvas();
         this.resetSelectionPixels();
         this.magicSelectionObj.isActive = false;
@@ -173,14 +197,14 @@ export class MagicWandService extends Tool {
             this.selectionMinWidth,
             this.selectionMinHeight,
             this.selectionPixels,
-            true
+            true,
         );
     }
 
     private resetMagicWandCanvas(): void {
         this.magicWandCanvas.width = this.drawingService.canvas.width;
         this.magicWandCanvas.height = this.drawingService.canvas.height;
-        this.magicWandCtx.clearRect(0, 0, this.magicWandCanvas.width, this.magicWandCanvas.height);
+        this.drawingService.clearCanvas(this.magicWandCtx);
     }
 
     private drawContour(canvas: HTMLCanvasElement): void {
@@ -189,15 +213,10 @@ export class MagicWandService extends Tool {
             ? (context.shadowColor = 'red')
             : (context.shadowColor = 'black');
 
-        // X offset loop
-        for (let x = -2; x <= 2; x++) {
-            // Y offset loop
-            for (let y = -2; y <= 2; y++) {
-                // Set shadow offset
+        for (let x = -OFFSET_FOR_SHADOW; x <= OFFSET_FOR_SHADOW; x++) {
+            for (let y = -OFFSET_FOR_SHADOW; y <= OFFSET_FOR_SHADOW; y++) {
                 context.shadowOffsetX = x;
                 context.shadowOffsetY = y;
-
-                // Draw image with shadow
                 context.drawImage(canvas, this.selectionStartPoint.x, this.selectionStartPoint.y, this.selectionMinWidth, this.selectionMinHeight);
             }
         }
@@ -211,6 +230,7 @@ export class MagicWandService extends Tool {
             yArray.push(modifiedPixel.y);
         }
 
+        // we use these functions instead of Math.min and Math.max because we get a max call stack error when array is too big
         const minX = this.getMin(xArray);
         const minY = this.getMin(yArray);
         const maxX = this.getMax(xArray);
@@ -220,20 +240,20 @@ export class MagicWandService extends Tool {
         this.selectionEndPoint = { x: maxX, y: maxY };
     }
 
-    private getMax(arr:number[]) {
+    private getMax(arr: number[]) {
         let len = arr.length;
         let max = -Infinity;
-    
+
         while (len--) {
             max = arr[len] > max ? arr[len] : max;
         }
         return max;
     }
 
-    private getMin(arr:number[]) {
+    private getMin(arr: number[]) {
         let len = arr.length;
         let min = Infinity;
-    
+
         while (len--) {
             min = arr[len] < min ? arr[len] : min;
         }
