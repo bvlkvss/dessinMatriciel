@@ -1,13 +1,30 @@
 import { Injectable } from '@angular/core';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import {HttpClient} from  '@angular/common/http';
+
+export interface EmailData {
+    image:HTMLImageElement,
+    email:string,
+}
+
 @Injectable({
     providedIn: 'root',
 })
+
 export class ExportService {
-    constructor(private drawingService: DrawingService) {}
+    emailData:EmailData;
+    constructor(private drawingService: DrawingService, private http:HttpClient) {}
+
+    sendEmailDataToServer(emailData:EmailData){
+        
+    }
 
     setFilter(image: HTMLImageElement, inputFilter: string): void {
         image.style.filter = inputFilter;
+    }
+
+    createEmailData(image:HTMLImageElement, email:string){
+        this.emailData ={image, email}; 
     }
 
     createBaseImage(): HTMLImageElement {
@@ -30,6 +47,8 @@ export class ExportService {
         const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
         ctx.filter = filter;
         ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
-        return canvas.toDataURL('image/' + type, 1.0);
+        const dataUrl = canvas.toDataURL('image/' + type, 1.0);
+        this.drawingService.clearCanvas(ctx);
+        return dataUrl; 
     }
 }

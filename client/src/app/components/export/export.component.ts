@@ -14,19 +14,22 @@ export class ExportComponent {
     private type: string;
     private filter: string;
     private name: string;
+    email: string;
     image: HTMLImageElement;
     constructor(private exportService: ExportService, protected drawingService: DrawingService, private dialogRef: MatDialogRef<ExportComponent>) {
         this.filter = 'none';
         this.type = 'jpeg';
         this.name = 'MonDessin';
+        this.email = 'none';
         this.image = this.exportService.createBaseImage();
         this.dialogRef.afterClosed().subscribe(() => {
             ExportComponent.isExportOpen = false;
         });
     }
 
-    onConfirm(): void {
-        this.exportImage();
+    saveImageOnDisk(): void {
+        if (window.confirm('Voulez vous vraiment sauvegarder ce dessin sur votre ordinateur'))
+            this.exportImage();
         this.closeDialog();
     }
 
@@ -34,6 +37,10 @@ export class ExportComponent {
         this.exportService.exportImage(this.image, this.name, this.filter, this.type);
     }
 
+    setEmail(emailValue: string): void {
+        this.email = emailValue;
+    }
+    
     setImageName(nameValue: string): void {
         this.name = nameValue;
     }
@@ -51,6 +58,11 @@ export class ExportComponent {
 
     closeDialog(): void {
         this.dialogRef.close(true);
+    }
+
+    validateEmail(email:string): boolean{
+        const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/
+        return emailRegex.test(email);
     }
 
     private setPreviewFilter(): void {
