@@ -1,12 +1,15 @@
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSelectModule } from '@angular/material/select';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
@@ -25,7 +28,6 @@ import { MainPageComponent } from './components/main-page/main-page.component';
 import { SavingComponent } from './components/saving/saving.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { UserGuideComponent } from './components/user-guide/user-guide.component';
-
 @NgModule({
     declarations: [
         AppComponent,
@@ -55,6 +57,9 @@ import { UserGuideComponent } from './components/user-guide/user-guide.component
         MatFormFieldModule,
         MatChipsModule,
         MatIconModule,
+        MatButtonToggleModule,
+        MatSelectModule,
+        MatInputModule,
         NgMultiSelectDropDownModule.forRoot(),
     ],
     providers: [],
