@@ -2,6 +2,7 @@ import { Movable } from '@app/classes/movable';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
+const PI_DEGREE = 180;
 export class MagicWandSelection extends Movable {
     selectionPixels: number[];
     isActive: boolean;
@@ -39,10 +40,10 @@ export class MagicWandSelection extends Movable {
         this.firstSelectionMove = false;
     }
 
-    drawSelectionOnBase() {
+    drawSelectionOnBase(): void {
         this.drawingService.baseCtx.save();
         this.drawingService.baseCtx.translate(this.selectionStartPoint.x + this.width / 2, this.selectionStartPoint.y + this.height / 2);
-        this.drawingService.baseCtx.rotate((this.degres * Math.PI) / 180);
+        this.drawingService.baseCtx.rotate((this.degres * Math.PI) / PI_DEGREE);
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
 
         this.drawingService.baseCtx.drawImage(this.selectionData, -this.width / 2, -this.height / 2, Math.abs(this.width), Math.abs(this.height));
@@ -61,7 +62,7 @@ export class MagicWandSelection extends Movable {
         this.selectionActivated = false;
     }
 
-    createEnglobingBox() {
+    createEnglobingBox(): void {
         this.rectangleService.drawRectangle(
             this.drawingService.previewCtx,
             this.selectionStartPoint,

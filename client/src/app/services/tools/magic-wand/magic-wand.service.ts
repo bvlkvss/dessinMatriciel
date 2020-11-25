@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Color } from '@app/classes/color';
+import { DEFAULT_HANDLE_INDEX } from '@app/classes/movable';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { MagicWandSelection } from './magic-wand-selection';
-import { DEFAULT_HANDLE_INDEX } from '@app/classes/movable';
 
 export enum MouseButton {
     Left = 0,
@@ -65,7 +65,7 @@ export class MagicWandService extends Tool {
                     this.invoker.ClearRedo();
                     this.invoker.setIsAllowed(false);
                     obj.mouseDownInsideSelection = true;
-                    //this.mouseDown = false;
+                    // this.mouseDown = false;
                     obj.offsetX = this.mouseDownCoord.x - obj.selectionStartPoint.x;
                     obj.offsetY = this.mouseDownCoord.y - obj.selectionStartPoint.y;
                     return;
@@ -83,7 +83,12 @@ export class MagicWandService extends Tool {
         if (this.mouseDown) {
             const obj = this.magicSelectionObj;
             obj.updateSelectionNodes();
-
+            // pour bien update les handles lors d'un flip
+            //////////////////////////////////////////
+            obj.width = Math.abs(obj.width);
+            obj.height = Math.abs(obj.height);
+            obj.updateResizingHandles();
+            ////////////////////////////////////////
             obj.rectangleService.mouseDown = false;
             obj.rectangleService.toSquare = false;
             obj.mouseDownInsideSelection = false;
@@ -240,7 +245,7 @@ export class MagicWandService extends Tool {
         this.selectionEndPoint = { x: maxX, y: maxY };
     }
 
-    private getMax(arr: number[]) {
+    private getMax(arr: number[]): number {
         let len = arr.length;
         let max = -Infinity;
 
@@ -250,7 +255,7 @@ export class MagicWandService extends Tool {
         return max;
     }
 
-    private getMin(arr: number[]) {
+    private getMin(arr: number[]): number {
         let len = arr.length;
         let min = Infinity;
 

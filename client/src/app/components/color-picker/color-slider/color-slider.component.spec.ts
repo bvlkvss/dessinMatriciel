@@ -1,4 +1,4 @@
-/* tslint:disable */
+ /* tslint:disable */
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ColorSliderComponent } from './color-slider.component';
 

@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { DEFAULT_HANDLE_INDEX, Movable } from '@app/classes/movable';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { RectangleService, RectangleStyle } from '@app/services/tools/rectangle/rectangle.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
-import { RectangleService, RectangleStyle } from '../rectangle/rectangle.service';
 export enum MouseButton {
     Left = 0,
     Middle = 1,
@@ -26,7 +26,6 @@ export class SelectionService extends Movable {
     vFlip: boolean;
     hScale: number;
     vScale: number;
-    widthProxy: any;
 
     constructor(drawingService: DrawingService, protected invoker: UndoRedoService) {
         super(drawingService, invoker);
@@ -47,7 +46,6 @@ export class SelectionService extends Movable {
             this.mouseDownCoord = this.getPositionFromMouse(event);
 
             if (this.selectionActivated) {
-                console.log(this.selectionStartPoint, 'vs', this.getRotatedPos(this.selectionStartPoint), 'mouscoord=', this.mouseDownCoord);
                 if (this.mouseDownOnHandle(this.mouseDownCoord) !== DEFAULT_HANDLE_INDEX) {
                     this.currenthandle = this.mouseDownOnHandle(this.mouseDownCoord);
                     this.invoker.ClearRedo();
@@ -151,6 +149,10 @@ export class SelectionService extends Movable {
                 this.mouseDown = false;
             }
         }
+        this.width = Math.abs(this.width);
+        this.height = Math.abs(this.height);
+        this.updateSelectionNodes();
+        this.updateResizingHandles();
         this.rectangleService.mouseDown = false;
         this.rectangleService.toSquare = false;
         this.mouseDown = false;

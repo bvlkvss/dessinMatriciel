@@ -33,7 +33,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         private tools: ToolsManagerService,
         private resizer: ResizingService,
         private invoker: UndoRedoService,
-    ) { }
+    ) {}
 
     ngOnInit(): void {
         this.drawingService.resizeCanvas();
@@ -104,9 +104,9 @@ export class DrawingComponent implements AfterViewInit, OnInit {
             tool.redrawSelection(true);
         } else if (this.tools.getTools().get('magic-wand') === this.tools.currentTool) {
             const tool = this.tools.currentTool as MagicWandService;
-            if(tool.magicSelectionObj.isActive){
-            tool.magicSelectionObj.updateDegree(event, this.altkey);
-            tool.magicSelectionObj.redrawSelection();
+            if (tool.magicSelectionObj.isActive) {
+                tool.magicSelectionObj.updateDegree(event, this.altkey);
+                tool.magicSelectionObj.redrawSelection();
             }
         }
     }

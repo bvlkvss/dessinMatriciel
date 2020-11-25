@@ -12,7 +12,14 @@ const MOVEMENT_OFFSET = 3;
 const INIT_MOVE_DELAY = 500;
 const CONTINUOUS_MOVE_DELAY = 100;
 const DEFAULT_DEGREE_STEP = 15;
+const PI_DEGREE = 180;
+const DEFAULT_VECTOR_START = 10;
 export const DEFAULT_HANDLE_INDEX = -1;
+enum FLIPCASES {
+    vertical = 1,
+    horizental = 2,
+    diagonal = 3,
+}
 enum HANDLES {
     one = 1,
     two = 2,
@@ -23,6 +30,7 @@ enum HANDLES {
     seven = 7,
     eight = 8,
 }
+// tslint:disable:no-empty cause it an abstract class
 export abstract class Movable extends Tool {
     ellipseService: EllipseService;
     rectangleService: RectangleService;
@@ -67,9 +75,9 @@ export abstract class Movable extends Tool {
         this.selectionActivated = false;
     }
 
-    eraseSelectionFromBase(endPos: Vec2): void { }
-    clipImageWithEllipse(): void { }
-    resetSelection(): void { }
+    eraseSelectionFromBase(endPos: Vec2): void {}
+    clipImageWithEllipse(): void {}
+    resetSelection(): void {}
 
     protected drawSelectionOnBase(): void {
         const centre = {
@@ -78,7 +86,7 @@ export abstract class Movable extends Tool {
         };
         this.drawingService.baseCtx.save();
         this.drawingService.baseCtx.translate(centre.x, centre.y);
-        this.drawingService.baseCtx.rotate((this.degres * Math.PI) / 180);
+        this.drawingService.baseCtx.rotate((this.degres * Math.PI) / PI_DEGREE);
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         if (this.selectionStyle === 1) {
             this.clipImageWithEllipse();
@@ -133,7 +141,6 @@ export abstract class Movable extends Tool {
         return i;
     }
 
-
     getRotatedGeniric(point: Vec2, centre: Vec2, angle: number): Vec2 {
         return {
             x: (point.x - centre.x) * Math.cos(angle) - (point.y - centre.y) * Math.sin(angle) + centre.x,
@@ -144,16 +151,16 @@ export abstract class Movable extends Tool {
     getUnrotatedPos(element: Vec2): Vec2 {
         const tempX = element.x - (this.selectionStartPoint.x + this.width / 2);
         const tempY = element.y - (this.selectionStartPoint.y + this.height / 2);
-        const rotatedX = tempX * Math.cos((this.degres * Math.PI) / 180) + tempY * Math.sin((this.degres * Math.PI) / 180);
-        const rotatedY = tempY * Math.cos((this.degres * Math.PI) / 180) - tempX * Math.sin((this.degres * Math.PI) / 180);
+        const rotatedX = tempX * Math.cos((this.degres * Math.PI) / PI_DEGREE) + tempY * Math.sin((this.degres * Math.PI) / PI_DEGREE);
+        const rotatedY = tempY * Math.cos((this.degres * Math.PI) / PI_DEGREE) - tempX * Math.sin((this.degres * Math.PI) / PI_DEGREE);
         return { x: rotatedX + this.selectionStartPoint.x + this.width / 2, y: rotatedY + this.selectionStartPoint.y + this.height / 2 } as Vec2;
     }
 
     getRotatedPos(element: Vec2): Vec2 {
         const tempX = element.x - (this.selectionStartPoint.x + this.width / 2);
         const tempY = element.y - (this.selectionStartPoint.y + this.height / 2);
-        const rotatedX = tempX * Math.cos((this.degres * Math.PI) / 180) - tempY * Math.sin((this.degres * Math.PI) / 180);
-        const rotatedY = tempY * Math.cos((this.degres * Math.PI) / 180) + tempX * Math.sin((this.degres * Math.PI) / 180);
+        const rotatedX = tempX * Math.cos((this.degres * Math.PI) / PI_DEGREE) - tempY * Math.sin((this.degres * Math.PI) / PI_DEGREE);
+        const rotatedY = tempY * Math.cos((this.degres * Math.PI) / PI_DEGREE) + tempX * Math.sin((this.degres * Math.PI) / PI_DEGREE);
         return {
             x: rotatedX + this.selectionStartPoint.x + this.width / 2,
             y: rotatedY + this.selectionStartPoint.y + this.height / 2,
@@ -164,15 +171,15 @@ export abstract class Movable extends Tool {
         let scale: Vec2 = { x: 0, y: 0 };
         let translateVec: Vec2 = { x: 0, y: 0 };
         switch (this.checkFlip()) {
-            case 1:
+            case FLIPCASES.vertical:
                 scale = { x: -1, y: 1 };
                 translateVec = { x: this.selectionData.width, y: 0 };
                 break;
-            case 2:
+            case FLIPCASES.horizental:
                 scale = { x: 1, y: -1 };
                 translateVec = { x: 0, y: this.selectionData.height };
                 break;
-            case 3:
+            case FLIPCASES.diagonal:
                 scale = { x: -1, y: -1 };
                 translateVec = { x: this.selectionData.width, y: this.selectionData.height };
                 break;
@@ -181,14 +188,14 @@ export abstract class Movable extends Tool {
     }
 
     flipData(translateVec: Vec2, scale: Vec2): void {
-        let tempCanvas = document.createElement('canvas');
+        const tempCanvas = document.createElement('canvas');
         tempCanvas.width = this.selectionData.width;
         tempCanvas.height = this.selectionData.height;
         (tempCanvas.getContext('2d') as CanvasRenderingContext2D).drawImage(this.selectionData, 0, 0);
         (this.selectionData.getContext('2d') as CanvasRenderingContext2D).save();
         (this.selectionData.getContext('2d') as CanvasRenderingContext2D).translate(translateVec.x, translateVec.y);
         (this.selectionData.getContext('2d') as CanvasRenderingContext2D).scale(scale.x, scale.y);
-        this.drawingService.clearCanvas((this.selectionData.getContext('2d') as CanvasRenderingContext2D));
+        this.drawingService.clearCanvas(this.selectionData.getContext('2d') as CanvasRenderingContext2D);
         (this.selectionData.getContext('2d') as CanvasRenderingContext2D).drawImage(tempCanvas, 0, 0);
         (this.selectionData.getContext('2d') as CanvasRenderingContext2D).restore();
     }
@@ -296,7 +303,7 @@ export abstract class Movable extends Tool {
         for (const handle of this.resizingHandles) {
             this.drawingService.previewCtx.save();
             this.drawingService.previewCtx.translate(this.selectionStartPoint.x + this.width / 2, this.selectionStartPoint.y + this.height / 2);
-            this.drawingService.previewCtx.rotate((this.degres * Math.PI) / 180);
+            this.drawingService.previewCtx.rotate((this.degres * Math.PI) / PI_DEGREE);
             this.drawingService.previewCtx.rect(
                 this.selectionStartPoint.x + this.width / 2 - 2 * HANDLE_OFFSET - handle.x,
                 this.selectionStartPoint.y + this.height / 2 - 2 * HANDLE_OFFSET - handle.y,
@@ -310,6 +317,7 @@ export abstract class Movable extends Tool {
         this.drawingService.previewCtx.closePath();
         this.drawingService.previewCtx.restore();
     }
+
     resizeSelection(): void {
         let direction = {} as Vec2;
         let newStart = {} as Vec2;
@@ -318,38 +326,39 @@ export abstract class Movable extends Tool {
                 this.adjustRectangle(this.currentPos, this.selectionEndPoint, 0);
                 break;
             case HANDLES.two:
-                direction = { x: this.selectionStartPoint.x, y: this.selectionStartPoint.y + Math.abs(this.height) / 2 + 10 };
+                direction = { x: this.selectionStartPoint.x, y: 10 };
                 newStart = this.handleNewPos(this.selectionStartPoint, direction);
                 this.adjustRectangle(newStart, this.selectionEndPoint, 0);
                 break;
             case HANDLES.three:
-                direction = { x: this.selectionStartPoint.x, y: this.selectionStartPoint.y + Math.abs(this.height) / 2 + 10 };
+                direction = { x: this.selectionStartPoint.x, y: this.selectionStartPoint.y + Math.abs(this.height) / 2 + DEFAULT_VECTOR_START };
                 newStart = this.handleNewPos(this.selectionStartPoint, direction);
                 this.adjustRectangle(newStart, this.selectionEndPoint, 0);
-                direction = { x: this.selectionEndPoint.x - (Math.abs(this.width) / 2 + 10), y: this.selectionEndPoint.y };
+                direction = { x: this.selectionEndPoint.x - (Math.abs(this.width) / 2 + DEFAULT_VECTOR_START), y: this.selectionEndPoint.y };
                 newStart = this.handleNewPos(this.selectionEndPoint, direction);
                 this.adjustRectangle(this.selectionStartPoint, newStart, 1);
                 break;
             case HANDLES.four:
-                direction = { x: this.selectionEndPoint.x + this.width / 2 + 10, y: this.selectionStartPoint.y };
+                console.log(this.currentPos);
+                direction = { x: this.selectionEndPoint.x + this.width / 2 + DEFAULT_VECTOR_START, y: this.selectionStartPoint.y };
                 newStart = this.handleNewPos(this.selectionStartPoint, direction);
                 this.adjustRectangle(newStart, this.selectionEndPoint, 0);
                 break;
             case HANDLES.five:
-                direction = { x: this.selectionEndPoint.x - (Math.abs(this.width) / 2 + 10), y: this.selectionEndPoint.y };
+                direction = { x: this.selectionEndPoint.x - (Math.abs(this.width) / 2 + DEFAULT_VECTOR_START), y: this.selectionEndPoint.y };
                 newStart = this.handleNewPos(this.selectionEndPoint, direction);
                 this.adjustRectangle(this.selectionStartPoint, newStart, 1);
                 break;
             case HANDLES.six:
-                direction = { x: this.selectionStartPoint.x + Math.abs(this.width) / 2 + 10, y: this.selectionStartPoint.y };
+                direction = { x: this.selectionStartPoint.x + Math.abs(this.width) / 2 + DEFAULT_VECTOR_START, y: this.selectionStartPoint.y };
                 newStart = this.handleNewPos(this.selectionStartPoint, direction);
                 this.adjustRectangle(newStart, this.selectionEndPoint, 0);
-                direction = { x: this.selectionEndPoint.x, y: this.selectionEndPoint.y - (Math.abs(this.height) / 2 + 10) };
+                direction = { x: this.selectionEndPoint.x, y: this.selectionEndPoint.y - (Math.abs(this.height) / 2 + DEFAULT_VECTOR_START) };
                 newStart = this.handleNewPos(this.selectionEndPoint, direction);
                 this.adjustRectangle(this.selectionStartPoint, newStart, 1);
                 break;
             case HANDLES.seven:
-                direction = { x: this.selectionEndPoint.x, y: this.selectionEndPoint.y - (Math.abs(this.height) / 2 + 10) };
+                direction = { x: this.selectionEndPoint.x, y: this.selectionEndPoint.y - (Math.abs(this.height) / 2 + DEFAULT_VECTOR_START) };
                 newStart = this.handleNewPos(this.selectionEndPoint, direction);
                 this.adjustRectangle(this.selectionStartPoint, newStart, 1);
                 break;
@@ -389,23 +398,23 @@ export abstract class Movable extends Tool {
             x: (this.selectionStartPoint.x + this.selectionEndPoint.x) / 2,
             y: (this.selectionStartPoint.y + this.selectionEndPoint.y) / 2,
         };
-        const rotatedStart = startOrEnd === 0 ? start : this.getRotatedGeniric(start, oldCenter, (this.degres * Math.PI) / 180);
-        const rotatedEnd = startOrEnd === 1 ? end : this.getRotatedGeniric(end, oldCenter, (this.degres * Math.PI) / 180);
+        const rotatedStart = startOrEnd === 0 ? start : this.getRotatedGeniric(start, oldCenter, (this.degres * Math.PI) / PI_DEGREE);
+        const rotatedEnd = startOrEnd === 1 ? end : this.getRotatedGeniric(end, oldCenter, (this.degres * Math.PI) / PI_DEGREE);
         const newCenter = { x: (rotatedStart.x + rotatedEnd.x) / 2, y: (rotatedEnd.y + rotatedStart.y) / 2 };
-        const newStart = this.getRotatedGeniric(rotatedStart, newCenter, -((this.degres * Math.PI) / 180));
-        const newEnd = this.getRotatedGeniric(rotatedEnd, newCenter, -((this.degres * Math.PI) / 180));
+        const newStart = this.getRotatedGeniric(rotatedStart, newCenter, -((this.degres * Math.PI) / PI_DEGREE));
+        const newEnd = this.getRotatedGeniric(rotatedEnd, newCenter, -((this.degres * Math.PI) / PI_DEGREE));
         this.selectionStartPoint = newStart;
         this.selectionEndPoint = newEnd;
     }
 
-    updateDegree(event: any, alt: boolean): void {
-        if (event.wheelDelta > 0) {
+    updateDegree(event: WheelEvent, alt: boolean): void {
+        if (event.deltaY < 0) {
             if (alt) {
                 ++this.degres;
             } else {
                 this.degres += DEFAULT_DEGREE_STEP;
             }
-        } else {
+        } else if (event.deltaY > 0) {
             if (alt) {
                 --this.degres;
             } else {
@@ -424,13 +433,10 @@ export abstract class Movable extends Tool {
         this.height = this.selectionEndPoint.y - this.selectionStartPoint.y;
 
         if (this.rectangleService.toSquare) {
-            // if(Math.abs(this.resizingHandles[this.currenthandle-1].x-this.selectionStartPoint.x)<Math.abs(this.resizingHandles[this.currenthandle-1].x-this.selectionEndPoint.x)){
-            if (this.currenthandle === 1 || this.currenthandle === 4 || this.currenthandle === 6) {
-                console.log('x==x');
+            if (this.currenthandle === HANDLES.one || this.currenthandle === HANDLES.four || this.currenthandle === HANDLES.six) {
                 this.selectionStartPoint.x += this.width - Math.min(this.width, this.height);
             }
-            if (this.currenthandle === 1 || this.currenthandle === 2 || this.currenthandle === 3) {
-                console.log('yyyyyyyyyy');
+            if (this.currenthandle === HANDLES.one || this.currenthandle === HANDLES.two || this.currenthandle === HANDLES.three) {
                 this.selectionStartPoint.y += this.height - Math.min(this.width, this.height);
             }
             this.width = Math.min(this.width, this.height);
@@ -442,7 +448,7 @@ export abstract class Movable extends Tool {
         const posy = -this.height / 2;
         this.drawingService.previewCtx.save();
         this.drawingService.previewCtx.translate(this.selectionStartPoint.x + this.width / 2, this.selectionStartPoint.y + this.height / 2);
-        this.drawingService.previewCtx.rotate((this.degres * Math.PI) / 180);
+        this.drawingService.previewCtx.rotate((this.degres * Math.PI) / PI_DEGREE);
         if (this.selectionStyle === 1) {
             this.ellipseService.drawEllipse(
                 this.drawingService.previewCtx,
@@ -460,7 +466,9 @@ export abstract class Movable extends Tool {
             this.drawingService.previewCtx.clip();
         }
 
-        if (!redrawAfterRotate) { this.flipSelection() };
+        if (!redrawAfterRotate) {
+            this.flipSelection();
+        }
         this.drawingService.previewCtx.drawImage(this.selectionData, posx, posy, this.width, this.height);
         this.rectangleService.drawRectangle(
             this.drawingService.previewCtx,
@@ -481,16 +489,14 @@ export abstract class Movable extends Tool {
     }
 
     mouseDownOnHandle(mousedownpos: Vec2): number {
-        // this.drawingService.clearCanvas(this.drawingService.baseCtx);
         for (let i = 0; i < this.resizingHandles.length; i++) {
-            console.log(this.degres);
-            // const rotHandle = this.getRotatedPos(this.resizingHandles[i]);
             if (
                 this.getUnrotatedPos(mousedownpos).x >= this.resizingHandles[i].x &&
                 this.getUnrotatedPos(mousedownpos).x <= this.resizingHandles[i].x + HANDLE_LENGTH &&
                 this.getUnrotatedPos(mousedownpos).y >= this.resizingHandles[i].y &&
                 this.getUnrotatedPos(mousedownpos).y <= this.resizingHandles[i].y + HANDLE_LENGTH
             ) {
+                console.log('handle = ', i + 1);
                 return i + 1;
             }
         }
