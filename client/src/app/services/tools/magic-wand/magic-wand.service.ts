@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Color } from '@app/classes/color';
-import { DEFAULT_HANDLE_INDEX } from '@app/classes/movable';
+import { DEFAULT_HANDLE_INDEX } from '@app/classes/resizable';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -187,7 +187,7 @@ export class MagicWandService extends Tool {
 
     private clearSelection(): void {
         this.resetMagicWandCanvas();
-        this.resetSelectionPixels();
+        this.selectionPixels = [];
         this.magicSelectionObj.isActive = false;
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
     }
@@ -245,30 +245,6 @@ export class MagicWandService extends Tool {
         this.selectionEndPoint = { x: maxX, y: maxY };
     }
 
-    private getMax(arr: number[]): number {
-        let len = arr.length;
-        let max = -Infinity;
-
-        while (len--) {
-            max = arr[len] > max ? arr[len] : max;
-        }
-        return max;
-    }
-
-    private getMin(arr: number[]): number {
-        let len = arr.length;
-        let min = Infinity;
-
-        while (len--) {
-            min = arr[len] < min ? arr[len] : min;
-        }
-        return min;
-    }
-
-    private resetSelectionPixels(): void {
-        this.selectionPixels = [];
-    }
-
     private saveSelection(modifiedPixels: Vec2[]): void {
         this.drawOnWandCanvas();
         this.cropWandCanvas(modifiedPixels);
@@ -307,12 +283,6 @@ export class MagicWandService extends Tool {
 
         this.selectionMinHeight = minHeight;
         this.selectionMinWidth = minWidth;
-    }
-
-    private getPositionFromPixel(pixel: number, width: number): Vec2 {
-        const x = (pixel / RGBA_NUMBER_OF_COMPONENTS) % width;
-        const y = Math.floor(pixel / RGBA_NUMBER_OF_COMPONENTS / width);
-        return { x, y };
     }
 
     private getNonContiguousPixels(position: Vec2): Vec2[] {

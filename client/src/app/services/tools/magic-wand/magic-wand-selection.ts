@@ -1,8 +1,9 @@
 import { Movable } from '@app/classes/movable';
+import { PI_DEGREE } from '@app/classes/rotationable';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
-const PI_DEGREE = 180;
+
 export class MagicWandSelection extends Movable {
     selectionPixels: number[];
     isActive: boolean;

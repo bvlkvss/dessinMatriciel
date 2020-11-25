@@ -59,6 +59,26 @@ export abstract class Tool {
         return this.lineWidth;
     }
 
+    protected getMax(arr: number[]): number {
+        let len = arr.length;
+        let max = -Infinity;
+
+        while (len--) {
+            max = arr[len] > max ? arr[len] : max;
+        }
+        return max;
+    }
+
+    protected getMin(arr: number[]): number {
+        let len = arr.length;
+        let min = Infinity;
+
+        while (len--) {
+            min = arr[len] < min ? arr[len] : min;
+        }
+        return min;
+    }
+
     protected getActualColor(position: Vec2): Color {
         const imageData = this.drawingService.baseCtx.getImageData(position.x, position.y, 1, 1);
         return this.getColorFromData(imageData);
@@ -96,5 +116,11 @@ export abstract class Tool {
         imageData.data[position] = color.red;
         imageData.data[position + 1] = color.green;
         imageData.data[position + 2] = color.blue;
+    }
+
+    protected getPositionFromPixel(pixel: number, width: number): Vec2 {
+        const x = (pixel / RGBA_NUMBER_OF_COMPONENTS) % width;
+        const y = Math.floor(pixel / RGBA_NUMBER_OF_COMPONENTS / width);
+        return { x, y };
     }
 }

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { DEFAULT_HANDLE_INDEX, Movable } from '@app/classes/movable';
+import { Movable } from '@app/classes/movable';
+import { DEFAULT_HANDLE_INDEX } from '@app/classes/resizable';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { RectangleService, RectangleStyle } from '@app/services/tools/rectangle/rectangle.service';
