@@ -96,12 +96,14 @@ export class TextService extends Tool {
     }
 
     private isInsideRect(): boolean {
-        return (
-            this.mouseDownCoord.x >= this.rectStartPoint.x &&
-            this.mouseDownCoord.y >= this.rectStartPoint.y &&
-            this.mouseDownCoord.y <= this.rectEndPoint.y &&
-            this.mouseDownCoord.x <= this.rectEndPoint.x
-        );
+        if (this.mouseDownCoord)
+            return (
+                this.mouseDownCoord.x >= this.rectStartPoint.x &&
+                this.mouseDownCoord.y >= this.rectStartPoint.y &&
+                this.mouseDownCoord.y <= this.rectEndPoint.y &&
+                this.mouseDownCoord.x <= this.rectEndPoint.x
+            );
+        return false;
     }
     private drawBox(ctx: CanvasRenderingContext2D, position: Vec2): void {
         const textMeasure = this.findLongestLine();
