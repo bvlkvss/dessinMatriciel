@@ -16,6 +16,9 @@ describe('PlumeService', () => {
     let drawLineSpy: jasmine.Spy<any>;
     let drawPreviewLineSpy: jasmine.Spy<any>;
     let allocateSpaceSpy: jasmine.Spy<any>;
+    let validateAngle: jasmine.Spy<any>;
+    let sendMessage: jasmine.Spy<any>;
+
 
     let clearPathSpy: jasmine.Spy<any>;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
@@ -37,6 +40,8 @@ describe('PlumeService', () => {
         drawPreviewLineSpy = spyOn<any>(service, 'drawPreviewLine').and.callThrough();
         allocateSpaceSpy = spyOn<any>(service, 'allocateSpace').and.callThrough();
         clearPathSpy = spyOn<any>(service, 'clearPath').and.callThrough();
+        validateAngle = spyOn<any>(service, 'validateAngle').and.callThrough();
+        sendMessage = spyOn<any>(service, 'sendMessage').and.callThrough();
 
         service['drawingService'].baseCtx = baseCtxStub;
         service['drawingService'].previewCtx = previewCtxStub;
@@ -185,7 +190,6 @@ describe('PlumeService', () => {
         service.arrayTooLarge = true;
         service.mouseDown = false;
 
-
         service.onMouseMove(mouseEvent);
         // expect(drawServiceSpy.clearCanvas).not.toHaveBeenCalled();
         expect(drawLineSpy).not.toHaveBeenCalled();
@@ -234,10 +238,10 @@ describe('PlumeService', () => {
 
     it('adjust angle should adjust angle by substracting 0.261799 to the angle if altkey is pressed and deltaY is a negative number', () => {
         wheelEvent2.altKey;
-        service.angle = 0;
+        service.angle = 1;
         service.drawPreviewLine = jasmine.createSpy();
         service.adjustAngle(wheelEvent2);
-        expect(service.angle).toEqual(-0.261799);
+        expect(service.angle).toEqual(1-0.261799);
     });
 
     it('adjust angle should adjust angle by substracting 0.261799 to the angle if altkey is pressed and deltaY is a negative number', () => {
@@ -250,10 +254,39 @@ describe('PlumeService', () => {
 
     it('adjust angle should adjust angle by substracting 0.261799 to the angle if altkey is pressed and deltaY is a negative number', () => {
         wheelEvent4.altKey;
-        service.angle = 0;
+        service.angle = 1;
         service.drawPreviewLine = jasmine.createSpy();
         service.adjustAngle(wheelEvent4);
-        expect(service.angle).toEqual(-0.0174533);
+        expect(service.angle).toEqual(1-0.0174533);
     });
+
+    it(' adjustAngle should  call validateAngle', () => {
+        service.drawPreviewLine = jasmine.createSpy();
+        service.adjustAngle(wheelEvent);
+        expect(validateAngle).toHaveBeenCalled();
+    });
+
+    it('validate angle should set angle to 360 or 2PI if degree is negative', () => {
+        var degree =-2;
+        service.validateAngle(degree);
+        expect(service.angle).toEqual(2*Math.PI);
+        //expect(degree).toEqual(360);
+    });
+
+    it('validate angle should set angle to 0 or 2PI if degree is bigger than 360', () => {
+        var degree =361;
+        service.validateAngle(degree);
+        expect(service.angle).toEqual(0);
+        //expect(degree).toEqual(360);
+    });
+
+
+    it(' validate should  call sendMessage', () => {
+        var degree =-2;
+        service.drawPreviewLine = jasmine.createSpy();
+        service.validateAngle(degree);
+        expect(sendMessage).toHaveBeenCalled();
+    });
+
 
 });
