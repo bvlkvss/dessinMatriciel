@@ -4,9 +4,9 @@ import { MatSelectChange } from '@angular/material/select';
 import { Tool } from '@app/classes/tool';
 import { BrushService } from '@app/services/tools/brush/brush.service';
 import { Arguments, PipetteService } from '@app/services/tools/pipette/pipette.service';
+import { PlumeService } from '@app/services/tools/plume/plume.service';
 import { TextService } from '@app/services/tools/text/text.service';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
-import { PlumeService } from '@app/services/tools/plume/plume.service'
 import { Subscription } from 'rxjs';
 
 const MAX_WIDTH_VALUE = 100;
@@ -33,14 +33,12 @@ export class AttributebarComponent implements OnInit, AfterViewChecked, AfterVie
     tolerance: string = '0';
     selectedValue: string;
     polices: string[] = ['Arial', 'Times New Roman', 'Courier New', 'Verdana', 'Comic Sans MS, cursive', 'Trebuchet MS, Helvetica'];
-    private subscription: Subscription;
-
-
 
     circleIsShown: boolean = true;
     @ViewChild('pipette', { static: false }) pipetteCanvas: ElementRef<HTMLCanvasElement>;
     pipetteCtx: CanvasRenderingContext2D;
     currentTexture: string = '../../../assets/b1.svg';
+    subscription: Subscription;
     constructor(private tools: ToolsManagerService, private pipetteService: PipetteService, private plumeService: PlumeService) {
         this.onClick();
     }
@@ -49,16 +47,10 @@ export class AttributebarComponent implements OnInit, AfterViewChecked, AfterVie
 
     ngOnInit(): void {
         this.widthValue = this.tools.currentTool.lineWidth.toString();
-        this.subscription = this.plumeService.getMessage().subscribe((message:string) => {
+        this.subscription = this.plumeService.getMessage().subscribe((message: string) => {
             this.angleValue = message;
         });
     }
-
-    ngOnDestroy(): void {
-        this.subscription.unsubscribe();
-    }
-     
-    
 
     onClick(): void {
         this.pipetteService.getColorObservable().subscribe((isPrimary: boolean) => {
@@ -219,7 +211,6 @@ export class AttributebarComponent implements OnInit, AfterViewChecked, AfterVie
         this.angleValue = id;
         const plume = this.tools.currentTool as PlumeService;
         plume.setAngle(Number(this.angleValue));
-        //plume.sendMessage(this.angleValue);
     }
 
     setLineWidth(input: string): void {

@@ -33,7 +33,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         private tools: ToolsManagerService,
         private resizer: ResizingService,
         private invoker: UndoRedoService,
-    ) { }
+    ) {}
 
     ngOnInit(): void {
         this.drawingService.resizeCanvas();
@@ -193,9 +193,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
                     (this.tools.currentTool as SelectionService).resetSelection();
                 }
             } else this.tools.currentTool.onKeyDown(event);
-        }
-        else
-            this.tools.currentTool.onKeyDown(event);
+        } else this.tools.currentTool.onKeyDown(event);
     }
 
     @HostListener('window : mousewheel', ['$event'])
