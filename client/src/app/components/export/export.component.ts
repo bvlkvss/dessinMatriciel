@@ -14,24 +14,64 @@ export class ExportComponent {
     private type: string;
     private filter: string;
     private name: string;
+    private isError: boolean;
+    email: string;
     image: HTMLImageElement;
     constructor(private exportService: ExportService, protected drawingService: DrawingService, private dialogRef: MatDialogRef<ExportComponent>) {
         this.filter = 'none';
         this.type = 'jpeg';
         this.name = 'MonDessin';
+        this.email = 'none';
         this.image = this.exportService.createBaseImage();
         this.dialogRef.afterClosed().subscribe(() => {
             ExportComponent.isExportOpen = false;
         });
     }
 
-    onConfirm(): void {
-        this.exportImage();
+    saveImageOnDisk(): void {
+        if (window.confirm('Voulez vous vraiment sauvegarder ce dessin sur votre ordinateur')) this.exportImage();
         this.closeDialog();
+    }
+
+    async sendEmail(): Promise<boolean> {
+        if (!this.validateEmail(this.email)) {
+            alert('Vous devez entrer un email valide de type example@example.xyz');
+            return false;
+        } else {
+            if (window.confirm('Voulez vous vraiment envoyer ce dessin par courriel')) {
+                await this.sendImage();
+                if (this.isError) {
+                    alert("Une erreur a eu lieu durant l'envoi de votre dessin");
+                    return false;
+                }
+
+                alert('Dessin envoyé avec succès');
+                this.closeDialog();
+                return true;
+            }
+            this.closeDialog();
+            return false;
+        }
+    }
+
+    async sendImage(): Promise<boolean> {
+        this.exportService
+            .sendEmailDataToServer(this.image, this.name, this.filter, this.type, this.email)
+            .then(() => {
+                this.isError = false;
+            })
+            .catch((error: Error) => {
+                this.isError = true;
+            });
+        return this.isError;
     }
 
     exportImage(): void {
         this.exportService.exportImage(this.image, this.name, this.filter, this.type);
+    }
+
+    setEmail(emailValue: string): void {
+        this.email = emailValue;
     }
 
     setImageName(nameValue: string): void {
@@ -51,6 +91,11 @@ export class ExportComponent {
 
     closeDialog(): void {
         this.dialogRef.close(true);
+    }
+
+    validateEmail(email: string): boolean {
+        const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+        return emailRegex.test(email);
     }
 
     private setPreviewFilter(): void {

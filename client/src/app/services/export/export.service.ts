@@ -1,13 +1,40 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { EmailData } from '@common/classes/email-data';
+const SERVER_URL = 'http://localhost:3000/api/emails';
+
 @Injectable({
     providedIn: 'root',
 })
 export class ExportService {
-    constructor(private drawingService: DrawingService) {}
+    emailData: EmailData;
+    constructor(private drawingService: DrawingService, private http: HttpClient) {}
+
+    async sendEmailRequest(): Promise<boolean> {
+        return this.http
+            .post<EmailData>(SERVER_URL, this.emailData)
+            .toPromise()
+            .then(() => {
+                return true;
+            })
+            .catch(() => {
+                return false;
+            });
+    }
+
+    async sendEmailDataToServer(image: HTMLImageElement, name: string, filter: string, type: string, email: string): Promise<boolean> {
+        const imageStr = this.createImageToExport(image, filter, type);
+        this.createEmailData(imageStr, email, name, type);
+        return await this.sendEmailRequest();
+    }
 
     setFilter(image: HTMLImageElement, inputFilter: string): void {
         image.style.filter = inputFilter;
+    }
+
+    createEmailData(image: string, email: string, name: string, type: string): void {
+        this.emailData = { image, email, name, type };
     }
 
     createBaseImage(): HTMLImageElement {
@@ -30,6 +57,8 @@ export class ExportService {
         const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
         ctx.filter = filter;
         ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
-        return canvas.toDataURL('image/' + type, 1.0);
+        const dataUrl = canvas.toDataURL('image/' + type, 1.0);
+        this.drawingService.clearCanvas(ctx);
+        return dataUrl;
     }
 }

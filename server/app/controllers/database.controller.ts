@@ -75,7 +75,5 @@ export class DatabaseController {
                     res.status(Httpstatus.StatusCodes.NOT_FOUND).send(error.message);
                 });
         });
-
-        // Populate the database, call only once
     }
 }
