@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { EmailData } from '@common/classes/emailData';
+import { EmailData } from '@common/classes/email-data';
 const SERVER_URL = 'http://localhost:3000/api/emails';
 
 @Injectable({
