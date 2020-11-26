@@ -76,6 +76,5 @@ export class DatabaseController {
                 });
         });
 
-        // Populate the database, call only once
     }
 }

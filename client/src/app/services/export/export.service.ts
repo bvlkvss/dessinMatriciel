@@ -1,14 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-
+import { EmailData } from '@common/classes/emailData';
 const SERVER_URL = 'http://localhost:3000/api/emails';
-export interface EmailData {
-    image: string;
-    email: string;
-    name: string;
-    type: string;
-}
 
 @Injectable({
     providedIn: 'root',

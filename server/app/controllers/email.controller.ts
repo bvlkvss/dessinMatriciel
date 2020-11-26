@@ -1,7 +1,6 @@
-/* tslint:disable:no-any */
+import { EmailData } from '@common/classes/emailData';
 import { NextFunction, Request, Response, Router } from 'express';
 import { inject, injectable } from 'inversify';
-import { EmailData } from '../../../client/src/app/services/export/export.service';
 import { EmailService } from '../services/email.service';
 import { TYPES } from '../types';
 

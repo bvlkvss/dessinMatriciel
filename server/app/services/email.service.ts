@@ -1,8 +1,8 @@
+import { EmailData } from '@common/classes/emailData';
 import axios, { AxiosInstance } from 'axios';
 import * as dotenv from 'dotenv';
 import * as FD from 'form-data';
 import { injectable } from 'inversify';
-import { EmailData } from '../../../client/src/app/services/export/export.service';
 
 const API_URL = 'http://log2990.step.polymtl.ca/email';
 const EMAIL_API_KEY = '7e4d9af7-fe9a-43e8-b7af-bc03b0b9ef08';
