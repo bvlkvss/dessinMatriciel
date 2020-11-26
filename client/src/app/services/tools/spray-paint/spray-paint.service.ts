@@ -10,111 +10,113 @@ const DEFAULT_PENCIL_WIDTH = 1;
 
 // TODO : Déplacer ça dans un fichier séparé accessible par tous
 export enum MouseButton {
-  Left = 0,
-  Middle = 1,
-  Right = 2,
-  Back = 3,
-  Forward = 4,
+    Left = 0,
+    Middle = 1,
+    Right = 2,
+    Back = 3,
+    Forward = 4,
 }
 
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class SprayPaintService extends Tool {
 
 
-  private pathData: Vec2[];
-  density: number = 40;
+    private pathData: Vec2[];
+    radius: number = 20;
+    dropletRadius: number = 1;
+    interval : NodeJS.Timeout;
 
 
-  constructor(drawingService: DrawingService, protected invoker: UndoRedoService) {
-      super(drawingService);
 
-      this.toolAttributes = ['lineWidth'];
-      this.lineWidth = DEFAULT_PENCIL_WIDTH;
-      this.clearPath();
-  }
 
-  onMouseDown(event: MouseEvent): void {
-      this.mouseDown = event.button === MouseButton.Left;
-      if (this.mouseDown) {
-          this.invoker.ClearRedo();
-          this.invoker.setIsAllowed(false);
-          this.clearPath();
-          this.mouseDownCoord = this.getPositionFromMouse(event);
-          this.pathData.push(this.mouseDownCoord);
-      }
-  }
 
-  onMouseOut(event: MouseEvent): void {
-      if (this.mouseDown) this.drawLine(this.drawingService.baseCtx, this.pathData);
-      this.clearPath();
-  }
+    constructor(drawingService: DrawingService, protected invoker: UndoRedoService) {
+        super(drawingService);
 
-  onMouseEnter(event: MouseEvent): void {
-      this.clearPath();
-  }
+        this.toolAttributes = ['lineWidth'];
+        this.lineWidth = DEFAULT_PENCIL_WIDTH;
+        this.clearPath();
 
-  onMouseUp(event: MouseEvent): void {
-      if (this.mouseDown) {
-          this.drawingService.clearCanvas(this.drawingService.previewCtx);
-
-          this.drawLine(this.drawingService.baseCtx, this.pathData);
-          // const cmd = new PencilCommand(this.pathData, this, this.drawingService) as PencilCommand;
-          // this.invoker.addToUndo(cmd);
-          // this.invoker.setIsAllowed(true);
-      }
-      this.mouseDown = false;
-      this.clearPath();
-  }
-
-  onMouseMove(event: MouseEvent): void {
-      if (this.mouseDown) {
-          const mousePosition = this.getPositionFromMouse(event);
-          this.pathData.push(mousePosition);
-          this.drawingService.clearCanvas(this.drawingService.previewCtx);
-
-          // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
-          this.drawLine(this.drawingService.previewCtx, this.pathData);
-      }
-  }
-
-  setPrimaryColor(color: string): void {
-      this.primaryColor = color;
-  }
-
-  setLineWidth(width: number): void {
-      this.lineWidth = width;
-  }
-
-  drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
-    ctx.setLineDash([0, 0]);
-    ctx.lineJoin = ctx.lineCap = 'round';
-    ctx.strokeStyle = this.primaryColor;
-    ctx.beginPath();
-    for (const point of path) {
-
-    for (var i = this.density; i--; ) {
-      var radius = 20;
-      var offsetX = this.getRandomInt(-radius, radius);
-      var offsetY = this.getRandomInt(-radius, radius);
-      ctx.fillRect(point.x + offsetX, point.y + offsetY, 1, 1);
     }
-  }
-  }
-  
 
-  setSecondaryColor(color: string): void {
-      this.secondaryColor = color;
-  }
+    onMouseDown(event: MouseEvent): void {
+        this.mouseDown = event.button === MouseButton.Left;
+       
+        if (this.mouseDown) {
+            this.invoker.ClearRedo();
+            this.invoker.setIsAllowed(false);
+            this.clearPath();
+            const mousePosition  = this.mouseDownCoord = this.getPositionFromMouse(event);
+            this.pathData.push(this.mouseDownCoord);
+            this.spray(this.drawingService.baseCtx, mousePosition); 
+           
+        }
+    }
 
-  private clearPath(): void {
-      this.pathData = [];
-  }
+    onMouseOut(event: MouseEvent): void {
+        this.clearPath();
+    }
 
-  getRandomInt(min : number, max : number) : number{
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-  }
+    onMouseEnter(event: MouseEvent): void {
+        this.clearPath();
+    }
+
+    onMouseUp(event: MouseEvent): void {
+        if (this.mouseDown) {
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            // const cmd = new PencilCommand(this.pathData, this, this.drawingService) as PencilCommand;
+            // this.invoker.addToUndo(cmd);
+            // this.invoker.setIsAllowed(true);
+        }
+        this.mouseDown = false;
+        this.clearPath();
+    }
+
+    onMouseMove(event: MouseEvent): void {
+        if (this.mouseDown) {
+            const mousePosition = this.getPositionFromMouse(event);
+            this.spray(this.drawingService.baseCtx, mousePosition); 
+            
+        };
+    }
+
+    spray(ctx: CanvasRenderingContext2D, position: Vec2) {
+        ctx.lineCap = 'round';
+        for (var i = 0; i < 10; i++) {
+            var offset = this.getRandomOffset();
+            var x = position.x + offset.x, y = position.y + offset.y;
+            ctx.beginPath();
+            ctx.arc(x, y, this.dropletRadius, 0, 2 * Math.PI, false);
+            ctx.fill();
+            ctx.fillStyle = ctx.strokeStyle = this.primaryColor;
+            ctx.fill();
+            ctx.stroke();
+        }
+    }
+
+    setPrimaryColor(color: string): void {
+        this.primaryColor = color;
+    }
+
+    setLineWidth(width: number): void {
+        this.lineWidth = width;
+    }
+
+    private clearPath(): void {
+        this.pathData = [];
+    }
+
+    getRandomOffset() {
+        var randomAngle = Math.random() * 360;
+        var randomRadius = Math.random() * this.radius;
+
+        return {
+            x: Math.cos(randomAngle) * randomRadius,
+            y: Math.sin(randomAngle) * randomRadius
+        };
+    }
 
 }
