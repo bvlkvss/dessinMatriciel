@@ -33,26 +33,29 @@ export class SelectionClipboardService {
     }
 
     private copy(selectionTool: SelectionService | MagicWandSelection): void {
-        if (selectionTool.selectionData) {
+        let tool = selectionTool;
+        if (selectionTool.magicSelectionObj) tool = selectionTool.magicSelectionObj;
+        if (tool.selectionData) {
             this.currentClipboardData = document.createElement('canvas');
             const ctx = this.currentClipboardData.getContext('2d') as CanvasRenderingContext2D;
-            this.currentClipboardData.width = selectionTool.width;
-            this.currentClipboardData.height = selectionTool.height;
-            ctx.drawImage(selectionTool.selectionData, 0, 0, selectionTool.width, selectionTool.height);
-            console.log(this.currentClipboardData, selectionTool.selectionData);
+            this.currentClipboardData.width = tool.width;
+            this.currentClipboardData.height = tool.height;
+            ctx.drawImage(tool.selectionData, 0, 0, tool.width, tool.height);
+            console.log(this.currentClipboardData, tool.selectionData, 'called');
         }
-        this.isCuted = false;
     }
 
     private paste(selectionTool: SelectionService | MagicWandSelection): void {
-        if (!this.isCuted) selectionTool.drawSelectionOnBase();
-        selectionTool.resetSelection();
-        selectionTool.selectionStartPoint = { x: 0, y: 0 } as Vec2;
-        selectionTool.selectionEndPoint = { x: this.currentClipboardData.width, y: this.currentClipboardData.height };
+        let tool = selectionTool;
+        if (selectionTool.magicSelectionObj) tool = selectionTool.magicSelectionObj;
+        if (!this.isCuted) tool.drawSelectionOnBase();
+        tool.resetSelection();
+        tool.selectionStartPoint = { x: 0, y: 0 } as Vec2;
+        tool.selectionEndPoint = { x: this.currentClipboardData.width, y: this.currentClipboardData.height };
         const tmp = this.currentClipboardData;
-        selectionTool.selectionData = tmp;
-        selectionTool.redrawSelection();
-        selectionTool.selectionActivated = true;
+        tool.selectionData = tmp;
+        tool.redrawSelection();
+        tool.selectionActivated = true;
     }
 
     private cut(selectionTool: SelectionService | MagicWandSelection): void {
@@ -62,8 +65,10 @@ export class SelectionClipboardService {
     }
 
     private delete(selectionTool: SelectionService | MagicWandSelection): void {
-        selectionTool.drawSelectionOnBase();
-        selectionTool.eraseSelectionFromBase(selectionTool.selectionEndPoint);
-        selectionTool.resetSelection();
+        let tool = selectionTool;
+        if (selectionTool.magicSelectionObj) tool = selectionTool.magicSelectionObj;
+        tool.drawSelectionOnBase();
+        tool.eraseSelectionFromBase(selectionTool.selectionEndPoint);
+        tool.resetSelection();
     }
 }

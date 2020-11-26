@@ -2,6 +2,7 @@ import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { EllipseService } from '@app/services/tools/ellipse/ellipse.service';
+import { MagicWandSelection } from '@app/services/tools/magic-wand/magic-wand-selection';
 import { RectangleService, RectangleStyle } from '@app/services/tools/rectangle/rectangle.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { DEFAULT_HANDLE_INDEX, HANDLES, HANDLE_LENGTH, Resizable } from './resizable';
@@ -37,6 +38,8 @@ export abstract class Movable extends Tool implements Rotationable, Resizable {
     selectionStyle: number;
     selectionActivated: boolean;
     mouseDownInsideSelection: boolean;
+    magicSelectionObj: MagicWandSelection;
+    
     getRotatedGeniric: (point: Vec2, centre: Vec2, angle: number) => Vec2 = Rotationable.prototype.getRotatedGeniric;
     getUnrotatedPos: (element: Vec2) => Vec2 = Rotationable.prototype.getUnrotatedPos;
     getRotatedPos: (element: Vec2) => Vec2 = Rotationable.prototype.getRotatedPos;
@@ -69,11 +72,11 @@ export abstract class Movable extends Tool implements Rotationable, Resizable {
         this.selectionActivated = false;
     }
 
-    eraseSelectionFromBase(endPos: Vec2): void {}
-    clipImageWithEllipse(): void {}
-    resetSelection(): void {}
+    eraseSelectionFromBase(endPos: Vec2): void { }
+    clipImageWithEllipse(): void { }
+    resetSelection(): void { }
 
-    protected drawSelectionOnBase(): void {
+    drawSelectionOnBase(): void {
         const centre = {
             x: (this.selectionStartPoint.x + this.selectionEndPoint.x) / 2,
             y: (this.selectionStartPoint.y + this.selectionEndPoint.y) / 2,

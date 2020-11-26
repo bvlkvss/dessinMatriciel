@@ -2,10 +2,12 @@ import { AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild }
 import { Tool } from '@app/classes/tool';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ResizingService } from '@app/services/resizing/resizing.service';
+import { SelectionClipboardService } from '@app/services/selection-clipboard/selection-clipboard.service';
 import { MagicWandService } from '@app/services/tools/magic-wand/magic-wand.service';
 import { SelectionService } from '@app/services/tools/selection/selection.service';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
+import { MagicWandSelection } from '../../services/tools/magic-wand/magic-wand-selection';
 
 // TODO : Avoir un fichier séparé pour les constantes ?
 
@@ -33,6 +35,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         private tools: ToolsManagerService,
         private resizer: ResizingService,
         private invoker: UndoRedoService,
+        private clipboard: SelectionClipboardService,
     ) {}
 
     ngOnInit(): void {
@@ -98,6 +101,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     }
     @HostListener('window : mousewheel', ['$event'])
     updateDegree(event: WheelEvent): void {
+        console.log(this.tools.currentTool);
         if (this.tools.getTools().get('selection') === this.tools.currentTool) {
             const tool = this.tools.currentTool as SelectionService;
             tool.updateDegree(event, this.altkey);
@@ -179,6 +183,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         this.tools.currentTool.onKeyUp(event);
     }
 
+    // tslint:disable-next-line:cyclomatic-complexity
     @HostListener('window:keydown', ['$event'])
     onkeyDownWindow(event: KeyboardEvent): void {
         this.altkey = event.altKey;
@@ -187,6 +192,15 @@ export class DrawingComponent implements AfterViewInit, OnInit {
             event.stopPropagation();
             this.drawingService.newDrawing();
             this.drawingService.resizeCanvas();
+        } else if ((event.ctrlKey && (event.key === 'x' || event.key === 'c' || event.key === 'v')) || event.key === 'Delete') {
+            console.log('enter', this.tools.currentTool);
+            if (
+                this.tools.getTools().get('selection') === this.tools.currentTool ||
+                this.tools.getTools().get('magic-wand') === this.tools.currentTool
+            ) {
+                console.log('enter if');
+                this.clipboard.onKeyDown(event, this.tools.currentTool as SelectionService | MagicWandSelection);
+            }
         } else if (event.ctrlKey || (event.ctrlKey && event.shiftKey && (event.key === 'z' || event.key === 'Z'))) {
             this.invoker.onKeyDown(event);
         } else if (event.ctrlKey && event.key === 'a') {
@@ -197,6 +211,9 @@ export class DrawingComponent implements AfterViewInit, OnInit {
 
     @HostListener('keydown', ['$event'])
     onKeyDown(event: KeyboardEvent): void {
+        if (event.ctrlKey) {
+            return;
+        }
         if (event.ctrlKey && event.key === 'o') {
             return;
         } else if (this.keyBindings.has(event.key)) {

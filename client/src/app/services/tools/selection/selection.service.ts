@@ -117,6 +117,7 @@ export class SelectionService extends Movable {
     }
 
     onMouseUp(event: MouseEvent): void {
+        console.log('called');
         this.mouseUpCoord = this.getPositionFromMouse(event);
         if (this.mouseDown && this.mouseUpCoord.x !== this.selectionStartPoint.x && this.mouseUpCoord.y !== this.selectionStartPoint.y) {
             if (!this.selectionActivated && this.rectangleService.isOut) {
@@ -258,6 +259,7 @@ export class SelectionService extends Movable {
         this.selectionActivated = false;
         this.toolAttributes = [];
         this.firstSelectionMove = true;
+        this.degres = 0;
     }
 
     selectAllCanvas(): void {
