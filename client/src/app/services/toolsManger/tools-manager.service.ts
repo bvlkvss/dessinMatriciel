@@ -11,6 +11,7 @@ import { PolygonService } from '@app/services/tools/polygon/polygon.service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle.service';
 import { SelectionService } from '@app/services/tools/selection/selection.service';
 import { TextService } from '@app/services/tools/text/text.service';
+import { SprayPaintService } from '@app/services/tools/spray-paint/spray-paint.service'
 
 @Injectable({
     providedIn: 'root',
@@ -31,6 +32,7 @@ export class ToolsManagerService {
         polygonService: PolygonService,
         pipetteService: PipetteService,
         textService: TextService,
+        sprayPaintService: SprayPaintService,
     ) {
         this.tools = new Map<string, Tool>([
             ['pencil', pencilService],
@@ -45,6 +47,7 @@ export class ToolsManagerService {
             ['polygon', polygonService],
             ['pipette', pipetteService],
             ['text', textService],
+            ['aerosol', sprayPaintService],
         ]);
         this.currentTool = this.tools.get('pencil') as Tool;
     }

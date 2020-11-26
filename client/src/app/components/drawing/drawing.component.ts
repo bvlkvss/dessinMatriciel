@@ -51,7 +51,9 @@ export class DrawingComponent implements AfterViewInit, OnInit {
             .set('r', this.tools.getTools().get('selection') as Tool)
             .set('s', this.tools.getTools().get('selection') as Tool)
             .set('i', this.tools.getTools().get('pipette') as Tool)
-            .set('t', this.tools.getTools().get('text') as Tool);
+            .set('t', this.tools.getTools().get('text') as Tool)
+            .set('a', this.tools.getTools().get('aerosol')as Tool);
+
         this.baseCtx = this.baseCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.previewCtx = this.previewCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.drawingService.baseCtx = this.baseCtx;
