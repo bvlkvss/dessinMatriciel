@@ -45,13 +45,7 @@ export class PlumeService extends Tool {
     }
 
     sendMessage(message: number) {
-        // message = message * (PI / HALF_2PI);
-        if(Math.sign(message) == POS_NUMBER){
-            this.subject.next(String(Math.ceil(message)));
-        } else{
-            this.subject.next(String(Math.ceil(360-Math.abs(message))));
-        }
-
+        this.subject.next(String(message));
     }
  
     getMessage(): Observable<any> {
@@ -148,8 +142,22 @@ export class PlumeService extends Tool {
                 this.angle = this.angle - SINGLE_STEP;
             }
         }
-        this.sendMessage(this.angle * HALF_2PI / PI);
+
+        this.validateAngle(this.angle);
+      
         this.drawPreviewLine(this.drawingService.previewCtx, this.pathData);
+    }
+
+    validateAngle(angleToValidate : number): void{
+            let degree = angleToValidate * HALF_2PI / PI;
+            degree =  Math.round(degree);
+            if(degree<0){ 
+                degree = 360;
+                this.angle = 2*PI;
+            } else if(degree>=360) {
+                this.angle = degree = 0;
+            }
+            this.sendMessage(degree);
     }
 
     drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
@@ -178,10 +186,12 @@ export class PlumeService extends Tool {
         ctx.beginPath();
         
         const point = path[path.length-1];
+        if(!this.mouseIsOut){
         ctx.moveTo(point.x, point.y);
         ctx.lineTo(point.x + this.lineLenght * Math.cos(this.angle), point.y - this.lineLenght * Math.sin(this.angle));
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         ctx.stroke();
+        }
     }
 
     setSecondaryColor(color: string): void {
