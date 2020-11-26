@@ -48,6 +48,7 @@
         "angular": "^1.8.0",
         "axios": "^0.21.0",
         "body-parser": "^1.19.0",
+        "chai-as-promised": "^7.1.1",
         "cookie-parser": "1.4.5",
         "cors": "2.8.5",
         "debug": "^4.1.1",

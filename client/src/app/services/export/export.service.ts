@@ -1,30 +1,46 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import {HttpClient} from  '@angular/common/http';
 
+const SERVER_URL = 'http://localhost:3000/api/emails';
 export interface EmailData {
-    image:HTMLImageElement,
-    email:string,
+    image: string;
+    email: string;
+    name: string;
+    type: string;
 }
 
 @Injectable({
     providedIn: 'root',
 })
-
 export class ExportService {
-    emailData:EmailData;
-    constructor(private drawingService: DrawingService, private http:HttpClient) {}
+    emailData: EmailData;
+    constructor(private drawingService: DrawingService, private http: HttpClient) {}
 
-    sendEmailDataToServer(emailData:EmailData){
-        
+    async sendEmailRequest(): Promise<boolean> {
+        return this.http
+            .post<EmailData>(SERVER_URL, this.emailData)
+            .toPromise()
+            .then(() => {
+                return true;
+            })
+            .catch(() => {
+                return false;
+            });
+    }
+
+    async sendEmailDataToServer(image: HTMLImageElement, name: string, filter: string, type: string, email: string): Promise<boolean> {
+        const imageStr = this.createImageToExport(image, filter, type);
+        this.createEmailData(imageStr, email, name, type);
+        return await this.sendEmailRequest();
     }
 
     setFilter(image: HTMLImageElement, inputFilter: string): void {
         image.style.filter = inputFilter;
     }
 
-    createEmailData(image:HTMLImageElement, email:string){
-        this.emailData ={image, email}; 
+    createEmailData(image: string, email: string, name: string, type: string): void {
+        this.emailData = { image, email, name, type };
     }
 
     createBaseImage(): HTMLImageElement {
@@ -49,6 +65,6 @@ export class ExportService {
         ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
         const dataUrl = canvas.toDataURL('image/' + type, 1.0);
         this.drawingService.clearCanvas(ctx);
-        return dataUrl; 
+        return dataUrl;
     }
 }

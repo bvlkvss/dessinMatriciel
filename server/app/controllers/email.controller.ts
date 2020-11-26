@@ -1,80 +1,40 @@
 /* tslint:disable:no-any */
 import { NextFunction, Request, Response, Router } from 'express';
-import * as Httpstatus from 'http-status-codes';
 import { inject, injectable } from 'inversify';
+import { EmailData } from '../../../client/src/app/services/export/export.service';
 import { EmailService } from '../services/email.service';
 import { TYPES } from '../types';
+
 @injectable()
-export class DatabaseController {
+export class EmailController {
     router: Router;
 
     constructor(@inject(TYPES.EmailService) private emailService: EmailService) {
         this.configureRouter();
-        //this.databaseService.start();
     }
 
     private configureRouter(): void {
         this.router = Router();
-        this.router.get('/', async (req: Request, res: Response, next: NextFunction) => {
-            this.databaseService
-                .getAllDrawings()
-                .then((drawings: Drawings[]) => {
-                    res.json(drawings);
+        this.router.post('/emails', async (req: Request, res: Response, next: NextFunction) => {
+            const emailData: EmailData = {
+                image: req.body.image,
+                email: req.body.email,
+                name: req.body.name,
+                type: req.body.type,
+            };
+            await this.emailService
+                .sendEmail(emailData)
+                .then((result) => {
+                    if (result) {
+                        console.log('Email sent!');
+                        res.send(true);
+                    }
                 })
                 .catch((error: Error) => {
-                    res.status(Httpstatus.StatusCodes.NOT_FOUND).send(error.message);
+                    console.log('Email did not send.');
+                    console.log(error.message);
+                    res.send(false);
                 });
         });
-
-        // get the id of the drawings that are on the local server.
-        this.router.get('/localServer', async (req: Request, res: Response, next: NextFunction) => {
-            const promises: any = [];
-            this.databaseService.drawingsContainer = [];
-            this.databaseService.getImageData();
-            this.databaseService
-                .update()
-                .then(() => {
-                    this.databaseService.container.forEach((element) => {
-                        promises.push(this.databaseService.getDrawingWithId(element.replace('.png', '')));
-                    });
-                    Promise.all(promises)
-                        .then((drawing: any) => {
-                            for (let i = 0; i < this.databaseService.drawingsContainer.length; i++) {
-                                this.databaseService.drawingsContainer[i].imageData =
-                                    'data:image/png;base64,' + this.databaseService.serverImagesData[i];
-                            }
-                            res.json(this.databaseService.drawingsContainer);
-                        })
-                        .catch((error: Error) => {
-                            res.status(Httpstatus.StatusCodes.NOT_FOUND).send(error.message);
-                        });
-                })
-                .catch((error: Error) => {
-                    res.status(Httpstatus.StatusCodes.NOT_FOUND).send(error.message);
-                });
-        });
-        this.router.post('/', async (req: Request, res: Response, next: NextFunction) => {
-            this.databaseService
-                .addDrawing(req.body)
-                .then((drawing: any) => {
-                    res.status(Httpstatus.StatusCodes.CREATED).send(drawing);
-                })
-                .catch((error: Error) => {
-                    res.status(Httpstatus.StatusCodes.NOT_FOUND).send(error.message);
-                });
-        });
-
-        this.router.delete('/:id', async (req: Request, res: Response, next: NextFunction) => {
-            this.databaseService
-                .deleteDrawing(req.params.id)
-                .then(() => {
-                    res.sendStatus(Httpstatus.StatusCodes.NO_CONTENT);
-                })
-                .catch((error: Error) => {
-                    res.status(Httpstatus.StatusCodes.NOT_FOUND).send(error.message);
-                });
-        });
-
-        // Populate the database, call only once
     }
 }
