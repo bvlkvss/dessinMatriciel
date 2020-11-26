@@ -1,4 +1,4 @@
-import { EmailData } from '@common/classes/emailData';
+import { EmailData } from '@common/classes/email-data';
 import axios, { AxiosInstance } from 'axios';
 import * as dotenv from 'dotenv';
 import * as FD from 'form-data';

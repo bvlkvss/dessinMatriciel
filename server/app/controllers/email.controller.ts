@@ -1,4 +1,4 @@
-import { EmailData } from '@common/classes/emailData';
+import { EmailData } from '@common/classes/email-data';
 import { NextFunction, Request, Response, Router } from 'express';
 import { inject, injectable } from 'inversify';
 import { EmailService } from '../services/email.service';
