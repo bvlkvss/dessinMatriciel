@@ -3,7 +3,7 @@ import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
-import { Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 
 const DEFAULT_WIDTH = 2;
 const DEFAULT_ANGLE = 0;
@@ -14,6 +14,7 @@ const MULTIPLE_STEP = 0.261799; // 15° en radians
 const PI = Math.PI;
 const POS_NUMBER = 1;
 const HALF_2PI = 180;
+const FULL_CIRCLE = 360;
 // TODO : Déplacer ça dans un fichier séparé accessible par tous
 export enum MouseButton {
     Left = 0,
@@ -34,7 +35,7 @@ export class PlumeService extends Tool {
     mouseIsOut: boolean = false;
     halfLength: number;
     arrayTooLarge: boolean = false;
-    private subject = new Subject();
+    subject: BehaviorSubject<string> = new BehaviorSubject<string>('');
 
     constructor(drawingService: DrawingService, protected invoker: UndoRedoService) {
         super(drawingService);
@@ -44,10 +45,11 @@ export class PlumeService extends Tool {
         this.clearPath();
     }
 
-    sendMessage(message: number) {
+    sendMessage(message: number): void {
         this.subject.next(String(message));
     }
- 
+
+    /* tslint:disable:no-any*/
     getMessage(): Observable<any> {
         return this.subject.asObservable();
     }
@@ -144,20 +146,20 @@ export class PlumeService extends Tool {
         }
 
         this.validateAngle(this.angle);
-      
+
         this.drawPreviewLine(this.drawingService.previewCtx, this.pathData);
     }
 
-    validateAngle(angleToValidate : number): void{
-            let degree = angleToValidate * HALF_2PI / PI;
-            degree =  Math.round(degree);
-            if(degree<0){ 
-                degree = 360;
-                this.angle = 2*PI;
-            } else if(degree>=360) {
-                this.angle = degree = 0;
-            }
-            this.sendMessage(degree);
+    validateAngle(angleToValidate: number): void {
+        let degree = (angleToValidate * HALF_2PI) / PI;
+        degree = Math.round(degree);
+        if (degree < 0) {
+            degree = FULL_CIRCLE;
+            this.angle = 2 * PI;
+        } else if (degree >= FULL_CIRCLE) {
+            this.angle = degree = 0;
+        }
+        this.sendMessage(degree);
     }
 
     drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
@@ -184,13 +186,13 @@ export class PlumeService extends Tool {
         ctx.lineCap = 'round';
         ctx.strokeStyle = this.primaryColor;
         ctx.beginPath();
-        
-        const point = path[path.length-1];
-        if(!this.mouseIsOut){
-        ctx.moveTo(point.x, point.y);
-        ctx.lineTo(point.x + this.lineLenght * Math.cos(this.angle), point.y - this.lineLenght * Math.sin(this.angle));
-        this.drawingService.clearCanvas(this.drawingService.previewCtx);
-        ctx.stroke();
+
+        const point = path[path.length - 1];
+        if (!this.mouseIsOut) {
+            ctx.moveTo(point.x, point.y);
+            ctx.lineTo(point.x + this.lineLenght * Math.cos(this.angle), point.y - this.lineLenght * Math.sin(this.angle));
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            ctx.stroke();
         }
     }
 

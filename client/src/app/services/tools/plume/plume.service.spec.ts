@@ -19,10 +19,8 @@ describe('PlumeService', () => {
     let validateAngle: jasmine.Spy<any>;
     let sendMessage: jasmine.Spy<any>;
 
-
     let clearPathSpy: jasmine.Spy<any>;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
-
 
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
@@ -71,8 +69,6 @@ describe('PlumeService', () => {
             deltaY: -4,
             altKey: true,
         } as WheelEvent;
-
-
     });
 
     it('should be created', () => {
@@ -136,7 +132,6 @@ describe('PlumeService', () => {
         service.onMouseUp(mouseEvent2);
         expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
         //expect(drawLineSpy).toHaveBeenCalled();
-
     });
 
     it(' onMouseUp should not call drawLine and clearcanvas if mouse was not already down and mouse is out', () => {
@@ -154,7 +149,7 @@ describe('PlumeService', () => {
         service.mouseDown = true;
 
         service.onMouseMove(mouseEvent);
-        expect(drawLineSpy).toHaveBeenCalled(); 
+        expect(drawLineSpy).toHaveBeenCalled();
         expect(drawPreviewLineSpy).not.toHaveBeenCalled();
         expect(allocateSpaceSpy).not.toHaveBeenCalled();
     });
@@ -164,13 +159,11 @@ describe('PlumeService', () => {
         service.arrayTooLarge = false;
         service.mouseDown = false;
 
-
         service.onMouseMove(mouseEvent);
         // expect(drawServiceSpy.clearCanvas).not.toHaveBeenCalled();
         expect(drawLineSpy).not.toHaveBeenCalled();
         expect(drawPreviewLineSpy).toHaveBeenCalled();
         expect(allocateSpaceSpy).not.toHaveBeenCalled();
-        
     });
 
     it(' onMouseMove should not call drawPreviewLineSpy if mouse was not already down', () => {
@@ -241,7 +234,7 @@ describe('PlumeService', () => {
         service.angle = 1;
         service.drawPreviewLine = jasmine.createSpy();
         service.adjustAngle(wheelEvent2);
-        expect(service.angle).toEqual(1-0.261799);
+        expect(service.angle).toEqual(1 - 0.261799);
     });
 
     it('adjust angle should adjust angle by substracting 0.261799 to the angle if altkey is pressed and deltaY is a negative number', () => {
@@ -257,7 +250,7 @@ describe('PlumeService', () => {
         service.angle = 1;
         service.drawPreviewLine = jasmine.createSpy();
         service.adjustAngle(wheelEvent4);
-        expect(service.angle).toEqual(1-0.0174533);
+        expect(service.angle).toEqual(1 - 0.0174533);
     });
 
     it(' adjustAngle should  call validateAngle', () => {
@@ -267,26 +260,23 @@ describe('PlumeService', () => {
     });
 
     it('validate angle should set angle to 360 or 2PI if degree is negative', () => {
-        var degree =-2;
+        var degree = -2;
         service.validateAngle(degree);
-        expect(service.angle).toEqual(2*Math.PI);
+        expect(service.angle).toEqual(2 * Math.PI);
         //expect(degree).toEqual(360);
     });
 
     it('validate angle should set angle to 0 or 2PI if degree is bigger than 360', () => {
-        var degree =361;
+        var degree = 361;
         service.validateAngle(degree);
         expect(service.angle).toEqual(0);
         //expect(degree).toEqual(360);
     });
 
-
     it(' validate should  call sendMessage', () => {
-        var degree =-2;
+        var degree = -2;
         service.drawPreviewLine = jasmine.createSpy();
         service.validateAngle(degree);
         expect(sendMessage).toHaveBeenCalled();
     });
-
-
 });
