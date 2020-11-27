@@ -27,7 +27,9 @@ export class SprayPaintService extends Tool {
     private pathData: Vec2[];
     radius: number = 20;
     dropletRadius: number = 1;
-    interval : NodeJS.Timeout;
+    interval: NodeJS.Timeout;
+    interval2: NodeJS.Timeout;
+
 
 
 
@@ -44,16 +46,18 @@ export class SprayPaintService extends Tool {
 
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButton.Left;
-       
+
         if (this.mouseDown) {
             this.invoker.ClearRedo();
             this.invoker.setIsAllowed(false);
             this.clearPath();
-            const mousePosition  = this.mouseDownCoord = this.getPositionFromMouse(event);
+            const mousePosition = this.mouseDownCoord = this.getPositionFromMouse(event);
             this.pathData.push(this.mouseDownCoord);
-            this.spray(this.drawingService.baseCtx, mousePosition); 
-           
-        }
+            this.interval = setInterval(() => { 
+                this.spray(this.drawingService.baseCtx, mousePosition); 
+            }, 10);
+        } 
+
     }
 
     onMouseOut(event: MouseEvent): void {
@@ -71,30 +75,39 @@ export class SprayPaintService extends Tool {
             // this.invoker.addToUndo(cmd);
             // this.invoker.setIsAllowed(true);
         }
+        clearInterval(this.interval);
         this.mouseDown = false;
         this.clearPath();
     }
 
     onMouseMove(event: MouseEvent): void {
+
         if (this.mouseDown) {
+            console.log('mousemove');
             const mousePosition = this.getPositionFromMouse(event);
-            this.spray(this.drawingService.baseCtx, mousePosition); 
-            
+            //this.interval2 = setInterval(() => { this.spray(this.drawingService.baseCtx, mousePosition); }, 10);
+            this.spray(this.drawingService.baseCtx, mousePosition);
+            //clearInterval(this.interval2);
         };
+
     }
 
     spray(ctx: CanvasRenderingContext2D, position: Vec2) {
         ctx.lineCap = 'round';
-        for (var i = 0; i < 10; i++) {
-            var offset = this.getRandomOffset();
-            var x = position.x + offset.x, y = position.y + offset.y;
-            ctx.beginPath();
-            ctx.arc(x, y, this.dropletRadius, 0, 2 * Math.PI, false);
-            ctx.fill();
-            ctx.fillStyle = ctx.strokeStyle = this.primaryColor;
-            ctx.fill();
-            ctx.stroke();
-        }
+
+       
+            for (var i = 0; i < 1; i++) {
+                var offset = this.getRandomOffset();
+                var x = position.x + offset.x, y = position.y + offset.y;
+                ctx.beginPath();
+                ctx.arc(x, y, this.dropletRadius, 0, 2 * Math.PI, false);
+                ctx.fill();
+                ctx.fillStyle = ctx.strokeStyle = this.primaryColor;
+                ctx.fill();
+                ctx.stroke();
+            }
+      
+       
     }
 
     setPrimaryColor(color: string): void {
@@ -120,3 +133,36 @@ export class SprayPaintService extends Tool {
     }
 
 }
+
+// var el = document.getElementById('c');
+// var ctx = el.getContext('2d');
+// var clientX, clientY, timeout;
+// var density = 50;
+
+// function getRandomInt(min, max) {
+//     return Math.floor(Math.random() * (max - min + 1)) + min;
+// }
+
+// el.onmousedown = function (e) {
+//     ctx.lineJoin = ctx.lineCap = 'round';
+//     clientX = e.clientX;
+//     clientY = e.clientY;
+
+//     timeout = setTimeout(function draw() {
+//         for (var i = density; i--;) {
+//             var radius = 30;
+//             var offsetX = getRandomInt(-radius, radius);
+//             var offsetY = getRandomInt(-radius, radius);
+//             ctx.fillRect(clientX + offsetX, clientY + offsetY, 1, 1);
+//         }
+//         if (!timeout) return;
+//         timeout = setTimeout(draw, 50);
+//     }, 50);
+// };
+// el.onmousemove = function (e) {
+//     clientX = e.clientX;
+//     clientY = e.clientY;
+// };
+// el.onmouseup = function () {
+//     clearTimeout(timeout);
+// };
