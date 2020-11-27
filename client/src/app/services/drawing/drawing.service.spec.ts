@@ -41,16 +41,16 @@ describe('DrawingService', () => {
     });
 
     it('newDrawing should call window confirm', () => {
-        let windowConfirmSpy = spyOn(window, 'confirm');
+        window.confirm = jasmine.createSpy();
         service.newDrawing();
-        expect(windowConfirmSpy).toHaveBeenCalled();
+        expect(window.confirm).toHaveBeenCalled();
     });
 
     it('newDrawing should call window confirm and call clearCanvas if user confirms', () => {
-        let windowConfirmSpy = spyOn(window, 'confirm').and.returnValue(true);
+        window.confirm = jasmine.createSpy().and.returnValue(true);
         let resizeCanvasSpy = spyOn(service, 'resizeCanvas');
         service.newDrawing();
-        expect(windowConfirmSpy).toHaveBeenCalled();
+        expect(window.confirm).toHaveBeenCalled();
         expect(resizeCanvasSpy).toHaveBeenCalled();
     });
 

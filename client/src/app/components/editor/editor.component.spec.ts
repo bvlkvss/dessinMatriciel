@@ -1,5 +1,6 @@
 /* tslint:disable */
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatButtonToggleGroup } from '@angular/material/button-toggle';
 import { MatDialog} from '@angular/material/dialog';
 import { delay } from 'rxjs/operators';
 import { AttributebarComponent } from '../attributebar/attributebar.component';
@@ -15,8 +16,7 @@ describe('EditorComponent', () => {
     let fixture: ComponentFixture<EditorComponent>;
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-          
-            declarations: [EditorComponent, AttributebarComponent, ColorPickerComponent, DrawingComponent, ColorSliderComponent, ColorPaletteComponent, SidebarComponent],
+            declarations: [EditorComponent, AttributebarComponent, ColorPickerComponent, DrawingComponent, ColorSliderComponent, ColorPaletteComponent, SidebarComponent, MatButtonToggleGroup],
             providers:[{provide: MatDialog, useValue: {}}],
         }).compileComponents();
         delay(1000);

@@ -1,6 +1,7 @@
 /* tslint:disable */
 import { async, ComponentFixture, ComponentFixtureAutoDetect, TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
+import { Tool } from '@app/classes/tool';
 import { MockDrawingService } from '@app/components/drawing/drawing.component.spec';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { BrushService } from '@app/services/tools/brush/brush.service';
@@ -115,12 +116,13 @@ describe('SidebarComponent', () => {
     });
 
     it('should  call confirm if user doesn"t confirm warning message', () => {
-        let confirmSpy = spyOn(window, 'confirm').and.returnValue(false);
+        window.confirm = jasmine.createSpy().and.returnValue(false);
         component.warningMessage();
-        expect(confirmSpy).toHaveBeenCalled();
+        expect(window.confirm).toHaveBeenCalled();
     });
 
     it('should call restoreCanvasState when changeTools is called', () => {
+        toolManagerStub.currentTool = toolManagerStub.getTools().get('pencil') as Tool;
         let restoreCanvasStateSpy = spyOn(drawServiceMock, 'restoreCanvasState');
         component.changeTools('brush');
         expect(restoreCanvasStateSpy).toHaveBeenCalled();

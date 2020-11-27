@@ -65,7 +65,9 @@ describe('AttributebarComponent', () => {
         eraserStub = new EraserService(drawServiceMock, UndoRedoServiceMock);
         pipetteStub = new PipetteService(drawServiceMock);
         textStub = new TextService(drawServiceMock);
-        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub, selectionStub, paintBucketStub, polygonStub, pipetteStub, textStub, plumeStub); TestBed.configureTestingModule({
+        plumeStub = new PlumeService(drawServiceMock, UndoRedoServiceMock);
+        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub, selectionStub, paintBucketStub, polygonStub, pipetteStub, textStub, plumeStub);
+         TestBed.configureTestingModule({
             declarations: [AttributebarComponent],
             providers: [{ provide: ToolsManagerService, useValue: toolManagerStub }, { provide: PipetteService, useValue: pipetteStub }],
         }).compileComponents();
@@ -81,8 +83,6 @@ describe('AttributebarComponent', () => {
     it('should create', () => {
         expect(component).toBeTruthy();
     });
-
-
 
     it('should call getComputedStyle when calling change Style if both id are correct', () => {
         let style_ = { borderColor: 'blue', backgroundColor: 'blue', borderStyle: 'dashed', borderWidth: '2' } as any;
