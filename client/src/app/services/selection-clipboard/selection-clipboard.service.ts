@@ -40,7 +40,6 @@ export class SelectionClipboardService {
             this.currentClipboardData.width = tool.width;
             this.currentClipboardData.height = tool.height;
             ctx.drawImage(tool.selectionData, 0, 0, tool.width, tool.height);
-            console.log(this.currentClipboardData, tool.selectionData, 'called');
         }
     }
 
@@ -49,6 +48,7 @@ export class SelectionClipboardService {
         if (selectionTool instanceof MagicWandService) tool = selectionTool.magicSelectionObj;
         if (!this.isCuted) tool.drawSelectionOnBase();
         tool.resetSelection();
+        tool.degres = 0;
         tool.selectionStartPoint = { x: 0, y: 0 } as Vec2;
         tool.selectionEndPoint = { x: this.currentClipboardData.width, y: this.currentClipboardData.height };
         const tmp = this.currentClipboardData;
