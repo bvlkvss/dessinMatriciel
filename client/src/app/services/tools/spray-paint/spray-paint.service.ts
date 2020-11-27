@@ -22,17 +22,11 @@ export enum MouseButton {
     providedIn: 'root'
 })
 export class SprayPaintService extends Tool {
-
-
     private pathData: Vec2[];
     radius: number = 20;
     dropletRadius: number = 1;
     interval: NodeJS.Timeout;
     interval2: NodeJS.Timeout;
-
-
-
-
 
 
     constructor(drawingService: DrawingService, protected invoker: UndoRedoService) {
