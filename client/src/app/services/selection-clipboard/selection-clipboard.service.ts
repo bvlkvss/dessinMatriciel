@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Vec2 } from '@app/classes/vec2';
 import { MagicWandSelection } from '@app/services/tools/magic-wand/magic-wand-selection';
+import { MagicWandService } from '@app/services/tools/magic-wand/magic-wand.service';
 import { SelectionService } from '@app/services/tools/selection/selection.service';
 
 @Injectable({
@@ -8,14 +9,12 @@ import { SelectionService } from '@app/services/tools/selection/selection.servic
 })
 export class SelectionClipboardService {
     private currentClipboardData: HTMLCanvasElement;
-    // private serviceAllowed: boolean;
     private isCuted: boolean;
     constructor() {
-        // this.serviceAllowed = false;
         this.isCuted = false;
     }
 
-    onKeyDown(event: KeyboardEvent, selectionTool: SelectionService | MagicWandSelection): void {
+    onKeyDown(event: KeyboardEvent, selectionTool: SelectionService | MagicWandService): void {
         switch (event.key) {
             case 'c':
                 this.copy(selectionTool);
@@ -32,9 +31,9 @@ export class SelectionClipboardService {
         }
     }
 
-    private copy(selectionTool: SelectionService | MagicWandSelection): void {
-        let tool = selectionTool;
-        if (selectionTool.magicSelectionObj) tool = selectionTool.magicSelectionObj;
+    private copy(selectionTool: SelectionService | MagicWandService): void {
+        let tool = selectionTool as SelectionService | MagicWandSelection;
+        if (selectionTool instanceof MagicWandService) tool = selectionTool.magicSelectionObj;
         if (tool.selectionData) {
             this.currentClipboardData = document.createElement('canvas');
             const ctx = this.currentClipboardData.getContext('2d') as CanvasRenderingContext2D;
@@ -45,9 +44,9 @@ export class SelectionClipboardService {
         }
     }
 
-    private paste(selectionTool: SelectionService | MagicWandSelection): void {
-        let tool = selectionTool;
-        if (selectionTool.magicSelectionObj) tool = selectionTool.magicSelectionObj;
+    private paste(selectionTool: SelectionService | MagicWandService): void {
+        let tool = selectionTool as SelectionService | MagicWandSelection;
+        if (selectionTool instanceof MagicWandService) tool = selectionTool.magicSelectionObj;
         if (!this.isCuted) tool.drawSelectionOnBase();
         tool.resetSelection();
         tool.selectionStartPoint = { x: 0, y: 0 } as Vec2;
@@ -58,15 +57,15 @@ export class SelectionClipboardService {
         tool.selectionActivated = true;
     }
 
-    private cut(selectionTool: SelectionService | MagicWandSelection): void {
+    private cut(selectionTool: SelectionService | MagicWandService): void {
         this.copy(selectionTool);
         this.delete(selectionTool);
         this.isCuted = true;
     }
 
-    private delete(selectionTool: SelectionService | MagicWandSelection): void {
-        let tool = selectionTool;
-        if (selectionTool.magicSelectionObj) tool = selectionTool.magicSelectionObj;
+    private delete(selectionTool: SelectionService | MagicWandService): void {
+        let tool = selectionTool as SelectionService | MagicWandSelection;
+        if (selectionTool instanceof MagicWandService) tool = selectionTool.magicSelectionObj;
         tool.drawSelectionOnBase();
         tool.eraseSelectionFromBase(selectionTool.selectionEndPoint);
         tool.resetSelection();

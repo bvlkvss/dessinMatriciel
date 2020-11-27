@@ -7,7 +7,6 @@ import { MagicWandService } from '@app/services/tools/magic-wand/magic-wand.serv
 import { SelectionService } from '@app/services/tools/selection/selection.service';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
-import { MagicWandSelection } from '../../services/tools/magic-wand/magic-wand-selection';
 
 // TODO : Avoir un fichier séparé pour les constantes ?
 
@@ -36,7 +35,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         private resizer: ResizingService,
         private invoker: UndoRedoService,
         private clipboard: SelectionClipboardService,
-    ) {}
+    ) { }
 
     ngOnInit(): void {
         this.drawingService.resizeCanvas();
@@ -193,13 +192,15 @@ export class DrawingComponent implements AfterViewInit, OnInit {
             this.drawingService.newDrawing();
             this.drawingService.resizeCanvas();
         } else if ((event.ctrlKey && (event.key === 'x' || event.key === 'c' || event.key === 'v')) || event.key === 'Delete') {
-            console.log('enter', this.tools.currentTool);
             if (
                 this.tools.getTools().get('selection') === this.tools.currentTool ||
                 this.tools.getTools().get('magic-wand') === this.tools.currentTool
             ) {
-                console.log('enter if');
-                this.clipboard.onKeyDown(event, this.tools.currentTool as SelectionService | MagicWandSelection);
+                this.clipboard.onKeyDown(event, this.tools.currentTool as SelectionService | MagicWandService);
+                if (this.tools.currentTool instanceof MagicWandService && (event.key === 'x' || event.key === 'v')) {
+                    // (this.tools.getTools().get('selection') as SelectionService).selectionStyle = 0;
+                    // this.tools.currentTool = this.tools.getTools().get('selection') as Tool;
+                }
             }
         } else if (event.ctrlKey || (event.ctrlKey && event.shiftKey && (event.key === 'z' || event.key === 'Z'))) {
             this.invoker.onKeyDown(event);
