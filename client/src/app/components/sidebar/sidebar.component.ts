@@ -149,7 +149,7 @@ export class SidebarComponent implements OnChanges {
     }
 
     warningMessage(): void {
-        if (window.confirm('Warning, your current sketch will be deleted.\n Do you want to proceed to the main menu?')) {
+        if (window.confirm('Le dessin sera effacé.\n Voulez-vous continuer vers le menu?')) {
             location.replace('main-page.component.html');
         }
     }

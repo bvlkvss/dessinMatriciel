@@ -1,6 +1,7 @@
 /* tslint:disable */
 import { async, ComponentFixture, ComponentFixtureAutoDetect, TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
+import { Tool } from '@app/classes/tool';
 import { MockDrawingService } from '@app/components/drawing/drawing.component.spec';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { BrushService } from '@app/services/tools/brush/brush.service';
@@ -10,6 +11,7 @@ import { LineService } from '@app/services/tools/line/line.service';
 import { PaintBucketService } from '@app/services/tools/paint-bucket/paint-bucket.service';
 import { PencilService } from '@app/services/tools/pencil/pencil-service';
 import { PipetteService } from '@app/services/tools/pipette/pipette.service';
+import { PlumeService } from '@app/services/tools/plume/plume.service';
 import { PolygonService } from '@app/services/tools/polygon/polygon.service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle.service';
 import { SelectionService } from '@app/services/tools/selection/selection.service';
@@ -24,6 +26,7 @@ describe('SidebarComponent', () => {
     let fixture: ComponentFixture<SidebarComponent>;
     let toolManagerStub: ToolsManagerService;
     let pencilStub: PencilService;
+    let plumeStub: PlumeService;
     let brushStub: BrushService;
     let rectangleStub: RectangleService;
     let eraserStub: EraserService;
@@ -51,7 +54,7 @@ describe('SidebarComponent', () => {
         pipetteStub = new PipetteService(drawServiceMock);
         selectionStub = new SelectionService(drawServiceMock, UndoRedoServiceMock);
         textStub = new TextService(drawServiceMock);
-        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub, selectionStub, paintBucketStub, polygonStub, pipetteStub, textStub);
+        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub, selectionStub, paintBucketStub, polygonStub, pipetteStub, textStub, plumeStub);
         matDialogSpy = jasmine.createSpyObj('MatDialog', ['open']);
         TestBed.configureTestingModule({
             declarations: [SidebarComponent],
@@ -113,12 +116,13 @@ describe('SidebarComponent', () => {
     });
 
     it('should  call confirm if user doesn"t confirm warning message', () => {
-        let confirmSpy = spyOn(window, 'confirm').and.returnValue(false);
+        window.confirm = jasmine.createSpy().and.returnValue(false);
         component.warningMessage();
-        expect(confirmSpy).toHaveBeenCalled();
+        expect(window.confirm).toHaveBeenCalled();
     });
 
     it('should call restoreCanvasState when changeTools is called', () => {
+        toolManagerStub.currentTool = toolManagerStub.getTools().get('pencil') as Tool;
         let restoreCanvasStateSpy = spyOn(drawServiceMock, 'restoreCanvasState');
         component.changeTools('brush');
         expect(restoreCanvasStateSpy).toHaveBeenCalled();

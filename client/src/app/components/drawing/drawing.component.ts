@@ -2,6 +2,7 @@ import { AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild }
 import { Tool } from '@app/classes/tool';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ResizingService } from '@app/services/resizing/resizing.service';
+import { PlumeService } from '@app/services/tools/plume/plume.service';
 import { SelectionService } from '@app/services/tools/selection/selection.service';
 import { TextService } from '@app/services/tools/text/text.service';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
@@ -52,8 +53,8 @@ export class DrawingComponent implements AfterViewInit, OnInit {
             .set('s', this.tools.getTools().get('selection') as Tool)
             .set('i', this.tools.getTools().get('pipette') as Tool)
             .set('t', this.tools.getTools().get('text') as Tool)
-            .set('a', this.tools.getTools().get('aerosol')as Tool);
-
+            .set('a', this.tools.getTools().get('aerosol')as Tool)
+            .set('p', this.tools.getTools().get('plume') as Tool);
         this.baseCtx = this.baseCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.previewCtx = this.previewCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.drawingService.baseCtx = this.baseCtx;
@@ -68,7 +69,6 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         this.drawingService.canvasContainer = this.resizeContainer.nativeElement as HTMLDivElement;
         this.mouseFired = false;
         this.drawingService.blankCanvasDataUrl = this.drawingService.canvas.toDataURL();
-
         this.baseCtx.save();
         this.previewCtx.save();
     }
@@ -195,6 +195,14 @@ export class DrawingComponent implements AfterViewInit, OnInit {
                 }
             } else this.tools.currentTool.onKeyDown(event);
         } else this.tools.currentTool.onKeyDown(event);
+    }
+
+    @HostListener('window : mousewheel', ['$event'])
+    updateDegree(event: WheelEvent): void {
+        if (this.tools.getTools().get('plume') === this.tools.currentTool) {
+            const tool = this.tools.currentTool as PlumeService;
+            tool.adjustAngle(event);
+        }
     }
 
     get width(): number {

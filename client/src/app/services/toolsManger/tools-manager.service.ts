@@ -7,6 +7,7 @@ import { LineService } from '@app/services/tools/line/line.service';
 import { PaintBucketService } from '@app/services/tools/paint-bucket/paint-bucket.service';
 import { PencilService } from '@app/services/tools/pencil/pencil-service';
 import { PipetteService } from '@app/services/tools/pipette/pipette.service';
+import { PlumeService } from '@app/services/tools/plume/plume.service';
 import { PolygonService } from '@app/services/tools/polygon/polygon.service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle.service';
 import { SelectionService } from '@app/services/tools/selection/selection.service';
@@ -33,6 +34,7 @@ export class ToolsManagerService {
         pipetteService: PipetteService,
         textService: TextService,
         sprayPaintService: SprayPaintService,
+        plumeService: PlumeService,
     ) {
         this.tools = new Map<string, Tool>([
             ['pencil', pencilService],
@@ -48,8 +50,9 @@ export class ToolsManagerService {
             ['pipette', pipetteService],
             ['text', textService],
             ['aerosol', sprayPaintService],
+            ['plume', plumeService],
         ]);
-        this.currentTool = this.tools.get('pencil') as Tool;
+        this.currentTool = this.tools.get('text') as Tool;
     }
 
     setTools(name: string): void {
