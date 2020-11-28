@@ -8,6 +8,8 @@ import { TextService } from '@app/services/tools/text/text.service';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
 
 const MAX_WIDTH_VALUE = 100;
+const MAX_DROPLETS_WIDTH_VALUE = 10;
+const MAX_FREQUENCY_VALUE = 999;
 const IMAGE_ZOOM = 60;
 const PIPETTE_IMAGE_WIDTH = 10;
 const PIPETTE_IMAGE_HEIGHT = 10;
@@ -23,6 +25,9 @@ const RECT_SIZE = 5;
 })
 export class AttributebarComponent implements OnInit, AfterViewChecked, AfterViewInit {
     widthValue: string;
+    dropletsWidthValue: string = '1';
+    frequency: string = '700';
+    radius: string = '20';
     junctionWidth: string = '1';
     idStyleRectangle: number = 2;
     idStyleBrush: number = 1;
@@ -193,5 +198,23 @@ export class AttributebarComponent implements OnInit, AfterViewChecked, AfterVie
 
     setNumberSides(newNumberSides: number): void {
         this.tools.setPolygonNumberSides(newNumberSides);
+    }
+
+    setDropletsWidth(input: string): void {
+        this.dropletsWidthValue = input;
+        if (Number(this.dropletsWidthValue) > MAX_DROPLETS_WIDTH_VALUE) this.dropletsWidthValue = '10';
+        this.tools.setDropletsWidth(Number(this.dropletsWidthValue));
+    }
+
+    setFrequency(input: string): void{
+        this.frequency = input;
+        if (Number(this.frequency) > MAX_FREQUENCY_VALUE) this.frequency = '999';
+        this.tools.setFrequency(Number(this.frequency));
+    }
+
+    setRadius( input: string): void{
+        this.radius = input;
+        if (Number(this.radius) > MAX_FREQUENCY_VALUE) this.radius = '70';
+        this.tools.setRadius(Number(this.radius));
     }
 }

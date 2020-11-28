@@ -107,4 +107,19 @@ export class ToolsManagerService {
         const line = this.currentTool as LineService;
         line.setJunctionState(isChecked);
     }
+
+    setDropletsWidth(value: number){
+        const spray = this.currentTool as SprayPaintService;
+        spray.setDropletsWidth(value);
+    }
+
+    setFrequency( value: number){
+        const spray = this.currentTool as SprayPaintService;
+        spray.setfrequency(value);
+    }
+
+    setRadius( value: number){
+        const spray = this.currentTool as SprayPaintService;
+        spray.setRadius(value);
+    }
 }
