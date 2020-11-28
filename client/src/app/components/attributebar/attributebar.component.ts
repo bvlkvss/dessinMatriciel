@@ -4,8 +4,10 @@ import { MatSelectChange } from '@angular/material/select';
 import { Tool } from '@app/classes/tool';
 import { BrushService } from '@app/services/tools/brush/brush.service';
 import { Arguments, PipetteService } from '@app/services/tools/pipette/pipette.service';
+import { PlumeService } from '@app/services/tools/plume/plume.service';
 import { TextService } from '@app/services/tools/text/text.service';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
+import { Subscription } from 'rxjs';
 
 const MAX_WIDTH_VALUE = 100;
 const IMAGE_ZOOM = 60;
@@ -23,6 +25,8 @@ const RECT_SIZE = 5;
 })
 export class AttributebarComponent implements OnInit, AfterViewChecked, AfterViewInit {
     widthValue: string;
+    lenghtValue: string = '50';
+    angleValue: string = '0';
     junctionWidth: string = '1';
     idStyleRectangle: number = 2;
     idStyleBrush: number = 1;
@@ -34,7 +38,8 @@ export class AttributebarComponent implements OnInit, AfterViewChecked, AfterVie
     @ViewChild('pipette', { static: false }) pipetteCanvas: ElementRef<HTMLCanvasElement>;
     pipetteCtx: CanvasRenderingContext2D;
     currentTexture: string = '../../../assets/b1.svg';
-    constructor(private tools: ToolsManagerService, private pipetteService: PipetteService) {
+    subscription: Subscription;
+    constructor(private tools: ToolsManagerService, private pipetteService: PipetteService, private plumeService: PlumeService) {
         this.onClick();
     }
     private showContainer: boolean = false;
@@ -42,15 +47,21 @@ export class AttributebarComponent implements OnInit, AfterViewChecked, AfterVie
 
     ngOnInit(): void {
         this.widthValue = this.tools.currentTool.lineWidth.toString();
+        this.subscription = this.plumeService.getMessage().subscribe((message: string) => {
+            this.angleValue = message;
+        });
     }
+
     onClick(): void {
         this.pipetteService.getColorObservable().subscribe((isPrimary: boolean) => {
             this.pickColor(isPrimary);
         });
     }
+
     ngAfterViewChecked(): void {
         this.displayCircle();
     }
+
     displayCircle(): void {
         this.pipetteService.getCircleViewObservable().subscribe((isShown: boolean) => {
             this.circleIsShown = isShown;
@@ -139,12 +150,6 @@ export class AttributebarComponent implements OnInit, AfterViewChecked, AfterVie
         return this.tools.currentTool.toolAttributes.includes(attribute);
     }
 
-    setLineWidth(input: string): void {
-        this.widthValue = input;
-        if (Number(this.widthValue) > MAX_WIDTH_VALUE) this.widthValue = '100';
-        this.tools.setLineWidth(Number(this.widthValue));
-    }
-
     setJunctionWidth(input: string): void {
         this.junctionWidth = input;
         this.tools.setJunctionWidth(Number(this.junctionWidth));
@@ -193,5 +198,24 @@ export class AttributebarComponent implements OnInit, AfterViewChecked, AfterVie
 
     setNumberSides(newNumberSides: number): void {
         this.tools.setPolygonNumberSides(newNumberSides);
+    }
+
+    setLineLength(id: string): void {
+        this.lenghtValue = id;
+        if (Number(this.lenghtValue) > MAX_WIDTH_VALUE) this.lenghtValue = '100';
+        const plume = this.tools.currentTool as PlumeService;
+        plume.setLineLength(Number(this.lenghtValue));
+    }
+
+    setAngle(id: string): void {
+        this.angleValue = id;
+        const plume = this.tools.currentTool as PlumeService;
+        plume.setAngle(Number(this.angleValue));
+    }
+
+    setLineWidth(input: string): void {
+        this.widthValue = input;
+        if (Number(this.widthValue) > MAX_WIDTH_VALUE) this.widthValue = '100';
+        this.tools.setLineWidth(Number(this.widthValue));
     }
 }
