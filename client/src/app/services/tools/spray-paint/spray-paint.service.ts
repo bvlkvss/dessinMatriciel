@@ -39,8 +39,8 @@ export class SprayPaintService extends Tool {
         this.mouseDown = event.button === MouseButton.Left;
 
         if (this.mouseDown) {
-            this.invoker.ClearRedo();
-            this.invoker.setIsAllowed(false);
+            // this.invoker.ClearRedo();
+            // this.invoker.setIsAllowed(false);
             this.currentMousePos = this.mouseDownCoord = this.getPositionFromMouse(event);
             this.interval = setInterval(() => {
                 this.spray(this.drawingService.baseCtx, this.currentMousePos);
@@ -49,13 +49,7 @@ export class SprayPaintService extends Tool {
     }
 
     onMouseUp(event: MouseEvent): void {
-        if (this.mouseDown) {
-            this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            // const cmd = new PencilCommand(this.pathData, this, this.drawingService) as PencilCommand;
-            // this.invoker.addToUndo(cmd);
-            // this.invoker.setIsAllowed(true);
-        }
-        clearInterval(this.interval);
+        this.myClearInterval(this.interval);
         this.mouseDown = false;
     }
 
@@ -66,8 +60,11 @@ export class SprayPaintService extends Tool {
     }
 
     onMouseOut(event: MouseEvent): void {
-        if (this.mouseDown) this.spray(this.drawingService.baseCtx, this.currentMousePos);
-        clearInterval(this.interval);
+        this.myClearInterval(this.interval);
+    }
+
+    myClearInterval(interval: NodeJS.Timeout): void{
+        clearInterval(interval);
     }
 
     onMouseEnter(event: MouseEvent): void {
@@ -96,11 +93,7 @@ export class SprayPaintService extends Tool {
     setPrimaryColor(color: string): void {
         this.primaryColor = color;
     }
-
-    setLineWidth(width: number): void {
-        this.lineWidth = width;
-    }
-
+    
     getRandomOffset(): Vec2 {
         const randomAngle = Math.random() * FULLCIRLCLE;
         const randomRadius = Math.random() * this.radius;

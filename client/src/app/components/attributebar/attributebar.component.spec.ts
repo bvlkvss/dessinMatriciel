@@ -306,4 +306,23 @@ describe('AttributebarComponent', () => {
         component.setAngle('5');
         expect(component.angleValue).toEqual('5');
     });
+
+    it('should set Droplets Width to given value when setDropletsWidth is called', () => {
+        (toolManagerStub.currentTool as SprayPaintService).setDropletsWidth = jasmine.createSpy('setDropletsWidth');
+        component.setDropletsWidth('5');
+        expect(component.dropletsWidthValue).toEqual('5');
+    });
+
+    it('should set frequency Width to given value when setfrequency is called', () => {
+        (toolManagerStub.currentTool as SprayPaintService).setfrequency = jasmine.createSpy('setfrequency');
+        component.setFrequency('5');
+        expect(component.frequency).toEqual('5');
+    });
+
+    it('should set radius Width to given value when setradius is called', () => {
+        (toolManagerStub.currentTool as SprayPaintService).setRadius = jasmine.createSpy('setRadius');
+        component.setRadius('5');
+        expect(component.radius).toEqual('5');
+    });
+
 });

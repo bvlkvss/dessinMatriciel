@@ -8,6 +8,7 @@ import { PaintBucketService } from '../tools/paint-bucket/paint-bucket.service';
 import { RectangleService } from '../tools/rectangle/rectangle.service';
 import { ToolsManagerService } from './tools-manager.service';
 import { PolygonService }from '../tools/polygon/polygon.service';
+import { SprayPaintService } from '../tools/spray-paint/spray-paint.service';
 describe('ToolsManagerService', () => {
     let service: ToolsManagerService;
 
@@ -84,5 +85,23 @@ describe('ToolsManagerService', () => {
 
         service.setJunctionState(true);
         expect(setJunctionStateSpy).toHaveBeenCalled();
+    });
+
+
+    it('should call line setDropletsWidth when setDropletsWidth is called', () => {
+        service.currentTool = service.getTools().get('aerosol') as Tool;
+        let setDropletsWidthSpy = spyOn(service.currentTool as SprayPaintService, 'setDropletsWidth');
+
+        service.setDropletsWidth(5);
+        expect(setDropletsWidthSpy).toHaveBeenCalled();
+    });
+
+
+    it('should call line setRadius when setRadius is called', () => {
+        service.currentTool = service.getTools().get('aerosol') as Tool;
+        let setRadiusSpy = spyOn(service.currentTool as SprayPaintService, 'setRadius');
+
+        service.setRadius(5);
+        expect(setRadiusSpy).toHaveBeenCalled();
     });
 });

@@ -1,16 +1,139 @@
 import { TestBed } from '@angular/core/testing';
+import { canvasTestHelper } from '@app/classes/canvas-test-helper';
+import { Vec2 } from '@app/classes/vec2';
+import { DrawingService } from '@app/services/drawing/drawing.service';
 
 import { SprayPaintService } from './spray-paint.service';
 
 describe('SprayPaintService', () => {
     let service: SprayPaintService;
+    let mouseEvent: MouseEvent;
+
+    let baseCtxStub: CanvasRenderingContext2D;
+    let previewCtxStub: CanvasRenderingContext2D;
+    let drawServiceSpy: jasmine.SpyObj<DrawingService>;
+    let myClearIntervalSpy: jasmine.Spy<any>;
+
+    // let spraySpy: jasmine.Spy<any>;
+
+
+
 
     beforeEach(() => {
-        TestBed.configureTestingModule({});
+        baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
+        previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
+        drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
+
+        TestBed.configureTestingModule({
+            providers: [{ provide: DrawingService, useValue: drawServiceSpy }],
+        });
         service = TestBed.inject(SprayPaintService);
+        // spraySpy = spyOn<any>(service, 'spray').and.callThrough();
+        myClearIntervalSpy = spyOn<any>(service, 'myClearInterval').and.callThrough();
+
+
+
+        service['drawingService'].baseCtx = baseCtxStub;
+        service['drawingService'].previewCtx = previewCtxStub;
+
+        mouseEvent = {
+            offsetX: 25,
+            offsetY: 25,
+            button: 0,
+        } as MouseEvent;
     });
 
     it('should be created', () => {
         expect(service).toBeTruthy();
     });
+
+    it(' mouseDown should set mouseDownCoord to correct position', () => {
+        const expectedResult: Vec2 = { x: 25, y: 25 };
+        service.onMouseDown(mouseEvent);
+        expect(service.mouseDownCoord).toEqual(expectedResult);
+    });
+
+    it(' mouseDown should set mouseDown property to true on left click', () => {
+        service.onMouseDown(mouseEvent);
+        expect(service.mouseDown).toEqual(true);
+    });
+
+    it(' mouseDown should set mouseDown property to false on right click', () => {
+        const mouseEventRClick = {
+            offsetX: 25,
+            offsetY: 25,
+            button: 1,
+        } as MouseEvent;
+        service.onMouseDown(mouseEventRClick);
+        expect(service.mouseDown).toEqual(false);
+    });
+
+    it(' onMouseUp should set mouseDown property to false', () => {
+        service.mouseDownCoord = { x: 0, y: 0 };
+        service.onMouseUp(mouseEvent);
+        expect(service.mouseDown).toEqual(false);
+    });
+
+    it(' mousemove should set currentMousePos to correct position', () => {
+        const expectedResult: Vec2 = { x: 25, y: 25 };
+        // service.mouseDown = true;
+        service.onMouseDown(mouseEvent);
+        expect(service.currentMousePos).toEqual(expectedResult);
+    });
+
+    it('setPrimaryColor should set primaryColor to correct value', () => {
+        service.setPrimaryColor('#ababab');
+        expect(service.primaryColor).toEqual('#ababab');
+    });
+
+    it('setDropletsWidth should set dropletsRadius to correct value', () => {
+        service.setDropletsWidth(5);
+        expect(service.dropletRadius).toEqual(5);
+    });
+
+    it('setfrequency should set setfrequency to correct value', () => {
+        service.setfrequency(5);
+        expect(service.period).toEqual(1/5*1000);
+    });
+
+    it('setRadius should set dropletsRadius to correct value', () => {
+        service.setRadius(5);
+        expect(service.radius).toEqual(5);
+    });  
+
+    it(' onMouseMove should set currentMousePos to correct position', () => {
+        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDown = true;
+        const expectedResult: Vec2 = { x: 25, y: 25 };
+
+        service.onMouseMove(mouseEvent);
+        expect(service.currentMousePos).toEqual(expectedResult);
+
+
+    });
+
+    it(' onMouseMove should not set currentMousePos to correct position', () => {
+        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDown = false;
+        const expectedResult: Vec2 = { x: 25, y: 25 };
+
+        service.onMouseMove(mouseEvent);
+        expect(service.currentMousePos).not.toEqual(expectedResult);
+    });
+
+    it(' on mouse out should call clear interval', () =>{
+        service.onMouseOut(mouseEvent);
+        expect(myClearIntervalSpy).toHaveBeenCalled();
+    });
+
+    // it(' onMouseEnter should call spray if mouse was already down', () => {
+    //     service.mouseDownCoord = { x: 0, y: 0 };
+    //     service.mouseDown = true;
+
+
+    //     service.onMouseEnter(mouseEvent);
+    //     expect(service.spray).toHaveBeenCalled();
+    // });
+
+
 });
