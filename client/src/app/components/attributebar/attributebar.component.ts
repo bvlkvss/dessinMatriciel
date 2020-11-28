@@ -3,6 +3,7 @@ import { MatButtonToggleChange } from '@angular/material/button-toggle';
 import { MatSelectChange } from '@angular/material/select';
 import { Tool } from '@app/classes/tool';
 import { BrushService } from '@app/services/tools/brush/brush.service';
+import { GridService } from '@app/services/tools/grid/grid.service';
 import { Arguments, PipetteService } from '@app/services/tools/pipette/pipette.service';
 import { PlumeService } from '@app/services/tools/plume/plume.service';
 import { TextService } from '@app/services/tools/text/text.service';
@@ -31,6 +32,8 @@ export class AttributebarComponent implements OnInit, AfterViewChecked, AfterVie
     idStyleRectangle: number = 2;
     idStyleBrush: number = 1;
     tolerance: string = '0';
+    squareSize: string = (this.tools.currentTool as GridService).squareSize.toString();
+    opacity: string = '50';
     selectedValue: string;
     polices: string[] = ['Arial', 'Times New Roman', 'Courier New', 'Verdana', 'Comic Sans MS, cursive', 'Trebuchet MS, Helvetica'];
 
@@ -143,6 +146,10 @@ export class AttributebarComponent implements OnInit, AfterViewChecked, AfterVie
     }
 
     checkIfContainAttribute(attribute: string): boolean {
+        if (this.tools.currentTool instanceof GridService)
+            (this.tools.currentTool as GridService).getSizeObservable().subscribe((squareSize: string) => {
+                this.squareSize = squareSize;
+            });
         if (this.lastTool !== this.tools.currentTool) {
             this.lastTool = this.tools.currentTool;
             this.restoreValues();
@@ -163,6 +170,17 @@ export class AttributebarComponent implements OnInit, AfterViewChecked, AfterVie
         this.tolerance = input;
         if (Number(this.tolerance) > MAX_WIDTH_VALUE) this.tolerance = '100';
         this.tools.setBucketTolerance(Number(this.tolerance));
+    }
+    setSquareSize(input: string): void {
+        this.squareSize = input;
+        if (Number(this.squareSize) > MAX_WIDTH_VALUE) this.squareSize = '100';
+        (this.tools.currentTool as GridService).changeSquareSize(Number(this.squareSize));
+    }
+
+    setOpacity(input: string): void {
+        this.opacity = input;
+        if (Number(this.squareSize) > MAX_WIDTH_VALUE) this.opacity = '100';
+        (this.tools.currentTool as GridService).changeOpacity(Number(this.opacity));
     }
 
     toggleList(id: string): void {

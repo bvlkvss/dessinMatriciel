@@ -2,6 +2,7 @@ import { AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild }
 import { Tool } from '@app/classes/tool';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ResizingService } from '@app/services/resizing/resizing.service';
+import { GridService } from '@app/services/tools/grid/grid.service';
 import { PlumeService } from '@app/services/tools/plume/plume.service';
 import { SelectionService } from '@app/services/tools/selection/selection.service';
 import { TextService } from '@app/services/tools/text/text.service';
@@ -22,12 +23,13 @@ export class DrawingComponent implements AfterViewInit, OnInit {
 
     // On utilise ce canvas pour dessiner sans affecter le dessin final
     @ViewChild('previewCanvas', { static: false }) previewCanvas: ElementRef<HTMLCanvasElement>;
+    @ViewChild('gridCanvas', { static: false }) gridCanvas: ElementRef<HTMLCanvasElement>;
 
     private keyBindings: Map<string, Tool> = new Map();
     private baseCtx: CanvasRenderingContext2D;
     private previewCtx: CanvasRenderingContext2D;
+    private gridCtx: CanvasRenderingContext2D;
     private mouseFired: boolean;
-
     constructor(
         private drawingService: DrawingService,
         private tools: ToolsManagerService,
@@ -53,11 +55,14 @@ export class DrawingComponent implements AfterViewInit, OnInit {
             .set('s', this.tools.getTools().get('selection') as Tool)
             .set('i', this.tools.getTools().get('pipette') as Tool)
             .set('t', this.tools.getTools().get('text') as Tool)
-            .set('p', this.tools.getTools().get('plume') as Tool);
+            .set('p', this.tools.getTools().get('plume') as Tool)
+            .set('g', this.tools.getTools().get('grid') as Tool);
         this.baseCtx = this.baseCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.previewCtx = this.previewCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
+        this.gridCtx = this.gridCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.drawingService.baseCtx = this.baseCtx;
         this.drawingService.previewCtx = this.previewCtx;
+        this.drawingService.gridCtx = this.gridCtx;
         this.drawingService.canvas = this.baseCanvas.nativeElement;
         this.baseCtx.beginPath();
         this.baseCtx.fillStyle = 'white';
@@ -65,11 +70,13 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         this.baseCtx.fill();
         this.baseCtx.closePath();
         this.drawingService.previewCanvas = this.previewCanvas.nativeElement;
+        this.drawingService.gridCanvas = this.gridCanvas.nativeElement;
         this.drawingService.canvasContainer = this.resizeContainer.nativeElement as HTMLDivElement;
         this.mouseFired = false;
         this.drawingService.blankCanvasDataUrl = this.drawingService.canvas.toDataURL();
         this.baseCtx.save();
         this.previewCtx.save();
+        this.gridCtx.save();
     }
 
     initResizing(event: MouseEvent): void {
@@ -91,6 +98,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     stopResize(event: MouseEvent): void {
         if (this.resizer.resizing) {
             this.resizer.stopResize(event, this.baseCanvas.nativeElement);
+            if (this.tools.currentTool instanceof GridService && this.tools.currentTool.isGridActive) this.tools.currentTool.displayGrid();
             this.previewCanvas.nativeElement.style.borderBottom = '2px solid #000000';
             this.previewCanvas.nativeElement.style.borderRight = '2px solid #000000';
         }
@@ -177,6 +185,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
             this.tools.currentTool.onKeyDown(event);
         }
     }
+
     @HostListener('keydown', ['$event'])
     onKeyDown(event: KeyboardEvent): void {
         if (!(this.tools.currentTool instanceof TextService)) {
@@ -191,6 +200,8 @@ export class DrawingComponent implements AfterViewInit, OnInit {
                 } else if (event.key === 's') {
                     (this.tools.currentTool as SelectionService).selectionStyle = 1;
                     (this.tools.currentTool as SelectionService).resetSelection();
+                } else if (event.key === 'g') {
+                    this.tools.currentTool.onKeyDown(event);
                 }
             } else this.tools.currentTool.onKeyDown(event);
         } else this.tools.currentTool.onKeyDown(event);

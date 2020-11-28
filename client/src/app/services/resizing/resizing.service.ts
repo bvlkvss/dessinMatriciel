@@ -129,8 +129,8 @@ export class ResizingService {
             this.invoker.setIsAllowed(true);
         }
         this.drawCanvas(temp);
+        this.clearGrid();
     }
-
     saveCanvas(): HTMLCanvasElement {
         const temp = document.createElement('canvas') as HTMLCanvasElement;
         temp.width = this.resizedWidth;
@@ -155,5 +155,11 @@ export class ResizingService {
         context.rect(0, 0, this.drawingService.canvas.width, this.drawingService.canvas.height);
         context.fill();
         context.closePath();
+    }
+
+    private clearGrid():void{
+        this.drawingService.gridCanvas.width = this.resizedWidth;
+        this.drawingService.gridCanvas.height = this.resizedHeight;
+        this.drawingService.clearCanvas(this.drawingService.gridCtx);
     }
 }

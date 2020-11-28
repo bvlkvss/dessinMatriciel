@@ -19,6 +19,7 @@ import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { of } from 'rxjs';
 import { AttributebarComponent } from './attributebar.component';
 import { MatButtonToggleGroup, MatButtonToggleModule } from '@angular/material/button-toggle';
+import { GridService } from '@app/services/tools/grid/grid.service';
 
 
 export class MockUndoRedoService extends UndoRedoService {
@@ -52,6 +53,7 @@ describe('AttributebarComponent', () => {
     let polygonStub: PolygonService;
     let UndoRedoServiceMock: MockUndoRedoService;
     let textStub: TextService;
+    let gridStub: GridService;
 
     beforeEach(async(() => {
         mouseEvent = (new MouseEvent('click', { clientX: 5, clientY: 5 }));
@@ -67,7 +69,8 @@ describe('AttributebarComponent', () => {
         pipetteStub = new PipetteService(drawServiceMock);
         textStub = new TextService(drawServiceMock);
         plumeStub = new PlumeService(drawServiceMock, UndoRedoServiceMock);
-        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub, selectionStub, paintBucketStub, polygonStub, pipetteStub, textStub, plumeStub);
+        gridStub = new GridService(drawServiceMock);
+        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub, selectionStub, paintBucketStub, polygonStub, pipetteStub, textStub, plumeStub, gridStub);
          TestBed.configureTestingModule({
             declarations: [AttributebarComponent, MatButtonToggleGroup],
             providers: [{ provide: ToolsManagerService, useValue: toolManagerStub }, { provide: PipetteService, useValue: pipetteStub }],
