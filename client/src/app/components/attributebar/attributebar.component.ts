@@ -211,13 +211,13 @@ export class AttributebarComponent implements OnInit, AfterViewChecked, AfterVie
         this.tools.setDropletsWidth(Number(this.dropletsWidthValue));
     }
 
-    setFrequency(input: string): void{
+    setFrequency(input: string): void {
         this.frequency = input;
         if (Number(this.frequency) > MAX_FREQUENCY_VALUE) this.frequency = '999';
         this.tools.setFrequency(Number(this.frequency));
     }
 
-    setRadius( input: string): void{
+    setRadius(input: string): void {
         this.radius = input;
         if (Number(this.radius) > MAX_FREQUENCY_VALUE) this.radius = '70';
         this.tools.setRadius(Number(this.radius));

@@ -13,6 +13,7 @@ import { Arguments, PipetteService } from '@app/services/tools/pipette/pipette.s
 import { PolygonService } from '@app/services/tools/polygon/polygon.service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle.service';
 import { SelectionService } from '@app/services/tools/selection/selection.service';
+import { SprayPaintService } from '@app/services/tools/spray-paint/spray-paint.service';
 import { TextService } from '@app/services/tools/text/text.service';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
@@ -40,6 +41,7 @@ describe('AttributebarComponent', () => {
     let pencilStub: PencilService;
     let pipetteStub: PipetteService;
     let plumeStub: PlumeService
+    let sprayPaintStub: SprayPaintService;
 
     let brushStub: BrushService;
     let rectangleStub: RectangleService;
@@ -67,7 +69,8 @@ describe('AttributebarComponent', () => {
         pipetteStub = new PipetteService(drawServiceMock);
         textStub = new TextService(drawServiceMock);
         plumeStub = new PlumeService(drawServiceMock, UndoRedoServiceMock);
-        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub, selectionStub, paintBucketStub, polygonStub, pipetteStub, textStub, plumeStub);
+        sprayPaintStub = new SprayPaintService(drawServiceMock, UndoRedoServiceMock);
+        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub, selectionStub, paintBucketStub, polygonStub, pipetteStub, textStub, sprayPaintStub, plumeStub);
          TestBed.configureTestingModule({
             declarations: [AttributebarComponent, MatButtonToggleGroup],
             providers: [{ provide: ToolsManagerService, useValue: toolManagerStub }, { provide: PipetteService, useValue: pipetteStub }],

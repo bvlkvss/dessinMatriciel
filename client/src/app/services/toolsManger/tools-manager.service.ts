@@ -11,8 +11,8 @@ import { PlumeService } from '@app/services/tools/plume/plume.service';
 import { PolygonService } from '@app/services/tools/polygon/polygon.service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle.service';
 import { SelectionService } from '@app/services/tools/selection/selection.service';
+import { SprayPaintService } from '@app/services/tools/spray-paint/spray-paint.service';
 import { TextService } from '@app/services/tools/text/text.service';
-import { SprayPaintService } from '@app/services/tools/spray-paint/spray-paint.service'
 
 @Injectable({
     providedIn: 'root',
@@ -49,8 +49,8 @@ export class ToolsManagerService {
             ['polygon', polygonService],
             ['pipette', pipetteService],
             ['text', textService],
-            ['aerosol', sprayPaintService],
             ['plume', plumeService],
+            ['aerosol', sprayPaintService],
         ]);
         this.currentTool = this.tools.get('text') as Tool;
     }
@@ -111,17 +111,17 @@ export class ToolsManagerService {
         line.setJunctionState(isChecked);
     }
 
-    setDropletsWidth(value: number){
+    setDropletsWidth(value: number): void {
         const spray = this.currentTool as SprayPaintService;
         spray.setDropletsWidth(value);
     }
 
-    setFrequency( value: number){
+    setFrequency(value: number): void {
         const spray = this.currentTool as SprayPaintService;
         spray.setfrequency(value);
     }
 
-    setRadius( value: number){
+    setRadius(value: number): void {
         const spray = this.currentTool as SprayPaintService;
         spray.setRadius(value);
     }

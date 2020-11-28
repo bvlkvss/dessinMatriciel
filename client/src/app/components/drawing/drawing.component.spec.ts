@@ -15,6 +15,7 @@ import { PlumeService } from '@app/services/tools/plume/plume.service';
 import { PolygonService } from '@app/services/tools/polygon/polygon.service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle.service';
 import { SelectionService } from '@app/services/tools/selection/selection.service';
+import { SprayPaintService } from '@app/services/tools/spray-paint/spray-paint.service';
 import { TextService } from '@app/services/tools/text/text.service';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
 import { MockUndoRedoService } from '../attributebar/attributebar.component.spec';
@@ -39,7 +40,7 @@ describe('DrawingComponent', () => {
     let toolManagerStub: ToolsManagerService;
     let pencilStub: PencilService;
     let plumeStub: PlumeService;
-
+    let sprayPaintStub: SprayPaintService;
     let brushStub: BrushService;
     let rectangleStub: RectangleService;
     let eraserStub: EraserService;
@@ -69,7 +70,8 @@ describe('DrawingComponent', () => {
         polygonStub = new PolygonService(drawServiceMock, undoRedoServiceMock);
         textStub = new TextService(drawServiceMock);
         plumeStub = new PlumeService(drawServiceMock, undoRedoServiceMock);
-        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub, selectionStub, paintBucketStub, polygonStub, pipetteStub, textStub, plumeStub);
+        sprayPaintStub = new SprayPaintService(drawServiceMock, undoRedoServiceMock);
+        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub, selectionStub, paintBucketStub, polygonStub, pipetteStub, textStub, sprayPaintStub, plumeStub);
         toolManagerStub.currentTool = toolManagerStub.getTools().get('pencil') as Tool;
         TestBed.configureTestingModule({
             declarations: [DrawingComponent],
