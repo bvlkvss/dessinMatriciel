@@ -14,14 +14,13 @@ export enum MouseButton {
     Forward = 4,
 }
 
-
 @Injectable({
     providedIn: 'root'
 })
 export class SprayPaintService extends Tool {
     radius: number = 20;
     dropletRadius: number = 1;
-    period: number = 70;
+    period: number = 1/700*1000;
     interval: NodeJS.Timeout;
     currentMousePos: Vec2;
     density:number = 10;
