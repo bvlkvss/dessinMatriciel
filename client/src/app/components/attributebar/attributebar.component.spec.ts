@@ -20,6 +20,7 @@ import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { of } from 'rxjs';
 import { AttributebarComponent } from './attributebar.component';
 import { MatButtonToggleGroup, MatButtonToggleModule } from '@angular/material/button-toggle';
+import { GridService } from '@app/services/tools/grid/grid.service';
 
 
 export class MockUndoRedoService extends UndoRedoService {
@@ -54,6 +55,7 @@ describe('AttributebarComponent', () => {
     let polygonStub: PolygonService;
     let UndoRedoServiceMock: MockUndoRedoService;
     let textStub: TextService;
+    let gridStub: GridService;
 
     beforeEach(async(() => {
         mouseEvent = (new MouseEvent('click', { clientX: 5, clientY: 5 }));
@@ -70,8 +72,11 @@ describe('AttributebarComponent', () => {
         textStub = new TextService(drawServiceMock);
         plumeStub = new PlumeService(drawServiceMock, UndoRedoServiceMock);
         sprayPaintStub = new SprayPaintService(drawServiceMock, UndoRedoServiceMock);
-        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub, selectionStub, paintBucketStub, polygonStub, pipetteStub, textStub, sprayPaintStub, plumeStub);
-         TestBed.configureTestingModule({
+        gridStub = new GridService(drawServiceMock);
+
+        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub, selectionStub, paintBucketStub, polygonStub, pipetteStub, textStub, sprayPaintStub, plumeStub, gridStub);
+        toolManagerStub.currentTool = pencilStub;
+        TestBed.configureTestingModule({
             declarations: [AttributebarComponent, MatButtonToggleGroup],
             providers: [{ provide: ToolsManagerService, useValue: toolManagerStub }, { provide: PipetteService, useValue: pipetteStub }],
             imports: [MatButtonToggleModule]
@@ -86,6 +91,8 @@ describe('AttributebarComponent', () => {
     });
 
     it('should create', () => {
+        console.log(pencilStub.lineWidth);
+        console.log((component as any).tools);
         expect(component).toBeTruthy();
     });
 
@@ -299,6 +306,18 @@ describe('AttributebarComponent', () => {
         (toolManagerStub.currentTool as PlumeService).setLineLength = jasmine.createSpy('setLineLength');
         component.setLineLength('5');
         expect(component.lenghtValue).toEqual('5');
+    });
+
+    it('should call changeOpacity when setOpacity is called', () => {
+        (toolManagerStub.currentTool as GridService).changeOpacity = jasmine.createSpy();
+        component.setOpacity('102');
+        expect((toolManagerStub.currentTool as GridService).changeOpacity).toHaveBeenCalled();
+    });
+
+    it('should call changeSquareSize when setSquareSize is called', () => {
+        (toolManagerStub.currentTool as GridService).changeSquareSize = jasmine.createSpy();
+        component.setSquareSize('102');
+        expect((toolManagerStub.currentTool as GridService).changeSquareSize).toHaveBeenCalled();
     });
 
     it('should set angleValue to given value when setAngle is called', () => {

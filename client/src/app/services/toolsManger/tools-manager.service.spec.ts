@@ -15,6 +15,7 @@ describe('ToolsManagerService', () => {
     beforeEach(() => {
         TestBed.configureTestingModule({});
         service = TestBed.inject(ToolsManagerService);
+        service.currentTool = service.getTools().get('pencil') as Tool;
     });
 
     it('should be created', () => {
@@ -22,9 +23,9 @@ describe('ToolsManagerService', () => {
     });
 
     it('should call setPrimaryColor when setColor is called and is Primary is true', () => {
-        let setPrimaryColorSpy = spyOn(service.currentTool, 'setPrimaryColor');
+        service.currentTool.setPrimaryColor = jasmine.createSpy();
         service.setColor('#ababab', true);
-        expect(setPrimaryColorSpy).toHaveBeenCalled();
+        expect(service.currentTool.setPrimaryColor).toHaveBeenCalled();
     });
 
     it('should call setSecondaryColor when setColor is called and is Primary is false', () => {

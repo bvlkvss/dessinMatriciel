@@ -15,7 +15,7 @@
                         <i class="material-icons">architecture</i>
                         <span class="slidingtxt2"> Ligne (L)</span>
                     </a>
-                  
+
                     <a id="plume" (click)="displayPalette('plume')" (click)="changeTools('plume')">
                         <img class="material-icons" style="color: white;" src="../../../assets/feather.png" />
                         <span class="slidingtxt2"> Plume</span>
@@ -48,9 +48,7 @@
             <div class="inlineclass">
                 <div class="drawingtoolscontainer">
                     <a id="paintBucket" (click)="displayPalette('paintBucket')" (click)="changeTools('paintBucket')">
-                        <!--<img class="material-icons" src="../../../assets/format-color-fill.png" />-->
-                        <i class="material-icons">format_paint</i>
-
+                        <img class="material-icons" src="../../../assets/format-color-fill.png" />
                         <span class="slidingtxt2"> Remplir (B)</span>
                     </a>
                     <a id="pipette" (click)="displayPalette('pipette')" (click)="changeTools('pipette')">
@@ -68,6 +66,10 @@
                     <a id="eraser" (click)="displayPalette('eraser')" (click)="changeTools('eraser')">
                         <i class="material-icons">remove_circle_outline</i>
                         <span class="slidingtxt"> Efface (E)</span>
+                    </a>
+                    <a id="grid-on" (click)="displayPalette('grid')" (click)="changeTools('grid')">
+                        <i class="material-icons">grid_on</i>
+                        <span class="slidingtxt"> Grille (G)</span>
                     </a>
                 </div>
             </div>
