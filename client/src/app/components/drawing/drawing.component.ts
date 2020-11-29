@@ -56,6 +56,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
             .set('s', this.tools.getTools().get('selection') as Tool)
             .set('i', this.tools.getTools().get('pipette') as Tool)
             .set('t', this.tools.getTools().get('text') as Tool)
+            .set('a', this.tools.getTools().get('aerosol') as Tool)
             .set('p', this.tools.getTools().get('plume') as Tool)
             .set('g', this.tools.getTools().get('grid') as Tool)
             .set('v', this.tools.getTools().get('magic-wand') as Tool);

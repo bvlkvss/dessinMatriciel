@@ -184,4 +184,55 @@
             </div>
         </div>
     </div>
+
+
+
+    <div id="dropletsWidthContainer" *ngIf="checkIfContainAttribute('dropletsWidth')">
+        <p id="header" for="volume">Diamètre goutelettes </p> 
+        <input
+            class="textInput"
+            type="text"
+            pattern="([0-9]|[1-9][0-9]|100)"
+            minlength="1"
+            maxlength="3"
+            (keydown)="validate($event)"
+            (change)="setDropletsWidth($event.target.value)"
+            [value]="dropletsWidthValue"
+        />
+        <input class="size-slider" type="range" (change)="setDropletsWidth($event.target.value)" [value]="dropletsWidthValue" min="1" max="10" />
+        <label id="label">px</label>
+    </div>
+
+    <div id="sprayIntervalContainer" *ngIf="checkIfContainAttribute('sprayInterval')">
+        <p id="header" for="volume">Fréquence</p> 
+        <input
+            class="textInput"
+            type="text"
+            pattern="([0-9]|[1-9][0-9]|100)"
+            minlength="1"
+            maxlength="3"
+            (keydown)="validate($event)"
+            (change)="setFrequency($event.target.value)"
+            [value]="frequency"
+        />
+        <input class="size-slider" type="range" (change)="setFrequency($event.target.value)" [value]="frequency" min="4" max="1000" />
+        <label id="label">Hz</label>
+    </div>
+
+    <div id="sprayWidthContainer" *ngIf="checkIfContainAttribute('sprayWidth')">
+        <p id="header" for="volume">Diamètre Aérosol</p> 
+        <input
+            class="textInput"
+            type="text"
+            pattern="([0-9]|[1-9][0-9]|100)"
+            minlength="1"
+            maxlength="3"
+            (keydown)="validate($event)"
+            (change)="setRadius($event.target.value)"
+            [value]="radius"
+        />
+        <input class="size-slider" type="range" (change)="setRadius($event.target.value)" [value]="radius" min="20" max="70" />
+        <label id="label">Px</label>
+    </div>
+   
 </div>

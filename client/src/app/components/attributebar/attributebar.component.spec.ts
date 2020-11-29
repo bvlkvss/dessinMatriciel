@@ -14,6 +14,7 @@ import { Arguments, PipetteService } from '@app/services/tools/pipette/pipette.s
 import { PolygonService } from '@app/services/tools/polygon/polygon.service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle.service';
 import { SelectionService } from '@app/services/tools/selection/selection.service';
+import { SprayPaintService } from '@app/services/tools/spray-paint/spray-paint.service';
 import { TextService } from '@app/services/tools/text/text.service';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
@@ -40,6 +41,7 @@ describe('AttributebarComponent', () => {
     let pencilStub: PencilService;
     let pipetteStub: PipetteService;
     let plumeStub: PlumeService
+    let sprayPaintStub: SprayPaintService;
 
     let brushStub: BrushService;
     let rectangleStub: RectangleService;
@@ -69,9 +71,10 @@ describe('AttributebarComponent', () => {
         pipetteStub = new PipetteService(drawServiceMock);
         textStub = new TextService(drawServiceMock);
         plumeStub = new PlumeService(drawServiceMock, UndoRedoServiceMock);
+        sprayPaintStub = new SprayPaintService(drawServiceMock, UndoRedoServiceMock);
         gridStub = new GridService(drawServiceMock);
-        magicWandStub = new MagicWandService(drawServiceMock, UndoRedoServiceMock);
-        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub, selectionStub, paintBucketStub, polygonStub, pipetteStub, textStub, plumeStub, gridStub, magicWandStub);
+
+        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub, selectionStub, paintBucketStub, polygonStub, pipetteStub, textStub, sprayPaintStub, plumeStub, gridStub, magicWandStub);
         toolManagerStub.currentTool = pencilStub;
         TestBed.configureTestingModule({
             declarations: [AttributebarComponent, MatButtonToggleGroup],
@@ -314,4 +317,23 @@ describe('AttributebarComponent', () => {
         component.setAngle('5');
         expect(component.angleValue).toEqual('5');
     });
+
+    it('should set Droplets Width to given value when setDropletsWidth is called', () => {
+        (toolManagerStub.currentTool as SprayPaintService).setDropletsWidth = jasmine.createSpy('setDropletsWidth');
+        component.setDropletsWidth('5');
+        expect(component.dropletsWidthValue).toEqual('5');
+    });
+
+    it('should set frequency Width to given value when setfrequency is called', () => {
+        (toolManagerStub.currentTool as SprayPaintService).setfrequency = jasmine.createSpy('setfrequency');
+        component.setFrequency('5');
+        expect(component.frequency).toEqual('5');
+    });
+
+    it('should set radius Width to given value when setradius is called', () => {
+        (toolManagerStub.currentTool as SprayPaintService).setRadius = jasmine.createSpy('setRadius');
+        component.setRadius('5');
+        expect(component.radius).toEqual('5');
+    });
+
 });
