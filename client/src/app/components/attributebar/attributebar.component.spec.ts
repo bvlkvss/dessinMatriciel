@@ -6,6 +6,7 @@ import { BrushService } from '@app/services/tools/brush/brush.service';
 import { EllipseService } from '@app/services/tools/ellipse/ellipse.service';
 import { EraserService } from '@app/services/tools/eraser/eraser-service';
 import { LineService } from '@app/services/tools/line/line.service';
+import { MagicWandService } from '@app/services/tools/magic-wand/magic-wand.service';
 import { PaintBucketService } from '@app/services/tools/paint-bucket/paint-bucket.service';
 import { PencilService } from '@app/services/tools/pencil/pencil-service';
 import { PlumeService } from '@app/services/tools/plume/plume.service';
@@ -22,16 +23,14 @@ import { AttributebarComponent } from './attributebar.component';
 import { MatButtonToggleGroup, MatButtonToggleModule } from '@angular/material/button-toggle';
 import { GridService } from '@app/services/tools/grid/grid.service';
 
-
 export class MockUndoRedoService extends UndoRedoService {
     executeAll(): void {
-        console.log("executeAll was Called");
+        console.log('executeAll was Called');
     }
     ClearRedo(): void {
-        console.log("clearRedo was called");
+        console.log('clearRedo was called');
     }
 }
-
 
 describe('AttributebarComponent', () => {
     let component: AttributebarComponent;
@@ -56,9 +55,10 @@ describe('AttributebarComponent', () => {
     let UndoRedoServiceMock: MockUndoRedoService;
     let textStub: TextService;
     let gridStub: GridService;
+    let magicWandStub: MagicWandService;
 
     beforeEach(async(() => {
-        mouseEvent = (new MouseEvent('click', { clientX: 5, clientY: 5 }));
+        mouseEvent = new MouseEvent('click', { clientX: 5, clientY: 5 });
         drawServiceMock = new MockDrawingService();
         UndoRedoServiceMock = new MockUndoRedoService(drawServiceMock);
         polygonStub = new PolygonService(drawServiceMock, UndoRedoServiceMock);
@@ -74,7 +74,7 @@ describe('AttributebarComponent', () => {
         sprayPaintStub = new SprayPaintService(drawServiceMock, UndoRedoServiceMock);
         gridStub = new GridService(drawServiceMock);
 
-        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub, selectionStub, paintBucketStub, polygonStub, pipetteStub, textStub, sprayPaintStub, plumeStub, gridStub);
+        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub, selectionStub, paintBucketStub, polygonStub, pipetteStub, textStub, sprayPaintStub, plumeStub, gridStub, magicWandStub);
         toolManagerStub.currentTool = pencilStub;
         TestBed.configureTestingModule({
             declarations: [AttributebarComponent, MatButtonToggleGroup],
@@ -154,11 +154,11 @@ describe('AttributebarComponent', () => {
 
     it('should call toolManager"s setjunctionWidth when calling setJunctionWidth', () => {
         let junctionWidthSpy = spyOn(toolManagerStub, 'setJunctionWidth');
-        component.setJunctionWidth("6");
+        component.setJunctionWidth('6');
         expect(junctionWidthSpy).toHaveBeenCalled();
     });
     it('should call prevent if an not accepted key is pressed', () => {
-        event = new KeyboardEvent('keydown', { key: '@' })
+        event = new KeyboardEvent('keydown', { key: '@' });
         let eventSpy = spyOn<any>(event, 'preventDefault').and.callThrough();
         component.validate(event);
         expect(eventSpy).toHaveBeenCalled();
@@ -219,33 +219,30 @@ describe('AttributebarComponent', () => {
         expect(querySelectorSpy).toHaveBeenCalled();
     });
     it(' pickColor should call toolManager"s setColor    ', () => {
-        let canvas: HTMLCanvasElement = document.createElement("canvas");
+        let canvas: HTMLCanvasElement = document.createElement('canvas');
         component.pipetteCanvas = new ElementRef<HTMLCanvasElement>(canvas);
-        component.pipetteCtx = component.pipetteCanvas.nativeElement.getContext("2d") as CanvasRenderingContext2D;
+        component.pipetteCtx = component.pipetteCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         let spy = spyOn<any>(toolManagerStub, 'setColor').and.stub();
         component.pickColor(true);
         expect(spy).toHaveBeenCalled();
     });
     it('validate should call preventDefault if  an unallowed key was pressed ', () => {
-        event = new KeyboardEvent("keydown", { key: "-" });
+        event = new KeyboardEvent('keydown', { key: '-' });
         let spy = spyOn<any>(event, 'preventDefault').and.callThrough();
         component.validate(event);
         expect(spy).toHaveBeenCalled();
-
     });
     it('validate should not  call preventDefault if  an allowed key was pressed ', () => {
-        event = new KeyboardEvent("keydown", { key: "0" });
+        event = new KeyboardEvent('keydown', { key: '0' });
         let spy = spyOn<any>(event, 'preventDefault').and.callThrough();
         component.validate(event);
         expect(spy).not.toHaveBeenCalled();
-
     });
     it('colorObservale should trigger with the right value ', () => {
         spyOn<any>(pipetteStub, 'getColorObservable').and.returnValue(of(true));
         pipetteStub.getColorObservable().subscribe((isPrime) => {
             expect(isPrime).toEqual(true);
-        })
-
+        });
     });
     it('onClick should call pickColor  ', () => {
         let observerSpy = spyOn<any>(pipetteStub, 'getColorObservable').and.returnValue(of(false));
@@ -263,9 +260,8 @@ describe('AttributebarComponent', () => {
     });
 
     it('ngAfterViewInit should call drawImage and drawPixelContour  ', () => {
-
-        const arg: Arguments = { image: new Image(), event: mouseEvent }
-        let canvas: HTMLCanvasElement = document.createElement("canvas");
+        const arg: Arguments = { image: new Image(), event: mouseEvent };
+        let canvas: HTMLCanvasElement = document.createElement('canvas');
         component.pipetteCanvas = new ElementRef<HTMLCanvasElement>(canvas);
         const observerSpy = spyOn<any>(pipetteStub, 'getPipetteObservable').and.returnValue(of(arg));
         const drawImageSpy = spyOn(component, 'drawImage').and.stub();
@@ -276,30 +272,26 @@ describe('AttributebarComponent', () => {
         expect(drawPixelSpy).toHaveBeenCalled();
     });
     it('drawImage should  should call drawImage and clearReact of pipetteCtx  ', () => {
-        const arg: Arguments = { image: new Image(), event: mouseEvent }
-        let canvas: HTMLCanvasElement = document.createElement("canvas");
+        const arg: Arguments = { image: new Image(), event: mouseEvent };
+        let canvas: HTMLCanvasElement = document.createElement('canvas');
         component.pipetteCanvas = new ElementRef<HTMLCanvasElement>(canvas);
-        component.pipetteCtx = component.pipetteCanvas.nativeElement.getContext("2d") as CanvasRenderingContext2D;
+        component.pipetteCtx = component.pipetteCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         const drawImageSpy = spyOn(component.pipetteCtx, 'drawImage').and.callThrough();
         const clearRectSpy = spyOn(component.pipetteCtx, 'clearRect').and.callThrough();
         component.drawImage(arg);
         expect(drawImageSpy).toHaveBeenCalled();
         expect(clearRectSpy).toHaveBeenCalled();
-
     });
     it('drawPixelContour should   call strokeRect of pipetteCtx and change the rectStyle to red  ', () => {
-        let canvas: HTMLCanvasElement = document.createElement("canvas");
+        let canvas: HTMLCanvasElement = document.createElement('canvas');
         component.pipetteCanvas = new ElementRef<HTMLCanvasElement>(canvas);
-        component.pipetteCtx = component.pipetteCanvas.nativeElement.getContext("2d") as CanvasRenderingContext2D;
+        component.pipetteCtx = component.pipetteCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         const beginPathSpy = spyOn(component.pipetteCtx, 'beginPath').and.callThrough();
         const strokeSpy = spyOn(component.pipetteCtx, 'strokeRect').and.callThrough();
         component.drawPixelContour();
-        expect(component.pipetteCtx.strokeStyle).toEqual("#ff0000");
+        expect(component.pipetteCtx.strokeStyle).toEqual('#ff0000');
         expect(beginPathSpy).toHaveBeenCalled();
         expect(strokeSpy).toHaveBeenCalled();
-
-
-
     });
 
     it('should set lenghtValue to given value when setlignLenght is called', () => {
