@@ -13,11 +13,7 @@ describe('SprayPaintService', () => {
     let previewCtxStub: CanvasRenderingContext2D;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
     let myClearIntervalSpy: jasmine.Spy<any>;
-
     // let spraySpy: jasmine.Spy<any>;
-
-
-
 
     beforeEach(() => {
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
@@ -31,11 +27,8 @@ describe('SprayPaintService', () => {
         // spraySpy = spyOn<any>(service, 'spray').and.callThrough();
         myClearIntervalSpy = spyOn<any>(service, 'myClearInterval').and.callThrough();
 
-
-
         service['drawingService'].baseCtx = baseCtxStub;
         service['drawingService'].previewCtx = previewCtxStub;
-
         mouseEvent = {
             offsetX: 25,
             offsetY: 25,
@@ -93,13 +86,13 @@ describe('SprayPaintService', () => {
 
     it('setfrequency should set setfrequency to correct value', () => {
         service.setfrequency(5);
-        expect(service.period).toEqual(1/5*1000);
+        expect(service.period).toEqual((1 / 5) * 1000);
     });
 
     it('setRadius should set dropletsRadius to correct value', () => {
         service.setRadius(5);
         expect(service.radius).toEqual(5);
-    });  
+    });
 
     it(' onMouseMove should set currentMousePos to correct position', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
@@ -108,8 +101,6 @@ describe('SprayPaintService', () => {
 
         service.onMouseMove(mouseEvent);
         expect(service.currentMousePos).toEqual(expectedResult);
-
-
     });
 
     it(' onMouseMove should not set currentMousePos to correct position', () => {
@@ -121,19 +112,39 @@ describe('SprayPaintService', () => {
         expect(service.currentMousePos).not.toEqual(expectedResult);
     });
 
-    it(' on mouse out should call clear interval', () =>{
+    it(' on mouse out should call clear interval', () => {
         service.onMouseOut(mouseEvent);
         expect(myClearIntervalSpy).toHaveBeenCalled();
     });
 
-    // it(' onMouseEnter should call spray if mouse was already down', () => {
-    //     service.mouseDownCoord = { x: 0, y: 0 };
-    //     service.mouseDown = true;
+    it(' onMouseEnter should call spray if mouse was already down', () => {
+        //service.mouseDownCoord = { x: 0, y: 0 };
+        service.spray = jasmine.createSpy();
+        service.period = 10;
+        jasmine.clock().install();
+        service.mouseDown = true;
+        service.onMouseEnter(mouseEvent);
+        jasmine.clock().tick(11);
+        expect(service.spray).toHaveBeenCalled();
+        jasmine.clock().uninstall()
+    });
 
+    it(' onMouseEnter should not call spray if mouse was not down', () => {
+        //service.mouseDownCoord = { x: 0, y: 0 };
+        service.spray = jasmine.createSpy();
+        service.period = 10;
+        jasmine.clock().install();
+        service.mouseDown = false;
+        service.onMouseEnter(mouseEvent);
+        jasmine.clock().tick(11);
+        expect(service.spray).not.toHaveBeenCalled();
+        jasmine.clock().uninstall()
+    });
 
-    //     service.onMouseEnter(mouseEvent);
-    //     expect(service.spray).toHaveBeenCalled();
-    // });
-
-
+    it(' spray should call beginPath density times', () => {
+        baseCtxStub.beginPath =jasmine.createSpy();
+        service.density = 10;
+        service.spray(baseCtxStub, {x:23,y:24});
+        expect(baseCtxStub.beginPath).toHaveBeenCalledTimes(10);
+    });
 });
