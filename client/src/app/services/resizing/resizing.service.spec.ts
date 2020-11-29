@@ -27,6 +27,10 @@ describe('ResizingService', () => {
         service['drawingService'].previewCtx.canvas.width = previewCtxStub.canvas.width;
         service['drawingService'].baseCtx.canvas.height = baseCtxStub.canvas.height; // Jasmine doesnt copy properties with underlying data
         service['drawingService'].previewCtx.canvas.height = previewCtxStub.canvas.height;
+        service['drawingService'].gridCanvas = document.createElement('canvas');
+        service['drawingService'].gridCanvas.width =100;
+        service['drawingService'].gridCanvas.height = 100;
+        service['drawingService'].gridCtx = service['drawingService'].gridCanvas.getContext('2d') as CanvasRenderingContext2D;
     });
 
     it('should be created', () => {

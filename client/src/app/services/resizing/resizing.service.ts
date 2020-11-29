@@ -157,7 +157,7 @@ export class ResizingService {
         context.closePath();
     }
 
-    private clearGrid():void{
+    private clearGrid(): void {
         this.drawingService.gridCanvas.width = this.resizedWidth;
         this.drawingService.gridCanvas.height = this.resizedHeight;
         this.drawingService.clearCanvas(this.drawingService.gridCtx);

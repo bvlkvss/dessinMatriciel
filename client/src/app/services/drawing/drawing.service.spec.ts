@@ -13,6 +13,10 @@ describe('DrawingService', () => {
         service.canvas = canvasTestHelper.canvas;
         service.baseCtx = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         service.previewCtx = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
+        service.gridCanvas = document.createElement('canvas');
+        service.gridCanvas.width =100;
+        service.gridCanvas.height = 100;
+        service.gridCtx = service.gridCanvas.getContext('2d') as CanvasRenderingContext2D;
         clearRectSpy = spyOn<any>(service.baseCtx, 'clearRect').and.callThrough();
     });
 

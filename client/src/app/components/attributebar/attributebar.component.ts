@@ -32,7 +32,7 @@ export class AttributebarComponent implements OnInit, AfterViewChecked, AfterVie
     idStyleRectangle: number = 2;
     idStyleBrush: number = 1;
     tolerance: string = '0';
-    squareSize: string = (this.tools.currentTool as GridService).squareSize.toString();
+    squareSize: string = '25';
     opacity: string = '50';
     selectedValue: string;
     polices: string[] = ['Arial', 'Times New Roman', 'Courier New', 'Verdana', 'Comic Sans MS, cursive', 'Trebuchet MS, Helvetica'];
@@ -179,7 +179,7 @@ export class AttributebarComponent implements OnInit, AfterViewChecked, AfterVie
 
     setOpacity(input: string): void {
         this.opacity = input;
-        if (Number(this.squareSize) > MAX_WIDTH_VALUE) this.opacity = '100';
+        if (Number(this.opacity) > MAX_WIDTH_VALUE) this.opacity = '100';
         (this.tools.currentTool as GridService).changeOpacity(Number(this.opacity));
     }
 

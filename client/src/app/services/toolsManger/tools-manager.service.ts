@@ -3,6 +3,7 @@ import { Tool } from '@app/classes/tool';
 import { BrushService } from '@app/services/tools/brush/brush.service';
 import { EllipseService } from '@app/services/tools/ellipse/ellipse.service';
 import { EraserService } from '@app/services/tools/eraser/eraser-service';
+import { GridService } from '@app/services/tools/grid/grid.service';
 import { LineService } from '@app/services/tools/line/line.service';
 import { PaintBucketService } from '@app/services/tools/paint-bucket/paint-bucket.service';
 import { PencilService } from '@app/services/tools/pencil/pencil-service';
@@ -12,7 +13,6 @@ import { PolygonService } from '@app/services/tools/polygon/polygon.service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle.service';
 import { SelectionService } from '@app/services/tools/selection/selection.service';
 import { TextService } from '@app/services/tools/text/text.service';
-import { GridService } from '@app/services/tools/grid/grid.service';
 
 @Injectable({
     providedIn: 'root',
@@ -50,9 +50,9 @@ export class ToolsManagerService {
             ['pipette', pipetteService],
             ['text', textService],
             ['plume', plumeService],
-            ['grid',gridService],
+            ['grid', gridService],
         ]);
-        this.currentTool = this.tools.get('grid') as Tool;
+        this.currentTool = this.tools.get('pencil') as Tool;
     }
 
     setTools(name: string): void {

@@ -173,6 +173,9 @@ export class DrawingComponent implements AfterViewInit, OnInit {
 
     @HostListener('window:keydown', ['$event'])
     onkeyDownWindow(event: KeyboardEvent): void {
+        const element = event.target as HTMLElement;
+        if (element.className === 'textInput') return;
+
         if (event.ctrlKey && event.key === 'o') {
             event.preventDefault();
             event.stopPropagation();
@@ -184,9 +187,9 @@ export class DrawingComponent implements AfterViewInit, OnInit {
             this.tools.currentTool = this.keyBindings.get('r') as Tool;
             this.tools.currentTool.onKeyDown(event);
         }
+        this.onKeyDown(event);
     }
 
-    @HostListener('keydown', ['$event'])
     onKeyDown(event: KeyboardEvent): void {
         if (!(this.tools.currentTool instanceof TextService)) {
             if (event.ctrlKey && event.key === 'o') {
@@ -194,14 +197,21 @@ export class DrawingComponent implements AfterViewInit, OnInit {
             } else if (this.keyBindings.has(event.key)) {
                 this.drawingService.restoreCanvasState();
                 this.tools.currentTool = this.keyBindings.get(event.key) as Tool;
-                if (event.key === 'r') {
-                    (this.tools.currentTool as SelectionService).selectionStyle = 0;
-                    (this.tools.currentTool as SelectionService).resetSelection();
-                } else if (event.key === 's') {
-                    (this.tools.currentTool as SelectionService).selectionStyle = 1;
-                    (this.tools.currentTool as SelectionService).resetSelection();
-                } else if (event.key === 'g') {
-                    this.tools.currentTool.onKeyDown(event);
+                switch (event.key) {
+                    case 'r': {
+                        (this.tools.currentTool as SelectionService).selectionStyle = 0;
+                        (this.tools.currentTool as SelectionService).resetSelection();
+                        break;
+                    }
+                    case 's': {
+                        (this.tools.currentTool as SelectionService).selectionStyle = 1;
+                        (this.tools.currentTool as SelectionService).resetSelection();
+                        break;
+                    }
+                    case 'g': {
+                        this.tools.currentTool.onKeyDown(event);
+                        break;
+                    }
                 }
             } else this.tools.currentTool.onKeyDown(event);
         } else this.tools.currentTool.onKeyDown(event);
