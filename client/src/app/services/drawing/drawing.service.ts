@@ -13,8 +13,10 @@ const SIDEBAR_WIDTH = 50;
 export class DrawingService {
     baseCtx: CanvasRenderingContext2D;
     previewCtx: CanvasRenderingContext2D;
+    gridCtx: CanvasRenderingContext2D;
     canvas: HTMLCanvasElement;
     previewCanvas: HTMLCanvasElement;
+    gridCanvas: HTMLCanvasElement;
     canvasContainer: HTMLDivElement;
 
     blankCanvasDataUrl: string;
@@ -48,7 +50,9 @@ export class DrawingService {
     restoreCanvasState(): void {
         this.baseCtx.restore();
         this.previewCtx.restore();
+        this.gridCtx.restore();
         this.baseCtx.save();
         this.previewCtx.save();
+        this.gridCtx.save();
     }
 }

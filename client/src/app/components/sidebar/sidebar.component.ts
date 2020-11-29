@@ -5,6 +5,7 @@ import { ExportComponent } from '@app/components/export/export.component';
 import { SavingComponent } from '@app/components/saving/saving.component';
 import { UserGuideComponent } from '@app/components/user-guide/user-guide.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { GridService } from '@app/services/tools/grid/grid.service';
 import { SelectionService } from '@app/services/tools/selection/selection.service';
 import { TextService } from '@app/services/tools/text/text.service';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
@@ -114,6 +115,9 @@ export class SidebarComponent implements OnChanges {
         this.drawingService.restoreCanvasState();
         if (this.tools.currentTool instanceof TextService && name !== 'text') (this.tools.currentTool as TextService).drawConfirmedText(true);
         this.tools.setTools(name);
+        if (this.tools.currentTool instanceof GridService) {
+            this.tools.currentTool.onKeyDown({ key: 'g' } as KeyboardEvent);
+        }
         const numberOfTools = document.getElementsByTagName('a').length;
 
         for (let i = 0; i < numberOfTools; i++) {
