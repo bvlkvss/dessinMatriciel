@@ -247,10 +247,7 @@ describe('AttributebarComponent', () => {
         component.onClick();
         expect(spy).toHaveBeenCalled();
         expect(observerSpy).toHaveBeenCalled();
-<<<<<<< HEAD
 
-=======
->>>>>>> 4fde299... first implimentation
     });
     it('DisplayCircle should set circleIsShown to the right value  ', () => {
         let observerSpy = spyOn<any>(pipetteStub, 'getCircleViewObservable').and.returnValue(of(false));
@@ -258,11 +255,6 @@ describe('AttributebarComponent', () => {
         expect(observerSpy).toHaveBeenCalled();
         expect(component.circleIsShown).toEqual(false);
     });
-<<<<<<< HEAD
-
-    it('ngAfterViewInit should call drawImage and drawPixelContour  ', () => {
-=======
->>>>>>> 4fde299... first implimentation
 
     it('ngAfterViewInit should call drawImage and drawPixelContour  ', () => {
         const arg: Arguments = { image: new Image(), event: mouseEvent };

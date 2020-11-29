@@ -132,10 +132,9 @@ export class SelectionService extends Movable {
             if (!this.selectionActivated) {
                 this.saveSelection();
 
-                if (this.selectionStyle === 1) {
-                    //this.clipImageWithEllipse(); 
-                } else {
+                if (this.selectionStyle !== 1) {
                     this.drawingService.previewCtx.drawImage(this.selectionData, this.selectionStartPoint.x, this.selectionStartPoint.y);
+                    // this.clipImageWithEllipse();
                 }
                 this.rectangleService.drawRectangle(
                     this.drawingService.previewCtx,
@@ -165,7 +164,6 @@ export class SelectionService extends Movable {
     onMouseMove(event: MouseEvent): void {
         this.currentPos = this.getPositionFromMouse(event);
         if (this.selectionActivated && this.mouseDown) {
-            
             this.resizeSelection();
             this.ellipseService.setStyle(0);
             if (this.selectionStyle === 1) {

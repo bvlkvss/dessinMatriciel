@@ -69,9 +69,9 @@ export abstract class Movable extends Tool implements Rotationable, Resizable {
         this.selectionActivated = false;
     }
 
-    eraseSelectionFromBase(endPos: Vec2): void { }
-    clipImageWithEllipse(): void { }
-    resetSelection(): void { }
+    eraseSelectionFromBase(endPos: Vec2): void {}
+    clipImageWithEllipse(): void {}
+    resetSelection(): void {}
 
     protected drawSelectionOnBase(): void {
         const centre = {
@@ -223,12 +223,7 @@ export abstract class Movable extends Tool implements Rotationable, Resizable {
 
         this.drawingService.previewCtx.restore();
         this.drawingService.previewCtx.restore();
-        this.rectangleService.drawRectangle(
-            this.drawingService.previewCtx,
-            this.selectionStartPoint,
-            this.selectionEndPoint,
-            false,
-        );
+        this.rectangleService.drawRectangle(this.drawingService.previewCtx, this.selectionStartPoint, this.selectionEndPoint, false);
         this.updateResizingHandles();
         this.drawResizingHandles();
     }
