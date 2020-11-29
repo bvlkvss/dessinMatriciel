@@ -39,8 +39,6 @@ export class SprayPaintService extends Tool {
         this.mouseDown = event.button === MouseButton.Left;
 
         if (this.mouseDown) {
-            // this.invoker.ClearRedo();
-            // this.invoker.setIsAllowed(false);
             this.currentMousePos = this.mouseDownCoord = this.getPositionFromMouse(event);
             this.interval = setInterval(() => {
                 this.spray(this.drawingService.baseCtx, this.currentMousePos);

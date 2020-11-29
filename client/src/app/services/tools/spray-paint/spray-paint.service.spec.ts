@@ -1,8 +1,9 @@
 /* tslint:disable */
 import { TestBed } from '@angular/core/testing';
-import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Vec2 } from '@app/classes/vec2';
+import { MockUndoRedoService } from '@app/components/attributebar/attributebar.component.spec';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
 import { SprayPaintService } from './spray-paint.service';
 
@@ -11,25 +12,22 @@ describe('SprayPaintService', () => {
     let mouseEvent: MouseEvent;
 
     let baseCtxStub: CanvasRenderingContext2D;
-    let previewCtxStub: CanvasRenderingContext2D;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
-    let myClearIntervalSpy: jasmine.Spy<any>;
+   // let myClearIntervalSpy: jasmine.Spy<any>;
+    let fakeUndoRedo: MockUndoRedoService;
     // let spraySpy: jasmine.Spy<any>;
 
     beforeEach(() => {
-        baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
-        previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
+        let testCanvas = document.createElement('canvas');
+        baseCtxStub = testCanvas.getContext('2d') as CanvasRenderingContext2D;
         drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
-
+        fakeUndoRedo = new MockUndoRedoService(drawServiceSpy);
         TestBed.configureTestingModule({
-            providers: [{ provide: DrawingService, useValue: drawServiceSpy }],
+            providers: [{ provide: DrawingService, useValue: drawServiceSpy }, {provide: UndoRedoService, useValue: fakeUndoRedo},],
         });
         service = TestBed.inject(SprayPaintService);
-        // spraySpy = spyOn<any>(service, 'spray').and.callThrough();
-        myClearIntervalSpy = spyOn<any>(service, 'myClearInterval').and.callThrough();
-
         service['drawingService'].baseCtx = baseCtxStub;
-        service['drawingService'].previewCtx = previewCtxStub;
+        service.myClearInterval =jasmine.createSpy().and.callFake((interval)=>{interval = 0;});
         mouseEvent = {
             offsetX: 25,
             offsetY: 25,
@@ -45,12 +43,9 @@ describe('SprayPaintService', () => {
         const expectedResult: Vec2 = { x: 25, y: 25 };
         service.onMouseDown(mouseEvent);
         expect(service.mouseDownCoord).toEqual(expectedResult);
-    });
-
-    it(' mouseDown should set mouseDown property to true on left click', () => {
-        service.onMouseDown(mouseEvent);
         expect(service.mouseDown).toEqual(true);
     });
+
 
     it(' mouseDown should set mouseDown property to false on right click', () => {
         const mouseEventRClick = {
@@ -66,13 +61,6 @@ describe('SprayPaintService', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
         service.onMouseUp(mouseEvent);
         expect(service.mouseDown).toEqual(false);
-    });
-
-    it(' mousemove should set currentMousePos to correct position', () => {
-        const expectedResult: Vec2 = { x: 25, y: 25 };
-        // service.mouseDown = true;
-        service.onMouseDown(mouseEvent);
-        expect(service.currentMousePos).toEqual(expectedResult);
     });
 
     it('setPrimaryColor should set primaryColor to correct value', () => {
@@ -115,9 +103,9 @@ describe('SprayPaintService', () => {
 
     it(' on mouse out should call clear interval', () => {
         service.onMouseOut(mouseEvent);
-        expect(myClearIntervalSpy).toHaveBeenCalled();
+        expect(service.myClearInterval).toHaveBeenCalled();
     });
-
+    
     it(' onMouseEnter should call spray if mouse was already down', () => {
         //service.mouseDownCoord = { x: 0, y: 0 };
         service.spray = jasmine.createSpy();
@@ -129,7 +117,7 @@ describe('SprayPaintService', () => {
         expect(service.spray).toHaveBeenCalled();
         jasmine.clock().uninstall();
     });
-
+    
     it(' onMouseEnter should not call spray if mouse was not down', () => {
         //service.mouseDownCoord = { x: 0, y: 0 };
         service.spray = jasmine.createSpy();
