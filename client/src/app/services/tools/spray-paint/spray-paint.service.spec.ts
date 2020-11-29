@@ -1,3 +1,4 @@
+/* tslint:disable */
 import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Vec2 } from '@app/classes/vec2';
@@ -126,7 +127,7 @@ describe('SprayPaintService', () => {
         service.onMouseEnter(mouseEvent);
         jasmine.clock().tick(11);
         expect(service.spray).toHaveBeenCalled();
-        jasmine.clock().uninstall()
+        jasmine.clock().uninstall();
     });
 
     it(' onMouseEnter should not call spray if mouse was not down', () => {
@@ -138,13 +139,13 @@ describe('SprayPaintService', () => {
         service.onMouseEnter(mouseEvent);
         jasmine.clock().tick(11);
         expect(service.spray).not.toHaveBeenCalled();
-        jasmine.clock().uninstall()
+        jasmine.clock().uninstall();
     });
 
     it(' spray should call beginPath density times', () => {
-        baseCtxStub.beginPath =jasmine.createSpy();
+        baseCtxStub.beginPath = jasmine.createSpy();
         service.density = 10;
-        service.spray(baseCtxStub, {x:23,y:24});
+        service.spray(baseCtxStub, { x: 23, y: 24 });
         expect(baseCtxStub.beginPath).toHaveBeenCalledTimes(10);
     });
 });

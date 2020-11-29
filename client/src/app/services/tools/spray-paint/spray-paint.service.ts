@@ -63,7 +63,7 @@ export class SprayPaintService extends Tool {
         this.myClearInterval(this.interval);
     }
 
-    myClearInterval(interval: NodeJS.Timeout): void{
+    myClearInterval(interval: NodeJS.Timeout): void {
         clearInterval(interval);
     }
 
@@ -93,7 +93,7 @@ export class SprayPaintService extends Tool {
     setPrimaryColor(color: string): void {
         this.primaryColor = color;
     }
-    
+
     getRandomOffset(): Vec2 {
         const randomAngle = Math.random() * FULLCIRLCLE;
         const randomRadius = Math.random() * this.radius;
