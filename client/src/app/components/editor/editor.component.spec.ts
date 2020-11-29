@@ -7,6 +7,7 @@ import { EllipseService } from '@app/services/tools/ellipse/ellipse.service';
 import { EraserService } from '@app/services/tools/eraser/eraser-service';
 import { GridService } from '@app/services/tools/grid/grid.service';
 import { LineService } from '@app/services/tools/line/line.service';
+import { MagicWandService } from '@app/services/tools/magic-wand/magic-wand.service';
 import { PaintBucketService } from '@app/services/tools/paint-bucket/paint-bucket.service';
 import { PencilService } from '@app/services/tools/pencil/pencil-service';
 import { PipetteService } from '@app/services/tools/pipette/pipette.service';
@@ -47,6 +48,7 @@ describe('EditorComponent', () => {
     let UndoRedoServiceMock: MockUndoRedoService;
     let textStub: TextService;
     let gridStub: GridService;
+    let magicStub: MagicWandService;
     beforeEach(async(() => {
         drawServiceMock = new MockDrawingService();
         UndoRedoServiceMock = new MockUndoRedoService(drawServiceMock);
@@ -61,7 +63,8 @@ describe('EditorComponent', () => {
         textStub = new TextService(drawServiceMock);
         plumeStub = new PlumeService(drawServiceMock, UndoRedoServiceMock);
         gridStub = new GridService(drawServiceMock);
-        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub, selectionStub, paintBucketStub, polygonStub, pipetteStub, textStub, plumeStub, gridStub);
+        magicStub = new MagicWandService(drawServiceMock, UndoRedoServiceMock)
+        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub, selectionStub, paintBucketStub, polygonStub, pipetteStub, textStub, plumeStub, gridStub, magicStub);
         toolManagerStub.currentTool = pencilStub;
         TestBed.configureTestingModule({
             declarations: [EditorComponent, AttributebarComponent, ColorPickerComponent, DrawingComponent, ColorSliderComponent, ColorPaletteComponent, SidebarComponent, MatButtonToggleGroup],

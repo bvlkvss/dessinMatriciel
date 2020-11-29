@@ -10,6 +10,7 @@ import { EllipseService } from '@app/services/tools/ellipse/ellipse.service';
 import { EraserService } from '@app/services/tools/eraser/eraser-service';
 import { GridService } from '@app/services/tools/grid/grid.service';
 import { LineService } from '@app/services/tools/line/line.service';
+import { MagicWandService } from '@app/services/tools/magic-wand/magic-wand.service';
 import { PaintBucketService } from '@app/services/tools/paint-bucket/paint-bucket.service';
 import { PencilService } from '@app/services/tools/pencil/pencil-service';
 import { PipetteService } from '@app/services/tools/pipette/pipette.service';
@@ -20,8 +21,6 @@ import { SelectionService } from '@app/services/tools/selection/selection.servic
 import { TextService } from '@app/services/tools/text/text.service';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
 import { MockUndoRedoService } from '../attributebar/attributebar.component.spec';
-
-
 
 export class MockDrawingService extends DrawingService {
     resizeCanvas(): void {
@@ -56,6 +55,8 @@ describe('DrawingComponent', () => {
     let polygonStub: PolygonService;
     let textStub: TextService;
     let gridStub;
+    let magicWandStub: MagicWandService;
+
 
     beforeEach(async(() => {
         drawServiceMock = new MockDrawingService();
@@ -73,7 +74,8 @@ describe('DrawingComponent', () => {
         textStub = new TextService(drawServiceMock);
         plumeStub = new PlumeService(drawServiceMock, undoRedoServiceMock);
         gridStub = new GridService(drawServiceMock);
-        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub, selectionStub, paintBucketStub, polygonStub, pipetteStub, textStub, plumeStub, gridStub);
+        magicWandStub = new MagicWandService(drawServiceMock, undoRedoServiceMock);
+        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub, selectionStub, paintBucketStub, polygonStub, pipetteStub, textStub, plumeStub, gridStub,magicWandStub);
         toolManagerStub.currentTool = toolManagerStub.getTools().get('pencil') as Tool;
         TestBed.configureTestingModule({
             declarations: [DrawingComponent],
