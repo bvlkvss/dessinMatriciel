@@ -4,6 +4,7 @@ import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { PLumeCommand } from '../../../classes/plume-command';
 
 const DEFAULT_WIDTH = 2;
 const DEFAULT_ANGLE = 0;
@@ -80,9 +81,9 @@ export class PlumeService extends Tool {
     onMouseUp(event: MouseEvent): void {
         if (this.mouseDown && !this.mouseIsOut) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            // const cmd = new PencilCommand(this.pathData, this, this.drawingService) as PencilCommand;
-            // this.invoker.addToUndo(cmd);
-            // this.invoker.setIsAllowed(true);
+            const cmd = new PLumeCommand(this.pathData, this, this.drawingService) as PLumeCommand;
+            this.invoker.addToUndo(cmd);
+            this.invoker.setIsAllowed(true);
         }
         this.mouseDown = false;
         this.clearPath();
@@ -96,8 +97,7 @@ export class PlumeService extends Tool {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
 
         if (!this.arrayTooLarge) {
-            // Reduire la taille du tableau pour que literation se fasse plus rapidement (Fix probleme de latence)
-            // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
+
             if (!this.mouseDown) {
                 this.drawPreviewLine(this.drawingService.previewCtx, this.pathData);
             } else {

@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
-
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
+import { SprayPaintCommand } from '../../../classes/spray-paint-command';
+
 
 const DEFAULT_FREQUENCY = 700;
 const DEFAULT_RADIUS = 20;
@@ -29,6 +30,7 @@ export class SprayPaintService extends Tool {
     interval: NodeJS.Timeout;
     currentMousePos: Vec2;
     density: number = DENSITY;
+    sprayCommand: SprayPaintCommand;
 
     constructor(drawingService: DrawingService, protected invoker: UndoRedoService) {
         super(drawingService);
@@ -40,6 +42,10 @@ export class SprayPaintService extends Tool {
 
         if (this.mouseDown) {
             this.currentMousePos = this.mouseDownCoord = this.getPositionFromMouse(event);
+            this.invoker.ClearRedo();
+            this.invoker.setIsAllowed(false);
+            this.sprayCommand = new SprayPaintCommand(this, this.drawingService);
+            this.sprayCommand.pushData(this.mouseDownCoord);
             this.interval = setInterval(() => {
                 this.spray(this.drawingService.baseCtx, this.currentMousePos);
             }, this.period);
@@ -48,12 +54,16 @@ export class SprayPaintService extends Tool {
 
     onMouseUp(event: MouseEvent): void {
         this.myClearInterval(this.interval);
+        this.sprayCommand.pushData(this.getPositionFromMouse(event));
+        this.invoker.addToUndo(this.sprayCommand);
+        this.invoker.setIsAllowed(true);
         this.mouseDown = false;
     }
 
     onMouseMove(event: MouseEvent): void {
         if (this.mouseDown) {
             this.currentMousePos = this.getPositionFromMouse(event);
+            this.sprayCommand.pushData(this.currentMousePos);
         }
     }
 

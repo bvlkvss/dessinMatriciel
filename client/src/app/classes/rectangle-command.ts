@@ -10,6 +10,7 @@ export class RectangleCommand extends Command {
     private primaryColor: string;
     private secondaryColor: string;
     private opacity: number;
+    private toSquare: boolean;
     isResize: boolean = false;
 
     constructor(startPos: Vec2, endPos: Vec2, style: number, protected tool: RectangleService, protected drawingService: DrawingService) {
@@ -20,12 +21,13 @@ export class RectangleCommand extends Command {
         this.primaryColor = this.tool.primaryColor;
         this.secondaryColor = this.tool.secondaryColor;
         this.opacity = this.tool.opacity;
+        this.toSquare = this.tool.toSquare;
     }
     execute(): void {
         this.tool.rectangleStyle = this.style;
         this.tool.primaryColor = this.primaryColor;
         this.tool.secondaryColor = this.secondaryColor;
         this.tool.opacity = this.opacity;
-        this.tool.drawRectangle(this.drawingService.baseCtx, this.startPos, this.endPos, false);
+        this.tool.drawRectangle(this.drawingService.baseCtx, this.startPos, this.endPos, this.toSquare);
     }
 }
