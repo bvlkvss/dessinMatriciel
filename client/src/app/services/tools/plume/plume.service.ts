@@ -84,6 +84,7 @@ export class PlumeService extends Tool {
             // this.invoker.addToUndo(cmd);
             // this.invoker.setIsAllowed(true);
         }
+        this.drawPreviewLine(this.drawingService.previewCtx, this.pathData);
         this.mouseDown = false;
         this.clearPath();
     }
