@@ -198,8 +198,8 @@ export class Resizable {
                 this.adjustRectangle(this.selectionStartPoint, this.currentPos, 1);
                 break;
         }
-        this.drawingService.clearCanvas(this.drawingService.previewCtx);
-        this.rectangleService.drawRectangle(this.drawingService.previewCtx, this.selectionStartPoint, this.selectionEndPoint, false);
+        //this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        //this.rectangleService.drawRectangle(this.drawingService.previewCtx, this.selectionStartPoint, this.selectionEndPoint, false);
         this.redrawSelection();
     }
 

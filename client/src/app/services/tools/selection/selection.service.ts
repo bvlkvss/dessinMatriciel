@@ -169,26 +169,16 @@ export class SelectionService extends Movable {
 
         if (this.selectionActivated && this.mouseDown) {
             this.resizeSelection();
-            this.ellipseService.setStyle(0);
-            if (this.selectionStyle === 1)
-                this.ellipseService.drawEllipse(
-                    this.drawingService.previewCtx,
-                    this.selectionStartPoint,
-                    this.currentPos,
-                    this.rectangleService.toSquare,
-                    false,
-                );
             return;
         }
 
         if (this.mouseDownInsideSelection) {
             this.moveSelection(this.currentPos);
-
-            this.redrawSelection();
             if (this.selectionStyle === 1) {
                 this.ellipseService.secondaryColor = 'black';
                 this.ellipseService.setStyle(0);
             }
+            this.redrawSelection();
         } else if (this.mouseDown) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.rectangleService.onMouseMove(event);
@@ -210,7 +200,7 @@ export class SelectionService extends Movable {
             this.resizeSelection();
         }
         if (this.selectionStyle === 1 && !event.shiftKey && this.mouseDown) {
-            this.ellipseService.drawEllipse(this.drawingService.previewCtx, this.mouseDownCoord, this.currentPos, this.rectangleService.toSquare);
+            this.redrawSelection(false, false);
         }
         this.keysDown[event.key] = event.type === 'keydown';
         this.mouseDownInsideSelection = false;
@@ -228,8 +218,8 @@ export class SelectionService extends Movable {
                 this.rectangleService.toSquare = true;
                 this.resizeSelection();
             }
-            if (this.selectionStyle === 1 && event.shiftKey) {
-                this.ellipseService.drawEllipse(this.drawingService.previewCtx, this.mouseDownCoord, this.currentPos, this.rectangleService.toSquare);
+            if (this.selectionStyle === 1 && event.shiftKey && this.mouseDown) {
+                this.redrawSelection(false, true);
             }
 
             this.keysDown[event.key] = event.type === 'keydown';

@@ -39,7 +39,7 @@ export abstract class Movable extends Tool implements Rotationable, Resizable {
     selectionActivated: boolean;
     mouseDownInsideSelection: boolean;
     magicSelectionObj: MagicWandSelection;
-    
+
     getRotatedGeniric: (point: Vec2, centre: Vec2, angle: number) => Vec2 = Rotationable.prototype.getRotatedGeniric;
     getUnrotatedPos: (element: Vec2) => Vec2 = Rotationable.prototype.getUnrotatedPos;
     getRotatedPos: (element: Vec2) => Vec2 = Rotationable.prototype.getRotatedPos;
@@ -176,7 +176,7 @@ export abstract class Movable extends Tool implements Rotationable, Resizable {
         this.selectionEndPoint = newEnd;
     }
 
-    redrawSelection(redrawAfterRotate: boolean = false): void {
+    redrawSelection(redrawAfterRotate: boolean = false, toSquare: boolean = false): void {
         if (this.firstSelectionMove) {
             this.selectionCommand = new SelectionCommand(this.selectionStartPoint, this, this.drawingService);
             this.selectionCommand.setEndPosErase(this.selectionEndPoint);
@@ -199,21 +199,22 @@ export abstract class Movable extends Tool implements Rotationable, Resizable {
         this.drawingService.previewCtx.save();
         const posx = -this.width / 2;
         const posy = -this.height / 2;
-        this.drawingService.previewCtx.save();
         this.drawingService.previewCtx.translate(this.selectionStartPoint.x + this.width / 2, this.selectionStartPoint.y + this.height / 2);
         this.drawingService.previewCtx.rotate((this.degres * Math.PI) / PI_DEGREE);
+        this.drawingService.previewCtx.save();
         if (this.selectionStyle === 1) {
+            this.ellipseService.setStyle(0);
             this.ellipseService.drawEllipse(
                 this.drawingService.previewCtx,
                 {
-                    x: -this.width / 2,
-                    y: -this.height / 2,
+                    x: -posx,
+                    y: -posy,
                 } as Vec2,
                 {
-                    x: this.width / 2,
-                    y: this.height / 2,
+                    x: posx,
+                    y: posy,
                 } as Vec2,
-                false,
+                toSquare,
                 false,
             );
             this.drawingService.previewCtx.clip();
@@ -223,6 +224,7 @@ export abstract class Movable extends Tool implements Rotationable, Resizable {
             this.flipSelection();
         }
         this.drawingService.previewCtx.drawImage(this.selectionData, posx, posy, this.width, this.height);
+        this.drawingService.previewCtx.restore();
         this.rectangleService.drawRectangle(
             this.drawingService.previewCtx,
             {
@@ -235,7 +237,6 @@ export abstract class Movable extends Tool implements Rotationable, Resizable {
             } as Vec2,
             false,
         );
-        this.drawingService.previewCtx.restore();
         this.drawingService.previewCtx.restore();
         this.updateResizingHandles();
         this.drawResizingHandles();
