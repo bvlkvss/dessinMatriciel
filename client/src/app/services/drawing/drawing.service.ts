@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Vec2 } from '@app/classes/vec2';
+import { Observable, Subject } from 'rxjs';
+
 export const DEFAULT_WIDTH = 1000;
 export const DEFAULT_HEIGHT = 800;
 
@@ -18,6 +20,7 @@ export class DrawingService {
     previewCanvas: HTMLCanvasElement;
     gridCanvas: HTMLCanvasElement;
     canvasContainer: HTMLDivElement;
+    subject: Subject<string> = new Subject<string>();
 
     blankCanvasDataUrl: string;
     canvasSize: Vec2 = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
@@ -54,5 +57,14 @@ export class DrawingService {
         this.baseCtx.save();
         this.previewCtx.save();
         this.gridCtx.save();
+    }
+
+    sendMessage(message: string): void {
+        this.subject.next(message);
+    }
+
+    /* tslint:disable:no-any*/
+    getMessage(): Observable<any> {
+        return this.subject.asObservable();
     }
 }

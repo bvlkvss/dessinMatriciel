@@ -61,6 +61,14 @@ export class ToolsManagerService {
         this.currentTool = this.tools.get('pencil') as Tool;
     }
 
+    getByValue(searchValue: Tool): string {
+        let toolname = '';
+        for (const [key, value] of this.tools.entries()) {
+            if (value === searchValue) toolname = key;
+        }
+        return toolname;
+    }
+
     setTools(name: string): void {
         this.currentTool = this.tools.get(name) as Tool;
     }

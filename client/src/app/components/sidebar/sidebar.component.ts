@@ -1,4 +1,4 @@
-import { Component, HostListener, Input, OnChanges } from '@angular/core';
+import { Component, HostListener, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { CarrouselComponent } from '@app/components/carrousel/carrousel.component';
 import { ExportComponent } from '@app/components/export/export.component';
@@ -10,6 +10,7 @@ import { SelectionService } from '@app/services/tools/selection/selection.servic
 import { TextService } from '@app/services/tools/text/text.service';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
+import { Subscription } from 'rxjs';
 
 const COLOR_STRING_LENGTH = 7;
 
@@ -19,6 +20,9 @@ const COLOR_STRING_LENGTH = 7;
     styleUrls: ['./sidebar.component.scss'],
 })
 export class SidebarComponent implements OnChanges {
+    subscription: Subscription;
+    currentToolName: string;
+
     constructor(
         private tools: ToolsManagerService,
         protected drawingService: DrawingService,
@@ -30,7 +34,12 @@ export class SidebarComponent implements OnChanges {
     isRevertClicked: boolean = false;
     attributeBarIsActive: boolean = false;
 
-    ngOnChanges(): void {
+    ngOnChanges(changes: SimpleChanges): void {
+        this.subscription = this.drawingService.getMessage().subscribe((message: string) => {
+            this.currentToolName = message;
+            this.changeTools(message);
+        });
+
         if (!this.isRevertClicked) {
             const primColorDiv = document.querySelector('.color-box1') as HTMLElement;
             const secondColorDiv = document.querySelector('.color-box2') as HTMLElement;
@@ -123,8 +132,7 @@ export class SidebarComponent implements OnChanges {
         for (let i = 0; i < numberOfTools; i++) {
             document.getElementsByTagName('a')[i].classList.remove('active');
         }
-
-        document.getElementById(name)?.setAttribute('class', 'active');
+        document.getElementById(this.currentToolName)?.setAttribute('class', 'active');
     }
 
     revertColors(): void {

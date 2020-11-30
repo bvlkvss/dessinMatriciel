@@ -1,4 +1,5 @@
 /* tslint:disable */
+import { SimpleChange } from '@angular/core';
 import { async, ComponentFixture, ComponentFixtureAutoDetect, TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { Tool } from '@app/classes/tool';
@@ -185,5 +186,17 @@ describe('SidebarComponent', () => {
         ((component as any).tools.currentTool as SelectionService).selectAllCanvas = jasmine.createSpy();
         component.selectAll();
         expect(((component as any).tools.currentTool as SelectionService).selectAllCanvas).toHaveBeenCalled();
+    });
+
+    it('if currentToolName does not change ngOnChanges should not call changeTools', () => {
+        let changeToolsSpy = spyOn(component, 'changeTools');
+
+        component.currentToolName = 'pencil';
+        component.ngOnChanges({
+            currentToolName: new SimpleChange(null, component.currentToolName, true)}
+        );
+        fixture.detectChanges();
+        expect(changeToolsSpy).not.toHaveBeenCalled();
+        expect(component.currentToolName).toBe('pencil');
     });
 });

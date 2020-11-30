@@ -190,6 +190,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     @HostListener('document:keyup', ['$event'])
     onKeyUp(event: KeyboardEvent): void {
         this.tools.currentTool.onKeyUp(event);
+        this.drawingService.sendMessage(this.tools.getByValue(this.tools.currentTool));
     }
 
     @HostListener('window:keydown', ['$event'])
