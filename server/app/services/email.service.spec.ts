@@ -84,7 +84,7 @@ describe('Database service', () => {
         return expect(x).to.equal(false)
     });
 
-    it('should n is validated when sendEmail is called and email is sent', async () => {
+    it('should return true if image is validated when sendEmail is called and email is sent', async () => {
         let email = {
             email:"correct@email.ca",
             image:dummyDataUrl,
