@@ -40,7 +40,7 @@ export class AttributeBarComponent implements OnInit, AfterViewChecked, AfterVie
     squareSize: string = '25';
     opacity: string = '50';
     selectedValue: string;
-    polices: string[] = ['Arial', 'Times New Roman', 'Courier New', 'Verdana', 'Comic Sans MS, cursive', 'Trebuchet MS, Helvetica'];
+    polices: string[];
 
     circleIsShown: boolean = true;
     @ViewChild('pipette', { static: false }) pipetteCanvas: ElementRef<HTMLCanvasElement>;
