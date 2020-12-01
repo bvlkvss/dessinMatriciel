@@ -23,12 +23,12 @@ const RECT_SIZE = 5;
 })
 export class AttributeBarComponent implements OnInit, AfterViewChecked, AfterViewInit {
     widthValue: string;
-    junctionWidth: string = '1';
-    idStyleRectangle: number = 2;
-    idStyleBrush: number = 1;
-    tolerance: string = '0';
+    junctionWidth: string;
+    idStyleRectangle: number;
+    idStyleBrush: number;
+    tolerance: string;
     selectedValue: string;
-    polices: string[] = ['Arial', 'Times New Roman', 'Courier New', 'Verdana', 'Comic Sans MS, cursive', 'Trebuchet MS, Helvetica'];
+    polices: string[];
 
     circleIsShown: boolean;
     @ViewChild('pipette', { static: false }) pipetteCanvas: ElementRef<HTMLCanvasElement>;
