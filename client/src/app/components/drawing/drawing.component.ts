@@ -3,12 +3,12 @@ import { Command } from '@app/classes/command';
 import { Tool } from '@app/classes/tool';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ResizingService } from '@app/services/resizing/resizing.service';
+import { ToolsManagerService } from '@app/services/tools-manager/tools-manager.service';
 import { GridService } from '@app/services/tools/grid/grid.service';
 import { MagicWandService } from '@app/services/tools/magic-wand/magic-wand.service';
 import { PlumeService } from '@app/services/tools/plume/plume.service';
 import { SelectionService } from '@app/services/tools/selection/selection.service';
 import { TextService } from '@app/services/tools/text/text.service';
-import { ToolsManagerService } from '@app/services/tools-manager/tools-manager.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
 // TODO : Avoir un fichier séparé pour les constantes ?

@@ -35,7 +35,7 @@ describe('EditorComponent', () => {
     let toolManagerStub: ToolsManagerService;
     let pencilStub: PencilService;
     let pipetteStub: PipetteService;
-    let plumeStub: PlumeService
+    let plumeStub: PlumeService;
     let sprayPaintStub: SprayPaintService;
 
     let brushStub: BrushService;
@@ -66,11 +66,39 @@ describe('EditorComponent', () => {
         plumeStub = new PlumeService(drawServiceMock, UndoRedoServiceMock);
         sprayPaintStub = new SprayPaintService(drawServiceMock, UndoRedoServiceMock);
         gridStub = new GridService(drawServiceMock);
-        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub, selectionStub, paintBucketStub, polygonStub, pipetteStub, textStub, sprayPaintStub, plumeStub, gridStub, magicStub);
+        toolManagerStub = new ToolsManagerService(
+            pencilStub,
+            brushStub,
+            rectangleStub,
+            eraserStub,
+            ellipseStub,
+            lineStub,
+            selectionStub,
+            paintBucketStub,
+            polygonStub,
+            pipetteStub,
+            textStub,
+            sprayPaintStub,
+            plumeStub,
+            gridStub,
+            magicStub,
+        );
         toolManagerStub.currentTool = pencilStub;
         TestBed.configureTestingModule({
-            declarations: [EditorComponent, AttributeBarComponent, ColorPickerComponent, DrawingComponent, ColorSliderComponent, ColorPaletteComponent, SidebarComponent, MatButtonToggleGroup],
-            providers: [{ provide: MatDialog, useValue: {} }, { provide: ToolsManagerService, useValue: toolManagerStub }],
+            declarations: [
+                EditorComponent,
+                AttributeBarComponent,
+                ColorPickerComponent,
+                DrawingComponent,
+                ColorSliderComponent,
+                ColorPaletteComponent,
+                SidebarComponent,
+                MatButtonToggleGroup,
+            ],
+            providers: [
+                { provide: MatDialog, useValue: {} },
+                { provide: ToolsManagerService, useValue: toolManagerStub },
+            ],
         }).compileComponents();
         delay(1000);
         fixture = TestBed.createComponent(EditorComponent);
