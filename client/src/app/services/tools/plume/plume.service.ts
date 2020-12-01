@@ -35,7 +35,7 @@ export class PlumeService extends Tool {
     mouseIsOut: boolean = false;
     halfLength: number;
     arrayTooLarge: boolean = false;
-    subject: BehaviorSubject<string> = new BehaviorSubject<string>('');
+    subject: BehaviorSubject<string> = new BehaviorSubject<string>('0');
 
     constructor(drawingService: DrawingService, protected invoker: UndoRedoService) {
         super(drawingService);
