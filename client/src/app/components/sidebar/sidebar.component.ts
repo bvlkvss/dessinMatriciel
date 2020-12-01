@@ -121,6 +121,7 @@ export class SidebarComponent implements OnChanges {
     }
 
     changeTools(name: string): void {
+        console.log('ok');
         this.drawingService.restoreCanvasState();
         if (this.tools.currentTool instanceof TextService && name !== 'text') (this.tools.currentTool as TextService).drawConfirmedText(true);
         this.tools.setTools(name);
@@ -132,6 +133,7 @@ export class SidebarComponent implements OnChanges {
         for (let i = 0; i < numberOfTools; i++) {
             document.getElementsByTagName('a')[i].classList.remove('active');
         }
+        document.getElementById(name)?.setAttribute('class', 'active');
         document.getElementById(this.currentToolName)?.setAttribute('class', 'active');
     }
 
