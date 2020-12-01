@@ -22,7 +22,7 @@ import { RectangleService } from '@app/services/tools/rectangle/rectangle.servic
 import { SelectionService } from '@app/services/tools/selection/selection.service';
 import { SprayPaintService } from '@app/services/tools/spray-paint/spray-paint.service';
 import { TextService } from '@app/services/tools/text/text.service';
-import { MockUndoRedoService } from '../attributebar/attributebar.component.spec';
+import { MockUndoRedoService } from '../attribute-bar/attributebar.component.spec';
 
 export class MockDrawingService extends DrawingService {
     resizeCanvas(): void {

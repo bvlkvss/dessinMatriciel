@@ -20,7 +20,7 @@ import { SprayPaintService } from '@app/services/tools/spray-paint/spray-paint.s
 import { TextService } from '@app/services/tools/text/text.service';
 import { delay } from 'rxjs/operators';
 import { AttributeBarComponent } from '../attribute-bar/attributebar.component';
-import { MockUndoRedoService } from '../attributebar/attributebar.component.spec';
+import { MockUndoRedoService } from '../attribute-bar/attributebar.component.spec';
 import { ColorPaletteComponent } from '../color-picker/color-palette/color-palette.component';
 import { ColorPickerComponent } from '../color-picker/color-picker.component';
 import { ColorSliderComponent } from '../color-picker/color-slider/color-slider.component';
