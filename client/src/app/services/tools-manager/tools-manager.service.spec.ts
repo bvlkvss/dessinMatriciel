@@ -5,9 +5,10 @@ import { Tool } from '@app/classes/tool';
 import { EllipseService } from '../tools/ellipse/ellipse.service';
 import { LineService } from '../tools/line/line.service';
 import { PaintBucketService } from '../tools/paint-bucket/paint-bucket.service';
-import { PolygonService } from '../tools/polygon/polygon.service';
 import { RectangleService } from '../tools/rectangle/rectangle.service';
 import { ToolsManagerService } from './tools-manager.service';
+import { PolygonService }from '../tools/polygon/polygon.service';
+
 describe('ToolsManagerService', () => {
     let service: ToolsManagerService;
 
