@@ -52,14 +52,10 @@
             </mat-select>
         </mat-form-field>
         <mat-button-toggle-group [multiple]="true" (change)="setFontStyle($event)" #groupPolice="matButtonToggleGroup">
-            <mat-button-toggle value="bold">
-                <mat-icon>format_bold</mat-icon>
-            </mat-button-toggle>
-            <mat-button-toggle value="italic">
-                <mat-icon>format_italic</mat-icon>
-            </mat-button-toggle>
+            <mat-button-toggle value="bold"> <mat-icon>format_bold</mat-icon> </mat-button-toggle>
+            <mat-button-toggle value="italic"> <mat-icon>format_italic</mat-icon> </mat-button-toggle>
         </mat-button-toggle-group>
-        <mat-button-toggle-group id="allignement" #group="matButtonToggleGroup" value="left" (change)="setAllignement($event)">
+        <mat-button-toggle-group  id="allignement" #group="matButtonToggleGroup" value="left" (change)="setAllignement($event)">
             <mat-button-toggle value="left" aria-label="Text align left">
                 <mat-icon>format_align_left</mat-icon>
             </mat-button-toggle>
