@@ -2,12 +2,17 @@ import { AfterViewChecked, AfterViewInit, Component, ElementRef, OnInit, ViewChi
 import { MatButtonToggleChange } from '@angular/material/button-toggle';
 import { MatSelectChange } from '@angular/material/select';
 import { Tool } from '@app/classes/tool';
-import { ToolsManagerService } from '@app/services/tools-manager/tools-manager.service';
 import { BrushService } from '@app/services/tools/brush/brush.service';
+import { GridService } from '@app/services/tools/grid/grid.service';
 import { Arguments, PipetteService } from '@app/services/tools/pipette/pipette.service';
+import { PlumeService } from '@app/services/tools/plume/plume.service';
 import { TextService } from '@app/services/tools/text/text.service';
+import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
+import { Subscription } from 'rxjs';
 
 const MAX_WIDTH_VALUE = 100;
+const MAX_DROPLETS_WIDTH_VALUE = 10;
+const MAX_FREQUENCY_VALUE = 999;
 const IMAGE_ZOOM = 60;
 const PIPETTE_IMAGE_WIDTH = 10;
 const PIPETTE_IMAGE_HEIGHT = 10;
@@ -23,24 +28,26 @@ const RECT_SIZE = 5;
 })
 export class AttributeBarComponent implements OnInit, AfterViewChecked, AfterViewInit {
     widthValue: string;
-    junctionWidth: string;
-    idStyleRectangle: number;
-    idStyleBrush: number;
-    tolerance: string;
+    dropletsWidthValue: string = '1';
+    frequency: string = '700';
+    radius: string = '20';
+    lenghtValue: string = '50';
+    angleValue: string = '0';
+    junctionWidth: string = '1';
+    idStyleRectangle: number = 2;
+    idStyleBrush: number = 1;
+    tolerance: string = '0';
+    squareSize: string = '25';
+    opacity: string = '50';
     selectedValue: string;
-    polices: string[];
+    polices: string[] = ['Arial', 'Times New Roman', 'Courier New', 'Verdana', 'Comic Sans MS, cursive', 'Trebuchet MS, Helvetica'];
 
-    circleIsShown: boolean;
+    circleIsShown: boolean = true;
     @ViewChild('pipette', { static: false }) pipetteCanvas: ElementRef<HTMLCanvasElement>;
     pipetteCtx: CanvasRenderingContext2D;
     currentTexture: string = '../../../assets/b1.svg';
-    constructor(private tools: ToolsManagerService, private pipetteService: PipetteService) {
-        this.circleIsShown = true;
-        this.junctionWidth = '1';
-        this.idStyleRectangle = 2;
-        this.idStyleBrush = 1;
-        this.tolerance = '0';
-        this.polices = ['Arial', 'Times New Roman', 'Courier New', 'Verdana', 'Comic Sans MS, cursive', 'Trebuchet MS, Helvetica'];
+    subscription: Subscription;
+    constructor(private tools: ToolsManagerService, private pipetteService: PipetteService, private plumeService: PlumeService) {
         this.onClick();
     }
     private showContainer: boolean = false;
@@ -48,15 +55,21 @@ export class AttributeBarComponent implements OnInit, AfterViewChecked, AfterVie
 
     ngOnInit(): void {
         this.widthValue = this.tools.currentTool.lineWidth.toString();
+        this.subscription = this.plumeService.getMessage().subscribe((message: string) => {
+            this.angleValue = message;
+        });
     }
+
     onClick(): void {
         this.pipetteService.getColorObservable().subscribe((isPrimary: boolean) => {
             this.pickColor(isPrimary);
         });
     }
+
     ngAfterViewChecked(): void {
         this.displayCircle();
     }
+
     displayCircle(): void {
         this.pipetteService.getCircleViewObservable().subscribe((isShown: boolean) => {
             this.circleIsShown = isShown;
@@ -117,6 +130,7 @@ export class AttributeBarComponent implements OnInit, AfterViewChecked, AfterVie
     changeStyle(styleToChangeId: string, styleId: number): void {
         const shapeStyle = document.querySelector('#style' + styleId) as HTMLElement;
         const currentStyle = document.querySelector('#' + styleToChangeId) as HTMLElement;
+
         if (shapeStyle && currentStyle) {
             currentStyle.style.borderColor = window.getComputedStyle(shapeStyle).borderColor;
             currentStyle.style.backgroundColor = window.getComputedStyle(shapeStyle).backgroundColor;
@@ -137,17 +151,15 @@ export class AttributeBarComponent implements OnInit, AfterViewChecked, AfterVie
     }
 
     checkIfContainAttribute(attribute: string): boolean {
+        if (this.tools.currentTool instanceof GridService)
+            (this.tools.currentTool as GridService).getSizeObservable().subscribe((squareSize: string) => {
+                this.squareSize = squareSize;
+            });
         if (this.lastTool !== this.tools.currentTool) {
             this.lastTool = this.tools.currentTool;
             this.restoreValues();
         }
         return this.tools.currentTool.toolAttributes.includes(attribute);
-    }
-
-    setLineWidth(input: string): void {
-        this.widthValue = input;
-        if (Number(this.widthValue) > MAX_WIDTH_VALUE) this.widthValue = '100';
-        this.tools.setLineWidth(Number(this.widthValue));
     }
 
     setJunctionWidth(input: string): void {
@@ -163,6 +175,17 @@ export class AttributeBarComponent implements OnInit, AfterViewChecked, AfterVie
         this.tolerance = input;
         if (Number(this.tolerance) > MAX_WIDTH_VALUE) this.tolerance = '100';
         this.tools.setBucketTolerance(Number(this.tolerance));
+    }
+    setSquareSize(input: string): void {
+        this.squareSize = input;
+        if (Number(this.squareSize) > MAX_WIDTH_VALUE) this.squareSize = '100';
+        (this.tools.currentTool as GridService).changeSquareSize(Number(this.squareSize));
+    }
+
+    setOpacity(input: string): void {
+        this.opacity = input;
+        if (Number(this.opacity) > MAX_WIDTH_VALUE) this.opacity = '100';
+        (this.tools.currentTool as GridService).changeOpacity(Number(this.opacity));
     }
 
     toggleList(id: string): void {
@@ -187,7 +210,6 @@ export class AttributeBarComponent implements OnInit, AfterViewChecked, AfterVie
 
     setShapeStyle(idStyle: number, isEllipse: boolean): void {
         this.idStyleRectangle = idStyle;
-
         if (isEllipse) {
             this.changeStyle('currentEllipseStyle', idStyle);
             this.tools.setEllipseStyle(this.idStyleRectangle);
@@ -199,5 +221,42 @@ export class AttributeBarComponent implements OnInit, AfterViewChecked, AfterVie
 
     setNumberSides(newNumberSides: number): void {
         this.tools.setPolygonNumberSides(newNumberSides);
+    }
+
+    setDropletsWidth(input: string): void {
+        this.dropletsWidthValue = input;
+        if (Number(this.dropletsWidthValue) > MAX_DROPLETS_WIDTH_VALUE) this.dropletsWidthValue = '10';
+        this.tools.setDropletsWidth(Number(this.dropletsWidthValue));
+    }
+
+    setFrequency(input: string): void {
+        this.frequency = input;
+        if (Number(this.frequency) > MAX_FREQUENCY_VALUE) this.frequency = '999';
+        this.tools.setFrequency(Number(this.frequency));
+    }
+
+    setRadius(input: string): void {
+        this.radius = input;
+        if (Number(this.radius) > MAX_FREQUENCY_VALUE) this.radius = '70';
+        this.tools.setRadius(Number(this.radius));
+    }
+
+    setLineLength(id: string): void {
+        this.lenghtValue = id;
+        if (Number(this.lenghtValue) > MAX_WIDTH_VALUE) this.lenghtValue = '100';
+        const plume = this.tools.currentTool as PlumeService;
+        plume.setLineLength(Number(this.lenghtValue));
+    }
+
+    setAngle(id: string): void {
+        this.angleValue = id;
+        const plume = this.tools.currentTool as PlumeService;
+        plume.setAngle(Number(this.angleValue));
+    }
+
+    setLineWidth(input: string): void {
+        this.widthValue = input;
+        if (Number(this.widthValue) > MAX_WIDTH_VALUE) this.widthValue = '100';
+        this.tools.setLineWidth(Number(this.widthValue));
     }
 }
