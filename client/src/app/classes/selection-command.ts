@@ -13,10 +13,11 @@ export class SelectionCommand extends Command {
     private selectionStyle: number;
     private selectionData: HTMLCanvasElement;
 
-    isResize: boolean = false;
+    isResize: boolean;
 
     constructor(startPosErase: Vec2, protected tool: SelectionService, protected drawingService: DrawingService) {
         super();
+        this.isResize = false;
         this.startPosErase = startPosErase;
     }
     setStartPos(endPos: Vec2): void {

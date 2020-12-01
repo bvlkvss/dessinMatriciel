@@ -1,18 +1,9 @@
 import { Injectable } from '@angular/core';
 import { PencilCommand } from '@app/classes/pencil-command';
-import { Tool } from '@app/classes/tool';
+import { MouseButton, Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
-
-// TODO : Déplacer ça dans un fichier séparé accessible par tous
-export enum MouseButton {
-    Left = 0,
-    Middle = 1,
-    Right = 2,
-    Back = 3,
-    Forward = 4,
-}
 
 const DEFAULT_PENCIL_WIDTH = 1;
 @Injectable({
@@ -67,8 +58,6 @@ export class PencilService extends Tool {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
-
-            // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
             this.drawLine(this.drawingService.previewCtx, this.pathData);
         }
     }

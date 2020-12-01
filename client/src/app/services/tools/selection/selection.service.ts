@@ -1,19 +1,13 @@
 // tslint:disable:max-file-line-count
 import { Injectable } from '@angular/core';
 import { SelectionCommand } from '@app/classes/selection-command';
-import { Tool } from '@app/classes/tool';
+import { MouseButton, Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { EllipseService } from '@app/services/tools/ellipse/ellipse.service';
 import { RectangleService, RectangleStyle } from '@app/services/tools/rectangle/rectangle.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
-export enum MouseButton {
-    Left = 0,
-    Middle = 1,
-    Right = 2,
-    Back = 3,
-    Forward = 4,
-}
+
 enum HANDLES {
     one = 1,
     two = 2,
@@ -189,7 +183,12 @@ export class SelectionService extends Tool {
             } else {
                 this.drawingService.previewCtx.drawImage(this.selectionData, this.selectionStartPoint.x, this.selectionStartPoint.y);
             }
-            this.rectangleService.drawRectangle(this.drawingService.previewCtx, this.selectionStartPoint, this.selectionEndPoint, this.rectangleService.toSquare);
+            this.rectangleService.drawRectangle(
+                this.drawingService.previewCtx,
+                this.selectionStartPoint,
+                this.selectionEndPoint,
+                this.rectangleService.toSquare,
+            );
             this.updateResizingHandles();
             this.drawResizingHandles();
             this.selectionActivated = true;

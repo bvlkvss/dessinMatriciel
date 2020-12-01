@@ -13,10 +13,10 @@ import { PolygonService } from '@app/services/tools/polygon/polygon.service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle.service';
 import { SelectionService } from '@app/services/tools/selection/selection.service';
 import { TextService } from '@app/services/tools/text/text.service';
-import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
+import { ToolsManagerService } from '@app/services/tools-manager/tools-manager.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { of } from 'rxjs';
-import { AttributebarComponent } from './attributebar.component';
+import { AttributeBarComponent } from './attributebar.component';
 
 
 export class MockUndoRedoService extends UndoRedoService {
@@ -30,10 +30,10 @@ export class MockUndoRedoService extends UndoRedoService {
 
 
 describe('AttributebarComponent', () => {
-    let component: AttributebarComponent;
+    let component: AttributeBarComponent;
     let mouseEvent: MouseEvent;
     let event: KeyboardEvent;
-    let fixture: ComponentFixture<AttributebarComponent>;
+    let fixture: ComponentFixture<AttributeBarComponent>;
     let toolManagerStub: ToolsManagerService;
     let pencilStub: PencilService;
     let pipetteStub: PipetteService;
@@ -64,13 +64,13 @@ describe('AttributebarComponent', () => {
         pipetteStub = new PipetteService(drawServiceMock);
         textStub = new TextService(drawServiceMock);
         toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub, selectionStub, paintBucketStub, polygonStub, pipetteStub, textStub); TestBed.configureTestingModule({
-            declarations: [AttributebarComponent],
+            declarations: [AttributeBarComponent],
             providers: [{ provide: ToolsManagerService, useValue: toolManagerStub }, { provide: PipetteService, useValue: pipetteStub }],
         }).compileComponents();
     }));
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(AttributebarComponent);
+        fixture = TestBed.createComponent(AttributeBarComponent);
         component = fixture.componentInstance;
 
         fixture.detectChanges();

@@ -52,7 +52,6 @@ describe('Database service', () => {
 
 
 
-
     it('if an error occured while calling getDrawingWithId, it is thrown and handled', async () => {
 
         sandbox.stub(databaseService.collection, "findOne").callsFake(() => {
@@ -120,7 +119,7 @@ describe('Database service', () => {
     });
 
     it('should insert a new drawing and save as png on local disk on a specific directory', async () => {
-        let secondDrawing: Drawings = { name: "Test Drawing2", tag: ["LOG1"] };
+        let secondDrawing: Drawings = { name: "Test Drawing2", tag: ["LOG1"], imageData: 'data:image/png;base64,Test' };
         await databaseService.addDrawing(secondDrawing);
         fs.readdir(databaseService.drawingsPath, (err, fileCreated) => {
             mockFile = fileCreated;

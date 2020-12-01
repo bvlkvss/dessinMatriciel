@@ -2,7 +2,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog} from '@angular/material/dialog';
 import { delay } from 'rxjs/operators';
-import { AttributebarComponent } from '../attributebar/attributebar.component';
+import { AttributeBarComponent } from '../attribute-bar/attributebar.component';
 import { ColorPaletteComponent } from '../color-picker/color-palette/color-palette.component';
 import { ColorPickerComponent } from '../color-picker/color-picker.component';
 import { ColorSliderComponent } from '../color-picker/color-slider/color-slider.component';
@@ -16,7 +16,7 @@ describe('EditorComponent', () => {
     beforeEach(async(() => {
         TestBed.configureTestingModule({
           
-            declarations: [EditorComponent, AttributebarComponent, ColorPickerComponent, DrawingComponent, ColorSliderComponent, ColorPaletteComponent, SidebarComponent],
+            declarations: [EditorComponent, AttributeBarComponent, ColorPickerComponent, DrawingComponent, ColorSliderComponent, ColorPaletteComponent, SidebarComponent],
             providers:[{provide: MatDialog, useValue: {}}],
         }).compileComponents();
         delay(1000);

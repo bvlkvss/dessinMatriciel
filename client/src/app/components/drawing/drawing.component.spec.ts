@@ -1,9 +1,11 @@
 /* tslint:disable */
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { Command } from '@app/classes/command';
 import { Tool } from '@app/classes/tool';
 import { DrawingComponent } from '@app/components/drawing/drawing.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ResizingService } from '@app/services/resizing/resizing.service';
+import { ToolsManagerService } from '@app/services/tools-manager/tools-manager.service';
 import { BrushService } from '@app/services/tools/brush/brush.service';
 import { EllipseService } from '@app/services/tools/ellipse/ellipse.service';
 import { EraserService } from '@app/services/tools/eraser/eraser-service';
@@ -14,8 +16,8 @@ import { PipetteService } from '@app/services/tools/pipette/pipette.service';
 import { PolygonService } from '@app/services/tools/polygon/polygon.service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle.service';
 import { SelectionService } from '@app/services/tools/selection/selection.service';
-import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
-import { MockUndoRedoService } from '../attributebar/attributebar.component.spec';
+import { TextService } from '@app/services/tools/text/text.service';
+import { MockUndoRedoService } from '../attribute-bar/attributebar.component.spec';
 
 
 
@@ -47,7 +49,8 @@ describe('DrawingComponent', () => {
     let selectionStub: SelectionService;
     let undoRedoServiceMock: MockUndoRedoService;
     let resizingServiceMock: MockResizingService;
-    let polygonStub: PolygonService
+    let polygonStub: PolygonService;
+    let textStub: TextService;
 
     beforeEach(async(() => {
         drawServiceMock = new MockDrawingService();
@@ -60,10 +63,11 @@ describe('DrawingComponent', () => {
         ellipseStub = new EllipseService(drawServiceMock, undoRedoServiceMock);
         eraserStub = new EraserService(drawServiceMock, undoRedoServiceMock);
         pipetteStub = new PipetteService(drawServiceMock);
-        selectionStub = new SelectionService(drawServiceMock,undoRedoServiceMock);
-        polygonStub = new PolygonService(drawServiceMock,undoRedoServiceMock);
-        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub,selectionStub,paintBucketStub, polygonStub, pipetteStub);
-        
+        selectionStub = new SelectionService(drawServiceMock, undoRedoServiceMock);
+        polygonStub = new PolygonService(drawServiceMock, undoRedoServiceMock);
+        textStub = new TextService(drawServiceMock);
+        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub, selectionStub, paintBucketStub, polygonStub, pipetteStub, textStub);
+
         TestBed.configureTestingModule({
             declarations: [DrawingComponent],
             providers: [
@@ -75,6 +79,7 @@ describe('DrawingComponent', () => {
     }));
 
     beforeEach(() => {
+
         fixture = TestBed.createComponent(DrawingComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
@@ -128,6 +133,14 @@ describe('DrawingComponent', () => {
         component.onMouseOut(event);
         expect(onMouseOutSpy).toHaveBeenCalled();
         expect(onMouseOutSpy).toHaveBeenCalledWith(event);
+    });
+
+    it("should save drawing if command stack changes", () => {
+        let commandMock = Command;
+        localStorage.setItem("drawing", "test");
+        (component as any).invoker.undoStack.push(commandMock);
+        component.ngDoCheck();
+        expect(localStorage.getItem("drawing")).not.toEqual("test");
     });
 
     it(" should call the tool's key up when receiving a key up event", () => {

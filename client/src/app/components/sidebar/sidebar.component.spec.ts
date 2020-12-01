@@ -13,8 +13,9 @@ import { PipetteService } from '@app/services/tools/pipette/pipette.service';
 import { PolygonService } from '@app/services/tools/polygon/polygon.service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle.service';
 import { SelectionService } from '@app/services/tools/selection/selection.service';
-import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
-import { MockUndoRedoService } from '../attributebar/attributebar.component.spec';
+import { TextService } from '@app/services/tools/text/text.service';
+import { ToolsManagerService } from '@app/services/tools-manager/tools-manager.service';
+import { MockUndoRedoService } from '../attribute-bar/attributebar.component.spec';
 import { UserGuideComponent } from '../user-guide/user-guide.component';
 import { SidebarComponent } from './sidebar.component';
 
@@ -34,6 +35,7 @@ describe('SidebarComponent', () => {
     let paintBucketStub: PaintBucketService;
     let UndoRedoServiceMock: MockUndoRedoService;
     let polygonStub: PolygonService;
+    let textStub: TextService;
     let matDialogSpy: jasmine.SpyObj<MatDialog>;
 
     beforeEach(async(() => {
@@ -48,7 +50,8 @@ describe('SidebarComponent', () => {
         polygonStub = new PolygonService(drawServiceMock, UndoRedoServiceMock);
         pipetteStub = new PipetteService(drawServiceMock);
         selectionStub = new SelectionService(drawServiceMock, UndoRedoServiceMock);
-        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub, selectionStub, paintBucketStub, polygonStub, pipetteStub);
+        textStub = new TextService(drawServiceMock);
+        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub, selectionStub, paintBucketStub, polygonStub, pipetteStub, textStub);
         matDialogSpy = jasmine.createSpyObj('MatDialog', ['open']);
         TestBed.configureTestingModule({
             declarations: [SidebarComponent],

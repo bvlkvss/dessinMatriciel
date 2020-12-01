@@ -5,8 +5,9 @@ import { ExportComponent } from '@app/components/export/export.component';
 import { SavingComponent } from '@app/components/saving/saving.component';
 import { UserGuideComponent } from '@app/components/user-guide/user-guide.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { ToolsManagerService } from '@app/services/tools-manager/tools-manager.service';
 import { SelectionService } from '@app/services/tools/selection/selection.service';
-import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
+import { TextService } from '@app/services/tools/text/text.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
 const COLOR_STRING_LENGTH = 7;
@@ -17,16 +18,20 @@ const COLOR_STRING_LENGTH = 7;
     styleUrls: ['./sidebar.component.scss'],
 })
 export class SidebarComponent implements OnChanges {
+    @Input() primaryColor: string = this.tools.currentTool.primaryColor.slice(0, COLOR_STRING_LENGTH);
+    @Input() secondaryColor: string = this.tools.currentTool.secondaryColor.slice(0, COLOR_STRING_LENGTH);
+    isRevertClicked: boolean;
+    attributeBarIsActive: boolean;
+
     constructor(
         private tools: ToolsManagerService,
         protected drawingService: DrawingService,
         protected invoker: UndoRedoService,
         private dialog: MatDialog,
-    ) {}
-    @Input() primaryColor: string = this.tools.currentTool.primaryColor.slice(0, COLOR_STRING_LENGTH);
-    @Input() secondaryColor: string = this.tools.currentTool.secondaryColor.slice(0, COLOR_STRING_LENGTH);
-    isRevertClicked: boolean = false;
-    attributeBarIsActive: boolean = false;
+    ) {
+        this.isRevertClicked = false;
+        this.attributeBarIsActive = false;
+    }
 
     ngOnChanges(): void {
         if (!this.isRevertClicked) {
@@ -111,6 +116,7 @@ export class SidebarComponent implements OnChanges {
 
     changeTools(name: string): void {
         this.drawingService.restoreCanvasState();
+        if (this.tools.currentTool instanceof TextService && name !== 'text') (this.tools.currentTool as TextService).drawConfirmedText(true);
         this.tools.setTools(name);
         const numberOfTools = document.getElementsByTagName('a').length;
 

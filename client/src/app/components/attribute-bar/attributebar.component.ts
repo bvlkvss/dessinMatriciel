@@ -2,10 +2,10 @@ import { AfterViewChecked, AfterViewInit, Component, ElementRef, OnInit, ViewChi
 import { MatButtonToggleChange } from '@angular/material/button-toggle';
 import { MatSelectChange } from '@angular/material/select';
 import { Tool } from '@app/classes/tool';
+import { ToolsManagerService } from '@app/services/tools-manager/tools-manager.service';
 import { BrushService } from '@app/services/tools/brush/brush.service';
 import { Arguments, PipetteService } from '@app/services/tools/pipette/pipette.service';
 import { TextService } from '@app/services/tools/text/text.service';
-import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
 
 const MAX_WIDTH_VALUE = 100;
 const IMAGE_ZOOM = 60;
@@ -21,20 +21,26 @@ const RECT_SIZE = 5;
     templateUrl: './attributebar.component.html',
     styleUrls: ['./attributebar.component.scss'],
 })
-export class AttributebarComponent implements OnInit, AfterViewChecked, AfterViewInit {
+export class AttributeBarComponent implements OnInit, AfterViewChecked, AfterViewInit {
     widthValue: string;
     junctionWidth: string = '1';
     idStyleRectangle: number = 2;
     idStyleBrush: number = 1;
     tolerance: string = '0';
     selectedValue: string;
-    polices: string[] = ['Arial', 'Times New Roman', 'Courier New', 'Verdana'];
+    polices: string[] = ['Arial', 'Times New Roman', 'Courier New', 'Verdana', 'Comic Sans MS, cursive', 'Trebuchet MS, Helvetica'];
 
-    circleIsShown: boolean = true;
+    circleIsShown: boolean;
     @ViewChild('pipette', { static: false }) pipetteCanvas: ElementRef<HTMLCanvasElement>;
     pipetteCtx: CanvasRenderingContext2D;
     currentTexture: string = '../../../assets/b1.svg';
     constructor(private tools: ToolsManagerService, private pipetteService: PipetteService) {
+        this.circleIsShown = true;
+        this.junctionWidth = '1';
+        this.idStyleRectangle = 2;
+        this.idStyleBrush = 1;
+        this.tolerance = '0';
+        this.polices = ['Arial', 'Times New Roman', 'Courier New', 'Verdana', 'Comic Sans MS, cursive', 'Trebuchet MS, Helvetica'];
         this.onClick();
     }
     private showContainer: boolean = false;
@@ -111,7 +117,6 @@ export class AttributebarComponent implements OnInit, AfterViewChecked, AfterVie
     changeStyle(styleToChangeId: string, styleId: number): void {
         const shapeStyle = document.querySelector('#style' + styleId) as HTMLElement;
         const currentStyle = document.querySelector('#' + styleToChangeId) as HTMLElement;
-
         if (shapeStyle && currentStyle) {
             currentStyle.style.borderColor = window.getComputedStyle(shapeStyle).borderColor;
             currentStyle.style.backgroundColor = window.getComputedStyle(shapeStyle).backgroundColor;
@@ -182,6 +187,7 @@ export class AttributebarComponent implements OnInit, AfterViewChecked, AfterVie
 
     setShapeStyle(idStyle: number, isEllipse: boolean): void {
         this.idStyleRectangle = idStyle;
+
         if (isEllipse) {
             this.changeStyle('currentEllipseStyle', idStyle);
             this.tools.setEllipseStyle(this.idStyleRectangle);

@@ -1,9 +1,11 @@
-import { AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, DoCheck, ElementRef, HostListener, IterableDiffer, IterableDiffers, OnInit, ViewChild } from '@angular/core';
+import { Command } from '@app/classes/command';
 import { Tool } from '@app/classes/tool';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ResizingService } from '@app/services/resizing/resizing.service';
+import { ToolsManagerService } from '@app/services/tools-manager/tools-manager.service';
 import { SelectionService } from '@app/services/tools/selection/selection.service';
-import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
+import { TextService } from '@app/services/tools/text/text.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
 // TODO : Avoir un fichier séparé pour les constantes ?
@@ -13,7 +15,7 @@ import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
     templateUrl: './drawing.component.html',
     styleUrls: ['./drawing.component.scss'],
 })
-export class DrawingComponent implements AfterViewInit, OnInit {
+export class DrawingComponent implements AfterViewInit, OnInit, DoCheck {
     @ViewChild('baseCanvas', { static: false }) baseCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('container') container: ElementRef<HTMLDivElement>;
     @ViewChild('resizeContainer') resizeContainer: ElementRef<HTMLDivElement>;
@@ -21,18 +23,27 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     // On utilise ce canvas pour dessiner sans affecter le dessin final
     @ViewChild('previewCanvas', { static: false }) previewCanvas: ElementRef<HTMLCanvasElement>;
 
-    private keyBindings: Map<string, Tool> = new Map();
+    private keyBindings: Map<string, Tool>;
     private baseCtx: CanvasRenderingContext2D;
     private previewCtx: CanvasRenderingContext2D;
     private mouseFired: boolean;
-
+    private iterableDiffer: IterableDiffer<Command>;
     constructor(
         private drawingService: DrawingService,
         private tools: ToolsManagerService,
         private resizer: ResizingService,
         private invoker: UndoRedoService,
-    ) {}
-
+        iDiffers: IterableDiffers,
+    ) {
+        this.keyBindings = new Map();
+        this.iterableDiffer = iDiffers.find([]).create();
+    }
+    ngDoCheck(): void {
+        const changesUndo = this.iterableDiffer.diff(this.invoker.undoStack);
+        if (changesUndo) {
+            localStorage.setItem('drawing', this.baseCtx.canvas.toDataURL());
+        }
+    }
     ngOnInit(): void {
         this.drawingService.resizeCanvas();
     }
@@ -49,8 +60,8 @@ export class DrawingComponent implements AfterViewInit, OnInit {
             .set('3', this.tools.getTools().get('polygon') as Tool)
             .set('r', this.tools.getTools().get('selection') as Tool)
             .set('s', this.tools.getTools().get('selection') as Tool)
-            .set('i', this.tools.getTools().get('pipette') as Tool);
-
+            .set('i', this.tools.getTools().get('pipette') as Tool)
+            .set('t', this.tools.getTools().get('text') as Tool);
         this.baseCtx = this.baseCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.previewCtx = this.previewCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.drawingService.baseCtx = this.baseCtx;
@@ -65,9 +76,9 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         this.drawingService.canvasContainer = this.resizeContainer.nativeElement as HTMLDivElement;
         this.mouseFired = false;
         this.drawingService.blankCanvasDataUrl = this.drawingService.canvas.toDataURL();
-
         this.baseCtx.save();
         this.previewCtx.save();
+        this.drawingService.afterViewObservable.next();
     }
 
     initResizing(event: MouseEvent): void {
@@ -175,21 +186,22 @@ export class DrawingComponent implements AfterViewInit, OnInit {
             this.tools.currentTool.onKeyDown(event);
         }
     }
-
     @HostListener('keydown', ['$event'])
     onKeyDown(event: KeyboardEvent): void {
-        if (event.ctrlKey && event.key === 'o') {
-            return;
-        } else if (this.keyBindings.has(event.key)) {
-            this.drawingService.restoreCanvasState();
-            this.tools.currentTool = this.keyBindings.get(event.key) as Tool;
-            if (event.key === 'r') {
-                (this.tools.currentTool as SelectionService).selectionStyle = 0;
-                (this.tools.currentTool as SelectionService).resetSelection();
-            } else if (event.key === 's') {
-                (this.tools.currentTool as SelectionService).selectionStyle = 1;
-                (this.tools.currentTool as SelectionService).resetSelection();
-            }
+        if (!(this.tools.currentTool instanceof TextService)) {
+            if (event.ctrlKey && event.key === 'o') {
+                return;
+            } else if (this.keyBindings.has(event.key)) {
+                this.drawingService.restoreCanvasState();
+                this.tools.currentTool = this.keyBindings.get(event.key) as Tool;
+                if (event.key === 'r') {
+                    (this.tools.currentTool as SelectionService).selectionStyle = 0;
+                    (this.tools.currentTool as SelectionService).resetSelection();
+                } else if (event.key === 's') {
+                    (this.tools.currentTool as SelectionService).selectionStyle = 1;
+                    (this.tools.currentTool as SelectionService).resetSelection();
+                }
+            } else this.tools.currentTool.onKeyDown(event);
         } else this.tools.currentTool.onKeyDown(event);
     }
 
