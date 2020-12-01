@@ -8,7 +8,6 @@ import { PaintBucketService } from '../tools/paint-bucket/paint-bucket.service';
 import { RectangleService } from '../tools/rectangle/rectangle.service';
 import { ToolsManagerService } from './tools-manager.service';
 import { PolygonService }from '../tools/polygon/polygon.service';
-
 describe('ToolsManagerService', () => {
     let service: ToolsManagerService;
 
