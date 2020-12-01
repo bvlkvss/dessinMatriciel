@@ -82,6 +82,7 @@ export class SidebarComponent implements OnChanges {
     }
 
     displayPalette(toolName: string): void {
+        console.log(toolName)
         if (!this.attributeBarIsActive) {
             this.attributeBarIsActive = true;
             this.togglecanvas('drawing-container-open');

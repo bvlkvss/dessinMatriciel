@@ -18,7 +18,7 @@ import { RectangleService } from '@app/services/tools/rectangle/rectangle.servic
 import { SelectionService } from '@app/services/tools/selection/selection.service';
 import { SprayPaintService } from '@app/services/tools/spray-paint/spray-paint.service';
 import { TextService } from '@app/services/tools/text/text.service';
-import { ToolsManagerService } from '@app/services/tools-manager/tools-manager.service';
+import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { of } from 'rxjs';
 import { AttributeBarComponent } from './attributebar.component';

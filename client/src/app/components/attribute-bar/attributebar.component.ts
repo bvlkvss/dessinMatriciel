@@ -40,7 +40,7 @@ export class AttributeBarComponent implements OnInit, AfterViewChecked, AfterVie
     squareSize: string = '25';
     opacity: string = '50';
     selectedValue: string;
-    polices: string[];
+    polices: string[] = ['Arial', 'Times New Roman', 'Courier New', 'Verdana', 'Comic Sans MS, cursive', 'Trebuchet MS, Helvetica'];
 
     circleIsShown: boolean = true;
     @ViewChild('pipette', { static: false }) pipetteCanvas: ElementRef<HTMLCanvasElement>;
@@ -130,6 +130,7 @@ export class AttributeBarComponent implements OnInit, AfterViewChecked, AfterVie
     changeStyle(styleToChangeId: string, styleId: number): void {
         const shapeStyle = document.querySelector('#style' + styleId) as HTMLElement;
         const currentStyle = document.querySelector('#' + styleToChangeId) as HTMLElement;
+
         if (shapeStyle && currentStyle) {
             currentStyle.style.borderColor = window.getComputedStyle(shapeStyle).borderColor;
             currentStyle.style.backgroundColor = window.getComputedStyle(shapeStyle).backgroundColor;
