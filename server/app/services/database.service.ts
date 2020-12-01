@@ -74,10 +74,10 @@ export class DatabaseService {
                 .insertOne({ name: drawings.name, tag: drawings.tag })
                 .then((data) => {
                     const imageData = drawings.imageData?.replace(/^data:image\/png;base64,/, '');
-                    fs.writeFile(this.drawingsPath + data.insertedId + '.png', imageData, { encoding: 'base64' }, () => { });
+                    fs.writeFile(this.drawingsPath + data.insertedId + '.png', imageData, { encoding: 'base64' }, () => {});
+                    console.log('File created');
                 })
                 .catch((error: Error) => {
-                    console.log("OKOK")
                     throw error;
                 });
         } else {
@@ -100,9 +100,7 @@ export class DatabaseService {
         fs.readdir(this.drawingsPath, (error, directory) => {
             directory.forEach((file) => {
                 if (file === drawing.value._id + '.png') {
-                    fs.unlink(this.drawingsPath + file, (err) => {
-                        if (err) throw err;
-                    });
+                    fs.unlink(this.drawingsPath + file, () => {});
                 }
             });
         });
@@ -135,6 +133,6 @@ export class DatabaseService {
                 });
                 resolve(this.serverImagesData);
             });
-        }).then(() => { });
+        }).then(() => {});
     }
 }
