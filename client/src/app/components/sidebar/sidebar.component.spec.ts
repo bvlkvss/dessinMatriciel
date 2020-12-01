@@ -188,15 +188,4 @@ describe('SidebarComponent', () => {
         expect(((component as any).tools.currentTool as SelectionService).selectAllCanvas).toHaveBeenCalled();
     });
 
-    it('if currentToolName does not change ngOnChanges should not call changeTools', () => {
-        let changeToolsSpy = spyOn(component, 'changeTools');
-
-        component.currentToolName = 'pencil';
-        component.ngOnChanges({
-            currentToolName: new SimpleChange(null, component.currentToolName, true)}
-        );
-        fixture.detectChanges();
-        expect(changeToolsSpy).not.toHaveBeenCalled();
-        expect(component.currentToolName).toBe('pencil');
-    });
 });

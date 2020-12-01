@@ -1,4 +1,4 @@
-import { Component, HostListener, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, HostListener, Input, OnChanges } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { CarrouselComponent } from '@app/components/carrousel/carrousel.component';
 import { ExportComponent } from '@app/components/export/export.component';
@@ -34,9 +34,8 @@ export class SidebarComponent implements OnChanges {
     isRevertClicked: boolean = false;
     attributeBarIsActive: boolean = false;
 
-    ngOnChanges(changes: SimpleChanges): void {
+    ngOnChanges(): void {
         this.subscription = this.drawingService.getMessage().subscribe((message: string) => {
-            this.currentToolName = message;
             this.changeTools(message);
         });
 
@@ -134,7 +133,6 @@ export class SidebarComponent implements OnChanges {
             document.getElementsByTagName('a')[i].classList.remove('active');
         }
         document.getElementById(name)?.setAttribute('class', 'active');
-        document.getElementById(this.currentToolName)?.setAttribute('class', 'active');
     }
 
     revertColors(): void {
