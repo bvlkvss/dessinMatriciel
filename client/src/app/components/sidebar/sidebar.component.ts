@@ -5,10 +5,10 @@ import { ExportComponent } from '@app/components/export/export.component';
 import { SavingComponent } from '@app/components/saving/saving.component';
 import { UserGuideComponent } from '@app/components/user-guide/user-guide.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { ToolsManagerService } from '@app/services/tools-manager/tools-manager.service';
 import { GridService } from '@app/services/tools/grid/grid.service';
 import { SelectionService } from '@app/services/tools/selection/selection.service';
 import { TextService } from '@app/services/tools/text/text.service';
-import { ToolsManagerService } from '@app/services/tools-manager/tools-manager.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { Subscription } from 'rxjs';
 
@@ -82,7 +82,6 @@ export class SidebarComponent implements OnChanges {
     }
 
     displayPalette(toolName: string): void {
-        console.log(toolName)
         if (!this.attributeBarIsActive) {
             this.attributeBarIsActive = true;
             this.togglecanvas('drawing-container-open');
