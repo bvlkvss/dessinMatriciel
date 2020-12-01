@@ -1,4 +1,4 @@
-import { Component, HostListener, Input, OnChanges } from '@angular/core';
+import { Component, ElementRef, HostListener, Input, OnChanges, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { CarrouselComponent } from '@app/components/carrousel/carrousel.component';
 import { ExportComponent } from '@app/components/export/export.component';
@@ -33,6 +33,9 @@ export class SidebarComponent implements OnChanges {
     @Input() secondaryColor: string = this.tools.currentTool.secondaryColor.slice(0, COLOR_STRING_LENGTH);
     isRevertClicked: boolean = false;
     attributeBarIsActive: boolean = false;
+
+    @ViewChild('icons', { static: false }) toolIcons: ElementRef<HTMLCanvasElement>;
+
 
     ngOnChanges(): void {
         this.subscription = this.drawingService.getMessage().subscribe((message: string) => {
@@ -127,12 +130,11 @@ export class SidebarComponent implements OnChanges {
         if (this.tools.currentTool instanceof GridService) {
             this.tools.currentTool.onKeyDown({ key: 'g' } as KeyboardEvent);
         }
-        const numberOfTools = document.getElementsByTagName('a').length;
-
+        const numberOfTools = this.toolIcons.nativeElement.getElementsByTagName('a').length;
         for (let i = 0; i < numberOfTools; i++) {
-            document.getElementsByTagName('a')[i].classList.remove('active');
+            this.toolIcons.nativeElement.getElementsByTagName('a')[i].classList.remove('active');
         }
-        document.getElementById(name)?.setAttribute('class', 'active');
+        this.toolIcons.nativeElement.querySelector('#'+name)?.setAttribute('class', 'active');
     }
 
     revertColors(): void {
