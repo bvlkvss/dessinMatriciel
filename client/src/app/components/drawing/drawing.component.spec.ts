@@ -1,7 +1,6 @@
 /* tslint:disable */
 import { Target } from '@angular/compiler';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { Command } from '@app/classes/command';
 import { Tool } from '@app/classes/tool';
 import { DrawingComponent } from '@app/components/drawing/drawing.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -91,7 +90,7 @@ describe('DrawingComponent', () => {
     }));
 
     beforeEach(() => {
-        
+
         fixture = TestBed.createComponent(DrawingComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
@@ -147,14 +146,6 @@ describe('DrawingComponent', () => {
         expect(onMouseOutSpy).toHaveBeenCalledWith(event);
     });
 
-    it("should save drawing if command stack changes", () => {
-        let commandMock = Command;
-        localStorage.setItem("drawing", "test");
-        (component as any).invoker.undoStack.push(commandMock);
-        component.ngDoCheck();
-        expect(localStorage.getItem("drawing")).not.toEqual("test");
-    });
-
     it(" should call the tool's key up when receiving a key up event", () => {
         const event = {} as KeyboardEvent;
         const KeyboardEventSpy = spyOn(toolManagerStub.currentTool, 'onKeyUp').and.callThrough();
@@ -173,10 +164,10 @@ describe('DrawingComponent', () => {
 
     it('on keyDownWindow should not call keyDown if it is input ', () => {
         let target_ = { className: 'textInput' };
-        let event =  {
+        let event = {
             key: 'w',
-            target:target_ as Target
-        }as KeyboardEvent;
+            target: target_ as Target
+        } as KeyboardEvent;
         component.onKeyDown = jasmine.createSpy();
         component.onkeyDownWindow(event);
         expect(component.onKeyDown).not.toHaveBeenCalled();
@@ -184,10 +175,10 @@ describe('DrawingComponent', () => {
 
     it('on keyDownWindow should call keyDown if it is not input ', () => {
         let target_ = { className: 'notInput' };
-        let event =  {
+        let event = {
             key: 'g',
-            target:target_ as Target
-        }as KeyboardEvent;
+            target: target_ as Target
+        } as KeyboardEvent;
         component.onKeyDown = jasmine.createSpy();
         component.onkeyDownWindow(event);
         expect(component.onKeyDown).toHaveBeenCalled();
@@ -395,7 +386,7 @@ describe('DrawingComponent', () => {
         let event = {
             key: 'o',
             ctrlKey: true,
-            target:{className:'no'} as Target,
+            target: { className: 'no' } as Target,
             preventDefault: jasmine.createSpy() as any,
             stopPropagation: jasmine.createSpy() as any,
         } as KeyboardEvent;
@@ -405,7 +396,7 @@ describe('DrawingComponent', () => {
     });
 
     it('should not call newDrawing when another key is pressed', () => {
-        let event = {target:{className:'no'}as Target} as KeyboardEvent;
+        let event = { target: { className: 'no' } as Target } as KeyboardEvent;
         let newDrawingSpy = spyOn<any>(drawServiceMock, 'newDrawing');
         component.onkeyDownWindow(event);
         expect(newDrawingSpy).not.toHaveBeenCalled();
