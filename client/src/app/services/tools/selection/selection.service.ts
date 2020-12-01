@@ -7,7 +7,6 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { RectangleService, RectangleStyle } from '@app/services/tools/rectangle/rectangle.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
-
 @Injectable({
     providedIn: 'root',
 })

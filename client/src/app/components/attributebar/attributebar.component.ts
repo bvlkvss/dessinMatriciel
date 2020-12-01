@@ -2,12 +2,12 @@ import { AfterViewChecked, AfterViewInit, Component, ElementRef, OnInit, ViewChi
 import { MatButtonToggleChange } from '@angular/material/button-toggle';
 import { MatSelectChange } from '@angular/material/select';
 import { Tool } from '@app/classes/tool';
+import { ToolsManagerService } from '@app/services/tools-manager/tools-manager.service';
 import { BrushService } from '@app/services/tools/brush/brush.service';
 import { GridService } from '@app/services/tools/grid/grid.service';
 import { Arguments, PipetteService } from '@app/services/tools/pipette/pipette.service';
 import { PlumeService } from '@app/services/tools/plume/plume.service';
 import { TextService } from '@app/services/tools/text/text.service';
-import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
 import { Subscription } from 'rxjs';
 
 const MAX_WIDTH_VALUE = 100;
