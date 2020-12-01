@@ -8,7 +8,7 @@ import { MagicWandService } from '@app/services/tools/magic-wand/magic-wand.serv
 import { PlumeService } from '@app/services/tools/plume/plume.service';
 import { SelectionService } from '@app/services/tools/selection/selection.service';
 import { TextService } from '@app/services/tools/text/text.service';
-import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
+import { ToolsManagerService } from '@app/services/tools-manager/tools-manager.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
 // TODO : Avoir un fichier séparé pour les constantes ?
