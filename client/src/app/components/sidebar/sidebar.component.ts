@@ -135,6 +135,7 @@ export class SidebarComponent implements OnChanges {
         for (let i = 0; i < numberOfTools; i++) {
             document.getElementsByTagName('a')[i].classList.remove('active');
         }
+        document.getElementById(name)?.setAttribute('class', 'active');
         document.getElementById(this.currentToolName)?.setAttribute('class', 'active');
     }
 

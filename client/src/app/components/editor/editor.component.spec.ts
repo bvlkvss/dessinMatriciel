@@ -1,7 +1,7 @@
 /* tslint:disable */
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatButtonToggleGroup } from '@angular/material/button-toggle';
-import { MatDialog} from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { BrushService } from '@app/services/tools/brush/brush.service';
 import { EllipseService } from '@app/services/tools/ellipse/ellipse.service';
 import { EraserService } from '@app/services/tools/eraser/eraser-service';
@@ -19,8 +19,8 @@ import { SprayPaintService } from '@app/services/tools/spray-paint/spray-paint.s
 import { TextService } from '@app/services/tools/text/text.service';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
 import { delay } from 'rxjs/operators';
-import { AttributebarComponent } from '../attributebar/attributebar.component';
-import { MockUndoRedoService } from '../attributebar/attributebar.component.spec';
+import { AttributeBarComponent } from '../attribute-bar/attributebar.component';
+import { MockUndoRedoService } from '../attribute-bar/attributebar.component.spec';
 import { ColorPaletteComponent } from '../color-picker/color-palette/color-palette.component';
 import { ColorPickerComponent } from '../color-picker/color-picker.component';
 import { ColorSliderComponent } from '../color-picker/color-slider/color-slider.component';
@@ -69,8 +69,8 @@ describe('EditorComponent', () => {
         toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub, selectionStub, paintBucketStub, polygonStub, pipetteStub, textStub, sprayPaintStub, plumeStub, gridStub, magicStub);
         toolManagerStub.currentTool = pencilStub;
         TestBed.configureTestingModule({
-            declarations: [EditorComponent, AttributebarComponent, ColorPickerComponent, DrawingComponent, ColorSliderComponent, ColorPaletteComponent, SidebarComponent, MatButtonToggleGroup],
-            providers:[{provide: MatDialog, useValue: {}}, {provide:ToolsManagerService, useValue:toolManagerStub}],
+            declarations: [EditorComponent, AttributeBarComponent, ColorPickerComponent, DrawingComponent, ColorSliderComponent, ColorPaletteComponent, SidebarComponent, MatButtonToggleGroup],
+            providers: [{ provide: MatDialog, useValue: {} }, { provide: ToolsManagerService, useValue: toolManagerStub }],
         }).compileComponents();
         delay(1000);
         fixture = TestBed.createComponent(EditorComponent);
