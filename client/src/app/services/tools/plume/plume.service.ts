@@ -80,7 +80,7 @@ export class PlumeService extends Tool {
     onMouseUp(event: MouseEvent): void {
         if (this.mouseDown && !this.mouseIsOut) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.drawPreviewLine(this.drawingService.previewCtx, this.pathData);
+            // this.drawPreviewLine(this.drawingService.previewCtx, this.pathData);
 
             // const cmd = new PencilCommand(this.pathData, this, this.drawingService) as PencilCommand;
             // this.invoker.addToUndo(cmd);

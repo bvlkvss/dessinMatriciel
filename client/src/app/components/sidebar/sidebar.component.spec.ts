@@ -1,5 +1,4 @@
 /* tslint:disable */
-import { SimpleChange } from '@angular/core';
 import { async, ComponentFixture, ComponentFixtureAutoDetect, TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { Tool } from '@app/classes/tool';

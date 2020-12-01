@@ -85,12 +85,10 @@ export class SidebarComponent implements OnChanges {
             this.attributeBarIsActive = true;
             this.togglecanvas('drawing-container-open');
             this.toggleAttributeBar('attribute-open');
-        } else {
-            if (this.tools.getTools().get(toolName) === this.tools.currentTool) {
+        } else if (this.tools.getTools().get(toolName) === this.tools.currentTool) {
                 this.attributeBarIsActive = false;
                 this.togglecanvas('drawing-container');
                 this.toggleAttributeBar('attribute-close');
-            }
         }
     }
 
