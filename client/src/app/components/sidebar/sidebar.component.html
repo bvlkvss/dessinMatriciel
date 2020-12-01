@@ -17,32 +17,28 @@
                     </a>
 
                     <a id="plume" (click)="displayPalette('plume')" (click)="changeTools('plume')">
-                        <img class="material-icons" style="color: white;" src="../../../assets/feather.png" />
+                        <img class="material-icons" style="color: white" src="../../../assets/feather.png" />
                         <span class="slidingtxt2"> Plume</span>
                     </a>
                 </div>
 
-                <div class="drawingtoolscontainer2">
-                    <a (click)="undo()">
-                        <i class="material-icons">undo</i>
+                <div class="drawingtoolscontainer">
+                    <a id="rectangle" (click)="displayPalette('rectangle')" (click)="changeTools('rectangle')">
+                        <i class="material-icons">crop_16_9</i>
+                        <span class="slidingtxt"> Rectangle (1)</span>
                     </a>
-                    <a (click)="redo()">
-                        <i class="material-icons">redo</i>
+                    <a id="ellipse" (click)="displayPalette('ellipse')" (click)="changeTools('ellipse')">
+                        <i class="material-icons">panorama_fish_eye</i>
+                        <span class="slidingtxt"> Ellipse (X)</span>
                     </a>
-                </div>
-            </div>
-
-            <div class="color-bar">
-                <div class="colorboxcontainer">
-                    <a (click)="toggleColorPalette('primaryColorPicker')" class="color-box1"> </a>
-                    <a class="tooltip">
-                        <i (click)="revertColors()" class="material-icons change">swap_horiz</i>
+                    <a id="polygon" (click)="displayPalette('polygon')" (click)="changeTools('polygon')">
+                        <i class="material-icons">change_history</i>
+                        <span class="slidingtxt"> Polygone (3)</span>
                     </a>
                     <a id="aerosol" (click)="displayPalette('aerosol')" (click)="changeTools('aerosol')">
                         <i class="material-icons">grain</i>
                         <span class="slidingtxt"> Aérosol (A)</span>
                     </a>
-                    <a (click)="toggleColorPalette('secondaryColorPicker')" class="color-box2"> </a>
                 </div>
             </div>
             <div class="inlineclass">
@@ -51,9 +47,9 @@
                         <img class="material-icons" src="../../../assets/format-color-fill.png" />
                         <span class="slidingtxt2"> Remplir (B)</span>
                     </a>
-                    <a class="tooltip" (click)="newDrawing()">
-                        <i class="material-icons">add</i>
-                        <span class="tooltiptext">Nouveau Dessin</span>
+                    <a id="pipette" (click)="displayPalette('pipette')" (click)="changeTools('pipette')">
+                        <i class="material-icons">colorize</i>
+                        <span class="slidingtxt2"> Pipette (I)</span>
                     </a>
                     <a id="text" (click)="displayPalette('text')" (click)="changeTools('text')">
                         <i class="material-icons">title</i>
@@ -61,20 +57,20 @@
                     </a>
                 </div>
 
-                <div class="actioniconcontainer">
-                    <a class="tooltip" (click)="openCarousel()">
-                        <i class="material-icons">collections</i>
-                        <span class="tooltiptext">Carrousel Dessin</span>
+                <div class="drawingtoolscontainer">
+                    <a id="selection" (click)="changeTools('selection')" (click)="selectAll()">
+                        <i class="material-icons">photo_size_select_small</i>
+                        <span class="slidingtxt"> Selection (X)</span>
                     </a>
-                    <a class="tooltip" (click)="openSavingDialog()">
-                        <i class="material-icons">save_alt</i>
-                        <span class="tooltiptext">Sauvegarder Dessin</span>
+
+                    <a id="eraser" (click)="displayPalette('eraser')" (click)="changeTools('eraser')">
+                        <i class="material-icons">remove_circle_outline</i>
+                        <span class="slidingtxt"> Efface (E)</span>
                     </a>
                     <a id="grid-on" (click)="displayPalette('grid')" (click)="changeTools('grid')">
                         <i class="material-icons">grid_on</i>
                         <span class="slidingtxt"> Grille (G)</span>
                     </a>
-                    
                 </div>
             </div>
 
@@ -110,16 +106,26 @@
                 </a>
             </div>
 
-                <div class="actioniconcontainer">
-                    <a class="tooltip" (click)="openUserGuide()">
-                        <i class="material-icons">help_center</i>
-                        <span class="tooltiptext">Guide D'utilisateur</span>
-                    </a>
-                    <a class="tooltip" (click)="warningMessage()">
-                        <i class="material-icons">house</i>
-                        <span class="tooltiptext">Menu Principal</span>
-                    </a>
-                </div>
+            <div class="actioniconcontainer">
+                <a class="tooltip" (click)="openCarousel()">
+                    <i class="material-icons">collections</i>
+                    <span class="tooltiptext">Carrousel Dessin</span>
+                </a>
+                <a class="tooltip" (click)="openSavingDialog()">
+                    <i class="material-icons">save_alt</i>
+                    <span class="tooltiptext">Sauvegarder Dessin</span>
+                </a>
+            </div>
+
+            <div class="actioniconcontainer">
+                <a class="tooltip" (click)="openUserGuide()">
+                    <i class="material-icons">help_center</i>
+                    <span class="tooltiptext">Guide D'utilisateur</span>
+                </a>
+                <a class="tooltip" (click)="warningMessage()">
+                    <i class="material-icons">house</i>
+                    <span class="tooltiptext">Menu Principal</span>
+                </a>
             </div>
         </div>
     </div>
