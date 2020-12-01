@@ -1,10 +1,12 @@
 /* tslint:disable */
 import { Target } from '@angular/compiler';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { Command } from '@app/classes/command';
 import { Tool } from '@app/classes/tool';
 import { DrawingComponent } from '@app/components/drawing/drawing.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ResizingService } from '@app/services/resizing/resizing.service';
+import { ToolsManagerService } from '@app/services/tools-manager/tools-manager.service';
 import { BrushService } from '@app/services/tools/brush/brush.service';
 import { EllipseService } from '@app/services/tools/ellipse/ellipse.service';
 import { EraserService } from '@app/services/tools/eraser/eraser-service';
@@ -20,7 +22,6 @@ import { RectangleService } from '@app/services/tools/rectangle/rectangle.servic
 import { SelectionService } from '@app/services/tools/selection/selection.service';
 import { SprayPaintService } from '@app/services/tools/spray-paint/spray-paint.service';
 import { TextService } from '@app/services/tools/text/text.service';
-import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
 import { MockUndoRedoService } from '../attributebar/attributebar.component.spec';
 
 export class MockDrawingService extends DrawingService {
@@ -144,6 +145,14 @@ describe('DrawingComponent', () => {
         component.onMouseOut(event);
         expect(onMouseOutSpy).toHaveBeenCalled();
         expect(onMouseOutSpy).toHaveBeenCalledWith(event);
+    });
+
+    it("should save drawing if command stack changes", () => {
+        let commandMock = Command;
+        localStorage.setItem("drawing", "test");
+        (component as any).invoker.undoStack.push(commandMock);
+        component.ngDoCheck();
+        expect(localStorage.getItem("drawing")).not.toEqual("test");
     });
 
     it(" should call the tool's key up when receiving a key up event", () => {
