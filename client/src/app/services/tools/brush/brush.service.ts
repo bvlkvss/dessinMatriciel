@@ -1,19 +1,11 @@
 import { Injectable } from '@angular/core';
 import { BrushCommand } from '@app/classes/brush-command';
 import { Color } from '@app/classes/color';
-import { Tool } from '@app/classes/tool';
+import { MouseButton, Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
-// TODO : Déplacer ça dans un fichier séparé accessible par tous
-export enum MouseButton {
-    Left = 0,
-    Middle = 1,
-    Right = 2,
-    Back = 3,
-    Forward = 4,
-}
 const RGBA_NUMBER_OF_COMPONENTS = 4;
 const IMAGE_SIZE_DIVIDER = 3;
 const MOUSE_POSITION_OFFSET_DIVIDER = 10;
@@ -28,16 +20,17 @@ const MINIMUM_BRUSH_SIZE = 10;
 export class BrushService extends Tool {
     image: HTMLImageElement;
     imageId: number;
-    pathData: Vec2[] = [];
-    color: Color = { red: 0, green: 0, blue: 0, opacity: MAX_EIGHT_BIT_NB };
+    pathData: Vec2[];
+    color: Color;
     constructor(drawingService: DrawingService, protected invoker: UndoRedoService) {
         super(drawingService);
         this.primaryColor = '0000000';
         this.image = new Image();
         this.lineWidth = MINIMUM_BRUSH_SIZE;
         this.image.src = '../../../assets/b1.png';
-
+        this.pathData = [];
         this.toolAttributes = ['texture', 'lineWidth'];
+        this.color = { red: 0, green: 0, blue: 0, opacity: MAX_EIGHT_BIT_NB };
     }
     setTexture(id: number): void {
         this.image.src = '../../../assets/b' + id + '.png';

@@ -8,9 +8,11 @@ const SERVER_URL = 'http://localhost:3000/api/drawings';
 
 @Injectable({ providedIn: 'root' })
 export class SavingService {
-    loading: boolean = false;
+    loading: boolean;
 
-    constructor(private http: HttpClient, private drawingService: DrawingService) {}
+    constructor(private http: HttpClient, private drawingService: DrawingService) {
+        this.loading = false;
+    }
     /* tslint:disable:no-any*/
     addDrawing(image: HTMLImageElement, dessin: Drawings): Observable<any> {
         this.loading = true;

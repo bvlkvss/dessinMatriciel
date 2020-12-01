@@ -1,19 +1,12 @@
 import { Injectable } from '@angular/core';
 import { EllipseCommand } from '@app/classes/ellipse-command';
-import { Tool } from '@app/classes/tool';
+import { MouseButton, Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
 const LINE_DASH_SEGMENT_START = 5;
 const LINE_DASH_SEGMENT_END = 15;
-export enum MouseButton {
-    Left = 0,
-    Middle = 1,
-    Right = 2,
-    Back = 3,
-    Forward = 4,
-}
 
 export enum EllipseStyle {
     Empty = 0,
@@ -24,12 +17,14 @@ export enum EllipseStyle {
     providedIn: 'root',
 })
 export class EllipseService extends Tool {
-    toSquare: boolean = false;
-    isOut: boolean = false;
+    toSquare: boolean;
+    isOut: boolean;
     currentPos: Vec2;
     ellipseStyle: EllipseStyle;
     constructor(drawingService: DrawingService, protected invoker: UndoRedoService) {
         super(drawingService);
+        this.toSquare = false;
+        this.isOut = false;
         this.lineWidth = 1;
         this.ellipseStyle = 2;
         this.toolAttributes = ['ellipseStyle', 'strokeWidth'];
@@ -90,8 +85,6 @@ export class EllipseService extends Tool {
     onMouseMove(event: MouseEvent): void {
         if (this.mouseDown) {
             this.currentPos = this.getPositionFromMouse(event);
-
-            // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.drawEllipse(this.drawingService.previewCtx, this.mouseDownCoord, this.currentPos, this.toSquare);
         }

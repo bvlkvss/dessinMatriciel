@@ -1,19 +1,11 @@
 import { Injectable } from '@angular/core';
 import { EraserCommand } from '@app/classes/eraser-command';
-import { Tool } from '@app/classes/tool';
+import { MouseButton, Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
 const MINIMUM_ERASER_SIZE = 5;
-// TODO : Déplacer ça dans un fichier séparé accessible par tous
-export enum MouseButton {
-    Left = 0,
-    Middle = 1,
-    Right = 2,
-    Back = 3,
-    Forward = 4,
-}
 @Injectable({
     providedIn: 'root',
 })
@@ -24,6 +16,7 @@ export class EraserService extends Tool {
         super(drawingService);
         this.toolAttributes = ['eraserWidth'];
         this.lineWidth = MINIMUM_ERASER_SIZE;
+        this.pathData = [];
         this.clearPath();
     }
 
@@ -63,18 +56,13 @@ export class EraserService extends Tool {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
-            // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.clearLine(this.drawingService.previewCtx, this.pathData);
         }
     }
 
     setLineWidth(thickness: number): void {
-        if (thickness >= MINIMUM_ERASER_SIZE) {
-            this.lineWidth = thickness;
-        } else {
-            this.lineWidth = MINIMUM_ERASER_SIZE;
-        }
+        this.lineWidth = this.findMax(thickness, MINIMUM_ERASER_SIZE);
     }
 
     clearLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {

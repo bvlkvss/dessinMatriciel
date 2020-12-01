@@ -1,7 +1,9 @@
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { CarrouselComponent } from '@app/components/carrousel/carrousel.component';
+import { DrawingCardComponent } from '@app/components/drawing-card/drawing-card.component';
 import { UserGuideComponent } from '@app/components/user-guide/user-guide.component';
+import { DrawingService } from '@app/services/drawing/drawing.service';
 import { IndexService } from '@app/services/index/index.service';
 import { Message } from '@common/communication/message';
 import { BehaviorSubject } from 'rxjs';
@@ -14,9 +16,13 @@ import { map } from 'rxjs/operators';
 })
 export class MainPageComponent {
     readonly title: string = 'PolyDessin2';
-    message: BehaviorSubject<string> = new BehaviorSubject<string>('');
+    message: BehaviorSubject<string>;
+    drawingData: string | null;
 
-    constructor(private basicService: IndexService, private dialog: MatDialog) {}
+    constructor(private basicService: IndexService, private dialog: MatDialog, private drawingService: DrawingService) {
+        this.message = new BehaviorSubject<string>('');
+        this.drawingData = localStorage.getItem('drawing');
+    }
 
     sendTimeToServer(): void {
         const newTimeMessage: Message = {
@@ -48,5 +54,19 @@ export class MainPageComponent {
     }
     openUserGuide(): void {
         UserGuideComponent.displayUserGuide();
+    }
+
+    continueDrawing(): void {
+        this.drawingService.getAfterViewObservable().subscribe(() => {
+            if (this.drawingData != null) {
+                DrawingCardComponent.drawImage(this.drawingService, this.drawingData);
+            }
+        });
+    }
+
+    newDrawing(): void {
+        this.drawingService.getAfterViewObservable().subscribe(() => {
+            localStorage.setItem('drawing', this.drawingService.canvas.toDataURL());
+        });
     }
 }

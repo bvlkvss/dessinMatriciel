@@ -6,11 +6,14 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
     providedIn: 'root',
 })
 export class UndoRedoService {
-    private undoStack: Command[] = [];
-    private redoStack: Command[] = [];
+    undoStack: Command[];
+    redoStack: Command[];
     private isAllowed: boolean;
 
-    constructor(protected drawingService: DrawingService) {}
+    constructor(protected drawingService: DrawingService) {
+        this.undoStack = [];
+        this.redoStack = [];
+    }
     onKeyDown(event: KeyboardEvent): void {
         if (this.isAllowed) {
             if (event.ctrlKey && event.shiftKey && (event.key === 'z' || event.key === 'Z')) {

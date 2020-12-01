@@ -9,12 +9,18 @@ const TAGS_ARRAY_SIZE_MAX = 8;
     styleUrls: ['add-tags.component.scss'],
 })
 export class AddTagsComponent {
-    visible: boolean = true;
-    selectable: boolean = true;
-    removable: boolean = true;
-    readonly separatorKeysCodes: number[] = [ENTER, COMMA, SPACE];
-    tags: string[] = [];
-
+    visible: boolean;
+    selectable: boolean;
+    removable: boolean;
+    readonly separatorKeysCodes: number[];
+    tags: string[];
+    constructor() {
+        this.visible = true;
+        this.selectable = true;
+        this.removable = true;
+        this.separatorKeysCodes = [ENTER, COMMA, SPACE];
+        this.tags = [];
+    }
     add(event: MatChipInputEvent): void {
         const input: HTMLInputElement = event.input;
         const value: string = event.value;

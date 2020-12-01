@@ -23,30 +23,43 @@ const LINE_DASH_MIN = 4;
     providedIn: 'root',
 })
 export class TextService extends Tool {
-    isRighting: boolean = false;
-    lines: string[] = [];
-    cursor: string = '|';
+    isRighting: boolean;
+    lines: string[];
+    cursor: string;
     firstCursorPosition: Vec2;
-    currentLinePosition: number = 0;
+    currentLinePosition: number;
     textPosition: Vec2;
     intervalId: NodeJS.Timeout;
-    textAlignement: string = 'left';
-    firstClick: boolean = true;
-    fontText: string = 'Arial';
-    fontSize: number = DEFAULT_FONT_SIZE;
-    isBlank: boolean = true;
-    fontStyle: string = 'normal';
+    textAlignement: string;
+    firstClick: boolean;
+    fontText: string;
+    fontSize: number;
+    isBlank: boolean;
+    isCursorMoving: boolean;
+    fontStyle: string;
+    currentChar: number;
     rectStartPoint: Vec2;
     rectEndPoint: Vec2;
-    isCursorMoving: boolean = false;
-    currentChar: number = 0;
     rectHeight: number;
-    rectWidth: number = DEFAULT_BOX_WIDTH;
+    rectWidth: number;
     constructor(drawingService: DrawingService) {
         super(drawingService);
         this.lineWidth = DEFAULT_FONT_SIZE;
+        this.lines = [];
         this.lines.push('');
         this.toolAttributes = ['textPolice'];
+        this.isRighting = false;
+        this.cursor = '|';
+        this.currentLinePosition = 0;
+        this.textAlignement = 'left';
+        this.firstClick = true;
+        this.fontText = 'Arial';
+        this.fontSize = DEFAULT_FONT_SIZE;
+        this.isBlank = true;
+        this.isCursorMoving = false;
+        this.fontStyle = 'normal';
+        this.currentChar = 0;
+        this.rectWidth = DEFAULT_BOX_WIDTH;
     }
 
     setLineWidth(width: number): void {
