@@ -1,6 +1,6 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FilterByTagService } from '@app/services/filterByTag/filter-by-tag.service';
+import { HttpClientRequestService } from '@app/services/http-client-request/http-client-request.service';
 import { Drawings } from '@common/classes/drawings';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
 
@@ -10,12 +10,12 @@ import { IDropdownSettings } from 'ng-multiselect-dropdown';
     styleUrls: ['./filter-tag.component.scss'],
 })
 export class FilterTagComponent implements OnInit {
-    selectedTags: string[] = [];
-    tags: string[] = [];
+    selectedTags: string[];
+    tags: string[];
     dropdownSettings: IDropdownSettings;
-    constructor(private http: HttpClient, private filter: FilterByTagService) {}
+    constructor(private httpService: HttpClientRequestService, private filter: FilterByTagService) {}
     ngOnInit(): void {
-        this.http.get<Drawings[]>('http://localhost:3000/api/drawings/localServer').subscribe((drawings) => {
+        this.httpService.getRequest().subscribe((drawings) => {
             this.filter.initDrawings = drawings;
         });
         this.dropdownSettings = {

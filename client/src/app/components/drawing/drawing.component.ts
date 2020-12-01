@@ -1,4 +1,5 @@
-import { AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, DoCheck, ElementRef, HostListener, IterableDiffer, IterableDiffers, OnInit, ViewChild } from '@angular/core';
+import { Command } from '@app/classes/command';
 import { Tool } from '@app/classes/tool';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ResizingService } from '@app/services/resizing/resizing.service';
@@ -17,7 +18,7 @@ import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
     templateUrl: './drawing.component.html',
     styleUrls: ['./drawing.component.scss'],
 })
-export class DrawingComponent implements AfterViewInit, OnInit {
+export class DrawingComponent implements AfterViewInit, OnInit, DoCheck {
     @ViewChild('baseCanvas', { static: false }) baseCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('container') container: ElementRef<HTMLDivElement>;
     @ViewChild('resizeContainer') resizeContainer: ElementRef<HTMLDivElement>;
@@ -26,18 +27,28 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     @ViewChild('previewCanvas', { static: false }) previewCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('gridCanvas', { static: false }) gridCanvas: ElementRef<HTMLCanvasElement>;
 
-    private keyBindings: Map<string, Tool> = new Map();
+    private keyBindings: Map<string, Tool>;
     private baseCtx: CanvasRenderingContext2D;
     private previewCtx: CanvasRenderingContext2D;
     private gridCtx: CanvasRenderingContext2D;
     private mouseFired: boolean;
+    private iterableDiffer: IterableDiffer<Command>;
     constructor(
         private drawingService: DrawingService,
         private tools: ToolsManagerService,
         private resizer: ResizingService,
         private invoker: UndoRedoService,
-    ) {}
-
+        iDiffers: IterableDiffers,
+    ) {
+        this.keyBindings = new Map();
+        this.iterableDiffer = iDiffers.find([]).create();
+    }
+    ngDoCheck(): void {
+        const changesUndo = this.iterableDiffer.diff(this.invoker.undoStack);
+        if (changesUndo) {
+            localStorage.setItem('drawing', this.baseCtx.canvas.toDataURL());
+        }
+    }
     ngOnInit(): void {
         this.drawingService.resizeCanvas();
     }
@@ -55,12 +66,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
             .set('r', this.tools.getTools().get('selection') as Tool)
             .set('s', this.tools.getTools().get('selection') as Tool)
             .set('i', this.tools.getTools().get('pipette') as Tool)
-            .set('t', this.tools.getTools().get('text') as Tool)
-            .set('a', this.tools.getTools().get('aerosol') as Tool)
-            .set('p', this.tools.getTools().get('plume') as Tool)
-            .set('g', this.tools.getTools().get('grid') as Tool)
-            .set('v', this.tools.getTools().get('magic-wand') as Tool);
-
+            .set('t', this.tools.getTools().get('text') as Tool);
         this.baseCtx = this.baseCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.previewCtx = this.previewCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.gridCtx = this.gridCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
@@ -81,6 +87,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         this.baseCtx.save();
         this.previewCtx.save();
         this.gridCtx.save();
+        this.drawingService.afterViewObservable.next();
     }
 
     initResizing(event: MouseEvent): void {
@@ -211,7 +218,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         }
         this.onKeyDown(event);
     }
-
+    @HostListener('keydown', ['$event'])
     onKeyDown(event: KeyboardEvent): void {
         if (!(this.tools.currentTool instanceof TextService)) {
             if (event.ctrlKey && event.key === 'o') {
@@ -219,21 +226,12 @@ export class DrawingComponent implements AfterViewInit, OnInit {
             } else if (this.keyBindings.has(event.key)) {
                 this.drawingService.restoreCanvasState();
                 this.tools.currentTool = this.keyBindings.get(event.key) as Tool;
-                switch (event.key) {
-                    case 'r': {
-                        (this.tools.currentTool as SelectionService).selectionStyle = 0;
-                        (this.tools.currentTool as SelectionService).resetSelection();
-                        break;
-                    }
-                    case 's': {
-                        (this.tools.currentTool as SelectionService).selectionStyle = 1;
-                        (this.tools.currentTool as SelectionService).resetSelection();
-                        break;
-                    }
-                    case 'g': {
-                        this.tools.currentTool.onKeyDown(event);
-                        break;
-                    }
+                if (event.key === 'r') {
+                    (this.tools.currentTool as SelectionService).selectionStyle = 0;
+                    (this.tools.currentTool as SelectionService).resetSelection();
+                } else if (event.key === 's') {
+                    (this.tools.currentTool as SelectionService).selectionStyle = 1;
+                    (this.tools.currentTool as SelectionService).resetSelection();
                 }
             } else this.tools.currentTool.onKeyDown(event);
         } else this.tools.currentTool.onKeyDown(event);

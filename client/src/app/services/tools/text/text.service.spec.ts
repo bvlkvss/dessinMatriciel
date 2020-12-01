@@ -557,7 +557,9 @@ describe('TextService', () => {
   });
   it('onClick should launch the setInterval if first click', () => {
     const setToInitStateSpy = spyOn<any>(service, "setToInitState").and.stub();
-    const setIntervalSpy = spyOn<any>(global, "setInterval").and.callThrough();
+    const setIntervalSpy = spyOn<any>(global, "setInterval").and.stub();
+    spyOn<any>(service, "drawCursor").and.callFake(() => { return; });
+    spyOn<any>(service, "drawTextBox").and.callFake(() => { return; });
     const drawConfirmedTextSpy = spyOn<any>(service, "drawConfirmedText").and.stub();
     service.isCursorMoving = false;
     service.firstClick = true;

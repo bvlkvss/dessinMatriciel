@@ -74,7 +74,7 @@ export class DatabaseService {
                 .insertOne({ name: drawings.name, tag: drawings.tag })
                 .then((data) => {
                     const imageData = drawings.imageData?.replace(/^data:image\/png;base64,/, '');
-                    fs.writeFile(this.drawingsPath + data.insertedId + '.png', imageData, { encoding: 'base64' }, () => {});
+                    fs.writeFile(this.drawingsPath + data.insertedId + '.png', imageData, { encoding: 'base64' }, (err) => {});
                 })
                 .catch((error: Error) => {
                     throw error;
@@ -128,7 +128,6 @@ export class DatabaseService {
     async getImageData(): Promise<void> {
         return new Promise((resolve) => {
             this.serverImagesData = [];
-            console.log('okokok');
             fs.readdir(this.drawingsPath, (err, element) => {
                 element.forEach((imageData) => {
                     this.serverImagesData.push(fs.readFileSync(this.drawingsPath + imageData, 'base64'));

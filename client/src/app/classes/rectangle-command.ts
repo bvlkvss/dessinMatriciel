@@ -10,10 +10,11 @@ export class RectangleCommand extends Command {
     private primaryColor: string;
     private secondaryColor: string;
     private opacity: number;
-    isResize: boolean = false;
+    isResize: boolean;
 
     constructor(startPos: Vec2, endPos: Vec2, style: number, protected tool: RectangleService, protected drawingService: DrawingService) {
         super();
+        this.isResize = false;
         this.startPos = startPos;
         this.endPos = endPos;
         this.style = style;

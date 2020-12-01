@@ -6,13 +6,6 @@ import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
-export enum MouseButton {
-    Left = 0,
-    Middle = 1,
-    Right = 2,
-    Back = 3,
-    Forward = 4,
-}
 const RGBA_NUMBER_OF_COMPONENTS = 4;
 const MAX_8BIT_NBR = 255;
 const MIN_TOLERANCE = 0;

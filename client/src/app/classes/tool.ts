@@ -4,28 +4,38 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 const DEFAULT_COLOR = '#000000';
 const RGBA_NUMBER_OF_COMPONENTS = 4;
 // Ceci est justifié vu qu'on a des fonctions qui seront gérés par les classes enfant
+export enum MouseButton {
+    Left = 0,
+    Middle = 1,
+    Right = 2,
+    Back = 3,
+    Forward = 4,
+}
 // tslint:disable:no-empty
 export abstract class Tool {
     toolAttributes: string[];
     mouseDownCoord: Vec2;
-    mouseDown: boolean = false;
-
+    mouseDown: boolean;
     mouseOutCoord: Vec2;
     lineWidth: number;
     currentPos: Vec2;
-    isOut: boolean = false;
+    isOut: boolean;
     width: number;
     height: number;
     opacity: number;
-    primaryColor: string = DEFAULT_COLOR;
-    secondaryColor: string = DEFAULT_COLOR;
+    primaryColor: string;
+    secondaryColor: string;
 
-    constructor(protected drawingService: DrawingService) {}
+    constructor(protected drawingService: DrawingService) {
+        this.isOut = false;
+        this.mouseDown = false;
+        this.primaryColor = DEFAULT_COLOR;
+        this.secondaryColor = DEFAULT_COLOR;
+    }
 
     setMouseDown(bool: boolean): void {
         this.mouseDown = bool;
     }
-
     onClick(event: MouseEvent): void {}
     onMouseDown(event: MouseEvent): void {}
     onRightClick(event: MouseEvent): void {}
@@ -40,6 +50,9 @@ export abstract class Tool {
     setSecondaryColor(color: string): void {}
     setLineWidth(value: number): void {}
 
+    findMax(leftBound: number, rightBound: number): number {
+        return Math.max(leftBound, rightBound);
+    }
     getPositionFromMouse(event: MouseEvent): Vec2 {
         return { x: event.offsetX, y: event.offsetY };
     }

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Tool } from '@app/classes/tool';
-import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
+import { ToolsManagerService } from '@app/services/tools-manager/tools-manager.service';
 
 @Component({
     selector: 'app-editor',
