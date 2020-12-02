@@ -28,7 +28,7 @@ export class SidebarComponent implements OnChanges {
         protected drawingService: DrawingService,
         protected invoker: UndoRedoService,
         private dialog: MatDialog,
-    ) {}
+    ) { }
     @Input() primaryColor: string = this.tools.currentTool.primaryColor.slice(0, COLOR_STRING_LENGTH);
     @Input() secondaryColor: string = this.tools.currentTool.secondaryColor.slice(0, COLOR_STRING_LENGTH);
     isRevertClicked: boolean = false;
@@ -39,7 +39,11 @@ export class SidebarComponent implements OnChanges {
 
     ngOnChanges(): void {
         this.subscription = this.drawingService.getMessage().subscribe((message: string) => {
-            this.changeTools(message);
+            const numberOfTools = this.toolIcons.nativeElement.getElementsByTagName('a').length;
+            for (let i = 0; i < numberOfTools; i++) {
+                this.toolIcons.nativeElement.getElementsByTagName('a')[i].classList.remove('active');
+            }
+            this.toolIcons.nativeElement.querySelector('#' + message)?.setAttribute('class', 'active');
         });
 
         if (!this.isRevertClicked) {
@@ -86,9 +90,9 @@ export class SidebarComponent implements OnChanges {
             this.togglecanvas('drawing-container-open');
             this.toggleAttributeBar('attribute-open');
         } else if (this.tools.getTools().get(toolName) === this.tools.currentTool) {
-                this.attributeBarIsActive = false;
-                this.togglecanvas('drawing-container');
-                this.toggleAttributeBar('attribute-close');
+            this.attributeBarIsActive = false;
+            this.togglecanvas('drawing-container');
+            this.toggleAttributeBar('attribute-close');
         }
     }
 
@@ -132,7 +136,7 @@ export class SidebarComponent implements OnChanges {
         for (let i = 0; i < numberOfTools; i++) {
             this.toolIcons.nativeElement.getElementsByTagName('a')[i].classList.remove('active');
         }
-        this.toolIcons.nativeElement.querySelector('#'+name)?.setAttribute('class', 'active');
+        this.toolIcons.nativeElement.querySelector('#' + name)?.setAttribute('class', 'active');
     }
 
     revertColors(): void {
