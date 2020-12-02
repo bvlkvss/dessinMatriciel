@@ -5,17 +5,15 @@ import { Tool } from '@app/classes/tool';
 import { EllipseService } from '../tools/ellipse/ellipse.service';
 import { LineService } from '../tools/line/line.service';
 import { PaintBucketService } from '../tools/paint-bucket/paint-bucket.service';
+import { PolygonService } from '../tools/polygon/polygon.service';
 import { RectangleService } from '../tools/rectangle/rectangle.service';
 import { ToolsManagerService } from './tools-manager.service';
-import { PolygonService }from '../tools/polygon/polygon.service';
-import { SprayPaintService } from '../tools/spray-paint/spray-paint.service';
 describe('ToolsManagerService', () => {
     let service: ToolsManagerService;
 
     beforeEach(() => {
         TestBed.configureTestingModule({});
         service = TestBed.inject(ToolsManagerService);
-        service.currentTool = service.getTools().get('pencil') as Tool;
     });
 
     it('should be created', () => {
@@ -23,9 +21,9 @@ describe('ToolsManagerService', () => {
     });
 
     it('should call setPrimaryColor when setColor is called and is Primary is true', () => {
-        service.currentTool.setPrimaryColor = jasmine.createSpy();
+        let setPrimaryColorSpy = spyOn(service.currentTool, 'setPrimaryColor');
         service.setColor('#ababab', true);
-        expect(service.currentTool.setPrimaryColor).toHaveBeenCalled();
+        expect(setPrimaryColorSpy).toHaveBeenCalled();
     });
 
     it('should call setSecondaryColor when setColor is called and is Primary is false', () => {
@@ -86,23 +84,5 @@ describe('ToolsManagerService', () => {
 
         service.setJunctionState(true);
         expect(setJunctionStateSpy).toHaveBeenCalled();
-    });
-
-
-    it('should call line setDropletsWidth when setDropletsWidth is called', () => {
-        service.currentTool = service.getTools().get('aerosol') as Tool;
-        let setDropletsWidthSpy = spyOn(service.currentTool as SprayPaintService, 'setDropletsWidth');
-
-        service.setDropletsWidth(5);
-        expect(setDropletsWidthSpy).toHaveBeenCalled();
-    });
-
-
-    it('should call line setRadius when setRadius is called', () => {
-        service.currentTool = service.getTools().get('aerosol') as Tool;
-        let setRadiusSpy = spyOn(service.currentTool as SprayPaintService, 'setRadius');
-
-        service.setRadius(5);
-        expect(setRadiusSpy).toHaveBeenCalled();
     });
 });

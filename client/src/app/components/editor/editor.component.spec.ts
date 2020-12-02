@@ -6,7 +6,7 @@ import { PipetteService } from '@app/services/tools/pipette/pipette.service';
 import { StampService } from '@app/services/tools/stamp/stamp.service';
 import { of } from 'rxjs';
 import { delay } from 'rxjs/operators';
-import { AttributebarComponent } from '../attributebar/attributebar.component';
+import { AttributeBarComponent } from '../attribute-bar/attributebar.component';
 import { ColorPaletteComponent } from '../color-picker/color-palette/color-palette.component';
 import { ColorPickerComponent } from '../color-picker/color-picker.component';
 import { ColorSliderComponent } from '../color-picker/color-slider/color-slider.component';
@@ -23,7 +23,7 @@ describe('EditorComponent', () => {
         mockDrawService = new MockDrawingService();
         stampStub = new StampService(mockDrawService);
         TestBed.configureTestingModule({
-            declarations: [EditorComponent, AttributebarComponent, ColorPickerComponent, DrawingComponent, ColorSliderComponent, ColorPaletteComponent, SidebarComponent],
+            declarations: [EditorComponent, AttributeBarComponent, ColorPickerComponent, DrawingComponent, ColorSliderComponent, ColorPaletteComponent, SidebarComponent],
             providers: [{ provide: MatDialog, useValue: {} }
             ],
         }).compileComponents();

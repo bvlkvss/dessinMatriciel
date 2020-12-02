@@ -1,8 +1,8 @@
 import { AfterViewInit, Component, ViewChild } from '@angular/core';
 import { Tool } from '@app/classes/tool';
-import { AttributebarComponent } from '@app/components/attributebar/attributebar.component';
+import { AttributeBarComponent } from '@app/components/attribute-bar/attributebar.component';
+import { ToolsManagerService } from '@app/services/tools-manager/tools-manager.service';
 import { StampService } from '@app/services/tools/stamp/stamp.service';
-import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
 
 @Component({
     selector: 'app-editor',
@@ -11,7 +11,7 @@ import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.ser
 })
 export class EditorComponent implements AfterViewInit {
     displayValue: string = 'none';
-    @ViewChild('attributeBar') bar: AttributebarComponent;
+    @ViewChild('attributeBar') bar: AttributeBarComponent;
     lastColors: string[] = new Array<string>();
     currentTool: Tool = this.tools.currentTool;
     constructor(private tools: ToolsManagerService) {}

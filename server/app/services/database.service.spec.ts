@@ -2,7 +2,7 @@
 import { expect } from 'chai';
 import * as fs from 'fs';
 import { describe } from 'mocha';
-import { Db, MongoClient } from 'mongodb';
+import { Cursor, Db, MongoClient } from 'mongodb';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import * as rimraf from 'rimraf';
 import * as sinon from 'sinon';
@@ -36,7 +36,6 @@ describe('Database service', () => {
         // We use the local Mongo Instance and not the production database
         db = client.db(await mongoServer.getDbName());
         databaseService.collection = db.collection('test');
-
         testDrawings = { name: "Test Drawing", tag: ["LOG1001"] };
         mockDrawing = (await databaseService.collection.insertOne(testDrawings));
         databaseService.drawingsPath = "./mockFolder/";
@@ -46,11 +45,10 @@ describe('Database service', () => {
 
     afterEach(async () => {
         rimraf(databaseService.drawingsPath, () => { });
-        databaseService.drawingsPath = "./drawings/";
+        //databaseService.drawingsPath = "./drawings/";
         sandbox.restore();
         client.close();
     })
-
 
 
 
@@ -69,7 +67,6 @@ describe('Database service', () => {
 
     });
     it('if an error occured while calling insertOne, it is thrown and handled', async () => {
-
         sandbox.stub(databaseService.collection, "insertOne").callsFake(() => {
             return new Promise((resolve) => {
                 throw new Error("error thrown");
@@ -80,6 +77,20 @@ describe('Database service', () => {
             expect(error.message).to.equal("error thrown");
 
         });
+
+    });
+    it('if an error is thrown in getAllDrawings it is handled', async () => {
+        sandbox.stub(Cursor.prototype, "toArray").callsFake(() => {
+            return new Promise((resolve) => {
+                throw new Error("error thrown");
+                resolve();
+            })
+        });
+        try {
+            await databaseService.getAllDrawings();
+        } catch (error) {
+            expect(error.message).to.equal('Error while getting drawings');
+        }
 
     });
     it('should get all drawings from DB', async () => {
@@ -121,7 +132,8 @@ describe('Database service', () => {
     });
 
     it('should insert a new drawing and save as png on local disk on a specific directory', async () => {
-        let secondDrawing: Drawings = { name: "Test Drawing2", tag: ["LOG1"] };
+        let secondDrawing: Drawings = { name: "Test Drawing2", tag: ["LOG1"], imageData: 'data:image/png;base64,Test' };
+        databaseService.drawingsPath = "./mockFolder/";
         await databaseService.addDrawing(secondDrawing);
         fs.readdir(databaseService.drawingsPath, (err, fileCreated) => {
             mockFile = fileCreated;

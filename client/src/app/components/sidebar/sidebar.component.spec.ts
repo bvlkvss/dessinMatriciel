@@ -4,6 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Tool } from '@app/classes/tool';
 import { MockDrawingService } from '@app/components/drawing/drawing.component.spec';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { ToolsManagerService } from '@app/services/tools-manager/tools-manager.service';
 import { BrushService } from '@app/services/tools/brush/brush.service';
 import { EllipseService } from '@app/services/tools/ellipse/ellipse.service';
 import { EraserService } from '@app/services/tools/eraser/eraser-service';
@@ -20,9 +21,8 @@ import { SelectionService } from '@app/services/tools/selection/selection.servic
 import { SprayPaintService } from '@app/services/tools/spray-paint/spray-paint.service';
 import { StampService } from '@app/services/tools/stamp/stamp.service';
 import { TextService } from '@app/services/tools/text/text.service';
-import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
-import { MockUndoRedoService } from '../attributebar/attributebar.component.spec';
+import { MockUndoRedoService } from '../attribute-bar/attributebar.component.spec';
 import { UserGuideComponent } from '../user-guide/user-guide.component';
 import { SidebarComponent } from './sidebar.component';
 
@@ -46,7 +46,7 @@ describe('SidebarComponent', () => {
     let polygonStub: PolygonService;
     let textStub: TextService;
     let matDialogSpy: jasmine.SpyObj<MatDialog>;
-    let gridStub:GridService;
+    let gridStub: GridService;
     let magicWandStub: MagicWandService;
 
     let stampStub: StampService;

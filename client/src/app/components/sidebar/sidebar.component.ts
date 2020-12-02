@@ -5,10 +5,10 @@ import { ExportComponent } from '@app/components/export/export.component';
 import { SavingComponent } from '@app/components/saving/saving.component';
 import { UserGuideComponent } from '@app/components/user-guide/user-guide.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { ToolsManagerService } from '@app/services/tools-manager/tools-manager.service';
 import { GridService } from '@app/services/tools/grid/grid.service';
 import { SelectionService } from '@app/services/tools/selection/selection.service';
 import { TextService } from '@app/services/tools/text/text.service';
-import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { Subscription } from 'rxjs';
 
@@ -22,20 +22,22 @@ const COLOR_STRING_LENGTH = 7;
 export class SidebarComponent implements OnChanges {
     subscription: Subscription;
     currentToolName: string;
+    @Input() primaryColor: string = this.tools.currentTool.primaryColor.slice(0, COLOR_STRING_LENGTH);
+    @Input() secondaryColor: string = this.tools.currentTool.secondaryColor.slice(0, COLOR_STRING_LENGTH);
+    isRevertClicked: boolean;
+    attributeBarIsActive: boolean;
 
     constructor(
         private tools: ToolsManagerService,
         protected drawingService: DrawingService,
         protected invoker: UndoRedoService,
         private dialog: MatDialog,
-    ) {}
-    @Input() primaryColor: string = this.tools.currentTool.primaryColor.slice(0, COLOR_STRING_LENGTH);
-    @Input() secondaryColor: string = this.tools.currentTool.secondaryColor.slice(0, COLOR_STRING_LENGTH);
-    isRevertClicked: boolean = false;
-    attributeBarIsActive: boolean = false;
+    ) {
+        this.isRevertClicked = false;
+        this.attributeBarIsActive = false;
+    }
 
     @ViewChild('icons', { static: false }) toolIcons: ElementRef<HTMLCanvasElement>;
-
     ngOnChanges(): void {
         this.subscription = this.drawingService.getMessage().subscribe((message: string) => {
             const numberOfTools = this.toolIcons.nativeElement.getElementsByTagName('a').length;

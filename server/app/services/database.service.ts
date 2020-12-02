@@ -100,9 +100,7 @@ export class DatabaseService {
         fs.readdir(this.drawingsPath, (error, directory) => {
             directory.forEach((file) => {
                 if (file === drawing.value._id + '.png') {
-                    fs.unlink(this.drawingsPath + file, (err) => {
-                        if (err) throw err;
-                    });
+                    fs.unlink(this.drawingsPath + file, () => {});
                 }
             });
         });

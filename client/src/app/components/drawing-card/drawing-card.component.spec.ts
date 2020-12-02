@@ -4,6 +4,7 @@ import { MatCard, MatCardActions, MatCardHeader, MatCardSubtitle, MatCardTitle }
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Drawings } from '@app/components/carrousel/carrousel.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { of } from 'rxjs';
 import { DrawingCardComponent } from './drawing-card.component';
 
 
@@ -61,14 +62,18 @@ describe('DrawingCardComponent', () => {
     component.ngAfterViewChecked();
     expect(spy).toHaveBeenCalled();
   });
-  it('drawImage should call resizeCanvas and drawImage and clearRect', () => {
+  it('drawImage should call resizeCanvas and drawImage and clearRect', async () => {
     const clearSpy = spyOn(drawService.baseCtx, 'clearRect').and.stub();
     const drawImageSpy = spyOn(drawService.baseCtx, 'drawImage').and.stub();
-    const resizeSpy = spyOn(component, 'resizeCanvas').and.stub();
-    component.drawImage();
+    const resizeSpy = spyOn(DrawingCardComponent, 'resizeCanvas').and.stub();
+    const image=new Image();
+    spyOn(DrawingCardComponent, "getImage").and.returnValue(of(image));
+
+    DrawingCardComponent.drawImage(drawService, 'test');
     expect(clearSpy).toHaveBeenCalled();
     expect(drawImageSpy).toHaveBeenCalled();
     expect(resizeSpy).toHaveBeenCalled();
+    //global.Image = image;
   });
   it('onClick should call delete and set onDelete to true, if the click was over the button ', () => {
     const spy = spyOn(component, 'delete').and.stub();
@@ -84,7 +89,7 @@ describe('DrawingCardComponent', () => {
     component.drawingIndex = 1;
     drawService.canvas = document.createElement('canvas');
     button.setAttribute('class', 'ok');
-    const spy = spyOn(component, 'drawImage').and.stub();
+    const spy = spyOn(DrawingCardComponent, 'drawImage').and.stub();
     spyOn(window, 'confirm').and.returnValue(true);
     const mouseEvent: any = { target: button };
     component.onClick(mouseEvent);
@@ -95,7 +100,7 @@ describe('DrawingCardComponent', () => {
     component.drawingIndex = 1;
     drawService.blankCanvasDataUrl = drawService.canvas.toDataURL();
     button.setAttribute('class', 'ok');
-    const spy = spyOn(component, 'drawImage').and.stub();
+    const spy = spyOn(DrawingCardComponent, 'drawImage').and.stub();
     const mouseEvent: any = { target: button };
     component.onClick(mouseEvent);
     expect(spy).toHaveBeenCalled();
@@ -105,7 +110,7 @@ describe('DrawingCardComponent', () => {
     img.width = 100;
     img.height = 50;
     drawService.canvasContainer = document.createElement('div');
-    component.resizeCanvas(img);
+    DrawingCardComponent.resizeCanvas(img, (component as any).drawingService);
     expect(drawService.canvasContainer.style.width).toEqual('100px');
     expect(drawService.canvasContainer.style.height).toEqual('50px');
     expect(drawService.canvas.width).toEqual(100);

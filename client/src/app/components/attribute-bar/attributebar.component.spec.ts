@@ -1,30 +1,30 @@
 /* tslint:disable */
 import { ElementRef } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatButtonToggleGroup, MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatButtonToggleChange } from '@angular/material/button-toggle';
 import { MatSelectChange } from '@angular/material/select';
 import { MockDrawingService } from '@app/components/drawing/drawing.component.spec';
 import { BrushService } from '@app/services/tools/brush/brush.service';
 import { EllipseService } from '@app/services/tools/ellipse/ellipse.service';
 import { EraserService } from '@app/services/tools/eraser/eraser-service';
+import { GridService } from '@app/services/tools/grid/grid.service';
 import { LineService } from '@app/services/tools/line/line.service';
 import { MagicWandService } from '@app/services/tools/magic-wand/magic-wand.service';
 import { PaintBucketService } from '@app/services/tools/paint-bucket/paint-bucket.service';
 import { PencilService } from '@app/services/tools/pencil/pencil-service';
-import { PlumeService } from '@app/services/tools/plume/plume.service';
 import { Arguments, PipetteService } from '@app/services/tools/pipette/pipette.service';
+import { PlumeService } from '@app/services/tools/plume/plume.service';
 import { PolygonService } from '@app/services/tools/polygon/polygon.service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle.service';
 import { SelectionService } from '@app/services/tools/selection/selection.service';
 import { SprayPaintService } from '@app/services/tools/spray-paint/spray-paint.service';
 import { StampService } from '@app/services/tools/stamp/stamp.service';
 import { TextService } from '@app/services/tools/text/text.service';
-import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
+import { ToolsManagerService } from '@app/services/tools-manager/tools-manager.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { of } from 'rxjs';
-import { AttributebarComponent } from './attributebar.component';
-import { MatButtonToggleGroup, MatButtonToggleModule } from '@angular/material/button-toggle';
-import { GridService } from '@app/services/tools/grid/grid.service';
+import { AttributeBarComponent } from './attributebar.component';
 
 export class MockUndoRedoService extends UndoRedoService {
     executeAll(): void {
@@ -42,10 +42,10 @@ class EventMock {
     }
 }
 describe('AttributebarComponent', () => {
-    let component: AttributebarComponent;
+    let component: AttributeBarComponent;
     let mouseEvent: MouseEvent;
     //let event: KeyboardEvent;
-    let fixture: ComponentFixture<AttributebarComponent>;
+    let fixture: ComponentFixture<AttributeBarComponent>;
     let toolManagerStub: ToolsManagerService;
     let pencilStub: PencilService;
     let pipetteStub: PipetteService;
@@ -87,14 +87,14 @@ describe('AttributebarComponent', () => {
         toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub, selectionStub, paintBucketStub, polygonStub, pipetteStub, textStub, sprayPaintStub, plumeStub, gridStub, magicWandStub,stampStub);
         toolManagerStub.currentTool = pencilStub;
         TestBed.configureTestingModule({
-            declarations: [AttributebarComponent, MatButtonToggleGroup],
+            declarations: [AttributeBarComponent, MatButtonToggleGroup],
             providers: [{ provide: ToolsManagerService, useValue: toolManagerStub }, { provide: PipetteService, useValue: pipetteStub }],
             imports: [MatButtonToggleModule]
         }).compileComponents();
     }));
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(AttributebarComponent);
+        fixture = TestBed.createComponent(AttributeBarComponent);
         component = fixture.componentInstance;
 
         fixture.detectChanges();

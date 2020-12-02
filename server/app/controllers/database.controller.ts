@@ -31,7 +31,7 @@ export class DatabaseController {
         this.router.get('/localServer', async (req: Request, res: Response, next: NextFunction) => {
             const promises: any = [];
             this.databaseService.drawingsContainer = [];
-            this.databaseService.getImageData();
+            await this.databaseService.getImageData();
             this.databaseService
                 .update()
                 .then(() => {
