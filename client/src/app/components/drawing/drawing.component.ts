@@ -126,6 +126,12 @@ export class DrawingComponent implements AfterViewInit, OnInit {
             const tool = this.tools.currentTool as PlumeService;
             tool.adjustAngle(event);
         }
+        else if(this.tools.getTools().get('stamp') === this.tools.currentTool) {
+            const tool = this.tools.currentTool as StampService;
+            const position = tool.getPositionFromMouse(event);
+            tool.updateDegree(event, this.altkey);
+            tool.rotateStamp(this.drawingService.previewCtx, position);
+        }
     }
 
     @HostListener('mousemove', ['$event'])
@@ -180,15 +186,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         }
         this.tools.currentTool.onMouseUp(event);
     }
-    @HostListener('mousewheel', ['$event'])
-    updateDegree(event: WheelEvent): void {
-        if (this.tools.getTools().get('stamp') === this.tools.currentTool) {
-            const tool = this.tools.currentTool as StampService;
-            const position = tool.getPositionFromMouse(event);
-            tool.updateDegree(event, this.altkey);
-            tool.rotateStamp(this.drawingService.previewCtx, position);
-        }
-    }
+   
 
     @HostListener('mouseout', ['$event'])
     onMouseOut(event: MouseEvent): void {
