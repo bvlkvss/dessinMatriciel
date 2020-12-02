@@ -19,6 +19,7 @@ import { PolygonService } from '@app/services/tools/polygon/polygon.service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle.service';
 import { SelectionService } from '@app/services/tools/selection/selection.service';
 import { SprayPaintService } from '@app/services/tools/spray-paint/spray-paint.service';
+import { StampService } from '@app/services/tools/stamp/stamp.service';
 import { TextService } from '@app/services/tools/text/text.service';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
 import { MockUndoRedoService } from '../attributebar/attributebar.component.spec';
@@ -59,6 +60,7 @@ describe('DrawingComponent', () => {
     let magicWandStub: MagicWandService;
 
 
+    let stampStub: StampService;
     beforeEach(async(() => {
         drawServiceMock = new MockDrawingService();
         undoRedoServiceMock = new MockUndoRedoService(drawServiceMock);
@@ -76,8 +78,9 @@ describe('DrawingComponent', () => {
         plumeStub = new PlumeService(drawServiceMock, undoRedoServiceMock);
         sprayPaintStub = new SprayPaintService(drawServiceMock, undoRedoServiceMock);
         gridStub = new GridService(drawServiceMock);
+        stampStub = new StampService(drawServiceMock);
 
-        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub, selectionStub, paintBucketStub, polygonStub, pipetteStub, textStub, sprayPaintStub, plumeStub, gridStub, magicWandStub);
+        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub, selectionStub, paintBucketStub, polygonStub, pipetteStub, textStub, sprayPaintStub, plumeStub, gridStub, magicWandStub,stampStub);
         toolManagerStub.currentTool = toolManagerStub.getTools().get('pencil') as Tool;
         TestBed.configureTestingModule({
             declarations: [DrawingComponent],
@@ -90,7 +93,7 @@ describe('DrawingComponent', () => {
     }));
 
     beforeEach(() => {
-        
+
         fixture = TestBed.createComponent(DrawingComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();

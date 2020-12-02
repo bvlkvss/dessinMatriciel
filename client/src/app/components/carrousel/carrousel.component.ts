@@ -53,7 +53,6 @@ export class CarrouselComponent implements OnInit, AfterViewChecked {
                     if (this.allDrawings[i]) this.drawingsToShow.push(this.allDrawings[i]);
                 }
                 this.filter.drawings = this.allDrawings;
-                console.log(this.filter.drawings, 'on init');
                 this.filter.drawingsToShow = this.drawingsToShow;
                 this.middlePosition = this.drawingsToShow.length - this.step + 1;
             },

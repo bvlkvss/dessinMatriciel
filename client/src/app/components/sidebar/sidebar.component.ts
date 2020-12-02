@@ -28,14 +28,13 @@ export class SidebarComponent implements OnChanges {
         protected drawingService: DrawingService,
         protected invoker: UndoRedoService,
         private dialog: MatDialog,
-    ) { }
+    ) {}
     @Input() primaryColor: string = this.tools.currentTool.primaryColor.slice(0, COLOR_STRING_LENGTH);
     @Input() secondaryColor: string = this.tools.currentTool.secondaryColor.slice(0, COLOR_STRING_LENGTH);
     isRevertClicked: boolean = false;
     attributeBarIsActive: boolean = false;
 
     @ViewChild('icons', { static: false }) toolIcons: ElementRef<HTMLCanvasElement>;
-
 
     ngOnChanges(): void {
         this.subscription = this.drawingService.getMessage().subscribe((message: string) => {
@@ -125,7 +124,6 @@ export class SidebarComponent implements OnChanges {
     }
 
     changeTools(name: string): void {
-        console.log('ok');
         this.drawingService.restoreCanvasState();
         if (this.tools.currentTool instanceof TextService && name !== 'text') (this.tools.currentTool as TextService).drawConfirmedText(true);
         this.tools.setTools(name);
@@ -169,7 +167,6 @@ export class SidebarComponent implements OnChanges {
             location.replace('main-page.component.html');
         }
     }
-
     @HostListener('window:keydown', ['$event'])
     onkeyDownWindow(event: KeyboardEvent): void {
         if (event.ctrlKey && event.key === 'e') {
