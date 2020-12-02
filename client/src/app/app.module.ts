@@ -29,6 +29,7 @@ import { FilterTagComponent } from './components/filter-tag/filter-tag.component
 import { MainPageComponent } from './components/main-page/main-page.component';
 import { SavingComponent } from './components/saving/saving.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
+import { StampsContainerComponent } from './components/stamps-container/stamps-container.component';
 import { UserGuideComponent } from './components/user-guide/user-guide.component';
 @NgModule({
     declarations: [
@@ -38,6 +39,7 @@ import { UserGuideComponent } from './components/user-guide/user-guide.component
         DrawingComponent,
         MainPageComponent,
         UserGuideComponent,
+        StampsContainerComponent,
         AttributeBarComponent,
         ExportComponent,
         ColorSliderComponent,
@@ -48,6 +50,7 @@ import { UserGuideComponent } from './components/user-guide/user-guide.component
         CarrouselComponent,
         AddTagsComponent,
         FilterTagComponent,
+        StampsContainerComponent,
     ],
     imports: [
         BrowserModule,

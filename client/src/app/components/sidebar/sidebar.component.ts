@@ -39,7 +39,6 @@ export class SidebarComponent implements OnChanges {
 
     @ViewChild('icons', { static: false }) toolIcons: ElementRef<HTMLCanvasElement>;
 
-
     ngOnChanges(): void {
         this.subscription = this.drawingService.getMessage().subscribe((message: string) => {
             const numberOfTools = this.toolIcons.nativeElement.getElementsByTagName('a').length;
@@ -128,7 +127,6 @@ export class SidebarComponent implements OnChanges {
     }
 
     changeTools(name: string): void {
-        console.log('ok');
         this.drawingService.restoreCanvasState();
         if (this.tools.currentTool instanceof TextService && name !== 'text') (this.tools.currentTool as TextService).drawConfirmedText(true);
         this.tools.setTools(name);
@@ -172,7 +170,6 @@ export class SidebarComponent implements OnChanges {
             location.replace('main-page.component.html');
         }
     }
-
     @HostListener('window:keydown', ['$event'])
     onkeyDownWindow(event: KeyboardEvent): void {
         if (event.ctrlKey && event.key === 'e') {

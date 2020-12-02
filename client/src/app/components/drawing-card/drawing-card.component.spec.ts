@@ -7,6 +7,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { of } from 'rxjs';
 import { DrawingCardComponent } from './drawing-card.component';
 
+
 describe('DrawingCardComponent', () => {
   let component: DrawingCardComponent;
   let mouseEvent: MouseEvent;

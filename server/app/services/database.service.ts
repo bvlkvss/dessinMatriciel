@@ -75,7 +75,7 @@ export class DatabaseService {
                 .then((data) => {
                     const imageData = drawings.imageData?.replace(/^data:image\/png;base64,/, '');
                     fs.writeFile(this.drawingsPath + data.insertedId + '.png', imageData, { encoding: 'base64' }, () => {});
-                    console.log('File created');
+                    console.log('FILE CREATED');
                 })
                 .catch((error: Error) => {
                     throw error;

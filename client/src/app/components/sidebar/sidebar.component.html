@@ -1,7 +1,6 @@
 <div class="bodyMock">
     <div class="container2">
         <div #icons class="icon-bar">
-
             <div class="inlineclass">
                 <div class="drawingtoolscontainer">
                     <a id="pencil" class="active" (click)="displayPalette('pencil')" (click)="changeTools('pencil')">
@@ -71,6 +70,10 @@
                     <a id="grid-on" (click)="displayPalette('grid')" (click)="changeTools('grid')">
                         <i class="material-icons">grid_on</i>
                         <span class="slidingtxt"> Grille (G)</span>
+                    </a>
+                    <a id="stamp" (click)="displayPalette('stamp')" (click)="changeTools('stamp')">
+                        <i class="material-icons">insert_emoticon</i>
+                        <span class="slidingtxt2"> Stamp (T)</span>
                     </a>
                 </div>
             </div>
