@@ -39,7 +39,7 @@ export class DatabaseController {
                         promises.push(this.databaseService.getDrawingWithId(element.replace('.png', '')));
                     });
                     Promise.all(promises)
-                        .then((drawing: any) => {
+                        .then(() => {
                             for (let i = 0; i < this.databaseService.drawingsContainer.length; i++) {
                                 this.databaseService.drawingsContainer[i].imageData =
                                     'data:image/png;base64,' + this.databaseService.serverImagesData[i];

@@ -3,6 +3,7 @@ import { Tool } from '@app/classes/tool';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ResizingService } from '@app/services/resizing/resizing.service';
 import { SelectionService } from '@app/services/tools/selection/selection.service';
+import { StampService } from '@app/services/tools/stamp/stamp.service';
 import { TextService } from '@app/services/tools/text/text.service';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
@@ -26,13 +27,14 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     private baseCtx: CanvasRenderingContext2D;
     private previewCtx: CanvasRenderingContext2D;
     private mouseFired: boolean;
+    private altkey: boolean = false;
 
     constructor(
         private drawingService: DrawingService,
         private tools: ToolsManagerService,
         private resizer: ResizingService,
         private invoker: UndoRedoService,
-    ) {}
+    ) { }
 
     ngOnInit(): void {
         this.drawingService.resizeCanvas();
@@ -147,6 +149,15 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         }
         this.tools.currentTool.onMouseUp(event);
     }
+    @HostListener('mousewheel', ['$event'])
+    updateDegree(event: WheelEvent): void {
+        if (this.tools.getTools().get('stamp') === this.tools.currentTool) {
+            const tool = this.tools.currentTool as StampService;
+            const position = tool.getPositionFromMouse(event);
+            tool.updateDegree(event, this.altkey);
+            tool.rotateStamp(this.drawingService.previewCtx, position);
+        }
+    }
 
     @HostListener('mouseout', ['$event'])
     onMouseOut(event: MouseEvent): void {
@@ -159,11 +170,13 @@ export class DrawingComponent implements AfterViewInit, OnInit {
 
     @HostListener('document:keyup', ['$event'])
     onKeyUp(event: KeyboardEvent): void {
+        this.altkey = event.altKey;
         this.tools.currentTool.onKeyUp(event);
     }
 
     @HostListener('window:keydown', ['$event'])
     onkeyDownWindow(event: KeyboardEvent): void {
+        this.altkey = event.altKey;
         if (event.ctrlKey && event.key === 'o') {
             event.preventDefault();
             event.stopPropagation();

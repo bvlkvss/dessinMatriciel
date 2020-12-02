@@ -13,8 +13,10 @@ import { PipetteService } from '@app/services/tools/pipette/pipette.service';
 import { PolygonService } from '@app/services/tools/polygon/polygon.service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle.service';
 import { SelectionService } from '@app/services/tools/selection/selection.service';
+import { StampService } from '@app/services/tools/stamp/stamp.service';
 import { TextService } from '@app/services/tools/text/text.service';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
+import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { MockUndoRedoService } from '../attributebar/attributebar.component.spec';
 import { UserGuideComponent } from '../user-guide/user-guide.component';
 import { SidebarComponent } from './sidebar.component';
@@ -37,7 +39,7 @@ describe('SidebarComponent', () => {
     let polygonStub: PolygonService;
     let textStub: TextService;
     let matDialogSpy: jasmine.SpyObj<MatDialog>;
-
+    let stampStub: StampService;
     beforeEach(async(() => {
         drawServiceMock = new MockDrawingService();
         UndoRedoServiceMock = new MockUndoRedoService(drawServiceMock);
@@ -51,7 +53,8 @@ describe('SidebarComponent', () => {
         pipetteStub = new PipetteService(drawServiceMock);
         selectionStub = new SelectionService(drawServiceMock, UndoRedoServiceMock);
         textStub = new TextService(drawServiceMock);
-        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub, selectionStub, paintBucketStub, polygonStub, pipetteStub, textStub);
+        stampStub = new StampService(drawServiceMock);
+        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub, selectionStub, paintBucketStub, polygonStub, pipetteStub, textStub, stampStub);
         matDialogSpy = jasmine.createSpyObj('MatDialog', ['open']);
         TestBed.configureTestingModule({
             declarations: [SidebarComponent],
@@ -59,6 +62,7 @@ describe('SidebarComponent', () => {
                 { provide: ToolsManagerService, useValue: toolManagerStub },
                 { provide: DrawingService, useValue: drawServiceMock },
                 { provide: MatDialog, useValue: matDialogSpy },
+                { provide: UndoRedoService, useValue: UndoRedoServiceMock },
                 { provide: ComponentFixtureAutoDetect, useValue: true },
             ],
         }).compileComponents();
@@ -81,7 +85,20 @@ describe('SidebarComponent', () => {
         expect(component.attributeBarIsActive).toEqual(true);
         expect(togglecanvasSpy).toHaveBeenCalled();
     });
-
+    it('openCarousel should call dialog.open methode', () => {
+        component.openCarousel();
+        expect(matDialogSpy.open).toHaveBeenCalled();
+    });
+    it('undo should call undoLast', () => {
+        let undoLastSpy = spyOn(UndoRedoServiceMock, 'undoLast');
+        component.undo();
+        expect(undoLastSpy).toHaveBeenCalled();
+    });
+    it('redo should call redoPrev', () => {
+        let redoPrevSpy = spyOn(UndoRedoServiceMock, 'redoPrev');
+        component.redo();
+        expect(redoPrevSpy).toHaveBeenCalled();
+    });
     it('should call togglecanvas when displayPalette is called and set attribute bar to false if currentTool is given name', () => {
         component.attributeBarIsActive = true;
         (component as any).tools.currentTool = (component as any).tools.getTools().get('brush');

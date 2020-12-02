@@ -1,6 +1,8 @@
 /* tslint:disable */
 import { ElementRef } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatButtonToggleChange } from '@angular/material/button-toggle';
+import { MatSelectChange } from '@angular/material/select';
 import { MockDrawingService } from '@app/components/drawing/drawing.component.spec';
 import { BrushService } from '@app/services/tools/brush/brush.service';
 import { EllipseService } from '@app/services/tools/ellipse/ellipse.service';
@@ -12,6 +14,7 @@ import { Arguments, PipetteService } from '@app/services/tools/pipette/pipette.s
 import { PolygonService } from '@app/services/tools/polygon/polygon.service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle.service';
 import { SelectionService } from '@app/services/tools/selection/selection.service';
+import { StampService } from '@app/services/tools/stamp/stamp.service';
 import { TextService } from '@app/services/tools/text/text.service';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
@@ -28,11 +31,16 @@ export class MockUndoRedoService extends UndoRedoService {
     }
 }
 
-
+class EventMock {
+    target: any = { selectionStart: 0, key: '@' };
+    preventDefault(): boolean {
+        return false;
+    }
+}
 describe('AttributebarComponent', () => {
     let component: AttributebarComponent;
     let mouseEvent: MouseEvent;
-    let event: KeyboardEvent;
+    //let event: KeyboardEvent;
     let fixture: ComponentFixture<AttributebarComponent>;
     let toolManagerStub: ToolsManagerService;
     let pencilStub: PencilService;
@@ -49,7 +57,7 @@ describe('AttributebarComponent', () => {
     let polygonStub: PolygonService;
     let UndoRedoServiceMock: MockUndoRedoService;
     let textStub: TextService;
-
+    let stampStub: StampService;
     beforeEach(async(() => {
         mouseEvent = (new MouseEvent('click', { clientX: 5, clientY: 5 }));
         drawServiceMock = new MockDrawingService();
@@ -63,7 +71,8 @@ describe('AttributebarComponent', () => {
         eraserStub = new EraserService(drawServiceMock, UndoRedoServiceMock);
         pipetteStub = new PipetteService(drawServiceMock);
         textStub = new TextService(drawServiceMock);
-        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub, selectionStub, paintBucketStub, polygonStub, pipetteStub, textStub); TestBed.configureTestingModule({
+        stampStub = new StampService(drawServiceMock);
+        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub, selectionStub, paintBucketStub, polygonStub, pipetteStub, textStub, stampStub); TestBed.configureTestingModule({
             declarations: [AttributebarComponent],
             providers: [{ provide: ToolsManagerService, useValue: toolManagerStub }, { provide: PipetteService, useValue: pipetteStub }],
         }).compileComponents();
@@ -110,6 +119,52 @@ describe('AttributebarComponent', () => {
         expect(component.widthValue).toEqual('6');
     });
 
+    it('should call text service setAllignement methode', () => {
+        let allignementSpy = spyOn<any>(textStub, "setAllignement").and.stub();
+        const mockArgument: any = 0;
+        toolManagerStub.currentTool = textStub;
+        component.setAllignement(mockArgument as MatSelectChange);
+        expect(allignementSpy).toHaveBeenCalled();
+    });
+    it('should call text service setFontText methode', () => {
+        let fontTextSpy = spyOn<any>(textStub, "setFontText").and.stub();
+        const mockArgument: any = 0;
+        toolManagerStub.currentTool = textStub;
+        component.setFontFamily(mockArgument as MatSelectChange);
+        expect(fontTextSpy).toHaveBeenCalled();
+    });
+
+    it('should call text service setFontStyle methode', () => {
+        let fontTextSpy = spyOn<any>(textStub, "setFontStyle").and.stub();
+        const mockArgument: any = { value: ["ok", "Okkk"] };
+        toolManagerStub.currentTool = textStub;
+        component.setFontStyle(mockArgument as MatButtonToggleChange);
+        expect(fontTextSpy).toHaveBeenCalled();
+    });
+    it('should call stamp service setDegree methode', () => {
+        let degreeSpy = spyOn<any>(stampStub, "setDegree").and.stub();
+        toolManagerStub.currentTool = stampStub;
+        component.setDegree(400);
+        expect(degreeSpy).toHaveBeenCalledWith(40);
+    });
+    it('should call stamp service setStampSize methode with right argument when is right', () => {
+        let sizeSpy = spyOn<any>(stampStub, "setStampSize").and.stub();
+        toolManagerStub.currentTool = stampStub;
+        component.leftStampFactorValue = 1;
+        component.rightStampFactorValue = 1
+        component.setStampSize(4, true);
+        expect(sizeSpy).toHaveBeenCalledWith(1, 4);
+    });
+    it('should call stamp service setStampSize methode with right argument when is left', () => {
+        let sizeSpy = spyOn<any>(stampStub, "setStampSize").and.stub();
+        toolManagerStub.currentTool = stampStub;
+        component.leftStampFactorValue = 1;
+        component.rightStampFactorValue = 1
+        component.setStampSize(4, false);
+        expect(sizeSpy).toHaveBeenCalledWith(4, 1);
+    });
+
+
     it('should call restoreValues when calling checkIfContainAttributes if lastTool is not the same as currentTool', () => {
         (component as any).tools.currentTool = (component as any).tools.getTools().get('brush');
         (component as any).lastTool = (component as any).tools.getTools().get('ellipse');
@@ -134,8 +189,20 @@ describe('AttributebarComponent', () => {
 
     it('should set widthValue when calling setLineWidth', () => {
         component.setLineWidth('6');
-
         expect(component.widthValue).toEqual('6');
+    });
+
+    it('should call setPolygonNumberSides with right argument', () => {
+        let spy = spyOn(toolManagerStub, "setPolygonNumberSides").and.stub();
+        component.setNumberSides(6)
+        expect(spy).toHaveBeenCalledWith(6);
+    });
+    it('toggleListStamp should call stampObs getter ', (done) => {
+        let spy = spyOn(stampStub, 'getStampObs').and.callThrough();
+        toolManagerStub.currentTool = stampStub;
+        component.toggleStampsList();
+        done();
+        expect(spy).toHaveBeenCalled();
     });
 
     it('should call toolManager"s setjunctionWidth when calling setJunctionWidth', () => {
@@ -143,10 +210,13 @@ describe('AttributebarComponent', () => {
         component.setJunctionWidth("6");
         expect(junctionWidthSpy).toHaveBeenCalled();
     });
+
     it('should call prevent if an not accepted key is pressed', () => {
-        event = new KeyboardEvent('keydown', { key: '@' })
-        let eventSpy = spyOn<any>(event, 'preventDefault').and.callThrough();
-        component.validate(event);
+
+        let mockEvent = new EventMock();
+        spyOn<any>(component, "checkIfContainAttribute").and.callFake(() => { return false; })
+        let eventSpy = spyOn<any>(mockEvent, 'preventDefault').and.callThrough();
+        component.validate(mockEvent as any);
         expect(eventSpy).toHaveBeenCalled();
     });
 
@@ -212,18 +282,14 @@ describe('AttributebarComponent', () => {
         component.pickColor(true);
         expect(spy).toHaveBeenCalled();
     });
-    it('validate should call preventDefault if  an unallowed key was pressed ', () => {
-        event = new KeyboardEvent("keydown", { key: "-" });
-        let spy = spyOn<any>(event, 'preventDefault').and.callThrough();
-        component.validate(event);
-        expect(spy).toHaveBeenCalled();
-
-    });
     it('validate should not  call preventDefault if  an allowed key was pressed ', () => {
-        event = new KeyboardEvent("keydown", { key: "0" });
-        let spy = spyOn<any>(event, 'preventDefault').and.callThrough();
-        component.validate(event);
-        expect(spy).not.toHaveBeenCalled();
+
+        let mockEvent = new EventMock();
+        mockEvent.target.key = 3;
+        spyOn<any>(component, "checkIfContainAttribute").and.callFake(() => { return true; })
+        let eventSpy = spyOn<any>(mockEvent, 'preventDefault').and.callThrough();
+        component.validate(mockEvent as any);
+        expect(eventSpy).not.toHaveBeenCalled();
 
     });
     it('colorObservale should trigger with the right value ', () => {
@@ -239,7 +305,6 @@ describe('AttributebarComponent', () => {
         component.onClick();
         expect(spy).toHaveBeenCalled();
         expect(observerSpy).toHaveBeenCalled();
-
     });
     it('DisplayCircle should set circleIsShown to the right value  ', () => {
         let observerSpy = spyOn<any>(pipetteStub, 'getCircleViewObservable').and.returnValue(of(false));
