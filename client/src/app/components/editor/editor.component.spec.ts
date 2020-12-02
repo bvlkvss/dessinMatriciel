@@ -1,4 +1,5 @@
 /* tslint:disable */
+import { ElementRef } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { MockDrawingService } from '@app/components/drawing/drawing.component.spec';
@@ -40,6 +41,8 @@ describe('EditorComponent', () => {
     it('should execute subscribe and update values if showStamps is true', (done) => {
         component.bar.showStamps = true;
         component.currentTool = stampStub;
+        const element = document.createElement("object");
+        component.bar.stampIcon = new ElementRef<HTMLElement>(element);
         let observableSpy = spyOn<any>(stampStub.getStampObs(), "asObservable").and.returnValue(of(null));
         component.ngAfterViewInit();
         expect(component.bar.showStamps).toEqual(false);
@@ -51,6 +54,8 @@ describe('EditorComponent', () => {
     it('should execute subscribe and update values if showStamps is false', (done) => {
         component.bar.showStamps = false;
         component.currentTool = stampStub;
+        const element = document.createElement("object");
+        component.bar.stampIcon = new ElementRef<HTMLElement>(element);
         let observableSpy = spyOn<any>(stampStub.getStampObs(), "asObservable").and.returnValue(of(null));
         component.ngAfterViewInit();
         expect(component.bar.showStamps).toEqual(true);

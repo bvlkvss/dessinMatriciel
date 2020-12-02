@@ -67,8 +67,8 @@ describe('SidebarComponent', () => {
         textStub = new TextService(drawServiceMock);
         gridStub = new GridService(drawServiceMock);
         stampStub = new StampService(drawServiceMock);
-        
-        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub, selectionStub, paintBucketStub, polygonStub, pipetteStub, textStub, sprayPaintStub,plumeStub, gridStub, magicWandStub,stampStub);
+
+        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub, selectionStub, paintBucketStub, polygonStub, pipetteStub, textStub, sprayPaintStub, plumeStub, gridStub, magicWandStub, stampStub);
         toolManagerStub.currentTool = pencilStub;
         matDialogSpy = jasmine.createSpyObj('MatDialog', ['open']);
         TestBed.configureTestingModule({
@@ -144,12 +144,6 @@ describe('SidebarComponent', () => {
         expect(newDrawingSpy).toHaveBeenCalled();
     });
 
-    it('should  call confirm if user doesn"t confirm warning message', () => {
-        window.confirm = jasmine.createSpy().and.returnValue(false);
-        component.warningMessage();
-        expect(window.confirm).toHaveBeenCalled();
-    });
-
     it('should call restoreCanvasState when changeTools is called', () => {
         toolManagerStub.currentTool = toolManagerStub.getTools().get('pencil') as Tool;
         let restoreCanvasStateSpy = spyOn(drawServiceMock, 'restoreCanvasState');
@@ -164,7 +158,22 @@ describe('SidebarComponent', () => {
         component.toggleColorPalette('dummyPalette');
         expect(dummyElement.style.display).toEqual('none');
     });
-
+    it('should set element to none if primaryColor given as attribute to toggleColorPalette and was block', () => {
+        var dummyElement = document.createElement('div');
+        dummyElement.id = 'primaryColorPicker';
+        dummyElement.setAttribute('style', 'display:block');
+        document.querySelector = jasmine.createSpy('HTML Element').and.returnValue(dummyElement);
+        component.toggleColorPalette('primaryColorPicker');
+        expect(dummyElement.style.display).toEqual('none');
+    });
+    it('should set element to none if not primaryColor given as attribute to toggleColorPalette and was block', () => {
+        var dummyElement = document.createElement('div');
+        dummyElement.id = 'dummyId';
+        dummyElement.setAttribute('style', 'display:block');
+        document.querySelector = jasmine.createSpy('HTML Element').and.returnValue(dummyElement);
+        component.toggleColorPalette('dummyId');
+        expect(dummyElement.style.display).toEqual('none');
+    });
     it('should set element to none if primaryColor was  given as attribute to toggleColorPalette', () => {
         var dummyElement = document.createElement('div');
         dummyElement.id = 'primaryColorPicker';
@@ -198,11 +207,55 @@ describe('SidebarComponent', () => {
         component.openExportDialog();
         expect(matDialogSpy.open).not.toHaveBeenCalled();
     });
+    it('should open dialog if none was opened before when calling openDialog', () => {
+        (matDialogSpy.openDialogs as any) = { length: 0 };
+        component.openSavingDialog();
+        expect(matDialogSpy.open).toHaveBeenCalled();
+    });
 
+    it('should not open dialog if one was opened before when calling openDialog', () => {
+        (matDialogSpy.openDialogs as any) = { length: 1 };
+        component.openSavingDialog();
+        expect(matDialogSpy.open).not.toHaveBeenCalled();
+    });
     it('should call selectAllCanvas when selectAll is called', () => {
         ((component as any).tools.currentTool as SelectionService).selectAllCanvas = jasmine.createSpy();
         component.selectAll();
         expect(((component as any).tools.currentTool as SelectionService).selectAllCanvas).toHaveBeenCalled();
+    });
+    it('should call openExportDialog and prevent default if key is e and ctrl', () => {
+        const event = new KeyboardEvent('window:keydown', { key: 'e', ctrlKey: true });
+        let preventSpy = spyOn(event, "preventDefault").and.stub();
+        let openExportSpy = spyOn(component, "openExportDialog").and.stub();
+        component.onkeyDownWindow(event)
+        expect(openExportSpy).toHaveBeenCalled();
+        expect(preventSpy).toHaveBeenCalled();
+
+    });
+    it('should call openSavingDialog and prevent default if key is s and ctrl', () => {
+        const event = new KeyboardEvent('window:keydown', { key: 's', ctrlKey: true });
+        let preventSpy = spyOn(event, "preventDefault").and.stub();
+        let openSavingSpy = spyOn(component, "openSavingDialog").and.stub();
+        component.onkeyDownWindow(event)
+        expect(openSavingSpy).toHaveBeenCalled();
+        expect(preventSpy).toHaveBeenCalled();
+
+    });
+    it('should call openCarousel and prevent default if key is g and ctrl', () => {
+        const event = new KeyboardEvent('window:keydown', { key: 'g', ctrlKey: true });
+        let preventSpy = spyOn(event, "preventDefault").and.stub();
+        let openCarouselSpy = spyOn(component, "openCarousel").and.stub();
+        component.onkeyDownWindow(event)
+        expect(openCarouselSpy).toHaveBeenCalled();
+        expect(preventSpy).toHaveBeenCalled();
+
+    });
+    it('should not call prevent default if ctrl was not pressed', () => {
+        const event = new KeyboardEvent('window:keydown', { key: 'g', ctrlKey: false });
+        let preventSpy = spyOn(event, "preventDefault").and.stub();
+        component.onkeyDownWindow(event)
+        expect(preventSpy).not.toHaveBeenCalled();
+
     });
 
 });

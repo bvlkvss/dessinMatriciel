@@ -61,7 +61,7 @@ export class ToolsManagerService {
             ['magic-wand', magicWandService],
             ['stamp', stampService],
         ]);
-        this.currentTool = this.tools.get('stamp') as Tool;
+        this.currentTool = this.tools.get('pencil') as Tool;
     }
 
     getByValue(searchValue: Tool): string {

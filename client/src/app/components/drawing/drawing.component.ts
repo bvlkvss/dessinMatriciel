@@ -32,14 +32,14 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     private previewCtx: CanvasRenderingContext2D;
     private gridCtx: CanvasRenderingContext2D;
     private mouseFired: boolean;
-    private altkey: boolean = false;
+    //private altkey: boolean = false;
 
     constructor(
         private drawingService: DrawingService,
         private tools: ToolsManagerService,
         private resizer: ResizingService,
         private invoker: UndoRedoService,
-    ) {}
+    ) { }
 
     ngOnInit(): void {
         this.drawingService.resizeCanvas();
@@ -128,7 +128,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         } else if (this.tools.getTools().get('stamp') === this.tools.currentTool) {
             const tool = this.tools.currentTool as StampService;
             const position = tool.getPositionFromMouse(event);
-            tool.updateDegree(event, this.altkey);
+            tool.updateDegree(event);
             tool.rotateStamp(this.drawingService.previewCtx, position);
         }
     }
@@ -197,7 +197,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
 
     @HostListener('document:keyup', ['$event'])
     onKeyUp(event: KeyboardEvent): void {
-        this.altkey = event.altKey;
+        //     this.altkey = event.altKey;
         this.tools.currentTool.onKeyUp(event);
         this.drawingService.sendMessage(this.tools.getByValue(this.tools.currentTool));
     }
@@ -207,7 +207,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         const element = event.target as HTMLElement;
         if (element.className === 'textInput') return;
 
-        this.altkey = event.altKey;
+        //    this.altkey = event.altKey;
         if (event.ctrlKey && event.key === 'o') {
             event.preventDefault();
             event.stopPropagation();

@@ -14,7 +14,7 @@ export class EditorComponent implements AfterViewInit {
     @ViewChild('attributeBar') bar: AttributeBarComponent;
     lastColors: string[] = new Array<string>();
     currentTool: Tool = this.tools.currentTool;
-    constructor(private tools: ToolsManagerService) {}
+    constructor(private tools: ToolsManagerService) { }
     ngAfterViewInit(): void {
         if (this.currentTool instanceof StampService)
             this.currentTool

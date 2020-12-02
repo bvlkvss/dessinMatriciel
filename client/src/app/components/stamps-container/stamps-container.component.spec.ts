@@ -30,10 +30,10 @@ describe('StampsContainerComponent', () => {
   it('should change image src and call getStampObs when calling setCurrentImage', (done) => {
     stampServiceStub.image = new Image();
     let spy = spyOn(stampServiceStub, 'getStampObs').and.callThrough();
-    component.setCurrentImage("Img");
+    component.setCurrentImage("face0.png");
     done();
     expect(spy).toHaveBeenCalled()
-    expect(stampServiceStub.image.src.includes("Img")).toEqual(true);
+    expect(stampServiceStub.image.src.includes("face0.png")).toEqual(true);
   });
 
 });

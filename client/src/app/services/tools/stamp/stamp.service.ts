@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Rotationable } from '@app/classes/rotationable';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -12,13 +13,12 @@ export enum MouseButton {
     Back = 3,
     Forward = 4,
 }
-const DEFAULT_DEGREE_STEP = 15;
 const DEFAULT_IMAGE_SIZE = 100;
 const MAX_DEGREE_VALUE = 360;
 @Injectable({
     providedIn: 'root',
 })
-export class StampService extends Tool {
+export class StampService extends Tool implements Rotationable {
     image: HTMLImageElement;
     degres: number;
     stampObs: Subject<boolean>;
@@ -31,7 +31,10 @@ export class StampService extends Tool {
         this.image.src = '../../../assets/Stamps/animal0.png';
         this.image.height = this.image.width = this.lineWidth = DEFAULT_IMAGE_SIZE;
     }
-
+    getRotatedGeniric: (point: Vec2, centre: Vec2, angle: number) => Vec2 = Rotationable.prototype.getRotatedGeniric;
+    getUnrotatedPos: (element: Vec2) => Vec2 = Rotationable.prototype.getUnrotatedPos;
+    getRotatedPos: (element: Vec2) => Vec2 = Rotationable.prototype.getRotatedPos;
+    updateDegree: (event: WheelEvent) => void = Rotationable.prototype.updateDegree;
     onClick(event: MouseEvent): void {
         const centerPos = this.getPositionFromMouse(event);
         this.rotateStamp(this.drawingService.baseCtx, centerPos);
@@ -39,23 +42,6 @@ export class StampService extends Tool {
 
     getStampObs(): Subject<boolean> {
         return this.stampObs;
-    }
-    /* tslint:disable:no-any*/
-    updateDegree(event: any, alt: boolean): void {
-        if (event.wheelDelta > 0) {
-            if (alt) {
-                ++this.degres;
-            } else {
-                this.degres += DEFAULT_DEGREE_STEP;
-            }
-        } else {
-            if (alt) {
-                --this.degres;
-            } else {
-                this.degres -= DEFAULT_DEGREE_STEP;
-            }
-        }
-        this.degres %= MAX_DEGREE_VALUE;
     }
     rotateStamp(ctx: CanvasRenderingContext2D, centerPosition: Vec2): void {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
