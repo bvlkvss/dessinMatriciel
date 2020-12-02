@@ -6,6 +6,7 @@ import { BrushService } from '@app/services/tools/brush/brush.service';
 import { GridService } from '@app/services/tools/grid/grid.service';
 import { Arguments, PipetteService } from '@app/services/tools/pipette/pipette.service';
 import { PlumeService } from '@app/services/tools/plume/plume.service';
+import { StampService } from '@app/services/tools/stamp/stamp.service';
 import { TextService } from '@app/services/tools/text/text.service';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
 import { Subscription } from 'rxjs';
@@ -36,18 +37,27 @@ export class AttributebarComponent implements OnInit, AfterViewChecked, AfterVie
     junctionWidth: string = '1';
     idStyleRectangle: number = 2;
     idStyleBrush: number = 1;
+    degreeValue: string;
     tolerance: string = '0';
     squareSize: string = '25';
     opacity: string = '50';
+    leftStampFactorValue: number;
+    rightStampFactorValue: number;
     selectedValue: string;
     polices: string[] = ['Arial', 'Times New Roman', 'Courier New', 'Verdana', 'Comic Sans MS, cursive', 'Trebuchet MS, Helvetica'];
-
     circleIsShown: boolean = true;
+    showStamps: boolean = true;
     @ViewChild('pipette', { static: false }) pipetteCanvas: ElementRef<HTMLCanvasElement>;
+    @ViewChild('stampIcon') stampIcon: ElementRef<HTMLElement>;
+
     pipetteCtx: CanvasRenderingContext2D;
+    currentStamp: string = '../../../assets/Stamps/Poop Emoji.png';
     currentTexture: string = '../../../assets/b1.svg';
     subscription: Subscription;
     constructor(private tools: ToolsManagerService, private pipetteService: PipetteService, private plumeService: PlumeService) {
+        this.degreeValue = '0';
+        this.leftStampFactorValue = 1;
+        this.rightStampFactorValue = 1;
         this.onClick();
     }
     private showContainer: boolean = false;
@@ -65,17 +75,26 @@ export class AttributebarComponent implements OnInit, AfterViewChecked, AfterVie
             this.pickColor(isPrimary);
         });
     }
-
+    toggleStampsList(): void {
+        (this.tools.currentTool as StampService).getStampObs().next();
+    }
     ngAfterViewChecked(): void {
         this.displayCircle();
     }
-
+    setStampSize(value: number, isRightSide: boolean): void {
+        isRightSide ? (this.rightStampFactorValue = value) : (this.leftStampFactorValue = value);
+        (this.tools.currentTool as StampService).setStampSize(this.leftStampFactorValue, this.rightStampFactorValue);
+    }
     displayCircle(): void {
         this.pipetteService.getCircleViewObservable().subscribe((isShown: boolean) => {
             this.circleIsShown = isShown;
         });
     }
-
+    setDegree(degree: number) {
+        degree %= 360;
+        this.degreeValue = degree.toString(10);
+        (this.tools.currentTool as StampService).setDegree(degree);
+    }
     ngAfterViewInit(): void {
         this.pipetteService.getPipetteObservable().subscribe((arg: Arguments) => {
             this.pipetteCtx = this.pipetteCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
@@ -144,7 +163,12 @@ export class AttributebarComponent implements OnInit, AfterViewChecked, AfterVie
     }
 
     validate(event: KeyboardEvent): void {
-        const WIDTH_ALLOWED_CHARS_REGEXP = /[0-9\/]+/;
+        const WIDTH_ALLOWED_CHARS_REGEXP = /\b[0-9]+\b/;
+        const target = event.target as HTMLInputElement;
+        if (target.selectionStart === 0 && this.checkIfContainAttribute('stamp')) {
+            target.maxLength = event.key === '-' ? 4 : 3;
+            return;
+        }
         if (event.key !== 'Backspace' && event.key !== 'Enter' && !WIDTH_ALLOWED_CHARS_REGEXP.test(event.key)) {
             event.preventDefault();
         }
@@ -159,8 +183,13 @@ export class AttributebarComponent implements OnInit, AfterViewChecked, AfterVie
             this.lastTool = this.tools.currentTool;
             this.restoreValues();
         }
+        if (this.tools.currentTool instanceof StampService) {
+            this.currentStamp = (this.tools.currentTool as StampService).image.src;
+            this.degreeValue = (this.tools.currentTool as StampService).degres.toString(10);
+        }
         return this.tools.currentTool.toolAttributes.includes(attribute);
     }
+
 
     setJunctionWidth(input: string): void {
         this.junctionWidth = input;

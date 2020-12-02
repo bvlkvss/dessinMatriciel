@@ -1,0 +1,8 @@
+<div id="container">
+    <div class="imageContainer" *ngFor="let stamp of stamps | keyvalue: noOrder">
+        <h3>
+            {{ stamp.key }}
+        </h3>
+        <img *ngFor="let emoji of stamp.value" #stamp (click)="setCurrentImage(emoji)" [src]="emoji" />
+    </div>
+</div>

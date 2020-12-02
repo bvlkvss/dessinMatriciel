@@ -6,6 +6,7 @@ import { GridService } from '@app/services/tools/grid/grid.service';
 import { MagicWandService } from '@app/services/tools/magic-wand/magic-wand.service';
 import { PlumeService } from '@app/services/tools/plume/plume.service';
 import { SelectionService } from '@app/services/tools/selection/selection.service';
+import { StampService } from '@app/services/tools/stamp/stamp.service';
 import { TextService } from '@app/services/tools/text/text.service';
 import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
@@ -31,12 +32,14 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     private previewCtx: CanvasRenderingContext2D;
     private gridCtx: CanvasRenderingContext2D;
     private mouseFired: boolean;
+    private altkey: boolean = false;
+
     constructor(
         private drawingService: DrawingService,
         private tools: ToolsManagerService,
         private resizer: ResizingService,
         private invoker: UndoRedoService,
-    ) {}
+    ) { }
 
     ngOnInit(): void {
         this.drawingService.resizeCanvas();
@@ -177,6 +180,15 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         }
         this.tools.currentTool.onMouseUp(event);
     }
+    @HostListener('mousewheel', ['$event'])
+    updateDegree(event: WheelEvent): void {
+        if (this.tools.getTools().get('stamp') === this.tools.currentTool) {
+            const tool = this.tools.currentTool as StampService;
+            const position = tool.getPositionFromMouse(event);
+            tool.updateDegree(event, this.altkey);
+            tool.rotateStamp(this.drawingService.previewCtx, position);
+        }
+    }
 
     @HostListener('mouseout', ['$event'])
     onMouseOut(event: MouseEvent): void {
@@ -189,6 +201,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
 
     @HostListener('document:keyup', ['$event'])
     onKeyUp(event: KeyboardEvent): void {
+        this.altkey = event.altKey;
         this.tools.currentTool.onKeyUp(event);
         this.drawingService.sendMessage(this.tools.getByValue(this.tools.currentTool));
     }
@@ -198,6 +211,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         const element = event.target as HTMLElement;
         if (element.className === 'textInput') return;
 
+        this.altkey = event.altKey;
         if (event.ctrlKey && event.key === 'o') {
             event.preventDefault();
             event.stopPropagation();

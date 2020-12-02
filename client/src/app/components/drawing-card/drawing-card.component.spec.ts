@@ -1,15 +1,11 @@
 /* tslint:disable */
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatCard } from '@angular/material/card';
-import { MatCardHeader } from '@angular/material/card';
-import { MatCardTitle } from '@angular/material/card';
-import { MatCardSubtitle} from '@angular/material/card';
-import { MatCardActions } from '@angular/material/card';
-
+import { MatCard, MatCardActions, MatCardHeader, MatCardSubtitle, MatCardTitle } from '@angular/material/card';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Drawings } from '@app/components/carrousel/carrousel.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { DrawingCardComponent } from './drawing-card.component';
+
 
 describe('DrawingCardComponent', () => {
   let component: DrawingCardComponent;
@@ -24,7 +20,7 @@ describe('DrawingCardComponent', () => {
     baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
     drawService.baseCtx = baseCtxStub;
     TestBed.configureTestingModule({
-      declarations: [DrawingCardComponent, MatCard,MatCardHeader,MatCardTitle,MatCardActions,MatCardSubtitle],
+      declarations: [DrawingCardComponent, MatCard, MatCardHeader, MatCardTitle, MatCardActions, MatCardSubtitle],
       providers: [{ provide: DrawingService, useValue: drawService }],
     }).compileComponents();
   }));

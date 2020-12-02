@@ -52,16 +52,31 @@
                         <i class="material-icons">colorize</i>
                         <span class="slidingtxt2"> Pipette (I)</span>
                     </a>
+                    <a id="stamp" (click)="displayPalette('stamp')" (click)="changeTools('stamp')">
+                        <i class="material-icons">insert_emoticon</i>
+                        <span class="slidingtxt2"> Stamp (T)</span>
+                    </a>
                     <a id="text" (click)="displayPalette('text')" (click)="changeTools('text')">
                         <i class="material-icons">title</i>
                         <span class="slidingtxt2"> Text (T)</span>
                     </a>
                 </div>
+            </div>
+            <div class="inlineclass">
+                <div class="drawingtoolscontainer">
+                    <a id="paintBucket" (click)="displayPalette('paintBucket')" (click)="changeTools('paintBucket')">
+                        <!--<img class="material-icons" src="../../../assets/format-color-fill.png" />-->
+                        <i class="material-icons">format_paint</i>
 
                 <div class="drawingtoolscontainer">
                     <a id="selection" (click)="changeTools('selection')" (click)="selectAll()">
                         <i class="material-icons">photo_size_select_small</i>
                         <span class="slidingtxt"> Selection (X)</span>
+                        <span class="slidingtxt2"> Remplir (B)</span>
+                    </a>
+                    <a id="pipette" (click)="displayPalette('pipette')" (click)="changeTools('pipette')">
+                        <i class="material-icons">colorize</i>
+                        <span class="slidingtxt2"> Pipette (I)</span>
                     </a>
 
                     <a id="eraser" (click)="displayPalette('eraser')" (click)="changeTools('eraser')">

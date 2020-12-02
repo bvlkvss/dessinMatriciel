@@ -9,7 +9,53 @@
         </div>
         <canvas *ngIf="circleIsShown" width="50px" height="50px" #pipette id="pipetteCircle"></canvas>
     </div>
+    <div id="lineWidthcontainer" *ngIf="checkIfContainAttribute('stamp')">
+        <p id="header" for="volume">Degré de rotation</p>
+        <input
+            class="textInput"
+            type="text"
+            pattern="([0-9]|[1-9][0-9]|100)"
+            minlength="1"
+            maxlength="3"
+            (keydown)="validate($event)"
+            (change)="setDegree($event.target.value)"
+            [value]="degreeValue"
+        />
+        <input class="size-slider" type="range" (change)="setDegree($event.target.value)" [value]="degreeValue" min="-360" max="360" />
+        <label id="label">°</label>
+    </div>
+    <div id="lineWidthcontainer" *ngIf="checkIfContainAttribute('stamp')">
+        <p id="headerStampInput" for="volume">Facteur de <br />grandeur</p>
+        <input
+            class="textInput"
+            id="LeftSideInput"
+            type="text"
+            pattern="([0-9]|[1-9][0-9]|100)"
+            minlength="1"
+            maxlength="1"
+            (keydown)="validate($event)"
+            (change)="setStampSize($event.target.value, false)"
+            [value]="1"
+        />
+        <label id="stampLabel">:</label>
 
+        <input
+            class="textInput"
+            id="RightSideInput"
+            type="text"
+            pattern="([1-9]|[1-9][1-9]|100)"
+            minlength="1"
+            maxlength="1"
+            (keydown)="validate($event)"
+            (change)="setStampSize($event.target.value, true)"
+            [value]="1"
+        />
+    </div>
+    <div *ngIf="checkIfContainAttribute('stamp')" id="currentImageContainer">
+        <img id="currentStamp" [src]="currentStamp" (click)="toggleStampsList()" />
+        <p class="header" id="headerStamp">Current stamp</p>
+        <i #stampIcon class="material-icons" (click)="toggleStampsList()" id="stampicon">expand_more</i>
+    </div>
     <div id="lineWidthcontainer" *ngIf="checkIfContainAttribute('lineWidth')">
         <p id="header" for="volume">Epaisseur</p>
         <input class="textInput" type="text" pattern="([0-9]|[1-9][0-9]|100)" minlength="1" maxlength="3" (keydown)="validate($event)" (change)="setLineWidth($event.target.value)" [value]="widthValue" />
@@ -92,6 +138,7 @@
             <img id="imageTexture" (click)="setTexture(7)" src="../../../assets/b7.svg" />
         </div>
     </div>
+
     <div id="lineWidthcontainer" *ngIf="checkIfContainAttribute('junctionWidth')">
         <p id="header" for="volume">Taille Jonction</p>
         <input class="textInput" type="text" (change)="setJunctionWidth($event.target.value)" [value]="junctionWidth" pattern="([0-9]|[1-9][0-9]|100)" minlength="1" maxlength="3" (keydown)="validate($event)" />
