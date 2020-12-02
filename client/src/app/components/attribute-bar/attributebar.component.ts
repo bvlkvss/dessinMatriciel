@@ -50,7 +50,7 @@ export class AttributeBarComponent implements OnInit, AfterViewChecked, AfterVie
     selectedValue: string;
     polices: string[] = ['Arial', 'Times New Roman', 'Courier New', 'Verdana', 'Comic Sans MS, cursive', 'Trebuchet MS, Helvetica'];
     circleIsShown: boolean = true;
-    showStamps: boolean = true;
+    static showStamps: boolean = false;
     @ViewChild('pipette', { static: false }) pipetteCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('stampIcon') stampIcon: ElementRef<HTMLElement>;
 
@@ -80,6 +80,7 @@ export class AttributeBarComponent implements OnInit, AfterViewChecked, AfterVie
         });
     }
     toggleStampsList(): void {
+        AttributeBarComponent.showStamps = !AttributeBarComponent.showStamps;
         (this.tools.currentTool as StampService).getStampObs().next();
     }
     ngAfterViewChecked(): void {

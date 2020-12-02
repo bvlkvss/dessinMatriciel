@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { StampService } from '@app/services/tools/stamp/stamp.service';
+import { AttributeBarComponent } from '../attribute-bar/attributebar.component';
 
 const FACES_STAMPS_LENGHT = 18;
 const NATURE_STAMPS_LENGHT = 24;
@@ -39,6 +40,7 @@ export class StampsContainerComponent {
 
     setCurrentImage(imageName: string): void {
         this.stampService.image.src = '../../../assets/Stamps/' + imageName;
+        AttributeBarComponent.showStamps = !AttributeBarComponent.showStamps;
         this.stampService.getStampObs().next();
     }
 }
