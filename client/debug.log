@@ -102,6 +102,7 @@
 [1124/200537.042:ERROR:directory_reader_win.cc(43)] FindFirstFile: Le chemin d’accès spécifié est introuvable. (0x3)
 [1124/205414.947:ERROR:directory_reader_win.cc(43)] FindFirstFile: Le chemin d’accès spécifié est introuvable. (0x3)
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 [1106/022440.569:ERROR:directory_reader_win.cc(43)] FindFirstFile: Le chemin d’accès spécifié est introuvable. (0x3)
@@ -117,6 +118,8 @@
 [1129/052413.336:ERROR:directory_reader_win.cc(43)] FindFirstFile: Le chemin d’accès spécifié est introuvable. (0x3)
 >>>>>>> 4fde299... first implimentation
 =======
+=======
+>>>>>>> a86c7a2b93dbccca1f8131c035652b9bcff78619
 [1124/234729.589:ERROR:directory_reader_win.cc(43)] FindFirstFile: Le chemin d’accès spécifié est introuvable. (0x3)
 [1125/114238.795:ERROR:directory_reader_win.cc(43)] FindFirstFile: Le chemin d’accès spécifié est introuvable. (0x3)
 [1126/170158.740:ERROR:directory_reader_win.cc(43)] FindFirstFile: Le chemin d’accès spécifié est introuvable. (0x3)
@@ -135,4 +138,7 @@
 [1201/225313.282:ERROR:directory_reader_win.cc(43)] FindFirstFile: Le chemin d’accès spécifié est introuvable. (0x3)
 [1201/233049.601:ERROR:directory_reader_win.cc(43)] FindFirstFile: Le chemin d’accès spécifié est introuvable. (0x3)
 [1202/120644.870:ERROR:directory_reader_win.cc(43)] FindFirstFile: Le chemin d’accès spécifié est introuvable. (0x3)
+<<<<<<< HEAD
 >>>>>>> stamp service done
+=======
+>>>>>>> a86c7a2b93dbccca1f8131c035652b9bcff78619
