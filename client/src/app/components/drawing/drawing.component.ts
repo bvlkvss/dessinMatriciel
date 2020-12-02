@@ -11,6 +11,9 @@ import { SelectionService } from '@app/services/tools/selection/selection.servic
 import { StampService } from '@app/services/tools/stamp/stamp.service';
 import { TextService } from '@app/services/tools/text/text.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
+import { ExportComponent } from '@app/components/export/export.component';
+import { SavingComponent } from '../saving/saving.component';
+// import { CarrouselComponent } from '@app/components/carrousel/carrousel.component';
 
 // TODO : Avoir un fichier séparé pour les constantes ?
 
