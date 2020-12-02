@@ -1,8 +1,8 @@
 import { AfterViewInit, Component, ViewChild } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { AttributeBarComponent } from '@app/components/attribute-bar/attributebar.component';
-import { StampService } from '@app/services/tools/stamp/stamp.service';
 import { ToolsManagerService } from '@app/services/tools-manager/tools-manager.service';
+import { StampService } from '@app/services/tools/stamp/stamp.service';
 
 @Component({
     selector: 'app-editor',

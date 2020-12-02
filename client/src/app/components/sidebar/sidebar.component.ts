@@ -38,7 +38,6 @@ export class SidebarComponent implements OnChanges {
     }
 
     @ViewChild('icons', { static: false }) toolIcons: ElementRef<HTMLCanvasElement>;
-
     ngOnChanges(): void {
         this.subscription = this.drawingService.getMessage().subscribe((message: string) => {
             const numberOfTools = this.toolIcons.nativeElement.getElementsByTagName('a').length;
