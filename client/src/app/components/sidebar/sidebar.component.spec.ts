@@ -1,10 +1,10 @@
 /* tslint:disable */
-import { SimpleChange } from '@angular/core';
 import { async, ComponentFixture, ComponentFixtureAutoDetect, TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { Tool } from '@app/classes/tool';
 import { MockDrawingService } from '@app/components/drawing/drawing.component.spec';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { ToolsManagerService } from '@app/services/tools-manager/tools-manager.service';
 import { BrushService } from '@app/services/tools/brush/brush.service';
 import { EllipseService } from '@app/services/tools/ellipse/ellipse.service';
 import { EraserService } from '@app/services/tools/eraser/eraser-service';
@@ -20,7 +20,6 @@ import { RectangleService } from '@app/services/tools/rectangle/rectangle.servic
 import { SelectionService } from '@app/services/tools/selection/selection.service';
 import { SprayPaintService } from '@app/services/tools/spray-paint/spray-paint.service';
 import { TextService } from '@app/services/tools/text/text.service';
-import { ToolsManagerService } from '@app/services/tools-manager/tools-manager.service';
 import { MockUndoRedoService } from '../attribute-bar/attributebar.component.spec';
 import { UserGuideComponent } from '../user-guide/user-guide.component';
 import { SidebarComponent } from './sidebar.component';
@@ -188,16 +187,4 @@ describe('SidebarComponent', () => {
         expect(((component as any).tools.currentTool as SelectionService).selectAllCanvas).toHaveBeenCalled();
     });
 
-    it('if currentToolName does not change ngOnChanges should not call changeTools', () => {
-        let changeToolsSpy = spyOn(component, 'changeTools');
-
-        component.currentToolName = 'pencil';
-        component.ngOnChanges({
-            currentToolName: new SimpleChange(null, component.currentToolName, true)
-        }
-        );
-        fixture.detectChanges();
-        expect(changeToolsSpy).not.toHaveBeenCalled();
-        expect(component.currentToolName).toBe('pencil');
-    });
 });

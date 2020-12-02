@@ -35,7 +35,7 @@ export class PlumeService extends Tool {
     mouseIsOut: boolean = false;
     halfLength: number;
     arrayTooLarge: boolean = false;
-    subject: BehaviorSubject<string> = new BehaviorSubject<string>('');
+    subject: BehaviorSubject<string> = new BehaviorSubject<string>('0');
 
     constructor(drawingService: DrawingService, protected invoker: UndoRedoService) {
         super(drawingService);
@@ -80,6 +80,8 @@ export class PlumeService extends Tool {
     onMouseUp(event: MouseEvent): void {
         if (this.mouseDown && !this.mouseIsOut) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            // this.drawPreviewLine(this.drawingService.previewCtx, this.pathData);
+
             // const cmd = new PencilCommand(this.pathData, this, this.drawingService) as PencilCommand;
             // this.invoker.addToUndo(cmd);
             // this.invoker.setIsAllowed(true);

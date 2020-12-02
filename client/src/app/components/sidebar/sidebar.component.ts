@@ -1,4 +1,4 @@
-import { Component, HostListener, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, ElementRef, HostListener, Input, OnChanges, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { CarrouselComponent } from '@app/components/carrousel/carrousel.component';
 import { ExportComponent } from '@app/components/export/export.component';
@@ -37,10 +37,16 @@ export class SidebarComponent implements OnChanges {
         this.attributeBarIsActive = false;
     }
 
-    ngOnChanges(changes: SimpleChanges): void {
+    @ViewChild('icons', { static: false }) toolIcons: ElementRef<HTMLCanvasElement>;
+
+
+    ngOnChanges(): void {
         this.subscription = this.drawingService.getMessage().subscribe((message: string) => {
-            this.currentToolName = message;
-            this.changeTools(message);
+            const numberOfTools = this.toolIcons.nativeElement.getElementsByTagName('a').length;
+            for (let i = 0; i < numberOfTools; i++) {
+                this.toolIcons.nativeElement.getElementsByTagName('a')[i].classList.remove('active');
+            }
+            this.toolIcons.nativeElement.querySelector('#' + message)?.setAttribute('class', 'active');
         });
 
         if (!this.isRevertClicked) {
@@ -86,12 +92,10 @@ export class SidebarComponent implements OnChanges {
             this.attributeBarIsActive = true;
             this.togglecanvas('drawing-container-open');
             this.toggleAttributeBar('attribute-open');
-        } else {
-            if (this.tools.getTools().get(toolName) === this.tools.currentTool) {
-                this.attributeBarIsActive = false;
-                this.togglecanvas('drawing-container');
-                this.toggleAttributeBar('attribute-close');
-            }
+        } else if (this.tools.getTools().get(toolName) === this.tools.currentTool) {
+            this.attributeBarIsActive = false;
+            this.togglecanvas('drawing-container');
+            this.toggleAttributeBar('attribute-close');
         }
     }
 
@@ -131,13 +135,11 @@ export class SidebarComponent implements OnChanges {
         if (this.tools.currentTool instanceof GridService) {
             this.tools.currentTool.onKeyDown({ key: 'g' } as KeyboardEvent);
         }
-        const numberOfTools = document.getElementsByTagName('a').length;
-
+        const numberOfTools = this.toolIcons.nativeElement.getElementsByTagName('a').length;
         for (let i = 0; i < numberOfTools; i++) {
-            document.getElementsByTagName('a')[i].classList.remove('active');
+            this.toolIcons.nativeElement.getElementsByTagName('a')[i].classList.remove('active');
         }
-        document.getElementById(name)?.setAttribute('class', 'active');
-        document.getElementById(this.currentToolName)?.setAttribute('class', 'active');
+        this.toolIcons.nativeElement.querySelector('#' + name)?.setAttribute('class', 'active');
     }
 
     revertColors(): void {
