@@ -74,8 +74,8 @@ export class DatabaseService {
                 .insertOne({ name: drawings.name, tag: drawings.tag })
                 .then((data) => {
                     const imageData = drawings.imageData?.replace(/^data:image\/png;base64,/, '');
-                    fs.writeFile(this.drawingsPath + data.insertedId + '.png', imageData, { encoding: 'base64' }, () => { });
-                    console.log("FILE CREATED")
+                    fs.writeFile(this.drawingsPath + data.insertedId + '.png', imageData, { encoding: 'base64' }, () => {});
+                    console.log('FILE CREATED');
                 })
                 .catch((error: Error) => {
                     throw error;
@@ -135,6 +135,6 @@ export class DatabaseService {
                 });
                 resolve(this.serverImagesData);
             });
-        }).then(() => { });
+        }).then(() => {});
     }
 }
