@@ -46,7 +46,7 @@ export class DrawingCardComponent implements OnInit, AfterViewChecked {
         }
     }
     /* tslint:disable:no-empty */
-    ngOnInit(): void { }
+    ngOnInit(): void {}
     @HostListener('mousemove', ['$event'])
     onMouseMove(event: MouseEvent): void {
         if (this.drawingIndex === 1) this.mouseOver = true;

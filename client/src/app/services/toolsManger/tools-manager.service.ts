@@ -60,7 +60,6 @@ export class ToolsManagerService {
             ['grid', gridService],
             ['magic-wand', magicWandService],
             ['stamp', stampService],
-
         ]);
         this.currentTool = this.tools.get('stamp') as Tool;
     }

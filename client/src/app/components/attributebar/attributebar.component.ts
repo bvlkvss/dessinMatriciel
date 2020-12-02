@@ -15,6 +15,10 @@ const MAX_WIDTH_VALUE = 100;
 const MAX_DROPLETS_WIDTH_VALUE = 10;
 const MAX_FREQUENCY_VALUE = 999;
 const IMAGE_ZOOM = 60;
+const MAX_DEGREE = 360;
+const MAX_INPUT_POSITIVE_LENGTH = 3;
+const MAX_INPUT_NEGATIVE_LENGTH = 4;
+
 const PIPETTE_IMAGE_WIDTH = 10;
 const PIPETTE_IMAGE_HEIGHT = 10;
 const PIPETTE_IMAGE_OFFSET_Y = -5;
@@ -90,8 +94,8 @@ export class AttributebarComponent implements OnInit, AfterViewChecked, AfterVie
             this.circleIsShown = isShown;
         });
     }
-    setDegree(degree: number) {
-        degree %= 360;
+    setDegree(degree: number): void {
+        degree %= MAX_DEGREE;
         this.degreeValue = degree.toString(10);
         (this.tools.currentTool as StampService).setDegree(degree);
     }
@@ -166,7 +170,7 @@ export class AttributebarComponent implements OnInit, AfterViewChecked, AfterVie
         const WIDTH_ALLOWED_CHARS_REGEXP = /\b[0-9]+\b/;
         const target = event.target as HTMLInputElement;
         if (target.selectionStart === 0 && this.checkIfContainAttribute('stamp')) {
-            target.maxLength = event.key === '-' ? 4 : 3;
+            target.maxLength = event.key === '-' ? MAX_INPUT_NEGATIVE_LENGTH : MAX_INPUT_POSITIVE_LENGTH;
             return;
         }
         if (event.key !== 'Backspace' && event.key !== 'Enter' && !WIDTH_ALLOWED_CHARS_REGEXP.test(event.key)) {
@@ -189,7 +193,6 @@ export class AttributebarComponent implements OnInit, AfterViewChecked, AfterVie
         }
         return this.tools.currentTool.toolAttributes.includes(attribute);
     }
-
 
     setJunctionWidth(input: string): void {
         this.junctionWidth = input;

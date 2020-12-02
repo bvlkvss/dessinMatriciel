@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MockDrawingService } from '@app/components/drawing/drawing.component.spec';
 import { StampService } from '@app/services/tools/stamp/stamp.service';
 import { StampsContainerComponent } from './stamps-container.component';
-
+/* tslint:disable */
 describe('StampsContainerComponent', () => {
   let component: StampsContainerComponent;
   let fixture: ComponentFixture<StampsContainerComponent>;

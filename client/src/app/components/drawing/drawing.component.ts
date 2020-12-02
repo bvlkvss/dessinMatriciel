@@ -39,7 +39,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         private tools: ToolsManagerService,
         private resizer: ResizingService,
         private invoker: UndoRedoService,
-    ) { }
+    ) {}
 
     ngOnInit(): void {
         this.drawingService.resizeCanvas();
@@ -125,8 +125,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         } else if (this.tools.getTools().get('plume') === this.tools.currentTool) {
             const tool = this.tools.currentTool as PlumeService;
             tool.adjustAngle(event);
-        }
-        else if(this.tools.getTools().get('stamp') === this.tools.currentTool) {
+        } else if (this.tools.getTools().get('stamp') === this.tools.currentTool) {
             const tool = this.tools.currentTool as StampService;
             const position = tool.getPositionFromMouse(event);
             tool.updateDegree(event, this.altkey);
@@ -186,7 +185,6 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         }
         this.tools.currentTool.onMouseUp(event);
     }
-   
 
     @HostListener('mouseout', ['$event'])
     onMouseOut(event: MouseEvent): void {

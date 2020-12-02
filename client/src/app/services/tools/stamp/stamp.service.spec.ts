@@ -2,8 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { StampService } from './stamp.service';
-
-
+/* tslint:disable */
 describe('StampService', () => {
   let service: StampService;
   let mouseEvent: MouseEvent;
