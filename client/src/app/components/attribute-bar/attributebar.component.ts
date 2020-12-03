@@ -32,6 +32,7 @@ const RECT_SIZE = 5;
     styleUrls: ['./attributebar.component.scss'],
 })
 export class AttributeBarComponent implements OnInit, AfterViewChecked, AfterViewInit {
+    static showStamps: boolean = false;
     widthValue: string;
     dropletsWidthValue: string = '1';
     frequency: string = '700';
