@@ -69,6 +69,7 @@ export class SidebarComponent implements OnChanges {
             ExportComponent.isExportOpen = true;
         }
     }
+
     openCarousel(): void {
         this.dialog.open(CarrouselComponent, {
             maxWidth: 'none',
@@ -76,6 +77,7 @@ export class SidebarComponent implements OnChanges {
             width: 'auto',
             minWidth: '615px',
         });
+        // CarrouselComponent.isCarrouselOpen = true;
     }
 
     openSavingDialog(): void {

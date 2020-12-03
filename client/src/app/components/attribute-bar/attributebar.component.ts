@@ -32,6 +32,7 @@ const RECT_SIZE = 5;
     styleUrls: ['./attributebar.component.scss'],
 })
 export class AttributeBarComponent implements OnInit, AfterViewChecked, AfterViewInit {
+    static showStamps: boolean = false;
     widthValue: string;
     dropletsWidthValue: string = '1';
     frequency: string = '700';
@@ -50,7 +51,6 @@ export class AttributeBarComponent implements OnInit, AfterViewChecked, AfterVie
     selectedValue: string;
     polices: string[] = ['Arial', 'Times New Roman', 'Courier New', 'Verdana', 'Comic Sans MS, cursive', 'Trebuchet MS, Helvetica'];
     circleIsShown: boolean = true;
-    static showStamps: boolean = false;
     @ViewChild('pipette', { static: false }) pipetteCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('stampIcon') stampIcon: ElementRef<HTMLElement>;
 

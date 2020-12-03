@@ -1,4 +1,5 @@
 import { AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { Tool } from '@app/classes/tool';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ResizingService } from '@app/services/resizing/resizing.service';
@@ -32,14 +33,14 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     private previewCtx: CanvasRenderingContext2D;
     private gridCtx: CanvasRenderingContext2D;
     private mouseFired: boolean;
-    //private altkey: boolean = false;
 
     constructor(
         private drawingService: DrawingService,
         private tools: ToolsManagerService,
         private resizer: ResizingService,
         private invoker: UndoRedoService,
-    ) { }
+        private dialog: MatDialog,
+    ) {}
 
     ngOnInit(): void {
         this.drawingService.resizeCanvas();
@@ -199,7 +200,9 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     onKeyUp(event: KeyboardEvent): void {
         //     this.altkey = event.altKey;
         this.tools.currentTool.onKeyUp(event);
-        this.drawingService.sendMessage(this.tools.getByValue(this.tools.currentTool));
+        if (this.dialog.openDialogs.length === 0) {
+            this.drawingService.sendMessage(this.tools.getByValue(this.tools.currentTool));
+        }
     }
 
     @HostListener('window:keydown', ['$event'])

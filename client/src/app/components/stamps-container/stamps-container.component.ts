@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
+import { AttributeBarComponent } from '@app/components/attribute-bar/attributebar.component';
 import { StampService } from '@app/services/tools/stamp/stamp.service';
-import { AttributeBarComponent } from '../attribute-bar/attributebar.component';
 
 const FACES_STAMPS_LENGHT = 18;
 const NATURE_STAMPS_LENGHT = 24;
