@@ -1,4 +1,5 @@
 import { AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { Tool } from '@app/classes/tool';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ResizingService } from '@app/services/resizing/resizing.service';
@@ -10,10 +11,6 @@ import { SelectionService } from '@app/services/tools/selection/selection.servic
 import { StampService } from '@app/services/tools/stamp/stamp.service';
 import { TextService } from '@app/services/tools/text/text.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
-import { ExportComponent } from '@app/components/export/export.component';
-import { SavingComponent } from '../saving/saving.component';
-import { MatDialog } from '@angular/material/dialog';
-// import { CarrouselComponent } from '@app/components/carrousel/carrousel.component';
 
 // TODO : Avoir un fichier séparé pour les constantes ?
 
@@ -36,7 +33,6 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     private previewCtx: CanvasRenderingContext2D;
     private gridCtx: CanvasRenderingContext2D;
     private mouseFired: boolean;
-    //private altkey: boolean = false;
 
     constructor(
         private drawingService: DrawingService,
@@ -44,7 +40,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         private resizer: ResizingService,
         private invoker: UndoRedoService,
         private dialog: MatDialog,
-    ) { }
+    ) {}
 
     ngOnInit(): void {
         this.drawingService.resizeCanvas();
@@ -204,7 +200,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     onKeyUp(event: KeyboardEvent): void {
         //     this.altkey = event.altKey;
         this.tools.currentTool.onKeyUp(event);
-        if(this.dialog.openDialogs.length == 0){
+        if (this.dialog.openDialogs.length === 0) {
             this.drawingService.sendMessage(this.tools.getByValue(this.tools.currentTool));
         }
     }
