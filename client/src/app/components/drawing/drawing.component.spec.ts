@@ -1,6 +1,7 @@
 /* tslint:disable */
 import { Target } from '@angular/compiler';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatDialog } from '@angular/material/dialog';
 import { Tool } from '@app/classes/tool';
 import { DrawingComponent } from '@app/components/drawing/drawing.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -56,6 +57,7 @@ describe('DrawingComponent', () => {
     let resizingServiceMock: MockResizingService;
     let polygonStub: PolygonService;
     let textStub: TextService;
+    let matDialogSpy: jasmine.SpyObj<MatDialog>;
     let gridStub;
     let magicWandStub: MagicWandService;
 
@@ -82,12 +84,14 @@ describe('DrawingComponent', () => {
 
         toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub, selectionStub, paintBucketStub, polygonStub, pipetteStub, textStub, sprayPaintStub, plumeStub, gridStub, magicWandStub,stampStub);
         toolManagerStub.currentTool = toolManagerStub.getTools().get('pencil') as Tool;
+        matDialogSpy = jasmine.createSpyObj('MatDialog', ['open']);
         TestBed.configureTestingModule({
             declarations: [DrawingComponent],
             providers: [
                 { provide: DrawingService, useValue: drawServiceMock },
                 { provide: ToolsManagerService, useValue: toolManagerStub },
                 { provide: ResizingService, useValue: resizingServiceMock },
+                { provide: MatDialog, useValue: matDialogSpy },
             ],
         }).compileComponents();
     }));
@@ -150,6 +154,7 @@ describe('DrawingComponent', () => {
     });
 
     it(" should call the tool's key up when receiving a key up event", () => {
+        (matDialogSpy.openDialogs as any) = { length: 0 };
         const event = {} as KeyboardEvent;
         const KeyboardEventSpy = spyOn(toolManagerStub.currentTool, 'onKeyUp').and.callThrough();
         component.onKeyUp(event);
@@ -378,6 +383,7 @@ describe('DrawingComponent', () => {
     });
 
     it('should call tool.onKeyUp when onKeyUp', () => {
+        (matDialogSpy.openDialogs as any) = { length: 0 };
         let event = {} as KeyboardEvent;
         let onKeyUpSpy = spyOn<any>((component as any).tools.currentTool, 'onKeyUp');
         resizingServiceMock.resizing = true;
