@@ -12,6 +12,7 @@ import { TextService } from '@app/services/tools/text/text.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { ExportComponent } from '@app/components/export/export.component';
 import { SavingComponent } from '../saving/saving.component';
+import { MatDialog } from '@angular/material/dialog';
 // import { CarrouselComponent } from '@app/components/carrousel/carrousel.component';
 
 // TODO : Avoir un fichier séparé pour les constantes ?
@@ -42,6 +43,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         private tools: ToolsManagerService,
         private resizer: ResizingService,
         private invoker: UndoRedoService,
+        private dialog: MatDialog,
     ) { }
 
     ngOnInit(): void {
@@ -202,7 +204,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     onKeyUp(event: KeyboardEvent): void {
         //     this.altkey = event.altKey;
         this.tools.currentTool.onKeyUp(event);
-        if(!ExportComponent.isExportOpen && !SavingComponent.isSavingOpen /*&& !CarrouselComponent.isCarrouselOpen*/){
+        if(this.dialog.openDialogs.length == 0){
             this.drawingService.sendMessage(this.tools.getByValue(this.tools.currentTool));
         }
     }

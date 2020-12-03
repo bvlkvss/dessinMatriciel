@@ -77,7 +77,6 @@ export class SidebarComponent implements OnChanges {
             width: 'auto',
             minWidth: '615px',
         });
-        // CarrouselComponent.isCarrouselOpen = true;
     }
 
     openSavingDialog(): void {
