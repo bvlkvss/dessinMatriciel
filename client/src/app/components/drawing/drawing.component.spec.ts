@@ -63,7 +63,7 @@ describe('DrawingComponent', () => {
         pipetteStub = new PipetteService(drawServiceMock);
         selectionStub = new SelectionService(drawServiceMock, undoRedoServiceMock);
         polygonStub = new PolygonService(drawServiceMock, undoRedoServiceMock);
-        magicWandStub = new MagicWandService(drawServiceMock);
+        magicWandStub = new MagicWandService(drawServiceMock,undoRedoServiceMock);
         toolManagerStub = new ToolsManagerService(
             pencilStub,
             brushStub,

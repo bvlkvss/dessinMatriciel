@@ -47,19 +47,18 @@ export class SelectionClipboardService {
     private paste(selectionTool: SelectionService | MagicWandService): void {
         let tool = selectionTool as SelectionService | MagicWandSelection;
         if (selectionTool instanceof MagicWandService) {
-            console.log('it maigx');
             tool = selectionTool.magicSelectionObj;
         }
         if (!this.isCuted) {
             tool.drawSelectionOnBase();
         }
         tool.resetSelection();
-        tool.firstSelectionMove = false;
         tool.degres = 0;
         tool.selectionStartPoint = { x: 0, y: 0 } as Vec2;
         tool.selectionEndPoint = { x: this.currentClipboardData.width, y: this.currentClipboardData.height };
         const tmp = this.currentClipboardData;
         tool.selectionData = tmp;
+        tool.firstSelectionMove = false;
         tool.redrawSelection();
         tool.selectionActivated = true;
     }

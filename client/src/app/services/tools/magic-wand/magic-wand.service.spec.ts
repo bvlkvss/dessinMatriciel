@@ -13,7 +13,7 @@ describe('MagicWandService', () => {
 
     let baseCtxStub: CanvasRenderingContext2D;
     let canvasStub: HTMLCanvasElement;
-   
+
     mouseEvent = {
         offsetX: 25,
         offsetY: 25,
@@ -46,16 +46,16 @@ describe('MagicWandService', () => {
     });
 
     it(' should set mouseDown to true when onMouseDown is called and selection is Activated', () => {
-      service.mouseDown = false;
-      service.onClick(mouseEvent);
-      service.onMouseDown(mouseEvent);
-      expect(service.mouseDown).toBeTruthy();
+        service.mouseDown = false;
+        service.onClick(mouseEvent);
+        service.onMouseDown(mouseEvent);
+        expect(service.mouseDown).toBeTruthy();
     });
 
     it(' should not set mouseDown to true when onMouseDown is called and selection is Activated', () => {
-      service.mouseDown = false;
-      service.onMouseDown(mouseEvent);
-      expect(service.mouseDown).toBeFalsy();
+        service.mouseDown = false;
+        service.onMouseDown(mouseEvent);
+        expect(service.mouseDown).toBeFalsy();
     });
 
     it(' should call getNonContiguousPixels onRightClick', () => {
@@ -72,25 +72,25 @@ describe('MagicWandService', () => {
 
     it('should call resetMagicWandCanvas when clearSelection is called', () => {
         let resetMagicWandCanvasSpy = spyOn<any>(service, 'resetMagicWandCanvas').and.callThrough();
-        service.clearSelection();
+        (service as any).clearSelection();
         expect(resetMagicWandCanvasSpy).toHaveBeenCalled();
-     });
+    });
 
     it(' should return a new MagicWandSelection object when createSelectionData is called', () => {
-      service.selectionStartPoint = {x:0, y:0};
-      service.selectionEndPoint= {x:10, y:10};
-      service.selectionMinWidth = 10;
-      service.selectionMinHeight = 10;
-      let obj = (service as any).createSelectionData();
-      expect(obj).toBeTruthy();
-     });
-    
-     it(' should reset magicWand canvas properties when resetMagicWandCanvas is called', () => {
-      (service as any).magicWandCanvas.width = 240;
-      (service as any).magicWandCanvas.height = 350;
-      (service as any).resetMagicWandCanvas();
-      expect((service as any).magicWandCanvas.width).toEqual(100);
-      expect((service as any).magicWandCanvas.height).toEqual(100);
-     });
+        service.selectionStartPoint = { x: 0, y: 0 };
+        service.selectionEndPoint = { x: 10, y: 10 };
+        service.selectionMinWidth = 10;
+        service.selectionMinHeight = 10;
+        let obj = (service as any).createSelectionData();
+        expect(obj).toBeTruthy();
+    });
 
-  });
+    it(' should reset magicWand canvas properties when resetMagicWandCanvas is called', () => {
+        (service as any).magicWandCanvas.width = 240;
+        (service as any).magicWandCanvas.height = 350;
+        (service as any).resetMagicWandCanvas();
+        expect((service as any).magicWandCanvas.width).toEqual(100);
+        expect((service as any).magicWandCanvas.height).toEqual(100);
+    });
+
+});

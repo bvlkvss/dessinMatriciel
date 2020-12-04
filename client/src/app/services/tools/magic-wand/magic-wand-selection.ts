@@ -4,6 +4,8 @@ import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
+const OFFSET_FOR_SHADOW = 2;
+
 export class MagicWandSelection extends Movable {
     selectionPixels: number[];
     isActive: boolean;
@@ -30,14 +32,25 @@ export class MagicWandSelection extends Movable {
     }
     eraseSelectionFromBase(endPos: Vec2): void {
         const ctx = this.drawingService.baseCtx;
-        const imData = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
+        const posx = -this.width / 2;
+        const posy = -this.height / 2;
+        ctx.save();
+        ctx.translate((this.selectionStartPoint.x + this.selectionEndPoint.x) / 2, (this.selectionStartPoint.y + this.selectionEndPoint.y) / 2);
+        ctx.rotate((this.degres * Math.PI) / 180);
+        ctx.beginPath();
+        ctx.fillStyle = 'white';
+        ctx.rect(posx - OFFSET_FOR_SHADOW, posy - OFFSET_FOR_SHADOW, this.width + 2 * OFFSET_FOR_SHADOW, this.height + 2 * OFFSET_FOR_SHADOW);
+        ctx.fill();
+        ctx.closePath();
+        ctx.restore();
+        /*const imData = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
         const tempColor = this.primaryColor;
         this.primaryColor = '#ffffff';
         for (const pixel of this.selectionPixels) {
             this.fillPixel(imData, pixel);
         }
         this.primaryColor = tempColor;
-        ctx.putImageData(imData, 0, 0);
+        ctx.putImageData(imData, 0, 0);*/
         this.firstSelectionMove = false;
     }
 

@@ -292,7 +292,7 @@ export class SelectionService extends Movable {
 
     eraseSelectionFromBase(endPos: Vec2): void {
         this.drawingService.baseCtx.beginPath();
-        this.drawingService.baseCtx.fillStyle = 'white';
+        this.drawingService.baseCtx.fillStyle = 'red';
         switch (this.selectionStyle) {
             case 0:
                 this.drawingService.baseCtx.rect(this.selectionStartPoint.x, this.selectionStartPoint.y, this.width, this.height);

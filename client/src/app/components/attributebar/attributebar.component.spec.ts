@@ -60,7 +60,7 @@ describe('AttributebarComponent', () => {
         ellipseStub = new EllipseService(drawServiceMock, UndoRedoServiceMock);
         eraserStub = new EraserService(drawServiceMock, UndoRedoServiceMock);
         pipetteStub = new PipetteService(drawServiceMock);
-        magicWandStub = new MagicWandService(drawServiceMock);
+        magicWandStub = new MagicWandService(drawServiceMock,UndoRedoServiceMock);
 
         toolManagerStub = new ToolsManagerService(
             pencilStub,

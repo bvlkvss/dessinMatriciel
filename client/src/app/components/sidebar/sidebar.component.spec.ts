@@ -50,7 +50,7 @@ describe('SidebarComponent', () => {
         polygonStub = new PolygonService(drawServiceMock, UndoRedoServiceMock);
         pipetteStub = new PipetteService(drawServiceMock);
         selectionStub = new SelectionService(drawServiceMock, UndoRedoServiceMock);
-        magicWandStub = new MagicWandService(drawServiceMock);
+        magicWandStub = new MagicWandService(drawServiceMock, UndoRedoServiceMock);
         toolManagerStub = new ToolsManagerService(
             pencilStub,
             brushStub,
