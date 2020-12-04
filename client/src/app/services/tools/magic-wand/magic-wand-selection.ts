@@ -28,15 +28,15 @@ export class MagicWandSelection extends Movable {
         this.selectionPixels = selectionPixels;
         this.isActive = isActive;
     }
-    
-    eraseSelectionOnDelete(): void{
+
+    eraseSelectionOnDelete(): void {
         const ctx = this.selectionData.getContext('2d') as CanvasRenderingContext2D;
         const imData = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
         const tempColor = this.primaryColor;
         this.primaryColor = '#ffffff';
-        for (let i = 3; i<imData.data.length; i+=4){
-            if(imData.data[i] != 0){
-                this.fillPixel(imData, i-3);
+        for (let i = 3; i < imData.data.length; i += 4) {
+            if (imData.data[i] !== 0) {
+                this.fillPixel(imData, i - 3);
             }
         }
         this.primaryColor = tempColor;

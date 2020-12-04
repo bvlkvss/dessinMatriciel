@@ -16,7 +16,7 @@ export class SelectionClipboardService {
 
     onKeyDown(event: KeyboardEvent, selectionTool: SelectionService | MagicWandService): void {
         switch (event.key) {
-            case 'Delete':
+            case 'c':
                 this.copy(selectionTool);
                 break;
             case 'x':
@@ -25,7 +25,7 @@ export class SelectionClipboardService {
             case 'v':
                 this.paste(selectionTool);
                 break;
-            case 'c':
+            case 'Delete':
                 this.delete(selectionTool);
                 break;
         }
@@ -35,7 +35,7 @@ export class SelectionClipboardService {
         let tool = selectionTool as SelectionService | MagicWandSelection;
         if (selectionTool instanceof MagicWandService) tool = selectionTool.magicSelectionObj;
         if (tool.selectionData) {
-            this.currentClipboardData = document.createElement('canvas');
+            this.currentClipboardData = document.createElement('canvas') as HTMLCanvasElement;
             const ctx = this.currentClipboardData.getContext('2d') as CanvasRenderingContext2D;
             this.currentClipboardData.width = tool.width;
             this.currentClipboardData.height = tool.height;
@@ -48,6 +48,7 @@ export class SelectionClipboardService {
         let tool = selectionTool as SelectionService | MagicWandSelection;
         if (selectionTool instanceof MagicWandService) {
             tool = selectionTool.magicSelectionObj;
+            selectionTool.isMagicSelectionActivated = true;
         }
         if (!this.isCuted) {
             tool.drawSelectionOnBase();
@@ -71,12 +72,14 @@ export class SelectionClipboardService {
 
     private delete(selectionTool: SelectionService | MagicWandService): void {
         let tool = selectionTool as SelectionService | MagicWandSelection;
-        if (selectionTool instanceof MagicWandService) tool = selectionTool.magicSelectionObj;
-        tool.drawSelectionOnBase();
-        tool.eraseSelectionOnDelete();
+        if (selectionTool instanceof MagicWandService) {
+            selectionTool.isMagicSelectionActivated = false;
+            tool = selectionTool.magicSelectionObj;
+            tool.eraseSelectionOnDelete();
+        } else {
+            tool.eraseSelectionFromBase(tool.selectionEndPoint);
+        }
         tool.resetSelection();
         tool.clearPreview();
-        if (selectionTool instanceof MagicWandService) selectionTool.clearSelection();
-
     }
 }

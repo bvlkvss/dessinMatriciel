@@ -75,9 +75,9 @@ export abstract class Movable extends Tool implements Rotationable, Resizable {
     eraseSelectionFromBase(endPos: Vec2): void { }
     clipImageWithEllipse(): void { }
     resetSelection(): void { }
-    eraseSelectionOnDelete(): void {}
+    eraseSelectionOnDelete(): void { }
 
-    clearPreview(){
+    clearPreview(): void {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
     }
 

@@ -193,6 +193,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
             this.drawingService.newDrawing();
             this.drawingService.resizeCanvas();
         } else if ((event.ctrlKey && (event.key === 'x' || event.key === 'c' || event.key === 'v')) || event.key === 'Delete') {
+            event.stopPropagation();
             if (
                 this.tools.getTools().get('selection') === this.tools.currentTool ||
                 this.tools.getTools().get('magic-wand') === this.tools.currentTool

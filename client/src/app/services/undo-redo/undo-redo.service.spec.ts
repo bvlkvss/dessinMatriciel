@@ -280,7 +280,7 @@ describe('UndoRedoService', () => {
     service.addToUndo(selectionCommandStub);
     let execute = [] as jasmine.Spy<any>[];
     for (let cmd of service.getUndo()) {
-      execute.push(spyOn(cmd, 'execute').and.callThrough());
+      execute.push(spyOn(cmd, 'execute').and.callThrough().and.callFake(() => { }));
     }
     service.executeAll();
     for (let i = 0; i < service.getUndo().length; i++) {
@@ -341,7 +341,7 @@ describe('UndoRedoService', () => {
     service.addToUndo(ResizeCommandStub);
     service.addToUndo(eraserCommandStub);
     service.ClearUndo();
-    
+
     expect(service.getUndo().length).toEqual(0);
   });
 
