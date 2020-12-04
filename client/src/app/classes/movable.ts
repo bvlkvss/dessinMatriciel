@@ -77,6 +77,7 @@ export abstract class Movable extends Tool implements Rotationable, Resizable {
     resetSelection(): void { }
 
     drawSelectionOnBase(): void {
+        console.log('called');
         const centre = {
             x: (this.selectionStartPoint.x + this.selectionEndPoint.x) / 2,
             y: (this.selectionStartPoint.y + this.selectionEndPoint.y) / 2,

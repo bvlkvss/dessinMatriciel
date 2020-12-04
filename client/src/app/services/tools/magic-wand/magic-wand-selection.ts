@@ -46,9 +46,8 @@ export class MagicWandSelection extends Movable {
         this.drawingService.baseCtx.save();
         this.drawingService.baseCtx.translate(this.selectionStartPoint.x + this.width / 2, this.selectionStartPoint.y + this.height / 2);
         this.drawingService.baseCtx.rotate((this.degres * Math.PI) / PI_DEGREE);
-
         this.drawingService.baseCtx.drawImage(this.selectionData, -this.width / 2, -this.height / 2, Math.abs(this.width), Math.abs(this.height));
-
+        this.drawingService.baseCtx.restore();
         if (this.selectionCommand) {
             this.selectionCommand.setStartPos(this.selectionStartPoint);
             this.selectionCommand.setEndPos(this.selectionEndPoint);
@@ -58,7 +57,6 @@ export class MagicWandSelection extends Movable {
             this.invoker.addToUndo(this.selectionCommand);
             this.invoker.setIsAllowed(true);
         }
-        this.drawingService.baseCtx.restore();
         this.resetSelection();
         this.selectionActivated = false;
     }
