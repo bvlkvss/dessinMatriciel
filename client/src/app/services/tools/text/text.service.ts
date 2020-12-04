@@ -10,7 +10,7 @@ const TIMER_MS = 500;
 const BIG_TEXT_SIZE = 60;
 const SMALL_TEXT_SIZE = 15;
 const NEGATIV_STEP = -1;
-const HEIGHT_TOLERANCE_BIG_TEXT = 0.25;
+const HEIGHT_TOLERANCE_BIG_TEXT = 0.35;
 const HEIGHT_TOLERANCE_SMALL_TEXT = 0.333;
 const TEXT_POSITION_TOLERANCE = 4;
 const CURSOR_POSITION_Y_TOLERANCE = 0.1;
@@ -128,15 +128,10 @@ export class TextService extends Tool {
                 ? this.fontSize * this.lines.length + this.fontSize * HEIGHT_TOLERANCE_BIG_TEXT
                 : this.fontSize * this.lines.length + this.fontSize * HEIGHT_TOLERANCE_SMALL_TEXT;
         ctx.strokeStyle = 'blue';
-        if (textMeasure > DEFAULT_BOX_WIDTH) {
-            this.rectWidth = textMeasure;
-            this.rectEndPoint.x = this.rectStartPoint.x + this.rectWidth + CURSOR_LENGHT;
-            this.rectEndPoint.y = this.rectStartPoint.y + this.rectHeight;
-            ctx.strokeRect(position.x, position.y, this.rectWidth + widthToAdd, this.rectHeight);
-        } else {
-            this.rectWidth = DEFAULT_BOX_WIDTH;
-            ctx.strokeRect(position.x, position.y, this.rectWidth + widthToAdd + CURSOR_LENGHT, this.rectHeight);
-        }
+        this.rectWidth = textMeasure > DEFAULT_BOX_WIDTH ? textMeasure : DEFAULT_BOX_WIDTH;
+        ctx.strokeRect(position.x, position.y, this.rectWidth + widthToAdd + CURSOR_LENGHT, this.rectHeight);
+        this.rectEndPoint.x = this.rectStartPoint.x + this.rectWidth + widthToAdd + CURSOR_LENGHT;
+        this.rectEndPoint.y = this.rectStartPoint.y + this.rectHeight;
     }
 
     private writeText(ctx: CanvasRenderingContext2D, position: Vec2): void {

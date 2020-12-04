@@ -8,7 +8,7 @@
  *
  ***************************************************************************************/
 
-import { AfterViewInit, Component, Input } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { ToolsManagerService } from '@app/services/tools-manager/tools-manager.service';
 
 const DEFAULT_OPACITY = 100;
@@ -22,7 +22,7 @@ const MAX_SAVED_COLORS = 10;
     templateUrl: './color-picker.component.html',
     styleUrls: ['./color-picker.component.scss'],
 })
-export class ColorPickerComponent implements AfterViewInit {
+export class ColorPickerComponent {
     hue: string;
     color: string;
     @Input() isPrimaryColor: boolean;
@@ -35,10 +35,6 @@ export class ColorPickerComponent implements AfterViewInit {
         this.opacity = DEFAULT_OPACITY;
         this.color = DEFAULT_COLOR;
     }
-
-    /*tslint:disable-next-line:no-empty*/
-    ngAfterViewInit(): void {}
-
     setColor(): void {
         const stringValue: string = Math.round((this.opacity * MAX_COLOR_VALUE) / PERCENTAGE_DIVIDER).toString(16);
         this.tools.setColor(this.color + stringValue, this.isPrimaryColor);

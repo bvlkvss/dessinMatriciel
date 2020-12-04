@@ -114,9 +114,10 @@ export class DatabaseService {
     }
 
     async update(): Promise<string[]> {
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
             this.container = [];
             fs.readdir(this.drawingsPath, (err, element) => {
+                if (err) reject(err);
                 element.forEach((nameFile) => {
                     this.container.push(nameFile);
                 });
@@ -125,9 +126,10 @@ export class DatabaseService {
         });
     }
     async getImageData(): Promise<void> {
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
             this.serverImagesData = [];
             fs.readdir(this.drawingsPath, (err, element) => {
+                if (err) reject(err);
                 element.forEach((imageData) => {
                     this.serverImagesData.push(fs.readFileSync(this.drawingsPath + imageData, 'base64'));
                 });

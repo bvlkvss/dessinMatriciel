@@ -1,10 +1,10 @@
 /* tslint:disable */
 import { ElementRef } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatButtonToggleGroup, MatButtonToggleModule } from '@angular/material/button-toggle';
-import { MatButtonToggleChange } from '@angular/material/button-toggle';
+import { MatButtonToggleChange, MatButtonToggleGroup, MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatSelectChange } from '@angular/material/select';
 import { MockDrawingService } from '@app/components/drawing/drawing.component.spec';
+import { ToolsManagerService } from '@app/services/tools-manager/tools-manager.service';
 import { BrushService } from '@app/services/tools/brush/brush.service';
 import { EllipseService } from '@app/services/tools/ellipse/ellipse.service';
 import { EraserService } from '@app/services/tools/eraser/eraser-service';
@@ -21,7 +21,6 @@ import { SelectionService } from '@app/services/tools/selection/selection.servic
 import { SprayPaintService } from '@app/services/tools/spray-paint/spray-paint.service';
 import { StampService } from '@app/services/tools/stamp/stamp.service';
 import { TextService } from '@app/services/tools/text/text.service';
-import { ToolsManagerService } from '@app/services/tools-manager/tools-manager.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { of } from 'rxjs';
 import { AttributeBarComponent } from './attributebar.component';
@@ -84,7 +83,7 @@ describe('AttributebarComponent', () => {
         sprayPaintStub = new SprayPaintService(drawServiceMock, UndoRedoServiceMock);
         gridStub = new GridService(drawServiceMock);
         stampStub = new StampService(drawServiceMock);
-        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub, selectionStub, paintBucketStub, polygonStub, pipetteStub, textStub, sprayPaintStub, plumeStub, gridStub, magicWandStub,stampStub);
+        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub, selectionStub, paintBucketStub, polygonStub, pipetteStub, textStub, sprayPaintStub, plumeStub, gridStub, magicWandStub, stampStub);
         toolManagerStub.currentTool = pencilStub;
         TestBed.configureTestingModule({
             declarations: [AttributeBarComponent, MatButtonToggleGroup],
@@ -101,8 +100,6 @@ describe('AttributebarComponent', () => {
     });
 
     it('should create', () => {
-        console.log(pencilStub.lineWidth);
-        console.log((component as any).tools);
         expect(component).toBeTruthy();
     });
 
@@ -294,7 +291,7 @@ describe('AttributebarComponent', () => {
         component.pipetteCanvas = new ElementRef<HTMLCanvasElement>(canvas);
         component.pipetteCtx = component.pipetteCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         let spy = spyOn<any>(toolManagerStub, 'setColor').and.stub();
-        component.pickColor(true);
+        component['pickColor'](true);
         expect(spy).toHaveBeenCalled();
     });
     it('validate should not  call preventDefault if  an allowed key was pressed ', () => {
@@ -332,8 +329,8 @@ describe('AttributebarComponent', () => {
         let canvas: HTMLCanvasElement = document.createElement('canvas');
         component.pipetteCanvas = new ElementRef<HTMLCanvasElement>(canvas);
         const observerSpy = spyOn<any>(pipetteStub, 'getPipetteObservable').and.returnValue(of(arg));
-        const drawImageSpy = spyOn(component, 'drawImage').and.stub();
-        const drawPixelSpy = spyOn(component, 'drawPixelContour').and.stub();
+        const drawImageSpy = spyOn<any>(component, 'drawImage').and.stub();
+        const drawPixelSpy = spyOn<any>(component, 'drawPixelContour').and.stub();
         component.ngAfterViewInit();
         expect(observerSpy).toHaveBeenCalled();
         expect(drawImageSpy).toHaveBeenCalled();
@@ -346,7 +343,7 @@ describe('AttributebarComponent', () => {
         component.pipetteCtx = component.pipetteCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         const drawImageSpy = spyOn(component.pipetteCtx, 'drawImage').and.callThrough();
         const clearRectSpy = spyOn(component.pipetteCtx, 'clearRect').and.callThrough();
-        component.drawImage(arg);
+        component['drawImage'](arg);
         expect(drawImageSpy).toHaveBeenCalled();
         expect(clearRectSpy).toHaveBeenCalled();
     });
@@ -356,7 +353,7 @@ describe('AttributebarComponent', () => {
         component.pipetteCtx = component.pipetteCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         const beginPathSpy = spyOn(component.pipetteCtx, 'beginPath').and.callThrough();
         const strokeSpy = spyOn(component.pipetteCtx, 'strokeRect').and.callThrough();
-        component.drawPixelContour();
+        component['drawPixelContour']();
         expect(component.pipetteCtx.strokeStyle).toEqual('#ff0000');
         expect(beginPathSpy).toHaveBeenCalled();
         expect(strokeSpy).toHaveBeenCalled();

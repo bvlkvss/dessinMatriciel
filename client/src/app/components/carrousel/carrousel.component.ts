@@ -1,4 +1,4 @@
-import { AfterViewChecked, Component, ElementRef, HostListener, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { AfterViewChecked, Component, ElementRef, HostListener, QueryList, ViewChildren } from '@angular/core';
 import { DrawingCardComponent } from '@app/components/drawing-card/drawing-card.component';
 import { FilterByTagService } from '@app/services/filterByTag/filter-by-tag.service';
 import { HttpClientRequestService } from '@app/services/http-client-request/http-client-request.service';
@@ -16,7 +16,7 @@ const DRAWINGS_TO_SHOW_LIMIT = 3;
     templateUrl: './carrousel.component.html',
     styleUrls: ['./carrousel.component.scss'],
 })
-export class CarrouselComponent implements OnInit, AfterViewChecked {
+export class CarrouselComponent implements AfterViewChecked {
     allDrawings: Drawings[];
     drawingsToShow: Drawings[];
     middlePosition: number;
@@ -79,8 +79,6 @@ export class CarrouselComponent implements OnInit, AfterViewChecked {
                 element.nativeElement.style.visibility = 'visible';
             });
     }
-    /* tslint:disable:no-empty */
-    ngOnInit(): void {}
     getDrawings(): Observable<Drawings[]> {
         this.spinnerVisible = true;
         this.emptyCarrouselMessage = false;

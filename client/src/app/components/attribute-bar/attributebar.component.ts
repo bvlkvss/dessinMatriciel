@@ -34,23 +34,23 @@ const RECT_SIZE = 5;
 export class AttributeBarComponent implements OnInit, AfterViewChecked, AfterViewInit {
     static showStamps: boolean = false;
     widthValue: string;
-    dropletsWidthValue: string = '1';
-    frequency: string = '700';
-    radius: string = '20';
-    lenghtValue: string = '50';
-    angleValue: string = '0';
-    junctionWidth: string = '1';
-    idStyleRectangle: number = 2;
-    idStyleBrush: number = 1;
+    dropletsWidthValue: string;
+    frequency: string;
+    radius: string;
+    lenghtValue: string;
+    angleValue: string;
+    junctionWidth: string;
+    idStyleRectangle: number;
+    idStyleBrush: number;
     degreeValue: string;
-    tolerance: string = '0';
-    squareSize: string = '25';
-    opacity: string = '50';
+    tolerance: string;
+    squareSize: string;
+    opacity: string;
     leftStampFactorValue: number;
     rightStampFactorValue: number;
     selectedValue: string;
-    polices: string[] = ['Arial', 'Times New Roman', 'Courier New', 'Verdana', 'Comic Sans MS, cursive', 'Trebuchet MS, Helvetica'];
-    circleIsShown: boolean = true;
+    polices: string[];
+    circleIsShown: boolean;
     @ViewChild('pipette', { static: false }) pipetteCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('stampIcon') stampIcon: ElementRef<HTMLElement>;
 
@@ -60,6 +60,19 @@ export class AttributeBarComponent implements OnInit, AfterViewChecked, AfterVie
     subscription: Subscription;
     constructor(private tools: ToolsManagerService, private pipetteService: PipetteService, private plumeService: PlumeService) {
         this.degreeValue = '0';
+        this.circleIsShown = true;
+        this.dropletsWidthValue = '1';
+        this.frequency = '700';
+        this.radius = '20';
+        this.lenghtValue = '50';
+        this.angleValue = '0';
+        this.junctionWidth = '1';
+        this.idStyleRectangle = 2;
+        this.idStyleBrush = 1;
+        this.tolerance = '0';
+        this.squareSize = '25';
+        this.polices = ['Arial', 'Times New Roman', 'Courier New', 'Verdana', 'Comic Sans MS, cursive', 'monospace'];
+        this.opacity = '50';
         this.leftStampFactorValue = 1;
         this.rightStampFactorValue = 1;
         this.onClick();
@@ -107,20 +120,20 @@ export class AttributeBarComponent implements OnInit, AfterViewChecked, AfterVie
             this.drawPixelContour();
         });
     }
-    pickColor(isPrimary: boolean): void {
+    private pickColor(isPrimary: boolean): void {
         const height = this.pipetteCanvas.nativeElement.height / 2;
         const width = this.pipetteCanvas.nativeElement.width / 2;
         const data = this.pipetteCtx.getImageData(width + 2, height + RECT_STROKE, 1, 1);
         this.tools.setColor('#' + this.pipetteService.rgbaToHex(this.pipetteService.getColorFromData(data)), isPrimary);
     }
-    drawPixelContour(): void {
+    private drawPixelContour(): void {
         const height = this.pipetteCanvas.nativeElement.height / 2;
         const width = this.pipetteCanvas.nativeElement.width / 2;
         this.pipetteCtx.beginPath();
         this.pipetteCtx.strokeStyle = 'red';
         this.pipetteCtx.strokeRect(width - 1, height + 1, RECT_SIZE, RECT_SIZE);
     }
-    drawImage(arg: Arguments): void {
+    private drawImage(arg: Arguments): void {
         const x = arg.event.offsetX;
         const y = arg.event.offsetY;
         this.pipetteCtx.clearRect(0, 0, this.pipetteCanvas.nativeElement.width, this.pipetteCanvas.nativeElement.height);

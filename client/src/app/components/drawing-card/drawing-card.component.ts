@@ -1,4 +1,4 @@
-import { AfterViewChecked, Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { AfterViewChecked, Component, ElementRef, EventEmitter, HostListener, Input, Output, ViewChild } from '@angular/core';
 import { Drawings } from '@app/components/carrousel/carrousel.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { Observable } from 'rxjs';
@@ -10,7 +10,7 @@ const CONTAINER_HEIGHT = 200;
     templateUrl: './drawing-card.component.html',
     styleUrls: ['./drawing-card.component.scss'],
 })
-export class DrawingCardComponent implements OnInit, AfterViewChecked {
+export class DrawingCardComponent implements AfterViewChecked {
     @Input() drawingIndex: number;
     @ViewChild('card') card: ElementRef<HTMLDivElement>;
     @ViewChild('image') image: ElementRef<HTMLImageElement>;
@@ -72,8 +72,6 @@ export class DrawingCardComponent implements OnInit, AfterViewChecked {
             this.image.nativeElement.height = CONTAINER_HEIGHT;
         }
     }
-    /* tslint:disable:no-empty */
-    ngOnInit(): void {}
     @HostListener('mousemove', ['$event'])
     onMouseMove(event: MouseEvent): void {
         if (this.drawingIndex === 1) this.mouseOver = true;
