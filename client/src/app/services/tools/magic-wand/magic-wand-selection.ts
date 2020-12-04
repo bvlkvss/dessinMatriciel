@@ -4,8 +4,6 @@ import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
-const OFFSET_FOR_SHADOW = 2;
-
 export class MagicWandSelection extends Movable {
     selectionPixels: number[];
     isActive: boolean;
@@ -30,27 +28,32 @@ export class MagicWandSelection extends Movable {
         this.selectionPixels = selectionPixels;
         this.isActive = isActive;
     }
+    
+    eraseSelectionOnDelete(): void{
+        const ctx = this.selectionData.getContext('2d') as CanvasRenderingContext2D;
+        const imData = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
+        const tempColor = this.primaryColor;
+        this.primaryColor = '#ffffff';
+        for (let i = 3; i<imData.data.length; i+=4){
+            if(imData.data[i] != 0){
+                this.fillPixel(imData, i-3);
+            }
+        }
+        this.primaryColor = tempColor;
+        ctx.putImageData(imData, 0, 0);
+        this.drawSelectionOnBase();
+    }
+
     eraseSelectionFromBase(endPos: Vec2): void {
         const ctx = this.drawingService.baseCtx;
-        const posx = -this.width / 2;
-        const posy = -this.height / 2;
-        ctx.save();
-        ctx.translate((this.selectionStartPoint.x + this.selectionEndPoint.x) / 2, (this.selectionStartPoint.y + this.selectionEndPoint.y) / 2);
-        ctx.rotate((this.degres * Math.PI) / 180);
-        ctx.beginPath();
-        ctx.fillStyle = 'white';
-        ctx.rect(posx - OFFSET_FOR_SHADOW / 2, posy - OFFSET_FOR_SHADOW / 2, this.width + 2 * OFFSET_FOR_SHADOW, this.height + 2 * OFFSET_FOR_SHADOW);
-        ctx.fill();
-        ctx.closePath();
-        ctx.restore();
-        /*const imData = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
+        const imData = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
         const tempColor = this.primaryColor;
         this.primaryColor = '#ffffff';
         for (const pixel of this.selectionPixels) {
             this.fillPixel(imData, pixel);
         }
         this.primaryColor = tempColor;
-        ctx.putImageData(imData, 0, 0);*/
+        ctx.putImageData(imData, 0, 0);
         this.firstSelectionMove = false;
     }
 

@@ -16,7 +16,7 @@ export class SelectionClipboardService {
 
     onKeyDown(event: KeyboardEvent, selectionTool: SelectionService | MagicWandService): void {
         switch (event.key) {
-            case 'c':
+            case 'Delete':
                 this.copy(selectionTool);
                 break;
             case 'x':
@@ -25,7 +25,7 @@ export class SelectionClipboardService {
             case 'v':
                 this.paste(selectionTool);
                 break;
-            case 'Delete':
+            case 'c':
                 this.delete(selectionTool);
                 break;
         }
@@ -73,9 +73,10 @@ export class SelectionClipboardService {
         let tool = selectionTool as SelectionService | MagicWandSelection;
         if (selectionTool instanceof MagicWandService) tool = selectionTool.magicSelectionObj;
         tool.drawSelectionOnBase();
-        tool.eraseSelectionFromBase(selectionTool.selectionEndPoint);
+        tool.eraseSelectionOnDelete();
         tool.resetSelection();
-        //if (selectionTool instanceof MagicWandService) selectionTool.clearSelection();
+        tool.clearPreview();
+        if (selectionTool instanceof MagicWandService) selectionTool.clearSelection();
 
     }
 }
