@@ -39,7 +39,7 @@ export class MagicWandSelection extends Movable {
         ctx.rotate((this.degres * Math.PI) / 180);
         ctx.beginPath();
         ctx.fillStyle = 'white';
-        ctx.rect(posx - OFFSET_FOR_SHADOW, posy - OFFSET_FOR_SHADOW, this.width + 2 * OFFSET_FOR_SHADOW, this.height + 2 * OFFSET_FOR_SHADOW);
+        ctx.rect(posx - OFFSET_FOR_SHADOW / 2, posy - OFFSET_FOR_SHADOW / 2, this.width + 2 * OFFSET_FOR_SHADOW, this.height + 2 * OFFSET_FOR_SHADOW);
         ctx.fill();
         ctx.closePath();
         ctx.restore();

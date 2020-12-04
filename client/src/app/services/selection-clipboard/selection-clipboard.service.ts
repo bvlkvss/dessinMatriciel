@@ -75,5 +75,7 @@ export class SelectionClipboardService {
         tool.drawSelectionOnBase();
         tool.eraseSelectionFromBase(selectionTool.selectionEndPoint);
         tool.resetSelection();
+        //if (selectionTool instanceof MagicWandService) selectionTool.clearSelection();
+
     }
 }

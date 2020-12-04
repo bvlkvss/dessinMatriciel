@@ -185,7 +185,7 @@ export class MagicWandService extends Tool {
         }
     }
 
-    private clearSelection(): void {
+    clearSelection(): void {
         this.resetMagicWandCanvas();
         this.selectionPixels = [];
         this.magicSelectionObj.isActive = false;
