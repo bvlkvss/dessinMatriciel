@@ -4,8 +4,8 @@ import { Vec2 } from '@app/classes/vec2';
 import { MockUndoRedoService } from '@app/components/attributebar/attributebar.component.spec';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
-
 import { SprayPaintService } from './spray-paint.service';
+
 
 describe('SprayPaintService', () => {
     let service: SprayPaintService;
@@ -13,7 +13,7 @@ describe('SprayPaintService', () => {
 
     let baseCtxStub: CanvasRenderingContext2D;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
-   // let myClearIntervalSpy: jasmine.Spy<any>;
+    // let myClearIntervalSpy: jasmine.Spy<any>;
     let fakeUndoRedo: MockUndoRedoService;
     // let spraySpy: jasmine.Spy<any>;
 
@@ -23,11 +23,11 @@ describe('SprayPaintService', () => {
         drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
         fakeUndoRedo = new MockUndoRedoService(drawServiceSpy);
         TestBed.configureTestingModule({
-            providers: [{ provide: DrawingService, useValue: drawServiceSpy }, {provide: UndoRedoService, useValue: fakeUndoRedo},],
+            providers: [{ provide: DrawingService, useValue: drawServiceSpy }, { provide: UndoRedoService, useValue: fakeUndoRedo },],
         });
         service = TestBed.inject(SprayPaintService);
         service['drawingService'].baseCtx = baseCtxStub;
-        service.myClearInterval =jasmine.createSpy().and.callFake((interval)=>{interval = 0;});
+        service.myClearInterval = jasmine.createSpy().and.callFake((interval) => { interval = 0; });
         mouseEvent = {
             offsetX: 25,
             offsetY: 25,
@@ -105,7 +105,7 @@ describe('SprayPaintService', () => {
         service.onMouseOut(mouseEvent);
         expect(service.myClearInterval).toHaveBeenCalled();
     });
-    
+
     it(' onMouseEnter should call spray if mouse was already down', () => {
         //service.mouseDownCoord = { x: 0, y: 0 };
         service.spray = jasmine.createSpy();
@@ -117,7 +117,7 @@ describe('SprayPaintService', () => {
         expect(service.spray).toHaveBeenCalled();
         jasmine.clock().uninstall();
     });
-    
+
     it(' onMouseEnter should not call spray if mouse was not down', () => {
         //service.mouseDownCoord = { x: 0, y: 0 };
         service.spray = jasmine.createSpy();

@@ -86,7 +86,6 @@ export class TextService extends Tool {
             this.invoker.setIsAllowed(true);
             const cmd = new TextCommand(this, this.drawingService);
             this.invoker.addToUndo(cmd);
-            console.log(this.lines, cmd);
             this.writeText(this.drawingService.baseCtx, this.textPosition);
             clearInterval(this.intervalId);
             this.restoreToInitState();

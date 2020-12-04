@@ -44,7 +44,7 @@ describe('SidebarComponent', () => {
     let polygonStub: PolygonService;
     let textStub: TextService;
     let matDialogSpy: jasmine.SpyObj<MatDialog>;
-    let gridStub:GridService;
+    let gridStub: GridService;
     let magicWandStub: MagicWandService;
 
     beforeEach(async(() => {
@@ -61,10 +61,10 @@ describe('SidebarComponent', () => {
         plumeStub = new PlumeService(drawServiceMock, UndoRedoServiceMock);
         sprayPaintStub = new SprayPaintService(drawServiceMock, UndoRedoServiceMock);
         selectionStub = new SelectionService(drawServiceMock, UndoRedoServiceMock);
-        textStub = new TextService(drawServiceMock);
+        textStub = new TextService(drawServiceMock, UndoRedoServiceMock);
         gridStub = new GridService(drawServiceMock);
-        
-        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub, selectionStub, paintBucketStub, polygonStub, pipetteStub, textStub, sprayPaintStub,plumeStub, gridStub, magicWandStub);
+
+        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub, selectionStub, paintBucketStub, polygonStub, pipetteStub, textStub, sprayPaintStub, plumeStub, gridStub, magicWandStub);
         toolManagerStub.currentTool = pencilStub;
         matDialogSpy = jasmine.createSpyObj('MatDialog', ['open']);
         TestBed.configureTestingModule({

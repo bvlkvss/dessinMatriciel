@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
+import { PlumeCommand } from '@app/classes/plume-command';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { PLumeCommand } from '../../../classes/plume-command';
 
 const DEFAULT_WIDTH = 2;
 const DEFAULT_ANGLE = 0;
@@ -29,14 +29,15 @@ export enum MouseButton {
     providedIn: 'root',
 })
 export class PlumeService extends Tool {
-    private pathData: Vec2[];
+    pathData: Vec2[];
     lastpoint: Vec2;
     angle: number = DEFAULT_ANGLE;
     lineLenght: number = LONGEUR_LIGNE;
     mouseIsOut: boolean = false;
     halfLength: number;
     arrayTooLarge: boolean = false;
-    subject: BehaviorSubject<string> = new BehaviorSubject<string>('');
+    subject: BehaviorSubject<string> = new BehaviorSubject<string>('0');
+    private plumeCommand: PlumeCommand;
 
     constructor(drawingService: DrawingService, protected invoker: UndoRedoService) {
         super(drawingService);
@@ -58,9 +59,10 @@ export class PlumeService extends Tool {
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseDown) {
+            this.clearPath();
             this.invoker.ClearRedo();
             this.invoker.setIsAllowed(false);
-            this.clearPath();
+            this.plumeCommand = new PlumeCommand(this, this.drawingService);
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.pathData.push(this.mouseDownCoord);
         }
@@ -81,11 +83,13 @@ export class PlumeService extends Tool {
     onMouseUp(event: MouseEvent): void {
         if (this.mouseDown && !this.mouseIsOut) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            const cmd = new PLumeCommand(this.pathData, this, this.drawingService) as PLumeCommand;
-            this.invoker.addToUndo(cmd);
-            this.invoker.setIsAllowed(true);
         }
         this.mouseDown = false;
+        if (this.plumeCommand) {
+            this.invoker.addToUndo(this.plumeCommand);
+            this.invoker.setIsAllowed(true);
+        }
+        this.drawPreviewLine(this.drawingService.previewCtx, this.pathData);
         this.clearPath();
     }
 
@@ -95,9 +99,8 @@ export class PlumeService extends Tool {
         this.halfLength = Math.ceil(this.pathData.length / 2);
         this.arrayTooLarge = this.pathData.length > TAILLE_MAX_DATA_PATH;
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
-
+        if (this.mouseDown && this.plumeCommand) this.plumeCommand.pushData(mousePosition);
         if (!this.arrayTooLarge) {
-
             if (!this.mouseDown) {
                 this.drawPreviewLine(this.drawingService.previewCtx, this.pathData);
             } else {
@@ -128,6 +131,7 @@ export class PlumeService extends Tool {
 
     setAngle(degrees: number): void {
         this.angle = degrees * (PI / HALF_2PI);
+        this.drawPreviewLine(this.drawingService.previewCtx, this.pathData);
     }
 
     adjustAngle(event: WheelEvent): void {
@@ -146,7 +150,7 @@ export class PlumeService extends Tool {
         }
 
         this.validateAngle(this.angle);
-
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.drawPreviewLine(this.drawingService.previewCtx, this.pathData);
     }
 
@@ -169,7 +173,6 @@ export class PlumeService extends Tool {
         ctx.strokeStyle = this.primaryColor;
         ctx.beginPath();
         this.lastpoint = { x: path[0].x, y: path[0].y };
-
         for (const point of path) {
             for (let i = 0; i < this.lineLenght; i++) {
                 ctx.moveTo(this.lastpoint.x + i * Math.cos(this.angle), this.lastpoint.y - i * Math.sin(this.angle));

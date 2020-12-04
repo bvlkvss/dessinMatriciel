@@ -1,7 +1,7 @@
 /* tslint:disable */
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatButtonToggleGroup } from '@angular/material/button-toggle';
-import { MatDialog} from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { BrushService } from '@app/services/tools/brush/brush.service';
 import { EllipseService } from '@app/services/tools/ellipse/ellipse.service';
 import { EraserService } from '@app/services/tools/eraser/eraser-service';
@@ -62,7 +62,7 @@ describe('EditorComponent', () => {
         ellipseStub = new EllipseService(drawServiceMock, UndoRedoServiceMock);
         eraserStub = new EraserService(drawServiceMock, UndoRedoServiceMock);
         pipetteStub = new PipetteService(drawServiceMock);
-        textStub = new TextService(drawServiceMock);
+        textStub = new TextService(drawServiceMock, UndoRedoServiceMock);
         plumeStub = new PlumeService(drawServiceMock, UndoRedoServiceMock);
         sprayPaintStub = new SprayPaintService(drawServiceMock, UndoRedoServiceMock);
         gridStub = new GridService(drawServiceMock);
@@ -70,7 +70,7 @@ describe('EditorComponent', () => {
         toolManagerStub.currentTool = pencilStub;
         TestBed.configureTestingModule({
             declarations: [EditorComponent, AttributebarComponent, ColorPickerComponent, DrawingComponent, ColorSliderComponent, ColorPaletteComponent, SidebarComponent, MatButtonToggleGroup],
-            providers:[{provide: MatDialog, useValue: {}}, {provide:ToolsManagerService, useValue:toolManagerStub}],
+            providers: [{ provide: MatDialog, useValue: {} }, { provide: ToolsManagerService, useValue: toolManagerStub }],
         }).compileComponents();
         delay(1000);
         fixture = TestBed.createComponent(EditorComponent);

@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
+import { SprayPaintCommand } from '@app/classes/spray-paint-command';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
-import { SprayPaintCommand } from '../../../classes/spray-paint-command';
-
 
 const DEFAULT_FREQUENCY = 700;
 const DEFAULT_RADIUS = 20;
@@ -45,7 +44,7 @@ export class SprayPaintService extends Tool {
             this.invoker.ClearRedo();
             this.invoker.setIsAllowed(false);
             this.sprayCommand = new SprayPaintCommand(this, this.drawingService);
-            this.sprayCommand.pushData(this.mouseDownCoord);
+            this.sprayCommand.pushData({ ...this.currentMousePos });
             this.interval = setInterval(() => {
                 this.spray(this.drawingService.baseCtx, this.currentMousePos);
             }, this.period);
@@ -54,7 +53,6 @@ export class SprayPaintService extends Tool {
 
     onMouseUp(event: MouseEvent): void {
         this.myClearInterval(this.interval);
-        this.sprayCommand.pushData(this.getPositionFromMouse(event));
         this.invoker.addToUndo(this.sprayCommand);
         this.invoker.setIsAllowed(true);
         this.mouseDown = false;
@@ -63,7 +61,7 @@ export class SprayPaintService extends Tool {
     onMouseMove(event: MouseEvent): void {
         if (this.mouseDown) {
             this.currentMousePos = this.getPositionFromMouse(event);
-            this.sprayCommand.pushData(this.currentMousePos);
+            if (this.sprayCommand) this.sprayCommand.pushData(this.currentMousePos);
         }
     }
 
@@ -85,8 +83,10 @@ export class SprayPaintService extends Tool {
 
     spray(ctx: CanvasRenderingContext2D, position: Vec2): void {
         ctx.lineCap = 'round';
+        const tmp: Vec2[] = [];
         for (let i = 0; i < this.density; i++) {
             const offset = this.getRandomOffset();
+            tmp.push({ ...offset });
             const x = position.x + offset.x;
             const y = position.y + offset.y;
             ctx.beginPath();
@@ -96,6 +96,7 @@ export class SprayPaintService extends Tool {
             ctx.fill();
             ctx.stroke();
         }
+        if (this.sprayCommand) this.sprayCommand.mapRandom.set(position, tmp);
     }
 
     setPrimaryColor(color: string): void {

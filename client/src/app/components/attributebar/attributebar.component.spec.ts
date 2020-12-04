@@ -1,16 +1,18 @@
 /* tslint:disable */
 import { ElementRef } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatButtonToggleGroup, MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MockDrawingService } from '@app/components/drawing/drawing.component.spec';
 import { BrushService } from '@app/services/tools/brush/brush.service';
 import { EllipseService } from '@app/services/tools/ellipse/ellipse.service';
 import { EraserService } from '@app/services/tools/eraser/eraser-service';
+import { GridService } from '@app/services/tools/grid/grid.service';
 import { LineService } from '@app/services/tools/line/line.service';
 import { MagicWandService } from '@app/services/tools/magic-wand/magic-wand.service';
 import { PaintBucketService } from '@app/services/tools/paint-bucket/paint-bucket.service';
 import { PencilService } from '@app/services/tools/pencil/pencil-service';
-import { PlumeService } from '@app/services/tools/plume/plume.service';
 import { Arguments, PipetteService } from '@app/services/tools/pipette/pipette.service';
+import { PlumeService } from '@app/services/tools/plume/plume.service';
 import { PolygonService } from '@app/services/tools/polygon/polygon.service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle.service';
 import { SelectionService } from '@app/services/tools/selection/selection.service';
@@ -20,8 +22,6 @@ import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.ser
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { of } from 'rxjs';
 import { AttributebarComponent } from './attributebar.component';
-import { MatButtonToggleGroup, MatButtonToggleModule } from '@angular/material/button-toggle';
-import { GridService } from '@app/services/tools/grid/grid.service';
 
 export class MockUndoRedoService extends UndoRedoService {
     executeAll(): void {
@@ -69,7 +69,7 @@ describe('AttributebarComponent', () => {
         ellipseStub = new EllipseService(drawServiceMock, UndoRedoServiceMock);
         eraserStub = new EraserService(drawServiceMock, UndoRedoServiceMock);
         pipetteStub = new PipetteService(drawServiceMock);
-        textStub = new TextService(drawServiceMock);
+        textStub = new TextService(drawServiceMock, UndoRedoServiceMock);
         plumeStub = new PlumeService(drawServiceMock, UndoRedoServiceMock);
         sprayPaintStub = new SprayPaintService(drawServiceMock, UndoRedoServiceMock);
         gridStub = new GridService(drawServiceMock);

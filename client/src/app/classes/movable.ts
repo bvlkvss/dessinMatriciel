@@ -69,9 +69,9 @@ export abstract class Movable extends Tool implements Rotationable, Resizable {
         this.selectionActivated = false;
     }
 
-    eraseSelectionFromBase(endPos: Vec2): void {}
-    clipImageWithEllipse(): void {}
-    resetSelection(): void {}
+    eraseSelectionFromBase(endPos: Vec2): void { }
+    clipImageWithEllipse(): void { }
+    resetSelection(): void { }
 
     protected drawSelectionOnBase(): void {
         const centre = {
@@ -93,6 +93,7 @@ export abstract class Movable extends Tool implements Rotationable, Resizable {
             this.selectionCommand.setSelectionStyle(this.selectionStyle);
             this.selectionCommand.setSize(this.width, this.height);
             this.selectionCommand.setCanvas(this.selectionData);
+            this.selectionCommand.setDegres(this.degres);
             this.invoker.addToUndo(this.selectionCommand);
             this.invoker.setIsAllowed(true);
         }

@@ -4,15 +4,21 @@ import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { EraserCommand } from '@app/classes/eraser-command';
 import { LineCommand } from '@app/classes/line-command';
 import { PaintBucketCommand } from '@app/classes/paint-bucker-command';
+import { PlumeCommand } from '@app/classes/plume-command';
 import { PolygonCommand } from '@app/classes/polygon-command';
 import { ResizeCommand } from '@app/classes/resize-command';
+import { SprayPaintCommand } from '@app/classes/spray-paint-command';
+import { TextCommand } from '@app/classes/text-command';
 import { Vec2 } from '@app/classes/vec2';
 import { MockDrawingService } from '@app/components/drawing/drawing.component.spec';
 import { EraserService } from '@app/services/tools/eraser/eraser-service';
+import { PlumeService } from '@app/services/tools/plume/plume.service';
 import { PolygonService } from '@app/services/tools/polygon/polygon.service';
 //import { ResizingService } from '@app/services/resizing/resizing.service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle.service';
 import { SelectionService } from '@app/services/tools/selection/selection.service';
+import { SprayPaintService } from '@app/services/tools/spray-paint/spray-paint.service';
+import { TextService } from '@app/services/tools/text/text.service';
 import { BrushCommand } from '../../classes/brush-command';
 import { EllipseCommand } from '../../classes/ellipse-command';
 import { PencilCommand } from '../../classes/pencil-command';
@@ -58,6 +64,12 @@ describe('UndoRedoService', () => {
   let baseCtxStub: CanvasRenderingContext2D;
   let previewCtxStub: CanvasRenderingContext2D;
   let DrawingServiceMock: MockDrawingService;
+  let textStub: TextService;
+  let textCommandStub: TextCommand;
+  let plumeStub: PlumeService;
+  let plumeCommandStub: PlumeCommand;
+  let sprayStub: SprayPaintService;
+  let sprayStubCommand: SprayPaintCommand;
 
 
   beforeEach(() => {
@@ -115,6 +127,14 @@ describe('UndoRedoService', () => {
     selectionStub = new SelectionService(DrawingServiceMock, service);
     selectionCommandStub = new SelectionCommand(pathData[0], selectionStub, DrawingServiceMock);
     selectionCommandStub.setStartPos(pathData[1]);
+    textStub = new TextService(DrawingServiceMock, service);
+    textCommandStub = new TextCommand(textStub, DrawingServiceMock);
+    plumeStub = new PlumeService(DrawingServiceMock, service);
+    plumeCommandStub = new PlumeCommand(plumeStub, DrawingServiceMock);
+    sprayStub = new SprayPaintService(DrawingServiceMock, service);
+    sprayStubCommand = new SprayPaintCommand(sprayStub, DrawingServiceMock);
+
+
     undoLastSpy = spyOn<any>(service, 'undoLast').and.callThrough();
     redoPrevSpy = spyOn<any>(service, 'redoPrev').and.callThrough();
     executeAllSpy = spyOn<any>(service, 'executeAll').and.callThrough();
@@ -278,9 +298,12 @@ describe('UndoRedoService', () => {
     service.addToUndo(PaintCommandStub);
     service.addToUndo(PolygonCommandStub);
     service.addToUndo(selectionCommandStub);
+    service.addToUndo(textCommandStub);
+    service.addToUndo(plumeCommandStub);
+    service.addToUndo(sprayStubCommand);
     let execute = [] as jasmine.Spy<any>[];
     for (let cmd of service.getUndo()) {
-      execute.push(spyOn(cmd, 'execute').and.callThrough());
+      execute.push(spyOn(cmd, 'execute').and.callThrough().and.callFake(() => { }));
     }
     service.executeAll();
     for (let i = 0; i < service.getUndo().length; i++) {
@@ -341,7 +364,7 @@ describe('UndoRedoService', () => {
     service.addToUndo(ResizeCommandStub);
     service.addToUndo(eraserCommandStub);
     service.ClearUndo();
-    
+
     expect(service.getUndo().length).toEqual(0);
   });
 
@@ -387,7 +410,7 @@ describe('UndoRedoService', () => {
     expect(service.getRedo().length).toEqual(0);
   });
 
-  it('shoudl bot pop redo if undo redo is bot Allowed and redoPrev is called', () => {
+  it('shoudl not pop redo if undo redo is not Allowed and redoPrev is called', () => {
     service.setIsAllowed(false);
     service.addToRedo(rectangleCommandStub);
     service.redoPrev();
@@ -417,4 +440,77 @@ describe('UndoRedoService', () => {
     cmdStub.execute();
     expect(spy).toHaveBeenCalled();
   });
+
+  it('text lines equal cmd lines after excute', () => {
+    textStub.lines = ['fsdfsd', 'anass'];
+    const cmd = new TextCommand(textStub, DrawingServiceMock);
+    textStub.writeText = jasmine.createSpy().and.callFake(() => { });
+    textStub.lines = [];
+    cmd.execute();
+    expect(textStub.lines).toEqual(['fsdfsd', 'anass']);
+  });
+
+  it('execute should call witeText for textcommand', () => {
+    textStub.lines = ['fsdfsd', 'anass'];
+    const cmd = new TextCommand(textStub, DrawingServiceMock);
+    textStub.writeText = jasmine.createSpy().and.callFake(() => { });
+    textStub.lines = [];
+    cmd.execute();
+    expect(textStub.writeText).toHaveBeenCalled();
+  });
+
+  it('pahtData size increase if i pushData', () => {
+    plumeCommandStub.pushData({ x: 1, y: 2 });
+    expect((plumeCommandStub as any).pathData[0]).toEqual({ x: 1, y: 2 });
+  });
+
+  it('excute of plumecommand should call drawline of plumeservice', () => {
+    plumeStub.drawLine = jasmine.createSpy().and.callFake(() => { });
+    plumeCommandStub.execute();
+    expect(plumeStub.drawLine).toHaveBeenCalled();
+  });
+
+  it('pushData of spray command should added vec2 to pathData', () => {
+    sprayStubCommand.pushData({ x: 1, y: 2 });
+    expect((sprayStubCommand as any).pathData[0]).toEqual({ x: 1, y: 2 });
+  });
+
+  it('should add something to map', () => {
+    sprayStub.sprayCommand = sprayStubCommand;
+    sprayStub.sprayCommand.pushData({ x: 1, y: 2 });
+    sprayStub.spray(DrawingServiceMock.baseCtx, { x: 1, y: 2 });
+    expect(sprayStubCommand.mapRandom.size).not.toEqual(0);
+  });
+
+  it('should not call spray if execute called and pathdata empty', () => {
+    sprayStubCommand.spray = jasmine.createSpy().and.callThrough().and.callFake(() => { });
+    (sprayStubCommand as any).pathData = [];
+    sprayStubCommand.execute()
+    expect(sprayStubCommand.spray).not.toHaveBeenCalled();
+  });
+
+
+  it('should call spray twice if execute called and pathdata.length = 2', () => {
+    sprayStubCommand.spray = jasmine.createSpy().and.callThrough().and.callFake(() => { });
+    (sprayStubCommand as any).pathData = [{ x: 1, y: 2 }, { x: 2, y: 3 }] as Vec2[];
+    sprayStubCommand.execute()
+    expect(sprayStubCommand.spray).toHaveBeenCalledTimes(2);
+  });
+
+  it('should call drawellipse with to circle = true', () => {
+    (ellipseCommandStub as any).toCircle = true;
+    const spy = spyOn(ellipseStub, 'drawEllipse').and.callThrough();
+    ellipseCommandStub.execute();
+    expect(spy.calls.allArgs()[0][3]).toEqual(true);
+
+  });
+
+  it('should call drawellipse with to circle = false', () => {
+    (ellipseCommandStub as any).toCircle = false;
+    const spy = spyOn(ellipseStub, 'drawEllipse').and.callThrough();
+    ellipseCommandStub.execute();
+    expect(spy.calls.allArgs()[0][3]).toEqual(false);
+
+  });
+
 });

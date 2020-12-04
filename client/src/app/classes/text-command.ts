@@ -31,6 +31,7 @@ export class TextCommand extends Command {
         this.tool.fontSize = this.fontSize;
         this.tool.fontStyle = this.fontStyle;
         this.tool.textPosition = this.textPosition;
+        this.tool.lines = [];
         for (const point of this.lines) {
             this.tool.lines.push(point);
         }

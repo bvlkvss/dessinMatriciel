@@ -2,7 +2,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { Command } from './command';
 import { Movable } from './movable';
 import { Vec2 } from './vec2';
-
+const PI_DEGREE = 180;
 export class SelectionCommand extends Command {
     private startPosErase: Vec2;
     private endPosErase: Vec2;
@@ -12,12 +12,16 @@ export class SelectionCommand extends Command {
     private width: number;
     private selectionStyle: number;
     private selectionData: HTMLCanvasElement;
+    private degres: number;
 
     isResize: boolean = false;
 
     constructor(startPosErase: Vec2, protected tool: Movable, protected drawingService: DrawingService) {
         super();
         this.startPosErase = startPosErase;
+    }
+    setDegres(degres: number): void {
+        this.degres = degres;
     }
     setStartPos(endPos: Vec2): void {
         this.startPos = endPos;
@@ -39,6 +43,7 @@ export class SelectionCommand extends Command {
         this.selectionData = data;
     }
     execute(): void {
+        const centre = { x: (this.startPos.x + this.endPos.x) / 2, y: (this.startPos.y + this.endPos.y) / 2 };
         this.tool.selectionStartPoint = this.startPosErase;
         this.tool.width = this.width;
         this.tool.height = this.height;
@@ -47,11 +52,16 @@ export class SelectionCommand extends Command {
         this.tool.eraseSelectionFromBase(this.endPosErase);
         this.tool.selectionStartPoint = this.startPos;
         this.tool.selectionEndPoint = this.endPos;
+        this.tool.degres = this.degres;
         this.drawingService.baseCtx.save();
         if (this.selectionStyle === 1) {
             this.tool.clipImageWithEllipse();
         } else {
-            this.drawingService.baseCtx.drawImage(this.tool.selectionData, this.startPos.x, this.startPos.y);
+            this.drawingService.baseCtx.save();
+            this.drawingService.baseCtx.translate(centre.x, centre.y);
+            this.drawingService.baseCtx.rotate((this.degres * Math.PI) / PI_DEGREE);
+            this.drawingService.baseCtx.drawImage(this.tool.selectionData, -Math.abs(this.width) / 2, -Math.abs(this.height) / 2);
+            this.drawingService.baseCtx.restore();
         }
         this.drawingService.baseCtx.restore();
         this.tool.firstSelectionMove = true;
