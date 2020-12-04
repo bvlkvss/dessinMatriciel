@@ -50,11 +50,11 @@ export class SelectionClipboardService {
             console.log('it maigx');
             tool = selectionTool.magicSelectionObj;
         }
-        console.log(selectionTool.magicSelectionObj.selectionStartPoint, selectionTool.magicSelectionObj.selectionEndPoint);
         if (!this.isCuted) {
             tool.drawSelectionOnBase();
         }
         tool.resetSelection();
+        tool.firstSelectionMove = false;
         tool.degres = 0;
         tool.selectionStartPoint = { x: 0, y: 0 } as Vec2;
         tool.selectionEndPoint = { x: this.currentClipboardData.width, y: this.currentClipboardData.height };
