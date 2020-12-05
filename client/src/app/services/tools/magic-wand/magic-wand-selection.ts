@@ -3,7 +3,8 @@ import { PI_DEGREE } from '@app/classes/rotationable';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
-
+const RGBA_NUMBER_OF_COMPONENTS = 4;
+const RGB_NUMBER_OF_COMPONENTS = 3;
 export class MagicWandSelection extends Movable {
     selectionPixels: number[];
     isActive: boolean;
@@ -34,9 +35,9 @@ export class MagicWandSelection extends Movable {
         const imData = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
         const tempColor = this.primaryColor;
         this.primaryColor = '#ffffff';
-        for (let i = 3; i < imData.data.length; i += 4) {
+        for (let i = 3; i < imData.data.length; i += RGBA_NUMBER_OF_COMPONENTS) {
             if (imData.data[i] !== 0) {
-                this.fillPixel(imData, i - 3);
+                this.fillPixel(imData, i - RGB_NUMBER_OF_COMPONENTS);
             }
         }
         this.primaryColor = tempColor;
