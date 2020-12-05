@@ -43,7 +43,7 @@ export abstract class Movable extends Tool implements Rotationable, Resizable {
     getRotatedGeniric: (point: Vec2, centre: Vec2, angle: number) => Vec2 = Rotationable.prototype.getRotatedGeniric;
     getUnrotatedPos: (element: Vec2) => Vec2 = Rotationable.prototype.getUnrotatedPos;
     getRotatedPos: (element: Vec2) => Vec2 = Rotationable.prototype.getRotatedPos;
-    updateDegree: (event: WheelEvent, alt: boolean) => void = Rotationable.prototype.updateDegree;
+    updateDegree: (event: WheelEvent) => void = Rotationable.prototype.updateDegree;
 
     checkFlip: () => number = Resizable.prototype.checkFlip;
     flipSelection: () => void = Resizable.prototype.flipSelection;

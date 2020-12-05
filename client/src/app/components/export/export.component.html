@@ -30,13 +30,17 @@
         <label for="name ">Nom: </label>
         <input type="text " id="name " name="name " required size="50 " (change)="setImageName($event.target.value)">
 
+        <p>Si vous souhaitez envoyer cette image par courriel. Entrez l'adresse email du destinataire:</p>
+        <label for="email ">Email: </label>
+        <input type="text " id="email " name="email " required size="50 " (change)="setEmail($event.target.value)">
+
     </div>
     <div class="demo ">
         <img width="200 " height="180 " src={{image.src}} #demo>
     </div>
 
     <div class=" confirmation ">
-        <button class="confirm " (click)="onConfirm()">Confirmer </button>
-        <button class=" cancel " (click)="closeDialog() ">Annuler</button>
+        <button class="confirm " (click)="sendEmail()">Envoyer par courriel </button>
+        <button class=" cancel " (click)="saveImageOnDisk() ">Sauvegarder sur l'ordinateur</button>
     </div>
 </mat-dialog-content>

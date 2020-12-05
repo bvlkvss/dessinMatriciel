@@ -1,16 +1,9 @@
 import { Injectable } from '@angular/core';
 import { RectangleCommand } from '@app/classes/rectangle-command';
-import { Tool } from '@app/classes/tool';
+import { MouseButton, Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
-export enum MouseButton {
-    Left = 0,
-    Middle = 1,
-    Right = 2,
-    Back = 3,
-    Forward = 4,
-}
 export enum RectangleStyle {
     Empty = 0,
     Filled_contour = 1,
@@ -22,16 +15,19 @@ export enum RectangleStyle {
     providedIn: 'root',
 })
 export class RectangleService extends Tool {
-    toSquare: boolean = false;
-    isOut: boolean = false;
+    toSquare: boolean;
+    isOut: boolean;
+    isSelection: boolean;
     currentPos: Vec2;
     rectangleStyle: RectangleStyle;
-    isSelection: boolean = false;
     lineDash: boolean;
     width: number;
     height: number;
     constructor(drawingService: DrawingService, protected invoker: UndoRedoService) {
         super(drawingService);
+        this.toSquare = false;
+        this.isOut = false;
+        this.isSelection = false;
         this.toolAttributes = ['strokeWidth', 'rectangleStyle'];
         this.rectangleStyle = 2;
         this.lineWidth = 1;
@@ -116,8 +112,6 @@ export class RectangleService extends Tool {
     onMouseMove(event: MouseEvent): void {
         if (this.mouseDown) {
             this.currentPos = this.getPositionFromMouse(event);
-
-            // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.drawRectangle(this.drawingService.previewCtx, this.mouseDownCoord, this.currentPos, this.toSquare);
         }

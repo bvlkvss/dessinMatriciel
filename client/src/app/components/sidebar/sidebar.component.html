@@ -1,9 +1,6 @@
-<!DOCTYPE html>
-<html>
-
-<body>
+<div class="bodyMock">
     <div class="container2">
-        <div id="#icons" class="icon-bar">
+        <div #icons class="icon-bar">
             <div class="inlineclass">
                 <div class="drawingtoolscontainer">
                     <a id="pencil" class="active" (click)="displayPalette('pencil')" (click)="changeTools('pencil')">
@@ -17,6 +14,11 @@
                     <a id="line" (click)="displayPalette('line')" (click)="changeTools('line')">
                         <i class="material-icons">architecture</i>
                         <span class="slidingtxt2"> Ligne (L)</span>
+                    </a>
+
+                    <a id="plume" (click)="displayPalette('plume')" (click)="changeTools('plume')">
+                        <img class="material-icons" style="color: white" src="../../../assets/feather.png" />
+                        <span class="slidingtxt2"> Plume</span>
                     </a>
                 </div>
 
@@ -33,19 +35,25 @@
                         <i class="material-icons">change_history</i>
                         <span class="slidingtxt"> Polygone (3)</span>
                     </a>
+                    <a id="aerosol" (click)="displayPalette('aerosol')" (click)="changeTools('aerosol')">
+                        <i class="material-icons">grain</i>
+                        <span class="slidingtxt"> Aérosol (A)</span>
+                    </a>
                 </div>
             </div>
             <div class="inlineclass">
                 <div class="drawingtoolscontainer">
                     <a id="paintBucket" (click)="displayPalette('paintBucket')" (click)="changeTools('paintBucket')">
-                        <!--<img class="material-icons" src="../../../assets/format-color-fill.png" />-->
-                        <i class="material-icons">format_paint</i>
-
+                        <img class="material-icons" src="../../../assets/format-color-fill.png" />
                         <span class="slidingtxt2"> Remplir (B)</span>
                     </a>
                     <a id="pipette" (click)="displayPalette('pipette')" (click)="changeTools('pipette')">
                         <i class="material-icons">colorize</i>
                         <span class="slidingtxt2"> Pipette (I)</span>
+                    </a>
+                    <a id="text" (click)="displayPalette('text')" (click)="changeTools('text')">
+                        <i class="material-icons">title</i>
+                        <span class="slidingtxt2"> Text (T)</span>
                     </a>
                 </div>
 
@@ -58,6 +66,14 @@
                     <a id="eraser" (click)="displayPalette('eraser')" (click)="changeTools('eraser')">
                         <i class="material-icons">remove_circle_outline</i>
                         <span class="slidingtxt"> Efface (E)</span>
+                    </a>
+                    <a id="grid-on" (click)="displayPalette('grid')" (click)="changeTools('grid')">
+                        <i class="material-icons">grid_on</i>
+                        <span class="slidingtxt"> Grille (G)</span>
+                    </a>
+                    <a id="stamp" (click)="displayPalette('stamp')" (click)="changeTools('stamp')">
+                        <i class="material-icons">insert_emoticon</i>
+                        <span class="slidingtxt2"> Stamp (T)</span>
                     </a>
                 </div>
             </div>
@@ -117,6 +133,4 @@
             </div>
         </div>
     </div>
-</body>
-
-</html>
+</div>

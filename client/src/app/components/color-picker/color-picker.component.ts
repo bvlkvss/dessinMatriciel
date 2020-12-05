@@ -8,8 +8,8 @@
  *
  ***************************************************************************************/
 
-import { AfterViewInit, Component, Input } from '@angular/core';
-import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
+import { Component, Input } from '@angular/core';
+import { ToolsManagerService } from '@app/services/tools-manager/tools-manager.service';
 
 const DEFAULT_OPACITY = 100;
 const DEFAULT_COLOR = '#000000';
@@ -22,22 +22,19 @@ const MAX_SAVED_COLORS = 10;
     templateUrl: './color-picker.component.html',
     styleUrls: ['./color-picker.component.scss'],
 })
-export class ColorPickerComponent implements AfterViewInit {
+export class ColorPickerComponent {
     hue: string;
     color: string;
-    @Input() isPrimaryColor: boolean = true;
+    @Input() isPrimaryColor: boolean;
     opacity: number;
     private isPrime: boolean;
     @Input() lastColors: string[];
 
     constructor(private tools: ToolsManagerService) {
+        this.isPrimaryColor = true;
         this.opacity = DEFAULT_OPACITY;
         this.color = DEFAULT_COLOR;
     }
-
-    /*tslint:disable-next-line:no-empty*/
-    ngAfterViewInit(): void {}
-
     setColor(): void {
         const stringValue: string = Math.round((this.opacity * MAX_COLOR_VALUE) / PERCENTAGE_DIVIDER).toString(16);
         this.tools.setColor(this.color + stringValue, this.isPrimaryColor);
@@ -77,14 +74,14 @@ export class ColorPickerComponent implements AfterViewInit {
         if (!this.lastColors.find((element) => element === color)) {
             if (this.lastColors.length < MAX_SAVED_COLORS) {
                 this.lastColors.push(color);
-            } else {
-                const tmp = this.lastColors;
-                tmp.reverse();
-                tmp.pop();
-                tmp.reverse();
-                this.lastColors = tmp;
-                this.lastColors.push(color);
+                return;
             }
+            const tmp = this.lastColors;
+            tmp.reverse();
+            tmp.pop();
+            tmp.reverse();
+            this.lastColors = tmp;
+            this.lastColors.push(color);
         }
     }
     closePalette(): void {

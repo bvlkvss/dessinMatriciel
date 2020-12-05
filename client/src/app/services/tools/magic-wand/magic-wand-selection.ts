@@ -74,6 +74,7 @@ export class MagicWandSelection extends Movable {
             this.invoker.addToUndo(this.selectionCommand);
             this.invoker.setIsAllowed(true);
         }
+        this.drawingService.baseCtx.restore();
         this.resetSelection();
         this.selectionActivated = false;
     }

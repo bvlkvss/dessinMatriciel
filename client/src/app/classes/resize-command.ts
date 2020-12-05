@@ -9,11 +9,12 @@ export class ResizeCommand implements Command {
     private newWidth: number;
     private newHeight: number;
     private oldCanvas: HTMLCanvasElement;
-    isResize: boolean = true;
+    isResize: boolean;
     preview: HTMLCanvasElement;
     canvasContainer: HTMLDivElement;
 
     constructor(oldW: number, oldH: number, protected tool: ResizingService, protected drawingService: DrawingService) {
+        this.isResize = true;
         this.oldWidth = oldW;
         this.oldHeight = oldH;
         this.canvasContainer = document.querySelector('#canvas-container') as HTMLDivElement;

@@ -4,18 +4,20 @@ import { Command } from './command';
 import { Vec2 } from './vec2';
 
 export class LineCommand extends Command {
-    private pathData: Vec2[] = [];
+    private pathData: Vec2[];
     private withJunction: boolean;
     private primaryColor: string;
     private secondaryColor: string;
     private opacity: number;
-    isResize: boolean = false;
+    isResize: boolean;
 
     constructor(pathData: Vec2[], withJunction: boolean, protected tool: LineService, protected drawingService: DrawingService) {
         super();
+        this.isResize = false;
         this.primaryColor = this.tool.primaryColor;
         this.secondaryColor = this.tool.secondaryColor;
         this.opacity = this.tool.opacity;
+        this.pathData = [];
         for (const point of pathData) {
             this.pathData.push(point);
         }

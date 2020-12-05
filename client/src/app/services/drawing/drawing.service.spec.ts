@@ -13,6 +13,10 @@ describe('DrawingService', () => {
         service.canvas = canvasTestHelper.canvas;
         service.baseCtx = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         service.previewCtx = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
+        service.gridCanvas = document.createElement('canvas');
+        service.gridCanvas.width =100;
+        service.gridCanvas.height = 100;
+        service.gridCtx = service.gridCanvas.getContext('2d') as CanvasRenderingContext2D;
         clearRectSpy = spyOn<any>(service.baseCtx, 'clearRect').and.callThrough();
     });
 
@@ -41,16 +45,16 @@ describe('DrawingService', () => {
     });
 
     it('newDrawing should call window confirm', () => {
-        let windowConfirmSpy = spyOn(window, 'confirm');
+        window.confirm = jasmine.createSpy();
         service.newDrawing();
-        expect(windowConfirmSpy).toHaveBeenCalled();
+        expect(window.confirm).toHaveBeenCalled();
     });
 
     it('newDrawing should call window confirm and call clearCanvas if user confirms', () => {
-        let windowConfirmSpy = spyOn(window, 'confirm').and.returnValue(true);
+        window.confirm = jasmine.createSpy().and.returnValue(true);
         let resizeCanvasSpy = spyOn(service, 'resizeCanvas');
         service.newDrawing();
-        expect(windowConfirmSpy).toHaveBeenCalled();
+        expect(window.confirm).toHaveBeenCalled();
         expect(resizeCanvasSpy).toHaveBeenCalled();
     });
 

@@ -1,17 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Movable } from '@app/classes/movable';
 import { DEFAULT_HANDLE_INDEX } from '@app/classes/resizable';
+import { MouseButton } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { RectangleService, RectangleStyle } from '@app/services/tools/rectangle/rectangle.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
-export enum MouseButton {
-    Left = 0,
-    Middle = 1,
-    Right = 2,
-    Back = 3,
-    Forward = 4,
-}
 
 @Injectable({
     providedIn: 'root',
@@ -166,7 +160,6 @@ export class SelectionService extends Movable {
 
     onMouseMove(event: MouseEvent): void {
         this.currentPos = this.getPositionFromMouse(event);
-
         if (this.selectionActivated && this.mouseDown) {
             this.resizeSelection();
             return;

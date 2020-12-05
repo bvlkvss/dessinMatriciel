@@ -15,7 +15,11 @@ export class ResizingService {
     resizedWidth: number;
     resizedHeight: number;
     cmd: ResizeCommand;
-    constructor(private drawingService: DrawingService, protected invoker: UndoRedoService) {}
+    constructor(private drawingService: DrawingService, protected invoker: UndoRedoService) {
+        this.resizing = false;
+        this.hasBeenResized = false;
+        this.isMaximazed = false;
+    }
 
     initResizing(event: MouseEvent): void {
         if (event.button === 0) {
@@ -40,14 +44,7 @@ export class ResizingService {
             this.isMaximazed = true;
             return;
         }
-        if (calculatedWidth >= MIN_SIZE) {
-            this.resizedWidth = calculatedWidth;
-            preview.width = this.resizedWidth;
-        } else {
-            this.resizedWidth = MIN_SIZE;
-            preview.width = this.resizedWidth;
-        }
-
+        this.resizedWidth = preview.width = calculatedWidth >= MIN_SIZE ? calculatedWidth : MIN_SIZE;
         this.isMaximazed = false;
     }
 
@@ -58,13 +55,7 @@ export class ResizingService {
             this.isMaximazed = true;
             return;
         }
-        if (calculatedHeight >= MIN_SIZE) {
-            this.resizedHeight = calculatedHeight;
-            preview.height = this.resizedHeight;
-        } else {
-            this.resizedHeight = MIN_SIZE;
-        }
-
+        this.resizedHeight = preview.height = calculatedHeight >= MIN_SIZE ? calculatedHeight : MIN_SIZE;
         this.isMaximazed = false;
     }
 
@@ -128,8 +119,8 @@ export class ResizingService {
             this.invoker.setIsAllowed(true);
         }
         this.drawCanvas(temp);
+        this.clearGrid();
     }
-
     saveCanvas(): HTMLCanvasElement {
         const temp = document.createElement('canvas') as HTMLCanvasElement;
         temp.width = this.resizedWidth;
@@ -154,5 +145,11 @@ export class ResizingService {
         context.rect(0, 0, this.drawingService.canvas.width, this.drawingService.canvas.height);
         context.fill();
         context.closePath();
+    }
+
+    private clearGrid(): void {
+        this.drawingService.gridCanvas.width = this.resizedWidth;
+        this.drawingService.gridCanvas.height = this.resizedHeight;
+        this.drawingService.clearCanvas(this.drawingService.gridCtx);
     }
 }

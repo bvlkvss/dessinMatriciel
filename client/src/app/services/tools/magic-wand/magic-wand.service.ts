@@ -34,6 +34,7 @@ export class MagicWandService extends Tool {
     isMagicSelectionActivated: boolean;
     invoker: UndoRedoService;
     deactivateAfterClick: boolean;
+    canResize: boolean;
     constructor(drawingService: DrawingService, invoker: UndoRedoService) {
         super(drawingService);
         this.magicWandCanvas = document.createElement('canvas');
@@ -53,6 +54,7 @@ export class MagicWandService extends Tool {
                 const obj = this.magicSelectionObj;
                 if (obj.mouseDownOnHandle(this.mouseDownCoord) !== DEFAULT_HANDLE_INDEX) {
                     obj.currenthandle = obj.mouseDownOnHandle(this.mouseDownCoord);
+                    this.canResize = true;
                     this.invoker.ClearRedo();
                     this.invoker.setIsAllowed(false);
                     return;
@@ -65,7 +67,6 @@ export class MagicWandService extends Tool {
                     this.invoker.ClearRedo();
                     this.invoker.setIsAllowed(false);
                     obj.mouseDownInsideSelection = true;
-                    // this.mouseDown = false;
                     obj.offsetX = this.mouseDownCoord.x - obj.selectionStartPoint.x;
                     obj.offsetY = this.mouseDownCoord.y - obj.selectionStartPoint.y;
                     return;
@@ -73,6 +74,7 @@ export class MagicWandService extends Tool {
                     obj.drawSelectionOnBase();
                     obj.degres = 0;
                     this.clearSelection();
+                    this.canResize = false;
                     this.deactivateAfterClick = true;
                 }
             }
@@ -100,13 +102,11 @@ export class MagicWandService extends Tool {
         if (this.isMagicSelectionActivated && this.mouseDown) {
             const obj = this.magicSelectionObj;
             obj.currentPos = this.getPositionFromMouse(event);
-            if (this.isMagicSelectionActivated && this.mouseDown) {
-                obj.resizeSelection();
-            }
-
             if (obj.mouseDownInsideSelection) {
                 obj.moveSelection(obj.currentPos);
                 obj.redrawSelection();
+            } else if (this.canResize) {
+                obj.resizeSelection();
             }
         }
     }
@@ -177,7 +177,6 @@ export class MagicWandService extends Tool {
             if (event.key.includes('Arrow')) {
                 event.preventDefault();
                 event.stopPropagation();
-
                 obj.moveSelectionWithKeys();
                 obj.redrawSelection();
             }
@@ -279,7 +278,6 @@ export class MagicWandService extends Tool {
 
         const minWidth = this.selectionEndPoint.x - this.selectionStartPoint.x;
         const minHeight = this.selectionEndPoint.y - this.selectionStartPoint.y;
-
         this.selectionMinHeight = minHeight;
         this.selectionMinWidth = minWidth;
     }

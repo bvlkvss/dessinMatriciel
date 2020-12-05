@@ -8,19 +8,21 @@ const IMAGES_PER_POINT = 5;
 const MAX_EIGHT_BIT_NB = 255;
 
 export class BrushCommand extends Command {
-    private pathData: Vec2[] = [];
+    private pathData: Vec2[];
     private primaryColor: string;
     private secondaryColor: string;
     private opacity: number;
     private lineWidht: number;
-    isResize: boolean = false;
+    isResize: boolean;
 
     constructor(pathData: Vec2[], protected tool: BrushService, protected drawingService: DrawingService) {
         super();
+        this.pathData = [];
         this.primaryColor = this.tool.primaryColor;
         this.secondaryColor = this.tool.secondaryColor;
         this.opacity = this.tool.opacity;
         this.lineWidht = this.tool.lineWidth;
+        this.isResize = false;
         for (const point of pathData) {
             this.pathData.push(point);
         }
@@ -41,7 +43,6 @@ export class BrushCommand extends Command {
         } while (k < dist);
         this.drawingService.baseCtx.closePath();
     }
-    // maybe i will add some methode
     execute(): void {
         this.tool.primaryColor = this.primaryColor;
         this.tool.secondaryColor = this.secondaryColor;

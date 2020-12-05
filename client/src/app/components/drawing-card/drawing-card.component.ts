@@ -1,6 +1,7 @@
-import { AfterViewChecked, Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { AfterViewChecked, Component, ElementRef, EventEmitter, HostListener, Input, Output, ViewChild } from '@angular/core';
 import { Drawings } from '@app/components/carrousel/carrousel.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { Observable } from 'rxjs';
 
 const CONTAINER_WIDTH = 301;
 const CONTAINER_HEIGHT = 200;
@@ -9,31 +10,57 @@ const CONTAINER_HEIGHT = 200;
     templateUrl: './drawing-card.component.html',
     styleUrls: ['./drawing-card.component.scss'],
 })
-export class DrawingCardComponent implements OnInit, AfterViewChecked {
-    @Input() drawingIndex: number = 0;
+export class DrawingCardComponent implements AfterViewChecked {
+    @Input() drawingIndex: number;
     @ViewChild('card') card: ElementRef<HTMLDivElement>;
     @ViewChild('image') image: ElementRef<HTMLImageElement>;
-
-    onDelete: boolean = false;
-    mouseOver: boolean = false;
+    onDelete: boolean;
+    mouseOver: boolean;
     @Output() deleteDrawing: EventEmitter<Drawings>;
     constructor(private drawingService: DrawingService) {
+        this.onDelete = false;
+        this.drawingIndex = 0;
+        this.mouseOver = false;
         this.deleteDrawing = new EventEmitter<Drawings>();
     }
     @Input() drawing: Drawings;
 
+    static getImage(imageData: string): Observable<HTMLImageElement> {
+        return new Observable((observer) => {
+            const image = new Image();
+            image.src = imageData;
+            image.onload = () => {
+                observer.next(image);
+                observer.complete();
+            };
+        });
+    }
+    static drawImage(drawingService: DrawingService, imageData: string): void {
+        drawingService.baseCtx.clearRect(0, 0, drawingService.canvas.width, drawingService.canvas.height);
+        DrawingCardComponent.getImage(imageData).subscribe((image: HTMLImageElement) => {
+            this.resizeCanvas(image, drawingService);
+            drawingService.baseCtx.drawImage(image, 0, 0, image.width, image.height);
+            localStorage.setItem('drawing', drawingService.baseCtx.canvas.toDataURL());
+        });
+    }
+    static resizeCanvas(image: HTMLImageElement, drawingService: DrawingService): void {
+        drawingService.canvasContainer.style.width = image.width + 'px';
+        drawingService.canvasContainer.style.height = image.height + 'px';
+        drawingService.canvas.width = drawingService.previewCanvas.width = image.width;
+        drawingService.canvas.height = drawingService.previewCanvas.height = image.height;
+    }
     ngAfterViewChecked(): void {
         this.setImageSize();
         if (this.drawingIndex !== 1) {
             this.card.nativeElement.firstElementChild?.setAttribute('style', 'opacity: 0.3; pointer-events: none; ');
-        } else {
-            this.card.nativeElement.firstElementChild?.setAttribute('style', 'opacity: 1');
-            if (this.mouseOver)
-                this.card.nativeElement.firstElementChild?.setAttribute(
-                    'style',
-                    '-webkit-box-shadow: 0px 0px 20px 3px rgba(63, 159, 190, 0.75);-moz-box-shadow: 0px 0px 20px 3px rgba(63, 159, 190, 0.75);box-shadow: 0px 0px 20px 3px rgba(63, 159, 190, 0.75); opacity:1',
-                );
+            return;
         }
+        this.card.nativeElement.firstElementChild?.setAttribute('style', 'opacity: 1');
+        if (this.mouseOver)
+            this.card.nativeElement.firstElementChild?.setAttribute(
+                'style',
+                '-webkit-box-shadow: 0px 0px 20px 3px rgba(63, 159, 190, 0.75);-moz-box-shadow: 0px 0px 20px 3px rgba(63, 159, 190, 0.75);box-shadow: 0px 0px 20px 3px rgba(63, 159, 190, 0.75); opacity:1',
+            );
     }
     setImageSize(): void {
         const ratio = this.image.nativeElement.naturalWidth / this.image.nativeElement.naturalHeight;
@@ -45,8 +72,6 @@ export class DrawingCardComponent implements OnInit, AfterViewChecked {
             this.image.nativeElement.height = CONTAINER_HEIGHT;
         }
     }
-    /* tslint:disable:no-empty */
-    ngOnInit(): void {}
     @HostListener('mousemove', ['$event'])
     onMouseMove(event: MouseEvent): void {
         if (this.drawingIndex === 1) this.mouseOver = true;
@@ -64,25 +89,15 @@ export class DrawingCardComponent implements OnInit, AfterViewChecked {
         if (element.className === 'btn') {
             this.onDelete = true;
             this.delete(this.drawing);
-        } else {
-            if (this.drawingIndex === 1) {
-                if (this.drawingService.canvas.toDataURL() !== this.drawingService.blankCanvasDataUrl) {
-                    if (confirm('Voulez vous abandonner vos changements actuel ?')) this.drawImage();
-                } else this.drawImage();
-            }
+            return;
         }
-    }
-    drawImage(): void {
-        this.drawingService.baseCtx.clearRect(0, 0, this.drawingService.canvas.width, this.drawingService.canvas.height);
-        const image = new Image();
-        image.src = this.drawing.imageData;
-        this.resizeCanvas(image);
-        this.drawingService.baseCtx.drawImage(image, 0, 0, image.width, image.height);
-    }
-    resizeCanvas(image: HTMLImageElement): void {
-        this.drawingService.canvasContainer.style.width = image.width + 'px';
-        this.drawingService.canvasContainer.style.height = image.height + 'px';
-        this.drawingService.canvas.width = this.drawingService.previewCanvas.width = image.width;
-        this.drawingService.canvas.height = this.drawingService.previewCanvas.height = image.height;
+        if (this.drawingIndex === 1) {
+            if (this.drawingService.canvas.toDataURL() !== this.drawingService.blankCanvasDataUrl) {
+                if (confirm('Voulez vous abandonner vos changements actuel ?'))
+                    DrawingCardComponent.drawImage(this.drawingService, this.drawing.imageData);
+                return;
+            }
+            DrawingCardComponent.drawImage(this.drawingService, this.drawing.imageData);
+        }
     }
 }

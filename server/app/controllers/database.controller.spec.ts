@@ -1,3 +1,4 @@
+/* tslint:disable */
 import { expect } from 'chai';
 import { describe } from 'mocha';
 import * as supertest from 'supertest';
@@ -7,7 +8,6 @@ import { Application } from '../app';
 import { DatabaseService } from '../services/database.service';
 import { TYPES } from '../types';
 
-// tslint:disable:no-any
 const HTTP_STATUS_OK = 200;
 const HTTP_STATUS_NOT_FOUND = 404;
 const HTTP_STATUS_CREATED = 201;

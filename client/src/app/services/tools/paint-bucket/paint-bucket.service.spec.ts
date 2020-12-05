@@ -1,6 +1,5 @@
 /* tslint:disable */
 import { TestBed } from '@angular/core/testing';
-import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 //import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { PaintBucketService } from './paint-bucket.service';
@@ -13,7 +12,7 @@ describe('PaintBucketService', () => {
 
     let baseCtxStub: CanvasRenderingContext2D;
     let canvasStub: HTMLCanvasElement;
-   
+
     mouseEvent = {
         offsetX: 25,
         offsetY: 25,
@@ -27,9 +26,20 @@ describe('PaintBucketService', () => {
     } as MouseEvent;
 
     beforeEach(() => {
-        baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
-        previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
-        canvasStub = canvasTestHelper.canvas;
+        const canvas = document.createElement('canvas') as HTMLCanvasElement;
+        canvas.width = 100;
+        canvas.height = 100;
+
+        const drawCanvas = document.createElement('canvas') as HTMLCanvasElement;
+        drawCanvas.width = 100;
+        drawCanvas.height = 100;
+
+        const selectionCanvas = document.createElement('canvas');
+        selectionCanvas.width = 100;
+        selectionCanvas.height = 100;
+        baseCtxStub = canvas.getContext('2d') as CanvasRenderingContext2D;
+        previewCtxStub = drawCanvas.getContext('2d') as CanvasRenderingContext2D;
+        canvasStub = canvas;
         drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
 
         TestBed.configureTestingModule({

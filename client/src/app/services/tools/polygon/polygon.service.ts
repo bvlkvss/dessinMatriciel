@@ -1,17 +1,9 @@
 import { Injectable } from '@angular/core';
 import { PolygonCommand } from '@app/classes/polygon-command';
-import { Tool } from '@app/classes/tool';
+import { MouseButton, Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
-
-export enum MouseButton {
-    Left = 0,
-    Middle = 1,
-    Right = 2,
-    Back = 3,
-    Forward = 4,
-}
 
 export enum polygonStyle {
     Empty = 0,
@@ -28,20 +20,24 @@ const PREVIEW_CIRCLE_LINE_DASH_MAX = 15;
     providedIn: 'root',
 })
 export class PolygonService extends Tool {
-    isOut: boolean = false;
-    numberSides: number = 3;
+    isOut: boolean;
+    numberSides: number;
     currentPos: Vec2;
     startPos: Vec2;
     polygonStyle: polygonStyle;
-
-    widthPolygon: number = 0;
-    heightPolygon: number = 0;
-    incertitude: number = 0;
+    widthPolygon: number;
+    heightPolygon: number;
+    incertitude: number;
 
     constructor(drawingService: DrawingService, protected invoker: UndoRedoService) {
         super(drawingService);
         this.toolAttributes = ['strokeWidth', 'polygonStyle'];
         this.polygonStyle = 2;
+        this.widthPolygon = 0;
+        this.isOut = false;
+        this.numberSides = MINIMUM_NUMBER_OF_SIDES;
+        this.heightPolygon = 0;
+        this.incertitude = 0;
         this.lineWidth = 1;
         this.primaryColor = '#000000';
         this.secondaryColor = '#000000';
@@ -128,8 +124,6 @@ export class PolygonService extends Tool {
     onMouseMove(event: MouseEvent): void {
         if (this.mouseDown) {
             this.currentPos = this.getPositionFromMouse(event);
-
-            // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.drawPolygon(this.drawingService.previewCtx, this.mouseDownCoord, this.currentPos);
         }

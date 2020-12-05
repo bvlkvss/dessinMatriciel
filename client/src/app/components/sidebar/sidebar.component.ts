@@ -1,13 +1,16 @@
-import { Component, HostListener, Input, OnChanges } from '@angular/core';
+import { Component, ElementRef, HostListener, Input, OnChanges, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { CarrouselComponent } from '@app/components/carrousel/carrousel.component';
 import { ExportComponent } from '@app/components/export/export.component';
 import { SavingComponent } from '@app/components/saving/saving.component';
 import { UserGuideComponent } from '@app/components/user-guide/user-guide.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { ToolsManagerService } from '@app/services/tools-manager/tools-manager.service';
+import { GridService } from '@app/services/tools/grid/grid.service';
 import { SelectionService } from '@app/services/tools/selection/selection.service';
-import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
+import { TextService } from '@app/services/tools/text/text.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
+import { Subscription } from 'rxjs';
 
 const COLOR_STRING_LENGTH = 7;
 
@@ -17,18 +20,33 @@ const COLOR_STRING_LENGTH = 7;
     styleUrls: ['./sidebar.component.scss'],
 })
 export class SidebarComponent implements OnChanges {
+    subscription: Subscription;
+    currentToolName: string;
+    @Input() primaryColor: string = this.tools.currentTool.primaryColor.slice(0, COLOR_STRING_LENGTH);
+    @Input() secondaryColor: string = this.tools.currentTool.secondaryColor.slice(0, COLOR_STRING_LENGTH);
+    isRevertClicked: boolean;
+    attributeBarIsActive: boolean;
+
     constructor(
         private tools: ToolsManagerService,
         protected drawingService: DrawingService,
         protected invoker: UndoRedoService,
         private dialog: MatDialog,
-    ) {}
-    @Input() primaryColor: string = this.tools.currentTool.primaryColor.slice(0, COLOR_STRING_LENGTH);
-    @Input() secondaryColor: string = this.tools.currentTool.secondaryColor.slice(0, COLOR_STRING_LENGTH);
-    isRevertClicked: boolean = false;
-    attributeBarIsActive: boolean = false;
+    ) {
+        this.isRevertClicked = false;
+        this.attributeBarIsActive = false;
+    }
 
+    @ViewChild('icons', { static: false }) toolIcons: ElementRef<HTMLCanvasElement>;
     ngOnChanges(): void {
+        this.subscription = this.drawingService.getMessage().subscribe((message: string) => {
+            const numberOfTools = this.toolIcons.nativeElement.getElementsByTagName('a').length;
+            for (let i = 0; i < numberOfTools; i++) {
+                this.toolIcons.nativeElement.getElementsByTagName('a')[i].classList.remove('active');
+            }
+            this.toolIcons.nativeElement.querySelector('#' + message)?.setAttribute('class', 'active');
+        });
+
         if (!this.isRevertClicked) {
             const primColorDiv = document.querySelector('.color-box1') as HTMLElement;
             const secondColorDiv = document.querySelector('.color-box2') as HTMLElement;
@@ -51,6 +69,7 @@ export class SidebarComponent implements OnChanges {
             ExportComponent.isExportOpen = true;
         }
     }
+
     openCarousel(): void {
         this.dialog.open(CarrouselComponent, {
             maxWidth: 'none',
@@ -58,6 +77,7 @@ export class SidebarComponent implements OnChanges {
             width: 'auto',
             minWidth: '615px',
         });
+        // CarrouselComponent.isCarrouselOpen = true;
     }
 
     openSavingDialog(): void {
@@ -72,12 +92,10 @@ export class SidebarComponent implements OnChanges {
             this.attributeBarIsActive = true;
             this.togglecanvas('drawing-container-open');
             this.toggleAttributeBar('attribute-open');
-        } else {
-            if (this.tools.getTools().get(toolName) === this.tools.currentTool) {
-                this.attributeBarIsActive = false;
-                this.togglecanvas('drawing-container');
-                this.toggleAttributeBar('attribute-close');
-            }
+        } else if (this.tools.getTools().get(toolName) === this.tools.currentTool) {
+            this.attributeBarIsActive = false;
+            this.togglecanvas('drawing-container');
+            this.toggleAttributeBar('attribute-close');
         }
     }
 
@@ -111,14 +129,16 @@ export class SidebarComponent implements OnChanges {
 
     changeTools(name: string): void {
         this.drawingService.restoreCanvasState();
+        if (this.tools.currentTool instanceof TextService && name !== 'text') (this.tools.currentTool as TextService).drawConfirmedText(true);
         this.tools.setTools(name);
-        const numberOfTools = document.getElementsByTagName('a').length;
-
-        for (let i = 0; i < numberOfTools; i++) {
-            document.getElementsByTagName('a')[i].classList.remove('active');
+        if (this.tools.currentTool instanceof GridService) {
+            this.tools.currentTool.onKeyDown({ key: 'g' } as KeyboardEvent);
         }
-
-        document.getElementById(name)?.setAttribute('class', 'active');
+        const numberOfTools = this.toolIcons.nativeElement.getElementsByTagName('a').length;
+        for (let i = 0; i < numberOfTools; i++) {
+            this.toolIcons.nativeElement.getElementsByTagName('a')[i].classList.remove('active');
+        }
+        this.toolIcons.nativeElement.querySelector('#' + name)?.setAttribute('class', 'active');
     }
 
     revertColors(): void {
@@ -147,11 +167,10 @@ export class SidebarComponent implements OnChanges {
     }
 
     warningMessage(): void {
-        if (window.confirm('Warning, your current sketch will be deleted.\n Do you want to proceed to the main menu?')) {
+        if (window.confirm('Le dessin sera effacé.\n Voulez-vous continuer vers le menu?')) {
             location.replace('main-page.component.html');
         }
     }
-
     @HostListener('window:keydown', ['$event'])
     onkeyDownWindow(event: KeyboardEvent): void {
         if (event.ctrlKey && event.key === 'e') {

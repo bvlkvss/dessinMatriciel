@@ -1,22 +1,29 @@
 /* tslint:disable */
+import { Target } from '@angular/compiler';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatDialog } from '@angular/material/dialog';
 import { Tool } from '@app/classes/tool';
 import { DrawingComponent } from '@app/components/drawing/drawing.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ResizingService } from '@app/services/resizing/resizing.service';
+import { ToolsManagerService } from '@app/services/tools-manager/tools-manager.service';
 import { BrushService } from '@app/services/tools/brush/brush.service';
 import { EllipseService } from '@app/services/tools/ellipse/ellipse.service';
 import { EraserService } from '@app/services/tools/eraser/eraser-service';
+import { GridService } from '@app/services/tools/grid/grid.service';
 import { LineService } from '@app/services/tools/line/line.service';
 import { MagicWandService } from '@app/services/tools/magic-wand/magic-wand.service';
 import { PaintBucketService } from '@app/services/tools/paint-bucket/paint-bucket.service';
 import { PencilService } from '@app/services/tools/pencil/pencil-service';
 import { PipetteService } from '@app/services/tools/pipette/pipette.service';
+import { PlumeService } from '@app/services/tools/plume/plume.service';
 import { PolygonService } from '@app/services/tools/polygon/polygon.service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle.service';
 import { SelectionService } from '@app/services/tools/selection/selection.service';
-import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
-import { MockUndoRedoService } from '../attributebar/attributebar.component.spec';
+import { SprayPaintService } from '@app/services/tools/spray-paint/spray-paint.service';
+import { StampService } from '@app/services/tools/stamp/stamp.service';
+import { TextService } from '@app/services/tools/text/text.service';
+import { MockUndoRedoService } from '../attribute-bar/attributebar.component.spec';
 
 export class MockDrawingService extends DrawingService {
     resizeCanvas(): void {
@@ -35,6 +42,8 @@ describe('DrawingComponent', () => {
     let fixture: ComponentFixture<DrawingComponent>;
     let toolManagerStub: ToolsManagerService;
     let pencilStub: PencilService;
+    let plumeStub: PlumeService;
+    let sprayPaintStub: SprayPaintService;
     let brushStub: BrushService;
     let rectangleStub: RectangleService;
     let eraserStub: EraserService;
@@ -47,9 +56,13 @@ describe('DrawingComponent', () => {
     let undoRedoServiceMock: MockUndoRedoService;
     let resizingServiceMock: MockResizingService;
     let polygonStub: PolygonService;
+    let textStub: TextService;
+    let matDialogSpy: jasmine.SpyObj<MatDialog>;
+    let gridStub;
     let magicWandStub: MagicWandService;
 
 
+    let stampStub: StampService;
     beforeEach(async(() => {
         drawServiceMock = new MockDrawingService();
         undoRedoServiceMock = new MockUndoRedoService(drawServiceMock);
@@ -63,32 +76,28 @@ describe('DrawingComponent', () => {
         pipetteStub = new PipetteService(drawServiceMock);
         selectionStub = new SelectionService(drawServiceMock, undoRedoServiceMock);
         polygonStub = new PolygonService(drawServiceMock, undoRedoServiceMock);
-        magicWandStub = new MagicWandService(drawServiceMock,undoRedoServiceMock);
-        toolManagerStub = new ToolsManagerService(
-            pencilStub,
-            brushStub,
-            rectangleStub,
-            eraserStub,
-            ellipseStub,
-            lineStub,
-            selectionStub,
-            paintBucketStub,
-            polygonStub,
-            pipetteStub,
-            magicWandStub,
-        );
+        textStub = new TextService(drawServiceMock);
+        plumeStub = new PlumeService(drawServiceMock, undoRedoServiceMock);
+        sprayPaintStub = new SprayPaintService(drawServiceMock, undoRedoServiceMock);
+        gridStub = new GridService(drawServiceMock);
+        stampStub = new StampService(drawServiceMock);
 
+        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub, selectionStub, paintBucketStub, polygonStub, pipetteStub, textStub, sprayPaintStub, plumeStub, gridStub, magicWandStub,stampStub);
+        toolManagerStub.currentTool = toolManagerStub.getTools().get('pencil') as Tool;
+        matDialogSpy = jasmine.createSpyObj('MatDialog', ['open']);
         TestBed.configureTestingModule({
             declarations: [DrawingComponent],
             providers: [
                 { provide: DrawingService, useValue: drawServiceMock },
                 { provide: ToolsManagerService, useValue: toolManagerStub },
                 { provide: ResizingService, useValue: resizingServiceMock },
+                { provide: MatDialog, useValue: matDialogSpy },
             ],
         }).compileComponents();
     }));
 
     beforeEach(() => {
+
         fixture = TestBed.createComponent(DrawingComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
@@ -145,6 +154,7 @@ describe('DrawingComponent', () => {
     });
 
     it(" should call the tool's key up when receiving a key up event", () => {
+        (matDialogSpy.openDialogs as any) = { length: 0 };
         const event = {} as KeyboardEvent;
         const KeyboardEventSpy = spyOn(toolManagerStub.currentTool, 'onKeyUp').and.callThrough();
         component.onKeyUp(event);
@@ -158,6 +168,28 @@ describe('DrawingComponent', () => {
         });
         component.onKeyDown(event);
         expect(toolManagerStub.currentTool).toEqual(toolManagerStub.getTools().get('brush') as Tool);
+    });
+
+    it('on keyDownWindow should not call keyDown if it is input ', () => {
+        let target_ = { className: 'textInput' };
+        let event = {
+            key: 'w',
+            target: target_ as Target
+        } as KeyboardEvent;
+        component.onKeyDown = jasmine.createSpy();
+        component.onkeyDownWindow(event);
+        expect(component.onKeyDown).not.toHaveBeenCalled();
+    });
+
+    it('on keyDownWindow should call keyDown if it is not input ', () => {
+        let target_ = { className: 'notInput' };
+        let event = {
+            key: 'g',
+            target: target_ as Target
+        } as KeyboardEvent;
+        component.onKeyDown = jasmine.createSpy();
+        component.onkeyDownWindow(event);
+        expect(component.onKeyDown).toHaveBeenCalled();
     });
 
     it('on key e pressed current tool should change to eraser ', () => {
@@ -351,6 +383,7 @@ describe('DrawingComponent', () => {
     });
 
     it('should call tool.onKeyUp when onKeyUp', () => {
+        (matDialogSpy.openDialogs as any) = { length: 0 };
         let event = {} as KeyboardEvent;
         let onKeyUpSpy = spyOn<any>((component as any).tools.currentTool, 'onKeyUp');
         resizingServiceMock.resizing = true;
@@ -362,6 +395,7 @@ describe('DrawingComponent', () => {
         let event = {
             key: 'o',
             ctrlKey: true,
+            target: { className: 'no' } as Target,
             preventDefault: jasmine.createSpy() as any,
             stopPropagation: jasmine.createSpy() as any,
         } as KeyboardEvent;
@@ -371,7 +405,7 @@ describe('DrawingComponent', () => {
     });
 
     it('should not call newDrawing when another key is pressed', () => {
-        let event = {} as KeyboardEvent;
+        let event = { target: { className: 'no' } as Target } as KeyboardEvent;
         let newDrawingSpy = spyOn<any>(drawServiceMock, 'newDrawing');
         component.onkeyDownWindow(event);
         expect(newDrawingSpy).not.toHaveBeenCalled();

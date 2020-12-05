@@ -31,7 +31,7 @@ export class DatabaseController {
         this.router.get('/localServer', async (req: Request, res: Response, next: NextFunction) => {
             const promises: any = [];
             this.databaseService.drawingsContainer = [];
-            this.databaseService.getImageData();
+            await this.databaseService.getImageData();
             this.databaseService
                 .update()
                 .then(() => {
@@ -39,7 +39,7 @@ export class DatabaseController {
                         promises.push(this.databaseService.getDrawingWithId(element.replace('.png', '')));
                     });
                     Promise.all(promises)
-                        .then((drawing: any) => {
+                        .then(() => {
                             for (let i = 0; i < this.databaseService.drawingsContainer.length; i++) {
                                 this.databaseService.drawingsContainer[i].imageData =
                                     'data:image/png;base64,' + this.databaseService.serverImagesData[i];
@@ -75,7 +75,5 @@ export class DatabaseController {
                     res.status(Httpstatus.StatusCodes.NOT_FOUND).send(error.message);
                 });
         });
-
-        // Populate the database, call only once
     }
 }

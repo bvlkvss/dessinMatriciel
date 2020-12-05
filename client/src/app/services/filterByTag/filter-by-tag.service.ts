@@ -12,7 +12,6 @@ export class FilterByTagService {
     drawingsToShow: Drawings[];
     initDrawings: Drawings[];
     found: boolean;
-
     filter(tag: string[]): void {
         const tmp = this.filtredDrawings(this.initDrawings, tag) as Drawings[];
         if (tmp && tmp.length > 0) {
@@ -23,7 +22,6 @@ export class FilterByTagService {
             this.updateDrawingsToShow(tmp);
         }
     }
-
     ignoreFilter(): void {
         this.emptydrawings();
         this.initDrawings.forEach((draw) => {

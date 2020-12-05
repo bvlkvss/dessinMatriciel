@@ -1,4 +1,5 @@
-body {
+.bodyMock{
+    width: 16px;
     user-select: none;
 }
 
@@ -127,7 +128,7 @@ body {
 
 .icon-bar2 {
     position: relative;
-    top: 200px;
+    top: 60px;
     width: 50px;
     background-color: rgb(64, 61, 85);
     left: 4px;
