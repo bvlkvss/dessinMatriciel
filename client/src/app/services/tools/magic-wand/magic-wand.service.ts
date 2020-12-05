@@ -153,13 +153,15 @@ export class MagicWandService extends Tool {
 
     onKeyUp(event: KeyboardEvent): void {
         const obj = this.magicSelectionObj;
-        if (!event.shiftKey && obj.currenthandle !== DEFAULT_HANDLE_INDEX) {
-            obj.rectangleService.toSquare = false;
-            obj.resizeSelection();
+        if (obj) {
+            if (!event.shiftKey && obj.currenthandle !== DEFAULT_HANDLE_INDEX) {
+                obj.rectangleService.toSquare = false;
+                obj.resizeSelection();
+            }
+            obj.keysDown[event.key] = event.type === 'keydown';
+            obj.mouseDownInsideSelection = false;
+            obj.continuousMove = !event.key.includes('Arrow');
         }
-        obj.keysDown[event.key] = event.type === 'keydown';
-        obj.mouseDownInsideSelection = false;
-        obj.continuousMove = !event.key.includes('Arrow');
     }
 
     onKeyDown(event: KeyboardEvent): void {

@@ -199,10 +199,6 @@ export class DrawingComponent implements AfterViewInit, OnInit {
                 this.tools.getTools().get('magic-wand') === this.tools.currentTool
             ) {
                 this.clipboard.onKeyDown(event, this.tools.currentTool as SelectionService | MagicWandService);
-                if (this.tools.currentTool instanceof MagicWandService && (event.key === 'x' || event.key === 'v')) {
-                    // (this.tools.getTools().get('selection') as SelectionService).selectionStyle = 0;
-                    // this.tools.currentTool = this.tools.getTools().get('selection') as Tool;
-                }
             }
         } else if (event.ctrlKey || (event.ctrlKey && event.shiftKey && (event.key === 'z' || event.key === 'Z'))) {
             this.invoker.onKeyDown(event);
