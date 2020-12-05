@@ -3,6 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Tool } from '@app/classes/tool';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ResizingService } from '@app/services/resizing/resizing.service';
+import { SelectionClipboardService } from '@app/services/selection-clipboard/selection-clipboard.service';
 import { ToolsManagerService } from '@app/services/tools-manager/tools-manager.service';
 import { GridService } from '@app/services/tools/grid/grid.service';
 import { MagicWandService } from '@app/services/tools/magic-wand/magic-wand.service';
@@ -40,6 +41,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         private resizer: ResizingService,
         private invoker: UndoRedoService,
         private dialog: MatDialog,
+        private clipboard: SelectionClipboardService,
     ) {}
 
     ngOnInit(): void {
@@ -205,6 +207,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         }
     }
 
+    // tslint:disable-next-line:cyclomatic-complexity
     @HostListener('window:keydown', ['$event'])
     onkeyDownWindow(event: KeyboardEvent): void {
         const element = event.target as HTMLElement;
@@ -216,6 +219,14 @@ export class DrawingComponent implements AfterViewInit, OnInit {
             event.stopPropagation();
             this.drawingService.newDrawing();
             this.drawingService.resizeCanvas();
+        } else if ((event.ctrlKey && (event.key === 'x' || event.key === 'c' || event.key === 'v')) || event.key === 'Delete') {
+            event.stopPropagation();
+            if (
+                this.tools.getTools().get('selection') === this.tools.currentTool ||
+                this.tools.getTools().get('magic-wand') === this.tools.currentTool
+            ) {
+                this.clipboard.onKeyDown(event, this.tools.currentTool as SelectionService | MagicWandService);
+            }
         } else if (event.ctrlKey || (event.ctrlKey && event.shiftKey && (event.key === 'z' || event.key === 'Z'))) {
             this.invoker.onKeyDown(event);
         } else if (event.ctrlKey && event.key === 'a') {
@@ -228,6 +239,8 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     onKeyDown(event: KeyboardEvent): void {
         if (!(this.tools.currentTool instanceof TextService)) {
             if (event.ctrlKey && event.key === 'o') {
+                return;
+            } else if (event.ctrlKey) {
                 return;
             } else if (this.keyBindings.has(event.key)) {
                 this.drawingService.restoreCanvasState();

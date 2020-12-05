@@ -85,12 +85,9 @@ export class MagicWandService extends Tool {
         if (this.mouseDown) {
             const obj = this.magicSelectionObj;
             obj.updateSelectionNodes();
-            // pour bien update les handles lors d'un flip
-            //////////////////////////////////////////
             obj.width = Math.abs(obj.width);
             obj.height = Math.abs(obj.height);
             obj.updateResizingHandles();
-            ////////////////////////////////////////
             obj.rectangleService.mouseDown = false;
             obj.rectangleService.toSquare = false;
             obj.mouseDownInsideSelection = false;
@@ -152,8 +149,8 @@ export class MagicWandService extends Tool {
     }
 
     onKeyUp(event: KeyboardEvent): void {
-        if (this.isMagicSelectionActivated) {
-            const obj = this.magicSelectionObj;
+        const obj = this.magicSelectionObj;
+        if (obj) {
             if (!event.shiftKey && obj.currenthandle !== DEFAULT_HANDLE_INDEX) {
                 obj.rectangleService.toSquare = false;
                 obj.resizeSelection();
@@ -186,7 +183,7 @@ export class MagicWandService extends Tool {
         }
     }
 
-    private clearSelection(): void {
+    clearSelection(): void {
         this.resetMagicWandCanvas();
         this.selectionPixels = [];
         this.magicSelectionObj.isActive = false;
@@ -338,7 +335,6 @@ export class MagicWandService extends Tool {
                     this.areColorsMatching(this.startingColor, imageData, pixelPosition + RGBA_NUMBER_OF_COMPONENTS)
                 )
                     pixelStack.push({ x: newPosition.x + 1, y: newPosition.y });
-
                 pixelPosition += canvas.width * RGBA_NUMBER_OF_COMPONENTS;
             }
         }

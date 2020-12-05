@@ -530,7 +530,8 @@ describe('TextService', () => {
     expect(service.firstCursorPosition).toEqual({ x: 12, y: 21 });
     expect(measureTextSpy).toHaveBeenCalled();
   });
-  it('drawBox should drawBox at specified position with font size 70', () => {
+  
+  /*it('drawBox should drawBox at specified position with font size 70', () => {
     const findLongestLineSpy = spyOn<any>(service, "findLongestLine").and.callFake(() => { return 250; });
     service.fontSize = 70;
     service.lines = [" "];
@@ -542,8 +543,9 @@ describe('TextService', () => {
     expect(service.rectEndPoint).toEqual({ x: 268, y: 107.5 });
     expect(service.rectHeight).toEqual(87.5);
     expect(findLongestLineSpy).toHaveBeenCalled();
-  });
-  it('drawBox should drawBox at specified position with font size 30', () => {
+  });*/
+
+  /*it('drawBox should drawBox at specified position with font size 30', () => {
     const findLongestLineSpy = spyOn<any>(service, "findLongestLine").and.callFake(() => { return 50; });
     service.fontSize = 30;
     service.lines = [" "];
@@ -554,7 +556,7 @@ describe('TextService', () => {
     expect(service.rectEndPoint).toEqual({ x: 0, y: 0 });
     expect(service.rectHeight).toBeCloseTo(40, 0);
     expect(findLongestLineSpy).toHaveBeenCalled();
-  });
+  });*/
   it('onClick should launch the setInterval if first click', () => {
     const setToInitStateSpy = spyOn<any>(service, "setToInitState").and.stub();
     const setIntervalSpy = spyOn<any>(global, "setInterval").and.stub();

@@ -2,6 +2,7 @@ import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { EllipseService } from '@app/services/tools/ellipse/ellipse.service';
+import { MagicWandSelection } from '@app/services/tools/magic-wand/magic-wand-selection';
 import { RectangleService, RectangleStyle } from '@app/services/tools/rectangle/rectangle.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { DEFAULT_HANDLE_INDEX, HANDLES, HANDLE_LENGTH, Resizable } from './resizable';
@@ -37,6 +38,8 @@ export abstract class Movable extends Tool implements Rotationable, Resizable {
     selectionStyle: number;
     selectionActivated: boolean;
     mouseDownInsideSelection: boolean;
+    magicSelectionObj: MagicWandSelection;
+
     getRotatedGeniric: (point: Vec2, centre: Vec2, angle: number) => Vec2 = Rotationable.prototype.getRotatedGeniric;
     getUnrotatedPos: (element: Vec2) => Vec2 = Rotationable.prototype.getUnrotatedPos;
     getRotatedPos: (element: Vec2) => Vec2 = Rotationable.prototype.getRotatedPos;
@@ -72,8 +75,14 @@ export abstract class Movable extends Tool implements Rotationable, Resizable {
     eraseSelectionFromBase(endPos: Vec2): void {}
     clipImageWithEllipse(): void {}
     resetSelection(): void {}
+    eraseSelectionOnDelete(): void {}
 
-    protected drawSelectionOnBase(): void {
+    clearPreview(): void {
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
+    }
+
+    drawSelectionOnBase(): void {
+        console.log('called');
         const centre = {
             x: (this.selectionStartPoint.x + this.selectionEndPoint.x) / 2,
             y: (this.selectionStartPoint.y + this.selectionEndPoint.y) / 2,
@@ -173,7 +182,7 @@ export abstract class Movable extends Tool implements Rotationable, Resizable {
         this.selectionEndPoint = newEnd;
     }
 
-    redrawSelection(redrawAfterRotate: boolean = false): void {
+    redrawSelection(redrawAfterRotate: boolean = false, toSquare: boolean = false): void {
         if (this.firstSelectionMove) {
             this.selectionCommand = new SelectionCommand(this.selectionStartPoint, this, this.drawingService);
             this.selectionCommand.setEndPosErase(this.selectionEndPoint);
@@ -196,21 +205,22 @@ export abstract class Movable extends Tool implements Rotationable, Resizable {
         this.drawingService.previewCtx.save();
         const posx = -this.width / 2;
         const posy = -this.height / 2;
-        this.drawingService.previewCtx.save();
         this.drawingService.previewCtx.translate(this.selectionStartPoint.x + this.width / 2, this.selectionStartPoint.y + this.height / 2);
         this.drawingService.previewCtx.rotate((this.degres * Math.PI) / PI_DEGREE);
+        this.drawingService.previewCtx.save();
         if (this.selectionStyle === 1) {
+            this.ellipseService.setStyle(0);
             this.ellipseService.drawEllipse(
                 this.drawingService.previewCtx,
                 {
-                    x: -this.width / 2,
-                    y: -this.height / 2,
+                    x: -posx,
+                    y: -posy,
                 } as Vec2,
                 {
-                    x: this.width / 2,
-                    y: this.height / 2,
+                    x: posx,
+                    y: posy,
                 } as Vec2,
-                false,
+                toSquare,
                 false,
             );
             this.drawingService.previewCtx.clip();
@@ -220,10 +230,20 @@ export abstract class Movable extends Tool implements Rotationable, Resizable {
             this.flipSelection();
         }
         this.drawingService.previewCtx.drawImage(this.selectionData, posx, posy, this.width, this.height);
-
         this.drawingService.previewCtx.restore();
+        this.rectangleService.drawRectangle(
+            this.drawingService.previewCtx,
+            {
+                x: -posx,
+                y: -posy,
+            } as Vec2,
+            {
+                x: posx,
+                y: posy,
+            } as Vec2,
+            false,
+        );
         this.drawingService.previewCtx.restore();
-        this.rectangleService.drawRectangle(this.drawingService.previewCtx, this.selectionStartPoint, this.selectionEndPoint, false);
         this.updateResizingHandles();
         this.drawResizingHandles();
     }
