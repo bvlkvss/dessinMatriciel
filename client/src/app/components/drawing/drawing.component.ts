@@ -1,5 +1,6 @@
-import { AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, DoCheck, ElementRef, HostListener, IterableDiffer, IterableDiffers, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { Command } from '@app/classes/command';
 import { Tool } from '@app/classes/tool';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ResizingService } from '@app/services/resizing/resizing.service';
@@ -20,7 +21,7 @@ import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
     templateUrl: './drawing.component.html',
     styleUrls: ['./drawing.component.scss'],
 })
-export class DrawingComponent implements AfterViewInit, OnInit {
+export class DrawingComponent implements AfterViewInit, OnInit, DoCheck {
     @ViewChild('baseCanvas', { static: false }) baseCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('container') container: ElementRef<HTMLDivElement>;
     @ViewChild('resizeContainer') resizeContainer: ElementRef<HTMLDivElement>;
@@ -34,6 +35,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     private previewCtx: CanvasRenderingContext2D;
     private gridCtx: CanvasRenderingContext2D;
     private mouseFired: boolean;
+    private iterableDiffer: IterableDiffer<Command>;
 
     constructor(
         private drawingService: DrawingService,
@@ -42,8 +44,16 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         private invoker: UndoRedoService,
         private dialog: MatDialog,
         private clipboard: SelectionClipboardService,
-    ) {}
-
+        iDiffers: IterableDiffers,
+    ) {
+        this.iterableDiffer = iDiffers.find([]).create();
+    }
+    ngDoCheck(): void {
+        const changesUndo = this.iterableDiffer.diff(this.invoker.undoStack);
+        if (changesUndo) {
+            localStorage.setItem('drawing', this.baseCtx.canvas.toDataURL());
+        }
+    }
     ngOnInit(): void {
         this.drawingService.resizeCanvas();
     }
@@ -87,6 +97,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         this.baseCtx.save();
         this.previewCtx.save();
         this.gridCtx.save();
+        this.drawingService.afterViewObservable.next();
     }
 
     initResizing(event: MouseEvent): void {
