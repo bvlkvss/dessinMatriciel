@@ -12,15 +12,13 @@ const STARTING_OPACITY = 50;
     providedIn: 'root',
 })
 export class GridService extends Tool {
-    squareSize: number;
-    isGridActive: boolean;
+    static squareSize: number = STARTING_SQUARE_SIZE;
+    static isGridActive: boolean = false;
     sizeObservable: Subject<string>;
     constructor(drawingService: DrawingService) {
         super(drawingService);
         this.toolAttributes = ['opacity', 'squareSize'];
-        this.squareSize = STARTING_SQUARE_SIZE;
         this.opacity = STARTING_OPACITY;
-        this.isGridActive = false;
         this.sizeObservable = new Subject<string>();
     }
 
@@ -30,12 +28,12 @@ export class GridService extends Tool {
 
     onKeyDown(event: KeyboardEvent): void {
         if (event.key === 'g') {
-            this.isGridActive ? this.clearGrid() : this.displayGrid();
+            GridService.isGridActive ? this.clearGrid() : this.displayGrid();
         }
         if (event.key === '+') {
-            this.changeSquareSize(this.squareSize + SQUARE_SIZE_DIFFERENCE);
+            this.changeSquareSize(GridService.squareSize + SQUARE_SIZE_DIFFERENCE);
         } else if (event.key === '-') {
-            this.changeSquareSize(this.squareSize - SQUARE_SIZE_DIFFERENCE);
+            this.changeSquareSize(GridService.squareSize - SQUARE_SIZE_DIFFERENCE);
         }
     }
     changeOpacity(opacity: number): void {
@@ -48,7 +46,7 @@ export class GridService extends Tool {
     changeSquareSize(size: number): void {
         if (size >= MIN_SQUARE_SIZE && size <= MAX_SQUARE_SIZE) {
             this.sizeObservable.next(size.toString());
-            this.squareSize = size;
+            GridService.squareSize = size;
             this.drawingService.clearCanvas(this.drawingService.gridCtx);
             this.displayGrid();
         }
@@ -56,7 +54,7 @@ export class GridService extends Tool {
 
     clearGrid(): void {
         this.drawingService.clearCanvas(this.drawingService.gridCtx);
-        this.isGridActive = false;
+        GridService.isGridActive = false;
     }
 
     displayGrid(): void {
@@ -66,19 +64,19 @@ export class GridService extends Tool {
         const opacity = this.opacity / MAX_SQUARE_SIZE;
         ctx.strokeStyle = 'black';
         ctx.globalAlpha = opacity;
-        for (let i = 0; i < width; i += this.squareSize) {
+        for (let i = 0; i < width; i += GridService.squareSize) {
             ctx.beginPath();
             ctx.moveTo(i, 0);
             ctx.lineTo(i, height);
             ctx.stroke();
         }
 
-        for (let i = 0; i < height; i += this.squareSize) {
+        for (let i = 0; i < height; i += GridService.squareSize) {
             ctx.beginPath();
             ctx.moveTo(0, i);
             ctx.lineTo(width, i);
             ctx.stroke();
         }
-        this.isGridActive = true;
+        GridService.isGridActive = true;
     }
 }

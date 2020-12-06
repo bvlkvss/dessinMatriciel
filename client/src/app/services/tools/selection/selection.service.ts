@@ -243,6 +243,7 @@ export class SelectionService extends Movable {
         this.toolAttributes = [];
         this.firstSelectionMove = true;
         this.degres = 0;
+        this.shouldAlign = true;
     }
 
     selectAllCanvas(): void {
