@@ -29,7 +29,7 @@ export class FilterTagComponent implements OnInit {
         this.updateTags(this.filter.initDrawings);
     }
 
-    updateTags(drawings: Drawings[]): void {
+    private updateTags(drawings: Drawings[]): void {
         const tmp = [] as string[];
         for (const draw of drawings) {
             for (const tag of draw.tag) {

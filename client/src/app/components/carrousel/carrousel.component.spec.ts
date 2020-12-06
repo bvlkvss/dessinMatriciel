@@ -51,9 +51,9 @@ describe('CarrouselComponent', () => {
   });
 
   it('addDrawing should  add a drawing if it exists and not add if it does exists', () => {
-    component.addDrawing(drawingMock);
-    component.addDrawing(drawingMock);
-    component.addDrawing(drawingMock2);
+    component['addDrawing'](drawingMock);
+    component['addDrawing'](drawingMock);
+    component['addDrawing'](drawingMock2);
 
     expect(component.drawingsToShow.length).toBe(2);
   });
@@ -100,7 +100,7 @@ describe('CarrouselComponent', () => {
   it('next should add the next drawing to the array and pop the previous one', () => {
     const drawingMock3: Drawings = { name: 'test3', tag: ['tagtest3'], imageData: 'datatest' };
     const drawingMock4: Drawings = { name: 'test4', tag: ['tagtest4'], imageData: 'datatest' };
-    component.middlePosition = 1;
+    component['middlePosition'] = 1;
     component.allDrawings.push(drawingMock);
     component.allDrawings.push(drawingMock2);
     component.allDrawings.push(drawingMock3);
@@ -117,7 +117,7 @@ describe('CarrouselComponent', () => {
     expect(component.drawingsToShow).not.toContain(drawingMock);
   });
   it('previous should add the previous drawing to the array and pop the next one', () => {
-    component.middlePosition = 1;
+    component['middlePosition'] = 1;
     component.allDrawings.push(drawingMock);
     component.allDrawings.push(drawingMock2);
     component.allDrawings.push(drawingMock3);
@@ -134,7 +134,7 @@ describe('CarrouselComponent', () => {
     expect(component.drawingsToShow).not.toContain(drawingMock3);
   });
   it('swipeDrawings should swipe the two drawings position inside the array', () => {
-    component.middlePosition = 1;
+    component['middlePosition'] = 1;
     component.allDrawings.push(drawingMock);
     component.allDrawings.push(drawingMock2);
     // initial state of drawingsToShow array
@@ -148,44 +148,44 @@ describe('CarrouselComponent', () => {
     expect(component.drawingsToShow[1]).toEqual(drawingMock);
   });
   it('getDrawings should set spinnerVisible to true and emptyCarrouselMessage to false ', () => {
-    component.getDrawings().subscribe(() => { });
+    component['getDrawings']().subscribe(() => { });
     expect(component.spinnerVisible).toEqual(true);
     expect(component.emptyCarrouselMessage).toEqual(false);
   });
   it('getDrawings should return an array of drawings   ', () => {
     let drawingsMock: Drawings[] = [drawingMock, drawingMock2];
-    spyOn(component, 'getDrawings').and.returnValue(of(drawingsMock));
-    component.getDrawings().subscribe((drawings) => {
+    spyOn<any>(component, 'getDrawings').and.returnValue(of(drawingsMock));
+    component['getDrawings']().subscribe((drawings) => {
       expect(drawings).toEqual(drawingsMock);
     });
 
   });
   it('fillCaroussel should call getDrawings and  fill allDrawings  and drawingsToShow   ', () => {
     let drawingsMock: Drawings[] = [drawingMock, drawingMock2, drawingMock3, drawingMock4];
-    let spy = spyOn(component, 'getDrawings').and.returnValue(of(drawingsMock));
+    let spy = spyOn<any>(component, 'getDrawings').and.returnValue(of(drawingsMock));
 
-    component.fillCarousel();
+    component['fillCarousel']();
     expect(spy).toHaveBeenCalled();
     expect(component.allDrawings).toEqual(drawingsMock);
     drawingsMock.pop();
     expect(component.drawingsToShow).toEqual(drawingsMock);
-    expect(component.step).toEqual(3);
-    expect(component.middlePosition).toEqual(1);
+    expect(component['step']).toEqual(3);
+    expect(component['middlePosition']).toEqual(1);
     expect(component.spinnerVisible).toEqual(false);
 
   });
   it('deleteFromServer should should set spinnerVisible to true and emptyCarrouselMessage to false  ', () => {
     const drawingMock = { name: 'test1', tag: ['tag'], imageData: 'imageData', _id: 'ok' };
     component.allDrawings.push(drawingMock);
-    component.deleteFromServer(0).subscribe(() => { });
+    component['deleteFromServer'](0).subscribe(() => { });
     expect(component.spinnerVisible).toEqual(true);
     expect(component.emptyCarrouselMessage).toEqual(false);
   });
   it('deleteFromServer should return the deletedElement   ', () => {
     const drawingMock = { name: 'test1', tag: ['tag'], imageData: 'imageData', _id: 'ok' };
-    spyOn(component, 'deleteFromServer').and.returnValue(of(drawingMock));
+    spyOn<any>(component, 'deleteFromServer').and.returnValue(of(drawingMock));
     component.allDrawings.push(drawingMock);
-    component.deleteFromServer(0).subscribe((drawings) => {
+    component['deleteFromServer'](0).subscribe((drawings) => {
       expect(drawings).toEqual(drawingMock);
     });
   });
@@ -196,9 +196,9 @@ describe('CarrouselComponent', () => {
       { name: 'test3', tag: ['tag'], imageData: 'imageData', _id: 'ok3' },
       { name: 'test4', tag: ['tag'], imageData: 'imageData', _id: 'ok4' },
     ];
-    let deleteSpy = spyOn(component, 'deleteFromServer').and.returnValue(of(drawingsMock[1]));
-    let addDrawingSpy = spyOn(component, 'addDrawing').and.callThrough();
-    component.middlePosition = 1;
+    let deleteSpy = spyOn<any>(component, 'deleteFromServer').and.returnValue(of(drawingsMock[1]));
+    let addDrawingSpy = spyOn<any>(component, 'addDrawing').and.callThrough();
+    component['middlePosition'] = 1;
     drawingsMock.forEach((element) => {
       component.allDrawings.push(element);
     });
@@ -228,10 +228,10 @@ describe('CarrouselComponent', () => {
       { name: 'test3', tag: ['tag'], imageData: 'imageData', _id: 'ok3' },
       { name: 'test4', tag: ['tag'], imageData: 'imageData', _id: 'ok4' },
     ];
-    let addDrawingSpy = spyOn(component, 'addDrawing').and.callThrough();
-    spyOn(component, 'deleteFromServer').and.returnValue(of(drawingsMock[1]));
+    let addDrawingSpy = spyOn<any>(component, 'addDrawing').and.callThrough();
+    spyOn<any>(component, 'deleteFromServer').and.returnValue(of(drawingsMock[1]));
 
-    component.middlePosition = 10;
+    component['middlePosition'] = 10;
     drawingsMock.forEach((element) => {
       component.allDrawings.push(element);
     });
@@ -244,7 +244,7 @@ describe('CarrouselComponent', () => {
     expect(addDrawingSpy).toHaveBeenCalled();
   });
   it(' in case of error, delete should change  carousel attribute"s value   ', () => {
-    spyOn(component, 'deleteFromServer').and.returnValue(throwError({ status: 404 }));
+    spyOn<any>(component, 'deleteFromServer').and.returnValue(throwError({ status: 404 }));
     component.allDrawings.push(drawingMock);
     component.drawingsToShow.push(drawingMock);
     component.delete(drawingMock);
@@ -253,8 +253,8 @@ describe('CarrouselComponent', () => {
     expect(component.carouselVisible).toEqual(true);
   });
   it(' in case of error, getDrawings should change  carousel attribute"s value   ', () => {
-    spyOn(component, 'getDrawings').and.returnValue(throwError({ status: 404 }));
-    component.fillCarousel();
+    spyOn<any>(component, 'getDrawings').and.returnValue(throwError({ status: 404 }));
+    component['fillCarousel']();
     expect(component.spinnerVisible).toEqual(false);
     expect(component.errorMessageVisible).toEqual(true);
   });

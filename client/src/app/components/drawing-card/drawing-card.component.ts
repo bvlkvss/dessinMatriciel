@@ -62,7 +62,7 @@ export class DrawingCardComponent implements AfterViewChecked {
                 '-webkit-box-shadow: 0px 0px 20px 3px rgba(63, 159, 190, 0.75);-moz-box-shadow: 0px 0px 20px 3px rgba(63, 159, 190, 0.75);box-shadow: 0px 0px 20px 3px rgba(63, 159, 190, 0.75); opacity:1',
             );
     }
-    setImageSize(): void {
+    private setImageSize(): void {
         const ratio = this.image.nativeElement.naturalWidth / this.image.nativeElement.naturalHeight;
         if (ratio >= 1) {
             this.image.nativeElement.width = CONTAINER_WIDTH;

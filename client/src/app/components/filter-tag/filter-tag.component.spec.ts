@@ -54,13 +54,13 @@ describe('FilterTagComponent', () => {
 
     it('should update initdraw', () => {
         httpTestController.expectOne({ method: 'GET', url: 'http://localhost:3000/api/drawings/localServer' });
-        component.updateTags(filterStub.initDrawings);
+        component['updateTags'](filterStub.initDrawings);
         expect(component.tags.length).toEqual(4);
     });
 
     it('SHOULD INGORE DUPLICATE', () => {
         httpTestController.expectOne({ method: 'GET', url: 'http://localhost:3000/api/drawings/localServer' });
-        component.updateTags(filterStub.initDrawings);
+        component['updateTags'](filterStub.initDrawings);
         expect(component.tags.length).toEqual(4);
     });
 
@@ -87,14 +87,14 @@ describe('FilterTagComponent', () => {
 
     it('shoudl call update tag if we call onclick ', () => {
         httpTestController.expectOne({ method: 'GET', url: 'http://localhost:3000/api/drawings/localServer' });
-        let spy = spyOn(component, 'updateTags').and.callThrough();
+        let spy = spyOn<any>(component, 'updateTags').and.callThrough();
         component.onClick();
         expect(spy).toHaveBeenCalled();
     });
 
     it('shoudl call update tag if we call onclick ', () => {
         httpTestController.expectOne({ method: 'GET', url: 'http://localhost:3000/api/drawings/localServer' });
-        let spy = spyOn(component, 'updateTags').and.callThrough();
+        let spy = spyOn<any>(component, 'updateTags').and.callThrough();
         component.onClick();
         expect(spy).toHaveBeenCalled();
     });

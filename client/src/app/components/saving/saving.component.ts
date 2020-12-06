@@ -62,7 +62,6 @@ export class SavingComponent {
 
     add(name: string): void {
         this.validateName(name);
-
         if (this.nameIsValid) {
             this.getTags();
             this.savingService.addDrawing(this.image, { name: this.drawingName, tag: this.tagArr }).subscribe(

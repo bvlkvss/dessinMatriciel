@@ -19,7 +19,7 @@ const DRAWINGS_TO_SHOW_LIMIT = 3;
 export class CarrouselComponent implements AfterViewChecked {
     allDrawings: Drawings[];
     drawingsToShow: Drawings[];
-    middlePosition: number;
+    private middlePosition: number;
     previousCount: number;
     errorMessageVisible: boolean;
     spinnerVisible: boolean;
@@ -27,7 +27,7 @@ export class CarrouselComponent implements AfterViewChecked {
     emptyCarrouselMessage: boolean;
     carouselVisible: boolean;
     drawing: Drawings;
-    step: number;
+    private step: number;
     @ViewChildren('button') buttons: QueryList<ElementRef<HTMLButtonElement>>;
     @ViewChildren('card') cards: QueryList<DrawingCardComponent>;
 
@@ -48,7 +48,7 @@ export class CarrouselComponent implements AfterViewChecked {
         if (event.key === 'ArrowLeft' && this.drawingsToShow.length >= 2) this.previous();
         else if (event.key === 'ArrowRight' && this.drawingsToShow.length >= 2) this.next();
     }
-    fillCarousel(): void {
+    private fillCarousel(): void {
         this.getDrawings().subscribe(
             (drawings) => {
                 this.allDrawings = drawings;
@@ -79,15 +79,15 @@ export class CarrouselComponent implements AfterViewChecked {
                 element.nativeElement.style.visibility = 'visible';
             });
     }
-    getDrawings(): Observable<Drawings[]> {
+    private getDrawings(): Observable<Drawings[]> {
         this.spinnerVisible = true;
         this.emptyCarrouselMessage = false;
         return this.httpService.getRequest();
     }
-    addDrawing(drawing: Drawings): void {
+    private addDrawing(drawing: Drawings): void {
         if (!this.drawingsToShow.find((element) => element === drawing)) this.drawingsToShow.push(drawing);
     }
-    deleteFromServer(drawingToDelete: number): Observable<object> {
+    private deleteFromServer(drawingToDelete: number): Observable<object> {
         this.spinnerVisible = true;
         this.carouselVisible = false;
         return this.httpService.deleteRequest(this.allDrawings[drawingToDelete]._id);

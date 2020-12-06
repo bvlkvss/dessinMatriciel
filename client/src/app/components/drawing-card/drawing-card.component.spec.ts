@@ -58,7 +58,7 @@ describe('DrawingCardComponent', () => {
     expect(emitSpy).toHaveBeenCalled();
   });
   it('ngAfterViewChecked should call setImageSize ', () => {
-    const spy = spyOn(component, 'setImageSize').and.callThrough();
+    const spy = spyOn<any>(component, 'setImageSize').and.callThrough();
     component.ngAfterViewChecked();
     expect(spy).toHaveBeenCalled();
   });
