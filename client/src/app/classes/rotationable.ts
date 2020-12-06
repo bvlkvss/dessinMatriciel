@@ -45,5 +45,7 @@ export class Rotationable {
         } else if (event.deltaY > 0) {
             this.degres -= event.altKey ? 1 : DEFAULT_DEGREE_STEP;
         }
+
+         this.shouldAlign=true;
     }
 }

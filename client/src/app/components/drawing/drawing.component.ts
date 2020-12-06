@@ -119,7 +119,7 @@ export class DrawingComponent implements AfterViewInit, OnInit, DoCheck {
     stopResize(event: MouseEvent): void {
         if (this.resizer.resizing) {
             this.resizer.stopResize(event, this.baseCanvas.nativeElement);
-            if (this.tools.currentTool instanceof GridService && this.tools.currentTool.isGridActive) this.tools.currentTool.displayGrid();
+            if (this.tools.currentTool instanceof GridService && GridService.isGridActive) this.tools.currentTool.displayGrid();
             this.previewCanvas.nativeElement.style.borderBottom = '2px solid #000000';
             this.previewCanvas.nativeElement.style.borderRight = '2px solid #000000';
         }

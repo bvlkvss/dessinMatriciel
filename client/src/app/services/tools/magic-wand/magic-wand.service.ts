@@ -188,6 +188,7 @@ export class MagicWandService extends Tool {
         this.selectionPixels = [];
         this.magicSelectionObj.isActive = false;
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        this.shouldAlign=true;
     }
 
     private createSelectionObj(): MagicWandSelection {
