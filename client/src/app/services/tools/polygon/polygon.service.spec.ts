@@ -151,6 +151,7 @@ describe('PolygonService', () => {
     });
 
     it('onMouseOut should set y to 0 if less than 0', () => {
+        service.polygonStyle = 1;
         service.mouseDownCoord = { x: 6, y: 20 };
         let mouseOutEvent = {
             offsetX: 25,
@@ -189,7 +190,7 @@ describe('PolygonService', () => {
         service.mouseDown = true;
         service.isOut = true;
         service.onMouseUp(mouseEvent);
-        expect(drawPolygonSpy).toHaveBeenCalledWith(service['drawingService'].baseCtx, service.mouseDownCoord, service.mouseOutCoord, false);
+        expect(drawPolygonSpy).toHaveBeenCalledWith(service['drawingService'].baseCtx, service.mouseDownCoord, service.mouseOutCoord);
     });
 
     it('onMouseMove should  not call drawPolygon if mouse is not down', () => {
@@ -211,24 +212,23 @@ describe('PolygonService', () => {
     it('if center of polygon - width is out of bounds change width', () => {
         service.mouseDownCoord = { x: 10, y: 200 };
         service.widthPolygon = 50;
-        service.calibratePolygon(1);
+        (service as any).calibratePolygon(1);
         expect(service.widthPolygon).toEqual(9);
     });
 
     it('if center of polygon - height is out of bounds, change height', () => {
         service.mouseDownCoord = { x: 60, y: 40 };
         service.heightPolygon = 50;
-        service.calibratePolygon(1);
+        (service as any).calibratePolygon(1);
         expect(service.heightPolygon).toEqual(39);
     });
 
-    //pas encore reussii
     it('if polygoneStyle equals 0 and number of sides is greater than 3, incertitude should equal half of width of stroke', () => {
         service.setStyle(0);
         service.setNumberSides(5);
         service.lineWidth = 10;
-        service.calibratePolygon = jasmine.createSpy().and.callFake(() => {});
-        service.drawPolygon(previewCtxStub, { x: 80, y: 80 }, { x: 120, y: 55 }, true);
+        (service as any).calibratePolygon = jasmine.createSpy().and.callFake(() => {});
+        service.drawPolygon(previewCtxStub, { x: 80, y: 80 }, { x: 120, y: 55 });
         expect(service.incertitude).toEqual(service.lineWidth / 2);
     });
 
@@ -236,8 +236,8 @@ describe('PolygonService', () => {
         service.setStyle(0);
         service.setNumberSides(3);
         service.lineWidth = 10;
-        service.calibratePolygon = jasmine.createSpy().and.callFake(() => {});
-        service.drawPolygon(previewCtxStub, { x: 80, y: 80 }, { x: 120, y: 55 }, true);
+        (service as any).calibratePolygon = jasmine.createSpy().and.callFake(() => {});
+        service.drawPolygon(previewCtxStub, { x: 80, y: 80 }, { x: 120, y: 55 });
         expect(service.incertitude).toEqual(service.lineWidth);
     });
 

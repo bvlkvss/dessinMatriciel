@@ -30,6 +30,6 @@ export class PolygonCommand extends Command {
         this.tool.primaryColor = this.primaryColor;
         this.tool.secondaryColor = this.secondaryColor;
         this.tool.opacity = this.opacity;
-        this.tool.drawPolygon(this.drawingService.baseCtx, this.startPos, this.endPos, false);
+        this.tool.drawPolygon(this.drawingService.baseCtx, this.startPos, this.endPos);
     }
 }
