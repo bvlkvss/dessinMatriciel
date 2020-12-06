@@ -21,7 +21,7 @@ export enum HANDLES {
     six = 6,
     seven = 7,
     eight = 8,
-    center = 9
+    center = 9,
 }
 export class Resizable {
     checkFlip(this: Movable): number {

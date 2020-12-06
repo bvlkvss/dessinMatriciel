@@ -13,8 +13,8 @@ const STARTING_OPACITY = 50;
 })
 export class GridService extends Tool {
     static squareSize: number = STARTING_SQUARE_SIZE;
-    sizeObservable: Subject<string>;
     static isGridActive: boolean = false;
+    sizeObservable: Subject<string>;
     constructor(drawingService: DrawingService) {
         super(drawingService);
         this.toolAttributes = ['opacity', 'squareSize'];

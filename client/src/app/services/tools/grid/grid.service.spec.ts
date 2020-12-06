@@ -47,12 +47,12 @@ describe('GridService', () => {
 
     it('should change squareSize when changeSquareSize is called', () => {
         service.changeSquareSize(10);
-        expect(service.squareSize).toEqual(10);
+        expect(GridService.squareSize).toEqual(10);
     });
 
     it('should not change squareSize when changeSquareSize is called if value is without limits', () => {
         service.changeSquareSize(102);
-        expect(service.squareSize).toEqual(25);
+        expect(GridService.squareSize).toEqual(10);
     });
 
     it('should change opacity when changeOpacity is called', () => {
@@ -67,14 +67,14 @@ describe('GridService', () => {
 
     it('should call displayGrid if grid was not displayed and g is pressed', () => {
         let event = { key: 'g' } as KeyboardEvent;
-        service.isGridActive = false;
+        GridService.isGridActive = false;
         service.displayGrid = jasmine.createSpy().and.callThrough();
         service.onKeyDown(event);
         expect(service.displayGrid).toHaveBeenCalled();
     });
     it('should not call displayGrid if grid was displayed and g is pressed', () => {
         let event = { key: 'g' } as KeyboardEvent;
-        service.isGridActive = true;
+        GridService.isGridActive = true;
         service.displayGrid = jasmine.createSpy().and.callThrough();
         service.onKeyDown(event);
         expect(service.displayGrid).not.toHaveBeenCalled();
@@ -82,7 +82,7 @@ describe('GridService', () => {
 
     it('should call changeSquareSize if + is pressed', () => {
         let event = { key: '+' } as KeyboardEvent;
-        service.squareSize = 10;
+        GridService.squareSize = 10;
         service.changeSquareSize = jasmine.createSpy();
         service.onKeyDown(event);
         expect(service.changeSquareSize).toHaveBeenCalledWith(15);
@@ -90,7 +90,7 @@ describe('GridService', () => {
 
     it('should call changeSquareSize if - is pressed', () => {
         let event = { key: '-' } as KeyboardEvent;
-        service.squareSize = 10;
+        GridService.squareSize = 10;
         service.changeSquareSize = jasmine.createSpy();
         service.onKeyDown(event);
         expect(service.changeSquareSize).toHaveBeenCalledWith(5);
@@ -101,6 +101,7 @@ describe('GridService', () => {
         expect(x).toEqual(service.sizeObservable);
     });
     it('should call lineTo 100/25 *2 times if squareSize is 25 and height and width are 100 when displayGrid is called', () => {
+        GridService.squareSize=25;
         service['drawingService'].gridCtx.lineTo = jasmine.createSpy().and.callThrough();
         service.displayGrid();
         expect(service['drawingService'].gridCtx.lineTo).toHaveBeenCalledTimes(8);

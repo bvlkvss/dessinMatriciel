@@ -46,6 +46,6 @@ export class Rotationable {
             this.degres -= event.altKey ? 1 : DEFAULT_DEGREE_STEP;
         }
 
-         this.shouldAlign=true;
+        this.shouldAlign = true;
     }
 }
