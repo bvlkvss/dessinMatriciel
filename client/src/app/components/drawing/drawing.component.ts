@@ -261,8 +261,9 @@ export class DrawingComponent implements AfterViewInit, OnInit {
                         break;
                     }
                 }
-            } else this.tools.currentTool.onKeyDown(event);
-        } else this.tools.currentTool.onKeyDown(event);
+            }
+        }
+        this.tools.currentTool.onKeyDown(event);
     }
 
     get width(): number {
