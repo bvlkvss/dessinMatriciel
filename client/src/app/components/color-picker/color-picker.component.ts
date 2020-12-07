@@ -9,13 +9,8 @@
  ***************************************************************************************/
 
 import { Component, Input } from '@angular/core';
+import { Const } from '@app/classes/constants';
 import { ToolsManagerService } from '@app/services/tools-manager/tools-manager.service';
-
-const DEFAULT_OPACITY = 100;
-const DEFAULT_COLOR = '#000000';
-const MAX_COLOR_VALUE = 255;
-const PERCENTAGE_DIVIDER = 100;
-const MAX_SAVED_COLORS = 10;
 
 @Component({
     selector: 'app-color-picker',
@@ -32,11 +27,11 @@ export class ColorPickerComponent {
 
     constructor(private tools: ToolsManagerService) {
         this.isPrimaryColor = true;
-        this.opacity = DEFAULT_OPACITY;
-        this.color = DEFAULT_COLOR;
+        this.opacity = Const.DEFAULT_OPACITY;
+        this.color = Const.DEFAULT_COLOR;
     }
     setColor(): void {
-        const stringValue: string = Math.round((this.opacity * MAX_COLOR_VALUE) / PERCENTAGE_DIVIDER).toString(16);
+        const stringValue: string = Math.round((this.opacity * Const.MAX_COLOR_VALUE) / Const.PERCENTAGE_DIVIDER).toString(16);
         this.tools.setColor(this.color + stringValue, this.isPrimaryColor);
     }
     setColorOnClick(event: MouseEvent, color: string): void {
@@ -46,13 +41,13 @@ export class ColorPickerComponent {
         } else if (event.button === 2) {
             this.isPrime = false;
         }
-        const stringValue: string = Math.round((this.opacity * MAX_COLOR_VALUE) / PERCENTAGE_DIVIDER).toString(16);
+        const stringValue: string = Math.round((this.opacity * Const.MAX_COLOR_VALUE) / Const.PERCENTAGE_DIVIDER).toString(16);
         this.tools.setColor(this.color + stringValue, this.isPrime);
     }
 
     setOpacity(inputValue: number): void {
         this.opacity = inputValue;
-        if (inputValue >= PERCENTAGE_DIVIDER) this.opacity = DEFAULT_OPACITY;
+        if (inputValue >= Const.PERCENTAGE_DIVIDER) this.opacity = Const.DEFAULT_OPACITY;
         else if (inputValue <= 0) this.opacity = 0;
         this.setColor();
     }
@@ -72,7 +67,7 @@ export class ColorPickerComponent {
 
     addColor(color: string): void {
         if (!this.lastColors.find((element) => element === color)) {
-            if (this.lastColors.length < MAX_SAVED_COLORS) {
+            if (this.lastColors.length < Const.MAX_SAVED_COLORS) {
                 this.lastColors.push(color);
                 return;
             }

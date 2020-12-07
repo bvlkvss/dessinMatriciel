@@ -1,4 +1,15 @@
-import { AfterViewInit, Component, DoCheck, ElementRef, HostListener, IterableDiffer, IterableDiffers, OnInit, ViewChild } from '@angular/core';
+import {
+    AfterViewInit,
+    Component,
+    DoCheck,
+    ElementRef,
+    HostListener,
+    IterableDiffer,
+    IterableDiffers,
+    OnDestroy,
+    OnInit,
+    ViewChild,
+} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Command } from '@app/classes/command';
 import { Tool } from '@app/classes/tool';
@@ -14,14 +25,12 @@ import { StampService } from '@app/services/tools/stamp/stamp.service';
 import { TextService } from '@app/services/tools/text/text.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
-// TODO : Avoir un fichier séparé pour les constantes ?
-
 @Component({
     selector: 'app-drawing',
     templateUrl: './drawing.component.html',
     styleUrls: ['./drawing.component.scss'],
 })
-export class DrawingComponent implements AfterViewInit, OnInit, DoCheck {
+export class DrawingComponent implements AfterViewInit, OnInit, DoCheck, OnDestroy {
     @ViewChild('baseCanvas', { static: false }) baseCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('container') container: ElementRef<HTMLDivElement>;
     @ViewChild('resizeContainer') resizeContainer: ElementRef<HTMLDivElement>;
@@ -29,14 +38,12 @@ export class DrawingComponent implements AfterViewInit, OnInit, DoCheck {
     // On utilise ce canvas pour dessiner sans affecter le dessin final
     @ViewChild('previewCanvas', { static: false }) previewCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('gridCanvas', { static: false }) gridCanvas: ElementRef<HTMLCanvasElement>;
-
     private keyBindings: Map<string, Tool> = new Map();
     private baseCtx: CanvasRenderingContext2D;
     private previewCtx: CanvasRenderingContext2D;
     private gridCtx: CanvasRenderingContext2D;
     private mouseFired: boolean;
     private iterableDiffer: IterableDiffer<Command>;
-
     constructor(
         private drawingService: DrawingService,
         private tools: ToolsManagerService,
@@ -53,6 +60,10 @@ export class DrawingComponent implements AfterViewInit, OnInit, DoCheck {
         if (changesUndo) {
             localStorage.setItem('drawing', this.baseCtx.canvas.toDataURL());
         }
+    }
+    ngOnDestroy(): void {
+        console.log('Okosksodksds');
+        location.replace('main-page.component.html');
     }
     ngOnInit(): void {
         this.drawingService.resizeCanvas();

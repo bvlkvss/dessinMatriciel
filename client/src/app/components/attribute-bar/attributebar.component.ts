@@ -1,6 +1,7 @@
 import { AfterViewChecked, AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { MatButtonToggleChange } from '@angular/material/button-toggle';
 import { MatSelectChange } from '@angular/material/select';
+import { Const } from '@app/classes/constants';
 import { Tool } from '@app/classes/tool';
 import { ToolsManagerService } from '@app/services/tools-manager/tools-manager.service';
 import { BrushService } from '@app/services/tools/brush/brush.service';
@@ -10,21 +11,6 @@ import { PlumeService } from '@app/services/tools/plume/plume.service';
 import { StampService } from '@app/services/tools/stamp/stamp.service';
 import { TextService } from '@app/services/tools/text/text.service';
 import { Subscription } from 'rxjs';
-
-const MAX_WIDTH_VALUE = 100;
-const MAX_DROPLETS_WIDTH_VALUE = 10;
-const MAX_FREQUENCY_VALUE = 999;
-const IMAGE_ZOOM = 60;
-const MAX_DEGREE = 360;
-const MAX_INPUT_POSITIVE_LENGTH = 3;
-const MAX_INPUT_NEGATIVE_LENGTH = 4;
-
-const PIPETTE_IMAGE_WIDTH = 10;
-const PIPETTE_IMAGE_HEIGHT = 10;
-const PIPETTE_IMAGE_OFFSET_Y = -5;
-const PIPETTE_IMAGE_OFFSET_X = 3;
-const RECT_STROKE = 4;
-const RECT_SIZE = 5;
 
 @Component({
     selector: 'app-attributebar',
@@ -109,7 +95,7 @@ export class AttributeBarComponent implements OnInit, AfterViewChecked, AfterVie
         });
     }
     setDegree(degree: number): void {
-        degree %= MAX_DEGREE;
+        degree %= Const.MAX_DEGREE;
         this.degreeValue = degree.toString(10);
         (this.tools.currentTool as StampService).setDegree(degree);
     }
@@ -123,7 +109,7 @@ export class AttributeBarComponent implements OnInit, AfterViewChecked, AfterVie
     private pickColor(isPrimary: boolean): void {
         const height = this.pipetteCanvas.nativeElement.height / 2;
         const width = this.pipetteCanvas.nativeElement.width / 2;
-        const data = this.pipetteCtx.getImageData(width + 2, height + RECT_STROKE, 1, 1);
+        const data = this.pipetteCtx.getImageData(width + 2, height + Const.RECT_STROKE, 1, 1);
         this.tools.setColor('#' + this.pipetteService.rgbaToHex(this.pipetteService.getColorFromData(data)), isPrimary);
     }
     private drawPixelContour(): void {
@@ -131,7 +117,7 @@ export class AttributeBarComponent implements OnInit, AfterViewChecked, AfterVie
         const width = this.pipetteCanvas.nativeElement.width / 2;
         this.pipetteCtx.beginPath();
         this.pipetteCtx.strokeStyle = 'red';
-        this.pipetteCtx.strokeRect(width - 1, height + 1, RECT_SIZE, RECT_SIZE);
+        this.pipetteCtx.strokeRect(width - 1, height + 1, Const.RECT_SIZE, Const.RECT_SIZE);
     }
     private drawImage(arg: Arguments): void {
         const x = arg.event.offsetX;
@@ -141,14 +127,14 @@ export class AttributeBarComponent implements OnInit, AfterViewChecked, AfterVie
         this.pipetteCtx.imageSmoothingQuality = 'high';
         this.pipetteCtx.drawImage(
             arg.image,
-            Math.abs(x - PIPETTE_IMAGE_OFFSET_X),
-            Math.abs(y + PIPETTE_IMAGE_OFFSET_Y),
-            PIPETTE_IMAGE_WIDTH,
-            PIPETTE_IMAGE_HEIGHT,
+            Math.abs(x - Const.PIPETTE_IMAGE_OFFSET_X),
+            Math.abs(y + Const.PIPETTE_IMAGE_OFFSET_Y),
+            Const.PIPETTE_IMAGE_WIDTH,
+            Const.PIPETTE_IMAGE_HEIGHT,
             0,
-            PIPETTE_IMAGE_OFFSET_Y,
-            IMAGE_ZOOM,
-            IMAGE_ZOOM,
+            Const.PIPETTE_IMAGE_OFFSET_Y,
+            Const.IMAGE_ZOOM,
+            Const.IMAGE_ZOOM,
         );
     }
     setFontStyle(style: MatButtonToggleChange): void {
@@ -184,7 +170,7 @@ export class AttributeBarComponent implements OnInit, AfterViewChecked, AfterVie
         const WIDTH_ALLOWED_CHARS_REGEXP = /\b[0-9]+\b/;
         const target = event.target as HTMLInputElement;
         if (target.selectionStart === 0 && this.checkIfContainAttribute('stamp')) {
-            target.maxLength = event.key === '-' ? MAX_INPUT_NEGATIVE_LENGTH : MAX_INPUT_POSITIVE_LENGTH;
+            target.maxLength = event.key === '-' ? Const.MAX_INPUT_NEGATIVE_LENGTH : Const.MAX_INPUT_POSITIVE_LENGTH;
             return;
         }
         if (event.key !== 'Backspace' && event.key !== 'Enter' && !WIDTH_ALLOWED_CHARS_REGEXP.test(event.key)) {
@@ -219,18 +205,18 @@ export class AttributeBarComponent implements OnInit, AfterViewChecked, AfterVie
 
     setTolerance(input: string): void {
         this.tolerance = input;
-        if (Number(this.tolerance) > MAX_WIDTH_VALUE) this.tolerance = '100';
+        if (Number(this.tolerance) > Const.MAX_WIDTH_VALUE) this.tolerance = '100';
         this.tools.setBucketTolerance(Number(this.tolerance));
     }
     setSquareSize(input: string): void {
         this.squareSize = input;
-        if (Number(this.squareSize) > MAX_WIDTH_VALUE) this.squareSize = '100';
+        if (Number(this.squareSize) > Const.MAX_WIDTH_VALUE) this.squareSize = '100';
         (this.tools.currentTool as GridService).changeSquareSize(Number(this.squareSize));
     }
 
     setOpacity(input: string): void {
         this.opacity = input;
-        if (Number(this.opacity) > MAX_WIDTH_VALUE) this.opacity = '100';
+        if (Number(this.opacity) > Const.MAX_WIDTH_VALUE) this.opacity = '100';
         (this.tools.currentTool as GridService).changeOpacity(Number(this.opacity));
     }
 
@@ -271,25 +257,25 @@ export class AttributeBarComponent implements OnInit, AfterViewChecked, AfterVie
 
     setDropletsWidth(input: string): void {
         this.dropletsWidthValue = input;
-        if (Number(this.dropletsWidthValue) > MAX_DROPLETS_WIDTH_VALUE) this.dropletsWidthValue = '10';
+        if (Number(this.dropletsWidthValue) > Const.MAX_DROPLETS_WIDTH_VALUE) this.dropletsWidthValue = '10';
         this.tools.setDropletsWidth(Number(this.dropletsWidthValue));
     }
 
     setFrequency(input: string): void {
         this.frequency = input;
-        if (Number(this.frequency) > MAX_FREQUENCY_VALUE) this.frequency = '999';
+        if (Number(this.frequency) > Const.MAX_FREQUENCY_VALUE) this.frequency = '999';
         this.tools.setFrequency(Number(this.frequency));
     }
 
     setRadius(input: string): void {
         this.radius = input;
-        if (Number(this.radius) > MAX_FREQUENCY_VALUE) this.radius = '70';
+        if (Number(this.radius) > Const.MAX_FREQUENCY_VALUE) this.radius = '70';
         this.tools.setRadius(Number(this.radius));
     }
 
     setLineLength(id: string): void {
         this.lenghtValue = id;
-        if (Number(this.lenghtValue) > MAX_WIDTH_VALUE) this.lenghtValue = '100';
+        if (Number(this.lenghtValue) > Const.MAX_WIDTH_VALUE) this.lenghtValue = '100';
         const plume = this.tools.currentTool as PlumeService;
         plume.setLineLength(Number(this.lenghtValue));
     }
@@ -302,7 +288,7 @@ export class AttributeBarComponent implements OnInit, AfterViewChecked, AfterVie
 
     setLineWidth(input: string): void {
         this.widthValue = input;
-        if (Number(this.widthValue) > MAX_WIDTH_VALUE) this.widthValue = '100';
+        if (Number(this.widthValue) > Const.MAX_WIDTH_VALUE) this.widthValue = '100';
         this.tools.setLineWidth(Number(this.widthValue));
     }
 }

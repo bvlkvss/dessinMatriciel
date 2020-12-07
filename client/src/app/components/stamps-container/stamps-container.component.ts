@@ -1,13 +1,7 @@
 import { Component } from '@angular/core';
+import { Const } from '@app/classes/constants';
 import { AttributeBarComponent } from '@app/components/attribute-bar/attributebar.component';
 import { StampService } from '@app/services/tools/stamp/stamp.service';
-
-const FACES_STAMPS_LENGHT = 18;
-const NATURE_STAMPS_LENGHT = 24;
-const FLAGS_STAMPS_LENGHT = 14;
-const CORONA_STAMPS_LENGHT = 17;
-const APPS_STAMPS_LENGHT = 13;
-const FOOD_STAMPS_LENGHT = 23;
 
 @Component({
     selector: 'app-stamps-container',
@@ -18,16 +12,16 @@ export class StampsContainerComponent {
     stamps: Map<string, string[]>;
     constructor(private stampService: StampService) {
         this.stamps = new Map<string, string[]>([
-            ['Visages', this.getImages('face', FACES_STAMPS_LENGHT)],
-            ['Nature', this.getImages('nature', NATURE_STAMPS_LENGHT)],
-            ['Animaux', this.getImages('animal', FLAGS_STAMPS_LENGHT)],
-            ['Drapeaux', this.getImages('flag', FLAGS_STAMPS_LENGHT)],
-            ['Corona', this.getImages('corona', CORONA_STAMPS_LENGHT)],
-            ['Apps', this.getImages('internet', APPS_STAMPS_LENGHT)],
-            ['Nourriture', this.getImages('food', FOOD_STAMPS_LENGHT)],
+            ['Visages', this.getImages('face', Const.FACES_STAMPS_LENGHT)],
+            ['Nature', this.getImages('nature', Const.NATURE_STAMPS_LENGHT)],
+            ['Animaux', this.getImages('animal', Const.FLAGS_STAMPS_LENGHT)],
+            ['Drapeaux', this.getImages('flag', Const.FLAGS_STAMPS_LENGHT)],
+            ['Corona', this.getImages('corona', Const.CORONA_STAMPS_LENGHT)],
+            ['Apps', this.getImages('internet', Const.APPS_STAMPS_LENGHT)],
+            ['Nourriture', this.getImages('food', Const.FOOD_STAMPS_LENGHT)],
         ]);
     }
-    // avoid pipe sorting
+    // avoid pipe sorting, see html file
     noOrder(): number {
         return 0;
     }

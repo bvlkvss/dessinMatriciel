@@ -1,4 +1,5 @@
 import { AfterViewChecked, Component, ElementRef, HostListener, QueryList, ViewChildren } from '@angular/core';
+import { Const } from '@app/classes/constants';
 import { DrawingCardComponent } from '@app/components/drawing-card/drawing-card.component';
 import { FilterByTagService } from '@app/services/filterByTag/filter-by-tag.service';
 import { HttpClientRequestService } from '@app/services/http-client-request/http-client-request.service';
@@ -10,7 +11,6 @@ export interface Drawings {
     tag: string[];
     _id?: string;
 }
-const DRAWINGS_TO_SHOW_LIMIT = 3;
 @Component({
     selector: 'app-carrousel',
     templateUrl: './carrousel.component.html',
@@ -53,7 +53,7 @@ export class CarrouselComponent implements AfterViewChecked {
             (drawings) => {
                 this.allDrawings = drawings;
                 this.spinnerVisible = false;
-                this.step = this.allDrawings.length >= DRAWINGS_TO_SHOW_LIMIT ? DRAWINGS_TO_SHOW_LIMIT : this.allDrawings.length;
+                this.step = this.allDrawings.length >= Const.DRAWINGS_TO_SHOW_LIMIT ? Const.DRAWINGS_TO_SHOW_LIMIT : this.allDrawings.length;
                 for (let i = 0; i < this.step; i++) {
                     if (this.allDrawings[i]) this.drawingsToShow.push(this.allDrawings[i]);
                 }
@@ -102,7 +102,7 @@ export class CarrouselComponent implements AfterViewChecked {
                 this.deleteErrorMessage = false;
                 this.allDrawings.splice(drawingToDelete, 1);
                 this.drawingsToShow.splice(drawingToHide, 1);
-                if (this.allDrawings.length >= DRAWINGS_TO_SHOW_LIMIT) {
+                if (this.allDrawings.length >= Const.DRAWINGS_TO_SHOW_LIMIT) {
                     if (this.allDrawings[this.middlePosition + 1]) this.addDrawing(this.allDrawings[this.middlePosition + 1]);
                     else this.addDrawing(this.allDrawings[1]);
                 }
@@ -115,7 +115,7 @@ export class CarrouselComponent implements AfterViewChecked {
         );
     }
     previous(): void {
-        if (this.allDrawings.length < DRAWINGS_TO_SHOW_LIMIT) {
+        if (this.allDrawings.length < Const.DRAWINGS_TO_SHOW_LIMIT) {
             this.swapDrawings();
             return;
         }
@@ -130,7 +130,7 @@ export class CarrouselComponent implements AfterViewChecked {
         this.drawingsToShow[1] = { ...tmp };
     }
     next(): void {
-        if (this.allDrawings.length < DRAWINGS_TO_SHOW_LIMIT) {
+        if (this.allDrawings.length < Const.DRAWINGS_TO_SHOW_LIMIT) {
             this.swapDrawings();
             return;
         }

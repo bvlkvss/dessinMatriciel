@@ -1,10 +1,9 @@
 import { AfterViewChecked, Component, ElementRef, EventEmitter, HostListener, Input, Output, ViewChild } from '@angular/core';
+import { Const } from '@app/classes/constants';
 import { Drawings } from '@app/components/carrousel/carrousel.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { Observable } from 'rxjs';
 
-const CONTAINER_WIDTH = 301;
-const CONTAINER_HEIGHT = 200;
 @Component({
     selector: 'app-drawing-card',
     templateUrl: './drawing-card.component.html',
@@ -65,11 +64,11 @@ export class DrawingCardComponent implements AfterViewChecked {
     private setImageSize(): void {
         const ratio = this.image.nativeElement.naturalWidth / this.image.nativeElement.naturalHeight;
         if (ratio >= 1) {
-            this.image.nativeElement.width = CONTAINER_WIDTH;
+            this.image.nativeElement.width = Const.CONTAINER_WIDTH;
             this.image.nativeElement.height = this.image.nativeElement.naturalHeight / ratio;
         } else {
             this.image.nativeElement.width = this.image.nativeElement.naturalWidth * ratio;
-            this.image.nativeElement.height = CONTAINER_HEIGHT;
+            this.image.nativeElement.height = Const.CONTAINER_HEIGHT;
         }
     }
     @HostListener('mousemove', ['$event'])

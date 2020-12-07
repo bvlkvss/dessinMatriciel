@@ -9,9 +9,7 @@
  ***************************************************************************************/
 
 import { AfterViewInit, Component, ElementRef, EventEmitter, HostListener, Input, OnChanges, Output, SimpleChanges, ViewChild } from '@angular/core';
-
-const STARTING_ARC_RADIUS = 10;
-const STARTING_LINE_WIDTH = 5;
+import { Const } from '@app/classes/constants';
 
 @Component({
     selector: 'app-color-palette',
@@ -65,8 +63,8 @@ export class ColorPaletteComponent implements AfterViewInit, OnChanges {
             this.ctx.strokeStyle = 'white';
             this.ctx.fillStyle = 'white';
             this.ctx.beginPath();
-            this.ctx.arc(this.selectedPosition.x, this.selectedPosition.y, STARTING_ARC_RADIUS, 0, 2 * Math.PI);
-            this.ctx.lineWidth = STARTING_LINE_WIDTH;
+            this.ctx.arc(this.selectedPosition.x, this.selectedPosition.y, Const.STARTING_ARC_RADIUS, 0, 2 * Math.PI);
+            this.ctx.lineWidth = Const.STARTING_LINE_WIDTH;
             this.ctx.stroke();
         }
     }

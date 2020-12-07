@@ -1,5 +1,6 @@
 import { Component, ElementRef, HostListener, Input, OnChanges, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { Const } from '@app/classes/constants';
 import { CarrouselComponent } from '@app/components/carrousel/carrousel.component';
 import { ExportComponent } from '@app/components/export/export.component';
 import { SavingComponent } from '@app/components/saving/saving.component';
@@ -12,8 +13,6 @@ import { TextService } from '@app/services/tools/text/text.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { Subscription } from 'rxjs';
 
-const COLOR_STRING_LENGTH = 7;
-
 @Component({
     selector: 'app-sidebar',
     templateUrl: './sidebar.component.html',
@@ -22,8 +21,8 @@ const COLOR_STRING_LENGTH = 7;
 export class SidebarComponent implements OnChanges {
     subscription: Subscription;
     currentToolName: string;
-    @Input() primaryColor: string = this.tools.currentTool.primaryColor.slice(0, COLOR_STRING_LENGTH);
-    @Input() secondaryColor: string = this.tools.currentTool.secondaryColor.slice(0, COLOR_STRING_LENGTH);
+    @Input() primaryColor: string = this.tools.currentTool.primaryColor.slice(0, Const.COLOR_STRING_LENGTH);
+    @Input() secondaryColor: string = this.tools.currentTool.secondaryColor.slice(0, Const.COLOR_STRING_LENGTH);
     isRevertClicked: boolean;
     attributeBarIsActive: boolean;
 
