@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Const } from '@app/classes/constants';
 import { PolygonCommand } from '@app/classes/polygon-command';
 import { MouseButton, Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
@@ -10,11 +11,6 @@ export enum polygonStyle {
     Filled_contour = 1,
     Filled = 2,
 }
-
-const MINIMUM_NUMBER_OF_SIDES = 3;
-const PREVIEW_CIRCLE_LINE_WIDTH = 3;
-const PREVIEW_CIRCLE_LINE_DASH_MIN = 5;
-const PREVIEW_CIRCLE_LINE_DASH_MAX = 15;
 
 @Injectable({
     providedIn: 'root',
@@ -35,7 +31,7 @@ export class PolygonService extends Tool {
         this.polygonStyle = 2;
         this.widthPolygon = 0;
         this.isOut = false;
-        this.numberSides = MINIMUM_NUMBER_OF_SIDES;
+        this.numberSides = Const.MINIMUM_NUMBER_OF_SIDES;
         this.heightPolygon = 0;
         this.incertitude = 0;
         this.lineWidth = 1;
@@ -140,7 +136,7 @@ export class PolygonService extends Tool {
             case 0:
                 this.drawPolygonContour(ctx, startPos);
                 ctx.stroke();
-                this.numberSides === MINIMUM_NUMBER_OF_SIDES ? (this.incertitude = this.lineWidth) : (this.incertitude = this.lineWidth / 2);
+                this.numberSides === Const.MINIMUM_NUMBER_OF_SIDES ? (this.incertitude = this.lineWidth) : (this.incertitude = this.lineWidth / 2);
                 break;
 
             case 1:
@@ -148,7 +144,7 @@ export class PolygonService extends Tool {
                 ctx.stroke();
                 ctx.fill();
 
-                this.numberSides === MINIMUM_NUMBER_OF_SIDES ? (this.incertitude = this.lineWidth) : (this.incertitude = this.lineWidth / 2);
+                this.numberSides === Const.MINIMUM_NUMBER_OF_SIDES ? (this.incertitude = this.lineWidth) : (this.incertitude = this.lineWidth / 2);
 
                 break;
 
@@ -176,8 +172,8 @@ export class PolygonService extends Tool {
     private drawPerimeterOnPreview(startPos: Vec2): void {
         const ctx = this.drawingService.previewCtx;
         ctx.beginPath();
-        ctx.setLineDash([PREVIEW_CIRCLE_LINE_DASH_MIN, PREVIEW_CIRCLE_LINE_DASH_MAX]);
-        ctx.lineWidth = PREVIEW_CIRCLE_LINE_WIDTH;
+        ctx.setLineDash([Const.PREVIEW_CIRCLE_LINE_DASH_MIN, Const.PREVIEW_CIRCLE_LINE_DASH_MAX]);
+        ctx.lineWidth = Const.PREVIEW_CIRCLE_LINE_WIDTH;
         ctx.strokeStyle = 'grey';
         ctx.ellipse(
             startPos.x,

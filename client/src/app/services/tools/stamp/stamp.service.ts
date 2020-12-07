@@ -1,20 +1,11 @@
 import { Injectable } from '@angular/core';
+import { Const } from '@app/classes/constants';
 import { Rotationable } from '@app/classes/rotationable';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { Subject } from 'rxjs';
 
-// TODO : Déplacer ça dans un fichier séparé accessible par tous
-export enum MouseButton {
-    Left = 0,
-    Middle = 1,
-    Right = 2,
-    Back = 3,
-    Forward = 4,
-}
-const DEFAULT_IMAGE_SIZE = 100;
-const MAX_DEGREE_VALUE = 360;
 @Injectable({
     providedIn: 'root',
 })
@@ -29,7 +20,7 @@ export class StampService extends Tool implements Rotationable {
         this.toolAttributes = ['stamp'];
         this.image = new Image();
         this.image.src = '../../../assets/Stamps/animal0.png';
-        this.image.height = this.image.width = this.lineWidth = DEFAULT_IMAGE_SIZE;
+        this.image.height = this.image.width = this.lineWidth = Const.DEFAULT_IMAGE_SIZE;
     }
     getRotatedGeniric: (point: Vec2, centre: Vec2, angle: number) => Vec2 = Rotationable.prototype.getRotatedGeniric;
     getUnrotatedPos: (element: Vec2) => Vec2 = Rotationable.prototype.getUnrotatedPos;
@@ -47,7 +38,7 @@ export class StampService extends Tool implements Rotationable {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         ctx.save();
         ctx.translate(centerPosition.x, centerPosition.y);
-        ctx.rotate((this.degres * Math.PI) / (MAX_DEGREE_VALUE / 2));
+        ctx.rotate((this.degres * Math.PI) / (Const.FULL_CIRCLE / 2));
         ctx.canvas.style.cursor = 'none';
         ctx.drawImage(this.image, -this.image.width / 2, -this.image.width / 2, this.image.width, this.image.height);
         ctx.restore();

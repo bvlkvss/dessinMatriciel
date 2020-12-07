@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
+import { Const } from '@app/classes/constants';
 import { ResizeCommand } from '@app/classes/resize-command';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
-const MIN_SIZE = 250;
-const PROPORTION_SIZE = 0.95;
+
 @Injectable({
     providedIn: 'root',
 })
@@ -40,22 +40,22 @@ export class ResizingService {
     resizeFromRight(event: MouseEvent, div: HTMLDivElement, preview: HTMLCanvasElement): void {
         const calculatedWidth = event.pageX - div.getBoundingClientRect().left;
         const winWidht = window.innerWidth || document.body.clientWidth;
-        if (calculatedWidth >= winWidht * PROPORTION_SIZE) {
+        if (calculatedWidth >= winWidht * Const.PROPORTION_SIZE) {
             this.isMaximazed = true;
             return;
         }
-        this.resizedWidth = preview.width = calculatedWidth >= MIN_SIZE ? calculatedWidth : MIN_SIZE;
+        this.resizedWidth = preview.width = calculatedWidth >= Const.MIN_SIZE ? calculatedWidth : Const.MIN_SIZE;
         this.isMaximazed = false;
     }
 
     resizeFromBottom(event: MouseEvent, div: HTMLDivElement, preview: HTMLCanvasElement): void {
         const calculatedHeight = event.pageY - div.getBoundingClientRect().top;
         const winHeight = window.innerHeight || document.body.clientHeight;
-        if (calculatedHeight >= winHeight * PROPORTION_SIZE) {
+        if (calculatedHeight >= winHeight * Const.PROPORTION_SIZE) {
             this.isMaximazed = true;
             return;
         }
-        this.resizedHeight = preview.height = calculatedHeight >= MIN_SIZE ? calculatedHeight : MIN_SIZE;
+        this.resizedHeight = preview.height = calculatedHeight >= Const.MIN_SIZE ? calculatedHeight : Const.MIN_SIZE;
         this.isMaximazed = false;
     }
 
@@ -66,18 +66,18 @@ export class ResizingService {
             width: window.innerWidth || document.body.clientWidth,
             height: window.innerHeight || document.body.clientHeight,
         };
-        if (calculatedWidth >= size.width * PROPORTION_SIZE || calculatedHeight >= size.height * PROPORTION_SIZE) {
+        if (calculatedWidth >= size.width * Const.PROPORTION_SIZE || calculatedHeight >= size.height * Const.PROPORTION_SIZE) {
             this.isMaximazed = true;
             return;
         }
-        if (calculatedWidth >= MIN_SIZE && calculatedHeight >= MIN_SIZE) {
+        if (calculatedWidth >= Const.MIN_SIZE && calculatedHeight >= Const.MIN_SIZE) {
             this.resizedWidth = calculatedWidth;
             this.resizedHeight = calculatedHeight;
             preview.width = this.resizedWidth;
             preview.height = this.resizedHeight;
-        } else if (calculatedWidth >= MIN_SIZE) {
+        } else if (calculatedWidth >= Const.MIN_SIZE) {
             this.resizeFromRight(event, div, preview);
-        } else if (calculatedHeight >= MIN_SIZE) {
+        } else if (calculatedHeight >= Const.MIN_SIZE) {
             this.resizeFromBottom(event, div, preview);
         }
         this.isMaximazed = false;

@@ -1,11 +1,11 @@
 import { HostListener, Injectable } from '@angular/core';
 import { Color } from '@app/classes/color';
+import { Const } from '@app/classes/constants';
 import { Tool } from '@app/classes/tool';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { Observable, Subject } from 'rxjs';
 
 // TODO : Déplacer ça dans un fichier séparé accessible par tous
-const OPACITY_INDEX = 3;
 export interface Arguments {
     image: HTMLImageElement;
     event: MouseEvent;
@@ -59,7 +59,7 @@ export class PipetteService extends Tool {
             red: imageData.data[0],
             green: imageData.data[1],
             blue: imageData.data[2],
-            opacity: imageData.data[OPACITY_INDEX],
+            opacity: imageData.data[Const.OPACITY_INDEX],
         };
     }
     private validateColor(color: string): boolean {

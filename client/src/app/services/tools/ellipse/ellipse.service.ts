@@ -1,12 +1,10 @@
 import { Injectable } from '@angular/core';
+import { Const } from '@app/classes/constants';
 import { EllipseCommand } from '@app/classes/ellipse-command';
 import { MouseButton, Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
-
-const LINE_DASH_SEGMENT_START = 5;
-const LINE_DASH_SEGMENT_END = 15;
 
 export enum EllipseStyle {
     Empty = 0,
@@ -170,7 +168,7 @@ export class EllipseService extends Tool {
 
             if (preview) {
                 ctx.beginPath();
-                ctx.setLineDash([LINE_DASH_SEGMENT_START, LINE_DASH_SEGMENT_END]);
+                ctx.setLineDash([Const.LINE_DASH_SEGMENT_START, Const.LINE_DASH_SEGMENT_END]);
                 ctx.lineWidth = 2;
                 ctx.strokeStyle = 'grey';
                 ctx.rect(startPos.x, startPos.y, width, height);

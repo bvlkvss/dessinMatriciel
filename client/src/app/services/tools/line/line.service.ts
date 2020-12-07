@@ -1,14 +1,11 @@
 import { Injectable } from '@angular/core';
+import { Const } from '@app/classes/constants';
 import { LineCommand } from '@app/classes/line-command';
 import { MouseButton, Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
-const LINE_MIN_DISTANCE = 20;
-const ANGLE_VALUE = 45;
-const ALLIGNEMENT_ANGLE = Math.PI * ANGLE_VALUE;
-const PI_ANGLE = 180;
 @Injectable({
     providedIn: 'root',
 })
@@ -69,14 +66,14 @@ export class LineService extends Tool {
         // tslint:disable:no-magic-numbers
 
         // check if the distance between the new point and last one is less than 20
-        if (!this.toAllign && this.distanceBetween2Points(lastPoint, this.pathData[this.pathData.length - 3]) <= LINE_MIN_DISTANCE) {
+        if (!this.toAllign && this.distanceBetween2Points(lastPoint, this.pathData[this.pathData.length - 3]) <= Const.LINE_MIN_DISTANCE) {
             this.pathData.pop();
             this.pathData[this.pathData.length - 2] = lastPoint;
         }
         // check if the distance between allignement point and last one is less than 20 and draw the allignement point
         else if (this.toAllign) {
             this.toAllign = false;
-            if (this.distanceBetween2Points(lastPoint, this.allignementPoint) <= LINE_MIN_DISTANCE) {
+            if (this.distanceBetween2Points(lastPoint, this.allignementPoint) <= Const.LINE_MIN_DISTANCE) {
                 this.pathData.pop();
                 this.drawLine(this.drawingService.baseCtx, this.pathData[this.pathData.length - 1], this.allignementPoint);
             } else {
@@ -166,7 +163,8 @@ export class LineService extends Tool {
     private findNewPointForAngle(beginPoint: Vec2, endPoint: Vec2): Vec2 {
         const currentAngle: number = this.angleBetween2Points(beginPoint, endPoint);
         const distance: number = this.distanceBetween2Points(beginPoint, endPoint);
-        const closestAngle: number = (Math.round(currentAngle / (ALLIGNEMENT_ANGLE / PI_ANGLE)) * ALLIGNEMENT_ANGLE) / PI_ANGLE;
+        const closestAngle: number =
+            (Math.round(currentAngle / (Const.ALLIGNEMENT_ANGLE / Const.PI_ANGLE)) * Const.ALLIGNEMENT_ANGLE) / Const.PI_ANGLE;
         const xDistance: number = distance * Math.cos(closestAngle);
         const yDistance: number = distance * Math.sin(closestAngle);
         return { x: beginPoint.x + xDistance, y: beginPoint.y - yDistance };

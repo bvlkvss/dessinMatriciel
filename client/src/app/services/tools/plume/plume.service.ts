@@ -1,28 +1,10 @@
 import { Injectable } from '@angular/core';
-import { Tool } from '@app/classes/tool';
+import { Const } from '@app/classes/constants';
+import { MouseButton, Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { BehaviorSubject, Observable } from 'rxjs';
-
-const DEFAULT_WIDTH = 2;
-const DEFAULT_ANGLE = 0;
-const LONGEUR_LIGNE = 50;
-const TAILLE_MAX_DATA_PATH = 2;
-const SINGLE_STEP = 0.0174533; // 1° en radians
-const MULTIPLE_STEP = 0.261799; // 15° en radians
-const PI = Math.PI;
-const POS_NUMBER = 1;
-const HALF_2PI = 180;
-const FULL_CIRCLE = 360;
-// TODO : Déplacer ça dans un fichier séparé accessible par tous
-export enum MouseButton {
-    Left = 0,
-    Middle = 1,
-    Right = 2,
-    Back = 3,
-    Forward = 4,
-}
 
 @Injectable({
     providedIn: 'root',
@@ -30,8 +12,8 @@ export enum MouseButton {
 export class PlumeService extends Tool {
     private pathData: Vec2[];
     lastpoint: Vec2;
-    angle: number = DEFAULT_ANGLE;
-    lineLenght: number = LONGEUR_LIGNE;
+    angle: number = Const.DEFAULT_ANGLE;
+    lineLenght: number = Const.LONGEUR_LIGNE;
     mouseIsOut: boolean = false;
     halfLength: number;
     arrayTooLarge: boolean = false;
@@ -41,7 +23,7 @@ export class PlumeService extends Tool {
         super(drawingService);
 
         this.toolAttributes = ['lineLenght', 'angle'];
-        this.lineWidth = DEFAULT_WIDTH;
+        this.lineWidth = Const.DEFAULT_WIDTH;
         this.clearPath();
     }
 
@@ -94,7 +76,7 @@ export class PlumeService extends Tool {
         const mousePosition = this.getPositionFromMouse(event);
         this.pathData.push(mousePosition);
         this.halfLength = Math.ceil(this.pathData.length / 2);
-        this.arrayTooLarge = this.pathData.length > TAILLE_MAX_DATA_PATH;
+        this.arrayTooLarge = this.pathData.length > Const.TAILLE_MAX_DATA_PATH;
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
 
         if (!this.arrayTooLarge) {
@@ -129,21 +111,21 @@ export class PlumeService extends Tool {
     }
 
     setAngle(degrees: number): void {
-        this.angle = degrees * (PI / HALF_2PI);
+        this.angle = degrees * (Const.PI / Const.PI_ANGLE);
     }
 
     adjustAngle(event: WheelEvent): void {
-        if (Math.sign(event.deltaY) === POS_NUMBER) {
+        if (Math.sign(event.deltaY) === Const.POS_NUMBER) {
             if (!event.altKey) {
-                this.angle = this.angle + MULTIPLE_STEP;
+                this.angle = this.angle + Const.MULTIPLE_STEP;
             } else {
-                this.angle = this.angle + SINGLE_STEP;
+                this.angle = this.angle + Const.SINGLE_STEP;
             }
         } else {
             if (!event.altKey) {
-                this.angle = this.angle - MULTIPLE_STEP;
+                this.angle = this.angle - Const.MULTIPLE_STEP;
             } else {
-                this.angle = this.angle - SINGLE_STEP;
+                this.angle = this.angle - Const.SINGLE_STEP;
             }
         }
 
@@ -153,12 +135,12 @@ export class PlumeService extends Tool {
     }
 
     validateAngle(angleToValidate: number): void {
-        let degree = (angleToValidate * HALF_2PI) / PI;
+        let degree = (angleToValidate * Const.PI_ANGLE) / Const.PI;
         degree = Math.round(degree);
         if (degree < 0) {
-            degree = FULL_CIRCLE;
-            this.angle = 2 * PI;
-        } else if (degree >= FULL_CIRCLE) {
+            degree = Const.FULL_CIRCLE;
+            this.angle = 2 * Const.PI;
+        } else if (degree >= Const.FULL_CIRCLE) {
             this.angle = degree = 0;
         }
         this.sendMessage(degree);
@@ -166,7 +148,7 @@ export class PlumeService extends Tool {
 
     drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.setLineDash([0, 0]);
-        ctx.lineWidth = DEFAULT_WIDTH;
+        ctx.lineWidth = Const.DEFAULT_WIDTH;
         ctx.lineCap = 'round';
         ctx.strokeStyle = this.primaryColor;
         ctx.beginPath();
@@ -184,7 +166,7 @@ export class PlumeService extends Tool {
 
     drawPreviewLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.setLineDash([0, 0]);
-        ctx.lineWidth = DEFAULT_WIDTH;
+        ctx.lineWidth = Const.DEFAULT_WIDTH;
         ctx.lineCap = 'round';
         ctx.strokeStyle = this.primaryColor;
         ctx.beginPath();

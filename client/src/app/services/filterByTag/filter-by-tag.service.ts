@@ -1,9 +1,6 @@
 import { Injectable } from '@angular/core';
+import { Const } from '@app/classes/constants';
 import { Drawings } from '@common/classes/drawings';
-
-const NOT_FOUND_INDEX = -1;
-const MAX_TO_SHOW = 3;
-
 @Injectable({
     providedIn: 'root',
 })
@@ -46,9 +43,9 @@ export class FilterByTagService {
     }
 
     updateDrawingsToShow(drawings: Drawings[]): void {
-        const step = drawings.length >= MAX_TO_SHOW ? MAX_TO_SHOW : drawings.length;
+        const step = drawings.length >= Const.MAX_TO_SHOW ? Const.MAX_TO_SHOW : drawings.length;
         for (let i = 0; i < step; i++) {
-            if (drawings[i] && this.drawingsToShow.indexOf(drawings[i]) === NOT_FOUND_INDEX) {
+            if (drawings[i] && this.drawingsToShow.indexOf(drawings[i]) === Const.NOT_FOUND_INDEX) {
                 this.drawingsToShow.push(this.drawings[i]);
             }
         }
@@ -67,8 +64,8 @@ export class FilterByTagService {
         const draws = [] as Drawings[];
         for (const draw of drawings) {
             for (const tag of tags) {
-                const matches = (draw.tag.indexOf(tag) > NOT_FOUND_INDEX) as boolean;
-                if (matches && draws.indexOf(draw) === NOT_FOUND_INDEX) {
+                const matches = (draw.tag.indexOf(tag) > Const.NOT_FOUND_INDEX) as boolean;
+                if (matches && draws.indexOf(draw) === Const.NOT_FOUND_INDEX) {
                     draws.push(draw);
                     break;
                 }

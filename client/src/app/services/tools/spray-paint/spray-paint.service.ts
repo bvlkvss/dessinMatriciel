@@ -1,15 +1,10 @@
 import { Injectable } from '@angular/core';
+import { Const } from '@app/classes/constants';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
-
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
-const DEFAULT_FREQUENCY = 700;
-const DEFAULT_RADIUS = 20;
-const DENSITY = 10;
-const MULTIPLICATIONFACTOR = 1000;
-const FULLCIRLCLE = 360;
 // TODO : Déplacer ça dans un fichier séparé accessible par tous
 export enum MouseButton {
     Left = 0,
@@ -23,12 +18,12 @@ export enum MouseButton {
     providedIn: 'root',
 })
 export class SprayPaintService extends Tool {
-    radius: number = DEFAULT_RADIUS;
+    radius: number = Const.DEFAULT_RADIUS;
     dropletRadius: number = 1;
-    period: number = (1 / DEFAULT_FREQUENCY) * MULTIPLICATIONFACTOR;
+    period: number = (1 / Const.DEFAULT_FREQUENCY) * Const.MULTIPLICATIONFACTOR;
     interval: NodeJS.Timeout;
     currentMousePos: Vec2;
-    density: number = DENSITY;
+    density: number = Const.DENSITY;
 
     constructor(drawingService: DrawingService, protected invoker: UndoRedoService) {
         super(drawingService);
@@ -93,7 +88,7 @@ export class SprayPaintService extends Tool {
     }
 
     getRandomOffset(): Vec2 {
-        const randomAngle = Math.random() * FULLCIRLCLE;
+        const randomAngle = Math.random() * Const.FULL_CIRCLE;
         const randomRadius = Math.random() * this.radius;
 
         return {
@@ -107,7 +102,7 @@ export class SprayPaintService extends Tool {
     }
 
     setfrequency(freq: number): void {
-        this.period = (1 / freq) * MULTIPLICATIONFACTOR;
+        this.period = (1 / freq) * Const.MULTIPLICATIONFACTOR;
     }
 
     setRadius(radius: number): void {

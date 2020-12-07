@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
+import { Const } from '@app/classes/constants';
 import { EraserCommand } from '@app/classes/eraser-command';
 import { MouseButton, Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
-const MINIMUM_ERASER_SIZE = 5;
 @Injectable({
     providedIn: 'root',
 })
@@ -15,7 +15,7 @@ export class EraserService extends Tool {
     constructor(drawingService: DrawingService, protected invoker: UndoRedoService) {
         super(drawingService);
         this.toolAttributes = ['eraserWidth'];
-        this.lineWidth = MINIMUM_ERASER_SIZE;
+        this.lineWidth = Const.MINIMUM_ERASER_SIZE;
         this.pathData = [];
         this.clearPath();
     }
@@ -62,7 +62,7 @@ export class EraserService extends Tool {
     }
 
     setLineWidth(thickness: number): void {
-        this.lineWidth = this.findMax(thickness, MINIMUM_ERASER_SIZE);
+        this.lineWidth = this.findMax(thickness, Const.MINIMUM_ERASER_SIZE);
     }
 
     clearLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {

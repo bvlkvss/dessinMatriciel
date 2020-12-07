@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
+import { Const } from '@app/classes/constants';
 import { PencilCommand } from '@app/classes/pencil-command';
 import { MouseButton, Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
-const DEFAULT_PENCIL_WIDTH = 1;
 @Injectable({
     providedIn: 'root',
 })
@@ -16,7 +16,7 @@ export class PencilService extends Tool {
         super(drawingService);
 
         this.toolAttributes = ['lineWidth'];
-        this.lineWidth = DEFAULT_PENCIL_WIDTH;
+        this.lineWidth = Const.DEFAULT_PENCIL_WIDTH;
         this.clearPath();
     }
 
