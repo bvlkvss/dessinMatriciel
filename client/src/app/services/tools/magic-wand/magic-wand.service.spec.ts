@@ -259,6 +259,17 @@ describe('MagicWandService', () => {
         baseCtxStub.putImageData = jasmine.createSpy();
         service.magicSelectionObj.selectionPixels = [1,2,3];
         service.magicSelectionObj.eraseSelectionFromBase({x:0,y:0});
-        expect((service.magicSelectionObj as any).fillPixel  ).toHaveBeenCalledTimes(3);
+        expect((service.magicSelectionObj as any).fillPixel  ).toHaveBeenCalled();
+    });
+    it(' should call fillPixel when eraseSelectionOnDelete is called', () => {
+        service.magicSelectionObj = (service as any).createSelectionObj();
+        (service.magicSelectionObj as any).fillPixel = jasmine.createSpy();
+        service.magicSelectionObj.selectionStartPoint = {x:7, y:8};
+        service.magicSelectionObj.selectionData.getContext = jasmine.createSpy().and.returnValue(baseCtxStub);
+        baseCtxStub.getImageData = jasmine.createSpy().and.returnValue({data:[1,2,3,4,5,6,7,8,9,19]});
+        baseCtxStub.putImageData = jasmine.createSpy();
+        service.magicSelectionObj.selectionPixels = [1,2,3];
+        service.magicSelectionObj.eraseSelectionOnDelete();
+        expect((service.magicSelectionObj as any).fillPixel  ).toHaveBeenCalled();
     });
 });

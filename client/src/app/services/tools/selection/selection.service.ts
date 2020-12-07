@@ -47,7 +47,6 @@ export class SelectionService extends Movable {
                     this.invoker.setIsAllowed(false);
                     return;
                 } else if (
-                    // TODO : CHANGE START IF ROTATED
                     this.getUnrotatedPos(this.mouseDownCoord).x >= this.selectionStartPoint.x &&
                     this.getUnrotatedPos(this.mouseDownCoord).x <= this.selectionEndPoint.x &&
                     this.getUnrotatedPos(this.mouseDownCoord).y >= this.selectionStartPoint.y &&
@@ -111,7 +110,6 @@ export class SelectionService extends Movable {
     }
 
     onMouseUp(event: MouseEvent): void {
-        console.log('called');
         this.mouseUpCoord = this.getPositionFromMouse(event);
         if (this.mouseDown && this.mouseUpCoord.x !== this.selectionStartPoint.x && this.mouseUpCoord.y !== this.selectionStartPoint.y) {
             if (!this.selectionActivated && this.rectangleService.isOut) {
@@ -243,6 +241,7 @@ export class SelectionService extends Movable {
         this.toolAttributes = [];
         this.firstSelectionMove = true;
         this.degres = 0;
+        this.shouldAlign = true;
     }
 
     selectAllCanvas(): void {

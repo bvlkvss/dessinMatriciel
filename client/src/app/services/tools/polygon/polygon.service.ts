@@ -90,20 +90,6 @@ export class PolygonService extends Tool {
         }
     }
 
-    // va calibrer la taille du polygon pour eviter davoir un dessin qui sort du canvas
-    calibratePolygon(widthP: number): void {
-        if (this.mouseDownCoord.x - Math.abs(this.widthPolygon) - widthP <= 0) {
-            this.widthPolygon = this.mouseDownCoord.x - widthP;
-        } else if (this.mouseDownCoord.x + Math.abs(this.widthPolygon) + widthP >= this.drawingService.previewCtx.canvas.width) {
-            this.widthPolygon = Math.abs(this.drawingService.previewCtx.canvas.width - this.mouseDownCoord.x) - widthP;
-        }
-        if (this.mouseDownCoord.y - Math.abs(this.heightPolygon) - widthP <= 0) {
-            this.heightPolygon = this.mouseDownCoord.y - widthP;
-        } else if (this.mouseDownCoord.y + Math.abs(this.heightPolygon) + widthP >= this.drawingService.previewCtx.canvas.height) {
-            this.heightPolygon = Math.abs(this.drawingService.previewCtx.canvas.height - this.mouseDownCoord.y) - widthP;
-        }
-    }
-
     onMouseEnter(event: MouseEvent): void {
         this.isOut = false;
     }
@@ -112,7 +98,7 @@ export class PolygonService extends Tool {
         if (this.mouseDown) {
             let mousePosition = this.getPositionFromMouse(event);
             if (this.isOut) mousePosition = this.mouseOutCoord;
-            this.drawPolygon(this.drawingService.baseCtx, this.mouseDownCoord, mousePosition, false);
+            this.drawPolygon(this.drawingService.baseCtx, this.mouseDownCoord, mousePosition);
             const cmd = new PolygonCommand(this.mouseDownCoord, mousePosition, this.polygonStyle, this, this.drawingService) as PolygonCommand;
             this.invoker.addToUndo(cmd);
             this.invoker.setIsAllowed(true);
@@ -129,7 +115,7 @@ export class PolygonService extends Tool {
         }
     }
 
-    drawPolygon(ctx: CanvasRenderingContext2D, startPos: Vec2, currentPos: Vec2, preview: boolean = true): void {
+    drawPolygon(ctx: CanvasRenderingContext2D, startPos: Vec2, currentPos: Vec2): void {
         this.widthPolygon = currentPos.x - startPos.x;
         this.heightPolygon = currentPos.y - startPos.y;
 
@@ -144,81 +130,79 @@ export class PolygonService extends Tool {
         this.calibratePolygon(this.lineWidth);
 
         // polygone regulier donc width et height doivent avoir la meme valeur absolue
-        if (Math.abs(this.widthPolygon) > Math.abs(this.heightPolygon)) {
-            this.widthPolygon = this.heightPolygon * Math.sign(this.heightPolygon) * Math.sign(this.widthPolygon);
-        } else {
-            this.heightPolygon = this.widthPolygon * Math.sign(this.widthPolygon) * Math.sign(this.heightPolygon);
-        }
+        Math.abs(this.widthPolygon) > Math.abs(this.heightPolygon)
+            ? (this.widthPolygon = this.heightPolygon * Math.sign(this.heightPolygon) * Math.sign(this.widthPolygon))
+            : (this.heightPolygon = this.widthPolygon * Math.sign(this.widthPolygon) * Math.sign(this.heightPolygon));
 
         ctx.moveTo(startPos.x + this.widthPolygon, startPos.y); // emplacement depart
 
         switch (this.polygonStyle) {
             case 0:
-                /* tslint:disable-next-line:no-shadowed-variable */
-                for (let i = 0; i <= this.numberSides; i += 1) {
-                    if (this.numberSides === i) {
-                        ctx.closePath();
-                    } else
-                        ctx.lineTo(
-                            startPos.x + this.widthPolygon * Math.cos((i * 2 * Math.PI) / this.numberSides),
-                            startPos.y + this.heightPolygon * Math.sin((i * 2 * Math.PI) / this.numberSides),
-                        );
-                }
+                this.drawPolygonContour(ctx, startPos);
                 ctx.stroke();
-                if (this.numberSides === MINIMUM_NUMBER_OF_SIDES) this.incertitude = this.lineWidth;
-                else this.incertitude = this.lineWidth / 2;
+                this.numberSides === MINIMUM_NUMBER_OF_SIDES ? (this.incertitude = this.lineWidth) : (this.incertitude = this.lineWidth / 2);
                 break;
 
             case 1:
-                /* tslint:disable-next-line:no-shadowed-variable */
-                for (let i = 0; i <= this.numberSides; i += 1) {
-                    if (this.numberSides === i) {
-                        ctx.closePath();
-                    } else
-                        ctx.lineTo(
-                            startPos.x + this.widthPolygon * Math.cos((i * 2 * Math.PI) / this.numberSides),
-                            startPos.y + this.heightPolygon * Math.sin((i * 2 * Math.PI) / this.numberSides),
-                        );
-                }
+                this.drawPolygonContour(ctx, startPos);
                 ctx.stroke();
                 ctx.fill();
 
-                if (this.numberSides === MINIMUM_NUMBER_OF_SIDES) this.incertitude = this.lineWidth;
-                else this.incertitude = this.lineWidth / 2;
+                this.numberSides === MINIMUM_NUMBER_OF_SIDES ? (this.incertitude = this.lineWidth) : (this.incertitude = this.lineWidth / 2);
 
                 break;
 
             case 2:
-                for (let i = 0; i <= this.numberSides; i += 1) {
-                    ctx.lineTo(
-                        startPos.x + this.widthPolygon * Math.cos((i * 2 * Math.PI) / this.numberSides),
-                        startPos.y + this.heightPolygon * Math.sin((i * 2 * Math.PI) / this.numberSides),
-                    );
-                }
+                this.drawPolygonContour(ctx, startPos);
                 ctx.fill();
                 this.incertitude = 0;
                 break;
         }
-        ctx.closePath();
 
-        // perimetre circulaire du cercle
-        if (preview) {
-            ctx.beginPath();
-            ctx.setLineDash([PREVIEW_CIRCLE_LINE_DASH_MIN, PREVIEW_CIRCLE_LINE_DASH_MAX]);
-            ctx.lineWidth = PREVIEW_CIRCLE_LINE_WIDTH;
-            ctx.strokeStyle = 'grey';
-            ctx.ellipse(
-                startPos.x,
-                startPos.y,
-                Math.abs(this.widthPolygon) + this.incertitude + ctx.lineWidth,
-                Math.abs(this.heightPolygon) + this.incertitude + ctx.lineWidth,
-                0,
-                0,
-                2 * Math.PI,
-                false,
-            );
-            ctx.stroke();
-            ctx.closePath();
+        this.drawPerimeterOnPreview(startPos);
+    }
+
+    private drawPolygonContour(ctx: CanvasRenderingContext2D, startPos: Vec2): void {
+        for (let i = 0; i <= this.numberSides; i++) {
+            if (this.numberSides === i) {
+                ctx.closePath();
+            } else
+                ctx.lineTo(
+                    startPos.x + this.widthPolygon * Math.cos((i * 2 * Math.PI) / this.numberSides),
+                    startPos.y + this.heightPolygon * Math.sin((i * 2 * Math.PI) / this.numberSides),
+                );
+        }
+    }
+    private drawPerimeterOnPreview(startPos: Vec2): void {
+        const ctx = this.drawingService.previewCtx;
+        ctx.beginPath();
+        ctx.setLineDash([PREVIEW_CIRCLE_LINE_DASH_MIN, PREVIEW_CIRCLE_LINE_DASH_MAX]);
+        ctx.lineWidth = PREVIEW_CIRCLE_LINE_WIDTH;
+        ctx.strokeStyle = 'grey';
+        ctx.ellipse(
+            startPos.x,
+            startPos.y,
+            Math.abs(this.widthPolygon) + this.incertitude + ctx.lineWidth,
+            Math.abs(this.heightPolygon) + this.incertitude + ctx.lineWidth,
+            0,
+            0,
+            2 * Math.PI,
+            false,
+        );
+        ctx.stroke();
+        ctx.closePath();
+    }
+
+    private calibratePolygon(widthP: number): void {
+        if (this.mouseDownCoord.x - Math.abs(this.widthPolygon) - widthP <= 0) {
+            this.widthPolygon = this.mouseDownCoord.x - widthP;
+        } else if (this.mouseDownCoord.x + Math.abs(this.widthPolygon) + widthP >= this.drawingService.previewCtx.canvas.width) {
+            this.widthPolygon = Math.abs(this.drawingService.previewCtx.canvas.width - this.mouseDownCoord.x) - widthP;
+        }
+        if (this.mouseDownCoord.y - Math.abs(this.heightPolygon) - widthP <= 0) {
+            this.heightPolygon = this.mouseDownCoord.y - widthP;
+        } else if (this.mouseDownCoord.y + Math.abs(this.heightPolygon) + widthP >= this.drawingService.previewCtx.canvas.height) {
+            this.heightPolygon = Math.abs(this.drawingService.previewCtx.canvas.height - this.mouseDownCoord.y) - widthP;
         }
     }
 }

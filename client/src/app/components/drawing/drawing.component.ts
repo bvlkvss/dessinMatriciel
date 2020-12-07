@@ -12,6 +12,7 @@ import {
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Command } from '@app/classes/command';
+import { Movable } from '@app/classes/movable';
 import { Tool } from '@app/classes/tool';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ResizingService } from '@app/services/resizing/resizing.service';
@@ -130,7 +131,7 @@ export class DrawingComponent implements AfterViewInit, OnInit, DoCheck, OnDestr
     stopResize(event: MouseEvent): void {
         if (this.resizer.resizing) {
             this.resizer.stopResize(event, this.baseCanvas.nativeElement);
-            if (this.tools.currentTool instanceof GridService && this.tools.currentTool.isGridActive) this.tools.currentTool.displayGrid();
+            if (this.tools.currentTool instanceof GridService && GridService.isGridActive) this.tools.currentTool.displayGrid();
             this.previewCanvas.nativeElement.style.borderBottom = '2px solid #000000';
             this.previewCanvas.nativeElement.style.borderRight = '2px solid #000000';
         }
@@ -222,7 +223,6 @@ export class DrawingComponent implements AfterViewInit, OnInit, DoCheck, OnDestr
 
     @HostListener('document:keyup', ['$event'])
     onKeyUp(event: KeyboardEvent): void {
-        //     this.altkey = event.altKey;
         this.tools.currentTool.onKeyUp(event);
         if (this.dialog.openDialogs.length === 0) {
             this.drawingService.sendMessage(this.tools.getByValue(this.tools.currentTool));
@@ -234,8 +234,6 @@ export class DrawingComponent implements AfterViewInit, OnInit, DoCheck, OnDestr
     onkeyDownWindow(event: KeyboardEvent): void {
         const element = event.target as HTMLElement;
         if (element.className === 'textInput') return;
-
-        //    this.altkey = event.altKey;
         if (event.ctrlKey && event.key === 'o') {
             event.preventDefault();
             event.stopPropagation();
@@ -260,10 +258,10 @@ export class DrawingComponent implements AfterViewInit, OnInit, DoCheck, OnDestr
 
     onKeyDown(event: KeyboardEvent): void {
         if (!(this.tools.currentTool instanceof TextService)) {
-            if (event.ctrlKey && event.key === 'o') {
+            if (event.ctrlKey) {
                 return;
-            } else if (event.ctrlKey) {
-                return;
+            } else if (event.key === 'm') {
+                Movable.magnetismActivated = !Movable.magnetismActivated;
             } else if (this.keyBindings.has(event.key)) {
                 this.drawingService.restoreCanvasState();
                 this.tools.currentTool = this.keyBindings.get(event.key) as Tool;
@@ -276,10 +274,6 @@ export class DrawingComponent implements AfterViewInit, OnInit, DoCheck, OnDestr
                     case 's': {
                         (this.tools.currentTool as SelectionService).selectionStyle = 1;
                         (this.tools.currentTool as SelectionService).resetSelection();
-                        break;
-                    }
-                    case 'g': {
-                        this.tools.currentTool.onKeyDown(event);
                         break;
                     }
                 }

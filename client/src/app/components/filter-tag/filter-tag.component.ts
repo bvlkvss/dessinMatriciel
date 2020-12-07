@@ -41,7 +41,6 @@ export class FilterTagComponent implements OnInit {
         this.tags = tmp;
     }
     onItemSelect(): void {
-        console.log('called');
         this.filter.filter(this.selectedTags);
     }
     ignoreFilter(): void {

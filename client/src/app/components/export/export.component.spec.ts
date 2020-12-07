@@ -86,10 +86,14 @@ describe('ExportComponent', () => {
         expect(x).toBeTruthy();
     });
 
-    it('should return true if image is well sent', async () => {
+    it('should get error if image error is thrown', async () => {
         exportServiceStub.sendEmailDataToServer = jasmine.createSpy().and.rejectWith(new Error('error'));
-        let x = await component.sendImage();
-        expect(x).toBeTruthy;
+        try{
+            await component.sendImage();
+        }
+        catch(error){
+            expect(error.message).toEqual("error");
+        }
     });
 
     it('should return false if image is well sent', async () => {
