@@ -26,7 +26,8 @@ export class ExportService {
     async sendEmailDataToServer(image: HTMLImageElement, name: string, filter: string, type: string, email: string): Promise<boolean> {
         const imageStr = this.createImageToExport(image, filter, type);
         this.createEmailData(imageStr, email, name, type);
-        return await this.sendEmailRequest();
+        const isNotError = await this.sendEmailRequest();
+        return isNotError;
     }
 
     setFilter(image: HTMLImageElement, inputFilter: string): void {

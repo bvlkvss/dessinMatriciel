@@ -212,7 +212,6 @@ export class DrawingComponent implements AfterViewInit, OnInit, DoCheck {
 
     @HostListener('document:keyup', ['$event'])
     onKeyUp(event: KeyboardEvent): void {
-        //     this.altkey = event.altKey;
         this.tools.currentTool.onKeyUp(event);
         if (this.dialog.openDialogs.length === 0) {
             this.drawingService.sendMessage(this.tools.getByValue(this.tools.currentTool));
@@ -224,8 +223,6 @@ export class DrawingComponent implements AfterViewInit, OnInit, DoCheck {
     onkeyDownWindow(event: KeyboardEvent): void {
         const element = event.target as HTMLElement;
         if (element.className === 'textInput') return;
-
-        //    this.altkey = event.altKey;
         if (event.ctrlKey && event.key === 'o') {
             event.preventDefault();
             event.stopPropagation();
@@ -250,12 +247,10 @@ export class DrawingComponent implements AfterViewInit, OnInit, DoCheck {
 
     onKeyDown(event: KeyboardEvent): void {
         if (!(this.tools.currentTool instanceof TextService)) {
-            if (event.ctrlKey && event.key === 'o') {
+            if (event.ctrlKey) {
                 return;
             } else if (event.key === 'm') {
                 Movable.magnetismActivated = !Movable.magnetismActivated;
-            } else if (event.ctrlKey) {
-                return;
             } else if (this.keyBindings.has(event.key)) {
                 this.drawingService.restoreCanvasState();
                 this.tools.currentTool = this.keyBindings.get(event.key) as Tool;
@@ -268,10 +263,6 @@ export class DrawingComponent implements AfterViewInit, OnInit, DoCheck {
                     case 's': {
                         (this.tools.currentTool as SelectionService).selectionStyle = 1;
                         (this.tools.currentTool as SelectionService).resetSelection();
-                        break;
-                    }
-                    case 'g': {
-                        this.tools.currentTool.onKeyDown(event);
                         break;
                     }
                 }

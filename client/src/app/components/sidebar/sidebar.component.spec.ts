@@ -101,8 +101,14 @@ describe('SidebarComponent', () => {
         expect(togglecanvasSpy).toHaveBeenCalled();
     });
     it('openCarousel should call dialog.open methode', () => {
+        (matDialogSpy.openDialogs as any) = { length: 0 };
         component.openCarousel();
         expect(matDialogSpy.open).toHaveBeenCalled();
+    });
+    it('openCarousel should not call dialog.open methode if another dialog is open', () => {
+        (matDialogSpy.openDialogs as any) = { length: 1 };
+        component.openCarousel();
+        expect(matDialogSpy.open).not.toHaveBeenCalled();
     });
     it('undo should call undoLast', () => {
         let undoLastSpy = spyOn(UndoRedoServiceMock, 'undoLast');

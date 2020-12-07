@@ -328,7 +328,6 @@ export abstract class Movable extends Tool implements Rotationable, Resizable {
                 this.getUnrotatedPos(mousedownpos).y >= this.resizingHandles[i].y &&
                 this.getUnrotatedPos(mousedownpos).y <= this.resizingHandles[i].y + HANDLE_LENGTH
             ) {
-                console.log('handle = ', i + 1);
                 return i + 1;
             }
         }
