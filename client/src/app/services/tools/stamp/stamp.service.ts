@@ -19,7 +19,7 @@ export class StampService extends Tool implements Rotationable {
         this.degres = 0;
         this.toolAttributes = ['stamp'];
         this.image = new Image();
-        this.image.src = '../../../assets/Stamps/animal0.png';
+        this.image.src = '../../../assets/Stamps/face0.png';
         this.image.height = this.image.width = this.lineWidth = Const.DEFAULT_IMAGE_SIZE;
     }
     getRotatedGeniric: (point: Vec2, centre: Vec2, angle: number) => Vec2 = Rotationable.prototype.getRotatedGeniric;

@@ -8,10 +8,11 @@ import {
     IterableDiffers,
     OnDestroy,
     OnInit,
-    ViewChild,
+    ViewChild
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Command } from '@app/classes/command';
+import { Const } from '@app/classes/constants';
 import { Movable } from '@app/classes/movable';
 import { Tool } from '@app/classes/tool';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -155,6 +156,7 @@ export class DrawingComponent implements AfterViewInit, OnInit, DoCheck, OnDestr
             const tool = this.tools.currentTool as StampService;
             const position = tool.getPositionFromMouse(event);
             tool.updateDegree(event);
+            tool.degres %= Const.FULL_CIRCLE;
             tool.rotateStamp(this.drawingService.previewCtx, position);
         }
     }
@@ -257,7 +259,7 @@ export class DrawingComponent implements AfterViewInit, OnInit, DoCheck, OnDestr
     }
 
     onKeyDown(event: KeyboardEvent): void {
-        if (!(this.tools.currentTool instanceof TextService)) {
+        if (!((this.tools.currentTool instanceof TextService) && this.tools.currentTool.isRighting))
             if (event.ctrlKey) {
                 return;
             } else if (event.key === 'm') {
@@ -277,8 +279,8 @@ export class DrawingComponent implements AfterViewInit, OnInit, DoCheck, OnDestr
                         break;
                     }
                 }
+
             }
-        }
         this.tools.currentTool.onKeyDown(event);
     }
 
