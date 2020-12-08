@@ -25,7 +25,7 @@ export class SelectionService extends Movable {
     constructor(drawingService: DrawingService, protected invoker: UndoRedoService) {
         super(drawingService, invoker);
         this.selectionActivated = false;
-        this.toolAttributes = [];
+        this.toolAttributes = ["typeSelection"];
         this.hFlip = false;
         this.vFlip = false;
         this.hScale = 1;
@@ -238,7 +238,7 @@ export class SelectionService extends Movable {
         this.rectangleService.lineDash = true;
         this.ellipseService.setStyle(0);
         this.selectionActivated = false;
-        this.toolAttributes = [];
+        // this.toolAttributes = [];
         this.firstSelectionMove = true;
         this.degres = 0;
         this.shouldAlign = true;

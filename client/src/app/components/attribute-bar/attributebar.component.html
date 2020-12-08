@@ -322,5 +322,48 @@
         <input class="size-slider" type="range" (change)="setRadius($event.target.value)" [value]="radius" min="20" max="70" />
         <label id="label">Px</label>
     </div>
+
+    <div id="Selectionontainer" *ngIf="checkIfContainAttribute('typeSelection')">
+        <p id="header" for="volume">Selection</p>
+        <p id="header" for="volume">Type De Selection:</p>
+        <div class="selectionOptionButtonContainer">
+            <div class="buttonContainer">
+                <a id="pencil" class="inactive">
+                    <i class="material-icons">highlight_alt</i>
+                </a>
+                <a id="pencil" class="inactive">
+                    <i class="material-icons">panorama_fish_eye</i>
+                </a>
+                <a id="pencil" class="active">
+                    <i class="material-icons">gesture</i>
+                </a>
+                <a id="pencil" class="inactive">
+                    <i class="material-icons">gesture</i>
+                </a>
+            </div>
+        </div>
+        <div class="selectWholeCanvas" style="background-color: red;">   </div>
+    </div>
+    <div id="Selectionontainer" style="display: block;" *ngIf="checkIfContainAttribute('typeSelection')" >
+        <p id="header" for="volume">Magnétisme</p>
+        <p id="header" for="volume">Choisir un point de controle</p>
+        <div class="typeSelectionContainer">
+            <div class="parentRectangle" style="width: 190px; height: 115px">
+                <div class="child" style="width: 170px; height: 100px; outline: dashed 1px rgb(255, 255, 255)"></div>
+                <div class="radioContainer">
+                    <input type="radio" value="1" name="referencePoint" class="radio top-left" (click)="setAnchorPoint(1)" />
+                    <input type="radio" value="2" name="referencePoint" class="radio top-mid" (click)="setAnchorPoint(2)" />
+                    <input type="radio" value="3" name="referencePoint" class="radio top-right" (click)="setAnchorPoint(3)" />
+                    <input type="radio" value="4" name="referencePoint" class="radio bottom-left" (click)="setAnchorPoint(4)" />
+                    <input type="radio" value="5" name="referencePoint" class="radio bottom-mid" (click)="setAnchorPoint(5)" />
+                    <input type="radio" value="6" name="referencePoint" class="radio bottom-right" (click)="setAnchorPoint(6)" />
+                    <input type="radio" value="7" name="referencePoint" class="radio left-mid" (click)="setAnchorPoint(7)" />
+                    <input type="radio" value="8" name="referencePoint" class="radio right-mid" (click)="setAnchorPoint(8)" />
+                    <input type="radio" value="9" name="referencePoint" class="radio bullseye" (click)="setAnchorPoint(9)" />
+                </div>
+            </div>
+        </div>
+        
+    </div>
    
 </div>

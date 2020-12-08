@@ -46,6 +46,9 @@ export class SidebarComponent implements OnChanges {
             for (let i = 0; i < numberOfTools; i++) {
                 this.toolIcons.nativeElement.getElementsByTagName('a')[i].classList.remove('active');
             }
+            if(message=="selection"){
+                this.displayPalette(message);
+            }
             this.toolIcons.nativeElement.querySelector('#' + message)?.setAttribute('class', 'active');
         });
 

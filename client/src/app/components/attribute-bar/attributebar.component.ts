@@ -12,6 +12,7 @@ import { StampService } from '@app/services/tools/stamp/stamp.service';
 import { TextService } from '@app/services/tools/text/text.service';
 import { Subscription } from 'rxjs';
 
+
 @Component({
     selector: 'app-attributebar',
     templateUrl: './attributebar.component.html',
@@ -290,5 +291,9 @@ export class AttributeBarComponent implements OnInit, AfterViewChecked, AfterVie
         this.widthValue = input;
         if (Number(this.widthValue) > Const.MAX_WIDTH_VALUE) this.widthValue = '100';
         this.tools.setLineWidth(Number(this.widthValue));
+    }
+
+    setAnchorPoint(anchorPoint: number): void{
+        this.tools.setAnchorPoint(anchorPoint);
     }
 }

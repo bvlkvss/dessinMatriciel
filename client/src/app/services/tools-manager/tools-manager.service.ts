@@ -151,4 +151,11 @@ export class ToolsManagerService {
         const spray = this.currentTool as SprayPaintService;
         spray.setRadius(value);
     }
+
+    setAnchorPoint(value:number): void{
+        (this.tools.get('selection') as SelectionService).magnetismAnchorPoint = value;
+        (this.tools.get('magic-wand') as MagicWandService).magicSelectionObj.magnetismAnchorPoint = value;
+    }
+
+
 }
