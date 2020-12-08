@@ -3,7 +3,7 @@ import { Movable } from './movable';
 import { PI_DEGREE } from './rotationable';
 
 export const HANDLE_LENGTH = 6;
-const HANDLE_OFFSET = HANDLE_LENGTH / 2;
+export const HANDLE_OFFSET = HANDLE_LENGTH / 2;
 const DEFAULT_VECTOR_START = 10;
 export const DEFAULT_HANDLE_INDEX = -1;
 
@@ -222,5 +222,73 @@ export class Resizable {
             y: this.getRotatedPos(handleToMove).y + projection1.y,
         };
         return newStart;
+    }
+
+    switchHandlesHorizontal(this: Movable): void {
+        this.updateSelectionNodes();
+        this.updateResizingHandles();
+        this.flipedH = false;
+        this.width = Math.abs(this.width);
+        switch (this.currenthandle) {
+            case HANDLES.one:
+                this.currenthandle = HANDLES.three;
+                break;
+            case HANDLES.three:
+                this.currenthandle = HANDLES.one;
+                break;
+            case HANDLES.six:
+                this.currenthandle = HANDLES.eight;
+                break;
+            case HANDLES.eight:
+                this.currenthandle = HANDLES.six;
+                break;
+            case HANDLES.four:
+                this.currenthandle = HANDLES.five;
+                break;
+            case HANDLES.five:
+                this.currenthandle = HANDLES.four;
+                break;
+        }
+    }
+    switchHandlesVertical(this: Movable): void {
+        this.updateSelectionNodes();
+        this.updateResizingHandles();
+        this.flipedV = false;
+        this.width = Math.abs(this.height);
+        switch (this.currenthandle) {
+            case HANDLES.two:
+                this.currenthandle = HANDLES.seven;
+                break;
+            case HANDLES.seven:
+                this.currenthandle = HANDLES.two;
+                break;
+            case HANDLES.one:
+                this.currenthandle = HANDLES.six;
+                break;
+            case HANDLES.six:
+                this.currenthandle = HANDLES.one;
+                break;
+            case HANDLES.three:
+                this.currenthandle = HANDLES.eight;
+                break;
+            case HANDLES.eight:
+                this.currenthandle = HANDLES.three;
+                break;
+        }
+    }
+
+    mouseDownOnHandle(this: Movable, mousedownpos: Vec2): number {
+        for (let i = 0; i < this.resizingHandles.length; i++) {
+            if (
+                this.getUnrotatedPos(mousedownpos).x >= this.resizingHandles[i].x &&
+                this.getUnrotatedPos(mousedownpos).x <= this.resizingHandles[i].x + HANDLE_LENGTH &&
+                this.getUnrotatedPos(mousedownpos).y >= this.resizingHandles[i].y &&
+                this.getUnrotatedPos(mousedownpos).y <= this.resizingHandles[i].y + HANDLE_LENGTH
+            ) {
+                return i + 1;
+            }
+        }
+        // mouse not on any handle
+        return DEFAULT_HANDLE_INDEX;
     }
 }

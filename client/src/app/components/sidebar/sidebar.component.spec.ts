@@ -1,6 +1,7 @@
 /* tslint:disable */
 import { async, ComponentFixture, ComponentFixtureAutoDetect, TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
+import { PencilCommand } from '@app/classes/pencil-command';
 import { Tool } from '@app/classes/tool';
 import { MockDrawingService } from '@app/components/drawing/drawing.component.spec';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -148,8 +149,9 @@ describe('SidebarComponent', () => {
         expect(displayUserGuideSpy).toHaveBeenCalled();
     });
 
-    it('should call newDrawing when newDrawing is called', () => {
+    it('should call newDrawing when newDrawing is called and undostack is empty', () => {
         let newDrawingSpy = spyOn(drawServiceMock, 'newDrawing');
+        (component as SidebarComponent).getInvoker().addToUndo(new PencilCommand([],pencilStub,drawServiceMock));
         component.newDrawing();
         expect(newDrawingSpy).toHaveBeenCalled();
     });

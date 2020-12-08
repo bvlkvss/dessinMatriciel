@@ -1538,7 +1538,7 @@ describe('SelectionService', () => {
         service.flipedH = false;
         service.currenthandle = 4;
         service.rectangleService.toSquare = true;
-        service.redrawSelection();
+        service.redrawSelection(false,true);
         expect(service.selectionEndPoint.x).toEqual(initialEndpoint.x);
         expect(service.selectionStartPoint.x).not.toEqual(initialStartpoint.x);
     });
@@ -1552,7 +1552,7 @@ describe('SelectionService', () => {
         service.flipedH = false;
         service.currenthandle = 2;
         service.rectangleService.toSquare = true;
-        service.redrawSelection();
+        service.redrawSelection(false,true);
         expect(service.selectionEndPoint.y).toEqual(initialEndpoint.y);
         expect(service.selectionStartPoint.y).not.toEqual(initialStartpoint.y);
     });
@@ -1626,7 +1626,7 @@ describe('SelectionService', () => {
         expect(service.selectionStartPoint).toEqual({ x: 28, y: 100 });
     });
 
-
+    //all alignment tests take into account handle offset for the expected new pos
     it('should align 2nd handle to closest alignment point if selection is moved and it isnt aligned when magnetism is activated', () => {
 
         service.selectionStartPoint = { x: 11, y: 70 };
@@ -1636,8 +1636,8 @@ describe('SelectionService', () => {
 
         //expected pos of second handle before alignment
         let secondHandlePos = { x: 23, y: 67 };
-        //expect pos of second handle after alignment\
-        secondHandlePos = { x: 25, y: 75 };
+        //expect pos of second handle after alignment
+        secondHandlePos = { x: 22, y: 72 };
         service.updateResizingHandles();
         let currentPos = { x: 20, y: 42 };
         service.offsetX = currentPos.x - service.selectionStartPoint.x;
@@ -1665,7 +1665,7 @@ describe('SelectionService', () => {
         //expected pos of third handle before alignment
         let thirdHandlePos = { x: 38, y: 67 };
         //expect pos of third handle after alignment\
-        thirdHandlePos = { x: 50, y: 75 };
+        thirdHandlePos = { x: 47, y: 72 };
         service.updateResizingHandles();
         let currentPos = { x: 20, y: 42 };
         service.offsetX = currentPos.x - service.selectionStartPoint.x;
@@ -1692,7 +1692,7 @@ describe('SelectionService', () => {
         //expected pos of fourth handle before alignment
         let fourthHandlePos = { x: 8, y: 92 };
         //expect pos of fourth handle after alignment\
-        fourthHandlePos = { x: 0, y: 100 };
+        fourthHandlePos = { x: -3, y: 97 };
         service.updateResizingHandles();
         let currentPos = { x: 20, y: 42 };
         service.offsetX = currentPos.x - service.selectionStartPoint.x;
@@ -1719,7 +1719,7 @@ describe('SelectionService', () => {
         //expected pos of fifth handle before alignment
         let fifthHandlePos = { x: 38, y: 92 };
         //expect pos of fifth handle after alignment\
-        fifthHandlePos = { x: 50, y: 100 };
+        fifthHandlePos = { x: 47, y: 97 };
         service.updateResizingHandles();
         let currentPos = { x: 20, y: 42 };
         service.offsetX = currentPos.x - service.selectionStartPoint.x;
@@ -1745,7 +1745,7 @@ describe('SelectionService', () => {
         //expected pos of sixth handle before alignment
         let sixthHandlePos = { x: 8, y: 117 };
         //expect pos of sixth handle after alignment\
-        sixthHandlePos = { x: 0, y: 125 };
+        sixthHandlePos = { x: -3, y: 122 };
         service.updateResizingHandles();
         let currentPos = { x: 20, y: 42 };
         service.offsetX = currentPos.x - service.selectionStartPoint.x;
@@ -1771,7 +1771,7 @@ describe('SelectionService', () => {
         //expected pos of seventh handle before alignment
         let seventhHandlePos = { x: 23, y: 118 };
         //expect pos of seventh handle after alignment\
-        seventhHandlePos = { x: 25, y: 125 };
+        seventhHandlePos = { x: 22, y: 122 };
         service.updateResizingHandles();
         let currentPos = { x: 20, y: 42 };
         service.offsetX = currentPos.x - service.selectionStartPoint.x;
@@ -1798,7 +1798,7 @@ describe('SelectionService', () => {
         //expected pos of third handle before alignment
         let eighthHandlePos = { x: 38, y: 117 };
         //expect pos of third handle after alignment\
-        eighthHandlePos = { x: 50, y: 125 };
+        eighthHandlePos = { x: 47, y: 122 };
         service.updateResizingHandles();
         let currentPos = { x: 20, y: 42 };
         service.offsetX = currentPos.x - service.selectionStartPoint.x;
@@ -1840,5 +1840,82 @@ describe('SelectionService', () => {
         expect({x:service.selectionStartPoint.x+service.width/2,y:service.selectionStartPoint.y+service.height/2}).toEqual(centerPos);
 
     });
+
+    it('should call switchHandlesHorizontal if shift key is pressed while resizing and selection is flipped horizontally', () => {
+
+        let switchHorizontalMock =spyOn(service, 'switchHandlesHorizontal').and.callThrough();
+
+        service.selectionStartPoint = { x: 10, y: 70 };
+        service.width = 30;
+        service.height = 50;
+        service.selectionEndPoint = { x: 10 + 30, y: 70 + 50 };
+        service.updateResizingHandles();
+        let currentPos = { x: 20, y: 42 };
+        service.offsetX = currentPos.x - service.selectionStartPoint.x;
+        service.offsetY = currentPos.y - service.selectionStartPoint.y;
+        service.magnetismAnchorPoint = 9;
+        service.currenthandle=1;
+        service.degres = 0;
+        service.rectangleService.toSquare=true;
+        service.flipedH=true;
+        service.redrawSelection(false,true);
+        expect(switchHorizontalMock).toHaveBeenCalled();
+    });
+
+
+    it('should call switchHandlesVertical if shift key is pressed while resizing and selection is flipped vertically', () => {
+
+        let switchVerticalMock =spyOn(service, 'switchHandlesVertical').and.callThrough();
+        service.rectangleService.toSquare=true;
+        service.selectionStartPoint = { x: 10, y: 70 };
+        service.width = 30;
+        service.height = 50;
+        service.selectionEndPoint = { x: 10 + 30, y: 70 + 50 };
+        service.updateResizingHandles();
+        let currentPos = { x: 20, y: 42 };
+        service.offsetX = currentPos.x - service.selectionStartPoint.x;
+        service.offsetY = currentPos.y - service.selectionStartPoint.y;
+        service.magnetismAnchorPoint = 9;
+        service.degres = 0;
+        service.currenthandle=3;
+        service.flipedV=true;
+        service.redrawSelection(false,true);
+        expect(switchVerticalMock).toHaveBeenCalled();
+    });
+
+    it('should call switchHandlesVertical and horizontal if shift key is pressed while resizing and selection is flipped in both directions', () => {
+
+        let switchVerticalMock =spyOn(service, 'switchHandlesVertical').and.callThrough();
+        let switchHorizontalMock =spyOn(service, 'switchHandlesHorizontal').and.callThrough();
+        service.rectangleService.toSquare=true;
+        service.selectionStartPoint = { x: 10, y: 70 };
+        service.width = 30;
+        service.height = 50;
+        service.selectionEndPoint = { x: 10 + 30, y: 70 + 50 };
+        service.updateResizingHandles();
+        let currentPos = { x: 20, y: 42 };
+        service.offsetX = currentPos.x - service.selectionStartPoint.x;
+        service.offsetY = currentPos.y - service.selectionStartPoint.y;
+        service.magnetismAnchorPoint = 9;
+        service.degres = 0;
+        service.currenthandle=5;
+        service.flipedV=true;
+        service.flipedH=true;
+        service.redrawSelection(false,true);
+        expect(switchVerticalMock).toHaveBeenCalled();
+        expect(switchHorizontalMock).toHaveBeenCalled();
+    });
+
+
+    it('clearPreview should call drawing service clear canvas', () => {
+
+        //let clearPreviewMock =spyOn(drawServiceSpy. 'clearCanvas').and.callThrough();
+        service.clearPreview()
+        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
+
+    });
+
+
+
 
 });

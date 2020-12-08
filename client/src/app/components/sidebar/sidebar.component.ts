@@ -207,7 +207,9 @@ export class SidebarComponent implements OnChanges {
     }
 
     newDrawing(): void {
-        this.drawingService.newDrawing();
+        if (this.invoker.undoStack.length !== 0) {
+            this.drawingService.newDrawing();
+        }
     }
 
     selectAll(): void {
@@ -232,5 +234,9 @@ export class SidebarComponent implements OnChanges {
             event.preventDefault();
             this.openCarousel();
         }
+    }
+
+    getInvoker(): UndoRedoService {
+        return this.invoker;
     }
 }
