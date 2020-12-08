@@ -224,9 +224,7 @@ export class DrawingComponent implements AfterViewInit, OnInit, DoCheck, OnDestr
     @HostListener('document:keyup', ['$event'])
     onKeyUp(event: KeyboardEvent): void {
         this.tools.currentTool.onKeyUp(event);
-        if (this.dialog.openDialogs.length === 0) {
-            this.drawingService.sendMessage(this.tools.getByValue(this.tools.currentTool));
-        }
+        
     }
 
     // tslint:disable-next-line:cyclomatic-complexity
@@ -273,8 +271,13 @@ export class DrawingComponent implements AfterViewInit, OnInit, DoCheck, OnDestr
                         break;
                     }
                 }
+                if (this.dialog.openDialogs.length === 0) {
+                    this.drawingService.sendMessage(this.tools.getByValue(this.tools.currentTool));
+                }
+                console.log(this.tools.currentTool);
             }
         this.tools.currentTool.onKeyDown(event);
+       
     }
 
     get width(): number {

@@ -31,7 +31,7 @@ export class MagicWandService extends Tool {
         this.magicWandCtx = this.magicWandCanvas.getContext('2d') as CanvasRenderingContext2D;
         this.selectionPixels = [];
         this.nonContiguousSelectionDataArray = [];
-        this.toolAttributes = [];
+        this.toolAttributes = ["typeSelection"];
         this.isMagicSelectionActivated = false;
         this.invoker = invoker;
     }

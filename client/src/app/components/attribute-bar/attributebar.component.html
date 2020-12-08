@@ -2,7 +2,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
 </head>
 
-<div id="attribute">
+<div  id="attribute">
     <div id="canvasContainer" *ngIf="checkIfContainAttribute('pipette')">
         <div id="lineWidthcontainer">
             <p id="header" for="volume">Pipette de couleur</p>
@@ -323,28 +323,28 @@
         <label id="label">Px</label>
     </div>
 
-    <div id="Selectionontainer" *ngIf="checkIfContainAttribute('typeSelection')">
+    <div #selectionIcons id="SelectionContainer" *ngIf="checkIfContainAttribute('typeSelection')">
+        <div>
         <p id="header" for="volume">Selection</p>
         <p id="header" for="volume">Type De Selection:</p>
         <div class="selectionOptionButtonContainer">
             <div class="buttonContainer">
-                <a id="pencil" class="inactive">
+                <a #a id="rectSelection" class="inactive">
                     <i class="material-icons">highlight_alt</i>
                 </a>
-                <a id="pencil" class="inactive">
+                <a id="ellipseSelection" class="inactive">
                     <i class="material-icons">panorama_fish_eye</i>
                 </a>
-                <a id="pencil" class="active">
-                    <i class="material-icons">gesture</i>
-                </a>
-                <a id="pencil" class="inactive">
+                <a id="wandSelection" class="inactive">
                     <i class="material-icons">gesture</i>
                 </a>
             </div>
+            <!-- <div class="selectAllButton"><button style="height: 30px; width: 90%;">Tout Selectionner</button></div> -->
         </div>
+
         <div class="selectWholeCanvas" style="background-color: red;">   </div>
     </div>
-    <div id="Selectionontainer" style="display: block;" *ngIf="checkIfContainAttribute('typeSelection')" >
+    <div id="MagnetismContainer" style="display: block;" *ngIf="checkIfMagnetismActivated()" >            
         <p id="header" for="volume">Magnétisme</p>
         <p id="header" for="volume">Choisir un point de controle</p>
         <div class="typeSelectionContainer">
@@ -363,7 +363,7 @@
                 </div>
             </div>
         </div>
-        
+    </div>
     </div>
    
 </div>

@@ -580,14 +580,16 @@
     height: 70px;
     background-color: rgb(64, 61, 85);
     border-radius: 4px;
-
-    display: flex;
-    justify-content: center;
+    padding-left: 15px;
 }
 .buttonContainer {
     width: 90%;
     display: flex;
     justify-content: center;
+}
+.selectAllButton{
+    position: relative;
+    top: 20px;
 }
 
 .active {
@@ -624,4 +626,25 @@
 
 .material-icons {
     color: white;
+}
+
+#SelectionContainer {
+    padding: 5px;
+    position: relative;
+    margin-bottom: 2px;
+    -webkit-box-shadow: inset 0px 64px 59px -71px rgba(255, 255, 255, 0.3);
+    -moz-box-shadow: inset 0px 64px 59px -71px rgba(255, 255, 255, 0.3);
+    box-shadow: inset 0px 64px 59px -71px rgba(255, 255, 255, 0.3);
+    height: 60px;
+}
+
+#MagnetismContainer {
+    top: 5px;
+    padding: 5px;
+    position: relative;
+    margin-bottom: 2px;
+    -webkit-box-shadow: inset 0px 64px 59px -71px rgba(255, 255, 255, 0.3);
+    -moz-box-shadow: inset 0px 64px 59px -71px rgba(255, 255, 255, 0.3);
+    box-shadow: inset 0px 64px 59px -71px rgba(255, 255, 255, 0.3);
+    height: 60px;
 }
