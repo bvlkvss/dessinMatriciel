@@ -37,7 +37,7 @@ class MockResizingService extends ResizingService {
     }
 }
 
-fdescribe('DrawingComponent', () => {
+describe('DrawingComponent', () => {
     let component: DrawingComponent;
     let fixture: ComponentFixture<DrawingComponent>;
     let toolManagerStub: ToolsManagerService;
