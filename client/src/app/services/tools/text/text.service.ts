@@ -64,6 +64,7 @@ export class TextService extends Tool {
         if (this.isRighting) this.drawTextBox();
     }
     onClick(event: MouseEvent): void {
+        console.log('OKOKOK');
         this.mouseDownCoord = this.getPositionFromMouse(event);
         if (this.firstClick) {
             this.setToInitState();
@@ -108,9 +109,10 @@ export class TextService extends Tool {
         ctx.setLineDash([Const.LINE_DASH_MIN, Const.LINE_DASH_MAX]);
         let widthToAdd = this.fontSize / Const.TEXT_POSITION_TOLERANCE;
         if (widthToAdd <= Const.CURSOR_LENGHT) widthToAdd = Const.WIDTH_TOLERANCE;
-        const heightToAdd = this.fontSize * this.lines.length + this.fontSize;
         this.rectHeight =
-            this.fontSize >= Const.BIG_TEXT_SIZE ? heightToAdd * Const.HEIGHT_TOLERANCE_BIG_TEXT : heightToAdd * Const.HEIGHT_TOLERANCE_SMALL_TEXT;
+            this.fontSize >= Const.BIG_TEXT_SIZE
+                ? this.fontSize * this.lines.length + this.fontSize * Const.HEIGHT_TOLERANCE_BIG_TEXT
+                : this.fontSize * this.lines.length + this.fontSize * Const.HEIGHT_TOLERANCE_SMALL_TEXT;
         ctx.strokeStyle = 'blue';
         this.rectWidth = textMeasure > Const.DEFAULT_BOX_WIDTH ? textMeasure : Const.DEFAULT_BOX_WIDTH;
         ctx.strokeRect(position.x, position.y, this.rectWidth + widthToAdd + Const.CURSOR_LENGHT, this.rectHeight);
@@ -180,11 +182,15 @@ export class TextService extends Tool {
         const firstPart = this.lines[this.currentLinePosition].substr(0, this.currentChar);
         position.x = this.firstCursorPosition.x + this.measureText(firstPart);
         position.y = this.textPosition.y + this.currentLinePosition * this.fontSize - Const.CURSOR_POSITION_Y_TOLERANCE * this.fontSize;
+        console.log(position.x, 'cursor x')
+        console.log(this.textPosition.x, 'text x')
+        console.log(this.measureText(firstPart), 'leghtn x')
+
         if (this.fontSize <= Const.SMALL_TEXT_SIZE) position.x += 2;
         ctx.font = this.fontStyle + ' ' + this.fontText;
         ctx.fillStyle = 'black';
         ctx.globalAlpha = isBlank ? 0 : 1;
-        ctx.fillText(this.cursor, position.x - 1, position.y);
+        ctx.fillText(this.cursor, position.x, position.y);
         ctx.restore();
     }
     onKeyDown(event: KeyboardEvent): void {

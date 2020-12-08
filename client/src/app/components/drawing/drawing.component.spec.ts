@@ -369,7 +369,7 @@ describe('DrawingComponent', () => {
         let event = {} as MouseEvent;
         component['resizer'] = resizingServiceMock;
         component['resizer'].isMaximazed = true;
-        component['mouseFired'] = true;
+        (component as any).mouseFired = true;
         let onMouseUpSpy = spyOn<any>((component as any).tools.currentTool, 'onMouseUp');
         component.onMouseUp(event);
         expect(component['mouseFired']).toEqual(false);
