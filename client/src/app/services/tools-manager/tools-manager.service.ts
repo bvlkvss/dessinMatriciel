@@ -73,6 +73,15 @@ export class ToolsManagerService {
     }
 
     setTools(name: string): void {
+        if (name !== 'grid') {
+            if (this.currentTool instanceof SelectionService) {
+                if ((this.currentTool as SelectionService).selectionActivated) (this.currentTool as SelectionService).drawSelectionOnBase();
+            } else if (this.currentTool instanceof MagicWandService) {
+                if ((this.currentTool as MagicWandService).magicSelectionObj.selectionActivated) {
+                    (this.currentTool as MagicWandService).magicSelectionObj.drawSelectionOnBase();
+                }
+            }
+        }
         this.currentTool = this.tools.get(name) as Tool;
     }
 
