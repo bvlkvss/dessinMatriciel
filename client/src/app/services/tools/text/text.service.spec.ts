@@ -495,7 +495,7 @@ describe('TextService', () => {
     expect(service.isBlank).toEqual(false);
     expect(baseCtxStub.globalAlpha).toEqual(0);
     expect(baseCtxStub.fillStyle).toEqual("#000000");
-    expect(fillTextSpy).toHaveBeenCalledWith("|", 296, 124.5);
+    expect(fillTextSpy).toHaveBeenCalledWith("|", 297, 124.5);
     expect(measureTextSpy).toHaveBeenCalled();
   });
   it('alignSingleLine should return the right point when allignement is left', () => {
@@ -544,8 +544,8 @@ describe('TextService', () => {
     const mockPosition = { x: 200, y: 198 };
     service["drawBox"](baseCtxStub, mockPosition);
     expect(service.rectWidth).toEqual(250);
-    expect(service.rectEndPoint).toEqual({ x: 285.5, y: 69 });
-    expect(service.rectHeight).toEqual(49);
+    expect(service.rectEndPoint).toEqual({ x: 285.5, y: 114.5 });
+    expect(service.rectHeight).toEqual(94.5);
     expect(findLongestLineSpy).toHaveBeenCalled();
   });
 

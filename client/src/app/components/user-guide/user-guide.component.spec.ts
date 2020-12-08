@@ -45,4 +45,15 @@ describe('UserGuideComponent', () => {
         let x = document.getElementById('background') as HTMLElement;
         expect(x.style.display).toEqual('none');
     });
+    it('should call closeUserGuide if i press on escape', () => {
+        component.closeUserGuide = jasmine.createSpy();
+        component.onkeyDown({ key: 'Escape' } as KeyboardEvent);
+        expect(component.closeUserGuide).toHaveBeenCalled();
+    });
+
+    it('should  not call closeUserGuide if i do not press on escape', () => {
+        component.closeUserGuide = jasmine.createSpy();
+        component.onkeyDown({ key: 'k' } as KeyboardEvent);
+        expect(component.closeUserGuide).not.toHaveBeenCalled();
+    });
 });
