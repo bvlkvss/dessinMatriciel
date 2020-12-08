@@ -77,8 +77,32 @@
                     </a>
                 </div>
             </div>
+            <div *ngIf="clipboardBarAllowed()" class="inlineclass">
+                <div class="drawingtoolscontainer">
+                    <a id="content_copy" (click)="onCopy()">
+                        <i class="material-icons">content_copy</i>
+                        <span class="slidingtxt2"> Copier (Ctrl+c) </span>
+                    </a>
+                    <a id="content_paste" (click)="onPaste()">
+                        <i class="material-icons">content_paste</i>
+                        <span class="slidingtxt2"> Coller (Ctrl+v)</span>
+                    </a>
+                </div>
 
-            <div class="drawingtoolscontainer2">
+                <div class="drawingtoolscontainer">
+                    <a id="content_cut" (click)="onCut()">
+                        <i class="material-icons">content_cut</i>
+                        <span class="slidingtxt"> Couper (Ctrl+x)</span>
+                    </a>
+
+                    <a id="delete" (click)="onDelete()">
+                        <i class="material-icons">delete</i>
+                        <span class="slidingtxt"> Supprimer (Delete)</span>
+                    </a>
+                </div>
+            </div>
+
+            <div *ngIf="undoRedoAllowed()" class="drawingtoolscontainer2">
                 <a (click)="undo()">
                     <i class="material-icons">undo</i>
                 </a>
