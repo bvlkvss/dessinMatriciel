@@ -1,6 +1,7 @@
 import { Vec2 } from '@app/classes/vec2';
 import { StampService } from '@app/services/tools/stamp/stamp.service';
 import { Movable } from './movable';
+import { Tool } from './tool';
 const DEFAULT_DEGREE_STEP = 15;
 export const PI_DEGREE = 180;
 
@@ -46,6 +47,6 @@ export class Rotationable {
             this.degres -= event.altKey ? 1 : DEFAULT_DEGREE_STEP;
         }
 
-        this.shouldAlign = true;
+        Tool.shouldAlign = true;
     }
 }

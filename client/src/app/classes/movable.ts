@@ -83,7 +83,7 @@ export abstract class Movable extends Tool implements Rotationable, Resizable {
         this.selectionActivated = false;
         this.deltaY = 0;
         this.deltaX = 0;
-        this.shouldAlign = true;
+        Tool.shouldAlign = true;
     }
 
     eraseSelectionFromBase(endPos: Vec2): void {}
@@ -199,10 +199,10 @@ export abstract class Movable extends Tool implements Rotationable, Resizable {
                     };
                     break;
             }
-            if (this.shouldAlign) {
+            if (Tool.shouldAlign) {
                 this.deltaX = this.selectionStartPoint.x - this.tmpAlignmentPoint.x;
                 this.deltaY = this.selectionStartPoint.y - this.tmpAlignmentPoint.y;
-                this.shouldAlign = false;
+                Tool.shouldAlign = false;
             }
             if (this.tmpAlignmentPoint.x % GridService.squareSize === 0 && this.tmpAlignmentPoint.y % GridService.squareSize === 0) {
                 return;

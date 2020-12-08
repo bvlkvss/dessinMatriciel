@@ -155,6 +155,7 @@ export class ToolsManagerService {
 
     setAnchorPoint(value:number): void{
         Movable.magnetismAnchorPoint = value;
+        Tool.shouldAlign = true;
     }
 
 

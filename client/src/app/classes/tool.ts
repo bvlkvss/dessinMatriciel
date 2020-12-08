@@ -25,7 +25,7 @@ export abstract class Tool {
     opacity: number;
     primaryColor: string;
     secondaryColor: string;
-    shouldAlign: boolean;
+    static shouldAlign: boolean;
 
     constructor(protected drawingService: DrawingService) {
         this.isOut = false;
