@@ -6,7 +6,7 @@ import { GridService } from '@app/services/tools/grid/grid.service';
 import { MagicWandSelection } from '@app/services/tools/magic-wand/magic-wand-selection';
 import { RectangleService, RectangleStyle } from '@app/services/tools/rectangle/rectangle.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
-import { DEFAULT_HANDLE_INDEX, HANDLES, HANDLE_LENGTH, Resizable } from './resizable';
+import { DEFAULT_HANDLE_INDEX, HANDLES, HANDLE_OFFSET, Resizable } from './resizable';
 import { PI_DEGREE, Rotationable } from './rotationable';
 import { SelectionCommand } from './selection-command';
 
@@ -50,7 +50,6 @@ export abstract class Movable extends Tool implements Rotationable, Resizable {
     getUnrotatedPos: (element: Vec2) => Vec2 = Rotationable.prototype.getUnrotatedPos;
     getRotatedPos: (element: Vec2) => Vec2 = Rotationable.prototype.getRotatedPos;
     updateDegree: (event: WheelEvent) => void = Rotationable.prototype.updateDegree;
-
     checkFlip: () => number = Resizable.prototype.checkFlip;
     flipSelection: () => void = Resizable.prototype.flipSelection;
     flipData: (translateVec: Vec2, scale: Vec2) => void = Resizable.prototype.flipData;
@@ -58,6 +57,10 @@ export abstract class Movable extends Tool implements Rotationable, Resizable {
     resizeSelection: () => void = Resizable.prototype.resizeSelection;
     drawResizingHandles: () => void = Resizable.prototype.drawResizingHandles;
     handleNewPos: (handleToMove: Vec2, direction: Vec2) => Vec2 = Resizable.prototype.handleNewPos;
+    mouseDownOnHandle: (mousedownpos: Vec2) => number = Resizable.prototype.mouseDownOnHandle;
+
+    switchHandlesHorizontal: () => void = Resizable.prototype.switchHandlesHorizontal;
+    switchHandlesVertical: () => void = Resizable.prototype.switchHandlesVertical;
 
     constructor(drawingService: DrawingService, protected invoker: UndoRedoService) {
         super(drawingService);
@@ -76,7 +79,7 @@ export abstract class Movable extends Tool implements Rotationable, Resizable {
         this.ellipseService.setStyle(0);
         this.ellipseService.secondaryColor = 'black';
         this.ellipseService.primaryColor = 'black';
-        this.ellipseService.lineDash=true;
+        this.ellipseService.lineDash = true;
         this.selectionActivated = false;
         this.deltaY = 0;
         this.deltaX = 0;
@@ -137,7 +140,6 @@ export abstract class Movable extends Tool implements Rotationable, Resizable {
 
     moveSelection(endpoint: Vec2): void {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
-
         this.selectionStartPoint = { x: endpoint.x - this.offsetX, y: endpoint.y - this.offsetY };
 
         if (Movable.magnetismActivated) {
@@ -146,40 +148,53 @@ export abstract class Movable extends Tool implements Rotationable, Resizable {
                 case HANDLES.one:
                     this.tmpAlignmentPoint = this.getRotatedPos(this.selectionStartPoint);
                     break;
-
                 case HANDLES.two:
-                    this.tmpAlignmentPoint = this.getRotatedPos(this.resizingHandles[HANDLES.two - 1]);
+                    this.tmpAlignmentPoint = {
+                        x: this.getRotatedPos(this.resizingHandles[HANDLES.two - 1]).x + HANDLE_OFFSET,
+                        y: this.getRotatedPos(this.resizingHandles[HANDLES.two - 1]).y + HANDLE_OFFSET,
+                    };
                     break;
-
                 case HANDLES.three:
-                    this.tmpAlignmentPoint = this.getRotatedPos(this.resizingHandles[HANDLES.three - 1]);
+                    this.tmpAlignmentPoint = {
+                        x: this.getRotatedPos(this.resizingHandles[HANDLES.three - 1]).x + HANDLE_OFFSET,
+                        y: this.getRotatedPos(this.resizingHandles[HANDLES.three - 1]).y + HANDLE_OFFSET,
+                    };
                     break;
-
                 case HANDLES.four:
-                    this.tmpAlignmentPoint = this.getRotatedPos(this.resizingHandles[HANDLES.four - 1]);
+                    this.tmpAlignmentPoint = {
+                        x: this.getRotatedPos(this.resizingHandles[HANDLES.four - 1]).x + HANDLE_OFFSET,
+                        y: this.getRotatedPos(this.resizingHandles[HANDLES.four - 1]).y + HANDLE_OFFSET,
+                    };
                     break;
-
                 case HANDLES.five:
-                    this.tmpAlignmentPoint = this.getRotatedPos(this.resizingHandles[HANDLES.five - 1]);
+                    this.tmpAlignmentPoint = {
+                        x: this.getRotatedPos(this.resizingHandles[HANDLES.five - 1]).x + HANDLE_OFFSET,
+                        y: this.getRotatedPos(this.resizingHandles[HANDLES.five - 1]).y + HANDLE_OFFSET,
+                    };
                     break;
-
                 case HANDLES.six:
-                    this.tmpAlignmentPoint = this.getRotatedPos(this.resizingHandles[HANDLES.six - 1]);
+                    this.tmpAlignmentPoint = {
+                        x: this.getRotatedPos(this.resizingHandles[HANDLES.six - 1]).x + HANDLE_OFFSET,
+                        y: this.getRotatedPos(this.resizingHandles[HANDLES.six - 1]).y + HANDLE_OFFSET,
+                    };
                     break;
-
                 case HANDLES.seven:
-                    this.tmpAlignmentPoint = this.getRotatedPos(this.resizingHandles[HANDLES.seven - 1]);
+                    this.tmpAlignmentPoint = {
+                        x: this.getRotatedPos(this.resizingHandles[HANDLES.seven - 1]).x + HANDLE_OFFSET,
+                        y: this.getRotatedPos(this.resizingHandles[HANDLES.seven - 1]).y + HANDLE_OFFSET,
+                    };
                     break;
-
                 case HANDLES.eight:
-                    this.tmpAlignmentPoint = this.getRotatedPos(this.resizingHandles[HANDLES.eight - 1]);
+                    this.tmpAlignmentPoint = {
+                        x: this.getRotatedPos(this.resizingHandles[HANDLES.eight - 1]).x + HANDLE_OFFSET,
+                        y: this.getRotatedPos(this.resizingHandles[HANDLES.eight - 1]).y + HANDLE_OFFSET,
+                    };
                     break;
-
                 case HANDLES.center:
-                    this.tmpAlignmentPoint = this.getRotatedPos({
-                        x: (this.selectionStartPoint.x + this.selectionEndPoint.x) / 2,
-                        y: (this.selectionStartPoint.y + this.selectionEndPoint.y) / 2,
-                    });
+                    this.tmpAlignmentPoint = {
+                        x: this.getRotatedPos(this.resizingHandles[HANDLES.two - 1]).x + HANDLE_OFFSET,
+                        y: this.getRotatedPos(this.resizingHandles[HANDLES.four - 1]).y + HANDLE_OFFSET,
+                    };
                     break;
             }
             if (this.shouldAlign) {
@@ -263,17 +278,13 @@ export abstract class Movable extends Tool implements Rotationable, Resizable {
         }
         this.width = this.selectionEndPoint.x - this.selectionStartPoint.x;
         this.height = this.selectionEndPoint.y - this.selectionStartPoint.y;
-
         if (this.rectangleService.toSquare) {
+            if (this.flipedH) {
+                this.switchHandlesHorizontal();
+            }
 
-            if(this.flipedH){
-                this.updateSelectionNodes();
-                this.flipedH=false;
-                this.updateResizingHandles();
-                this.width=Math.abs(this.width);
-                if(this.currenthandle==1)
-                    this.currenthandle=3;
-
+            if (this.flipedV) {
+                this.switchHandlesVertical();
             }
 
             if (this.currenthandle === HANDLES.one || this.currenthandle === HANDLES.four || this.currenthandle === HANDLES.six) {
@@ -333,20 +344,5 @@ export abstract class Movable extends Tool implements Rotationable, Resizable {
         this.drawingService.previewCtx.restore();
         this.updateResizingHandles();
         this.drawResizingHandles();
-    }
-
-    mouseDownOnHandle(mousedownpos: Vec2): number {
-        for (let i = 0; i < this.resizingHandles.length; i++) {
-            if (
-                this.getUnrotatedPos(mousedownpos).x >= this.resizingHandles[i].x &&
-                this.getUnrotatedPos(mousedownpos).x <= this.resizingHandles[i].x + HANDLE_LENGTH &&
-                this.getUnrotatedPos(mousedownpos).y >= this.resizingHandles[i].y &&
-                this.getUnrotatedPos(mousedownpos).y <= this.resizingHandles[i].y + HANDLE_LENGTH
-            ) {
-                return i + 1;
-            }
-        }
-        // mouse not on any handle
-        return DEFAULT_HANDLE_INDEX;
     }
 }
