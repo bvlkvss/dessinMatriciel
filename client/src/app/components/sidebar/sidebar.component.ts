@@ -46,11 +46,16 @@ export class SidebarComponent implements OnChanges {
             for (let i = 0; i < numberOfTools; i++) {
                 this.toolIcons.nativeElement.getElementsByTagName('a')[i].classList.remove('active');
             }
-            // if(message=="selection"){
-            //     // if((this.tools.getTools().get(message) as SelectionService).getSelectionStyle()==0)
-            //     this.displayPalette(message);
-            // }
             this.toolIcons.nativeElement.querySelector('#' + message)?.setAttribute('class', 'active');
+            if(message == 'magic-wand'){
+                this.toolIcons.nativeElement.querySelector('#selection')?.setAttribute('class', 'active');
+            }
+            if(message=="selection" || "magic-wand"){
+                // if((this.tools.getTools().get(message) as SelectionService).getSelectionStyle()==0)
+                // this.displayPalette(message);
+                this.togglecanvas('drawing-container-open');
+                this.toggleAttributeBar('attribute-open');
+            }
         });
 
         if (!this.isRevertClicked) {
