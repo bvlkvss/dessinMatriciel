@@ -41,7 +41,7 @@ export abstract class Movable extends Tool implements Rotationable, Resizable {
     selectionActivated: boolean;
     mouseDownInsideSelection: boolean;
     magicSelectionObj: MagicWandSelection;
-    magnetismAnchorPoint: number;
+    static magnetismAnchorPoint: number;
     deltaX: number;
     deltaY: number;
     tmpAlignmentPoint: Vec2;
@@ -69,7 +69,7 @@ export abstract class Movable extends Tool implements Rotationable, Resizable {
         this.moveDelayActive = false;
         this.continuousMove = false;
         this.firstSelectionMove = true;
-        this.magnetismAnchorPoint = 1;
+        Movable.magnetismAnchorPoint = 1;
         this.currenthandle = DEFAULT_HANDLE_INDEX;
         this.rectangleService = new RectangleService(drawingService, this.invoker);
         this.rectangleService.setStyle(RectangleStyle.Selection);
@@ -146,7 +146,7 @@ export abstract class Movable extends Tool implements Rotationable, Resizable {
 
         if (Movable.magnetismActivated) {
             this.updateResizingHandles();
-            switch (this.magnetismAnchorPoint) {
+            switch (Movable.magnetismAnchorPoint) {
                 case HANDLES.one:
                     this.tmpAlignmentPoint = this.getRotatedPos(this.selectionStartPoint);
                     break;

@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Movable } from '@app/classes/movable';
 import { Tool } from '@app/classes/tool';
 import { BrushService } from '@app/services/tools/brush/brush.service';
 import { EllipseService } from '@app/services/tools/ellipse/ellipse.service';
@@ -153,8 +154,7 @@ export class ToolsManagerService {
     }
 
     setAnchorPoint(value:number): void{
-        (this.tools.get('selection') as SelectionService).magnetismAnchorPoint = value;
-        (this.tools.get('magic-wand') as MagicWandService).magicSelectionObj.magnetismAnchorPoint = value;
+        Movable.magnetismAnchorPoint = value;
     }
 
 
