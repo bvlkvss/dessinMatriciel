@@ -92,31 +92,33 @@ export abstract class Movable extends Tool implements Rotationable, Resizable {
     }
 
     drawSelectionOnBase(): void {
-        const centre = {
-            x: (this.selectionStartPoint.x + this.selectionEndPoint.x) / 2,
-            y: (this.selectionStartPoint.y + this.selectionEndPoint.y) / 2,
-        };
-        this.drawingService.baseCtx.save();
-        this.drawingService.baseCtx.translate(centre.x, centre.y);
-        this.drawingService.baseCtx.rotate((this.degres * Math.PI) / PI_DEGREE);
-        this.drawingService.clearCanvas(this.drawingService.previewCtx);
-        if (this.selectionStyle === 1) {
-            this.clipImageWithEllipse();
-        } else {
-            this.drawingService.baseCtx.drawImage(this.selectionData, -this.width / 2, -this.height / 2, this.width, this.height);
+        if (this.selectionActivated) {
+            const centre = {
+                x: (this.selectionStartPoint.x + this.selectionEndPoint.x) / 2,
+                y: (this.selectionStartPoint.y + this.selectionEndPoint.y) / 2,
+            };
+            this.drawingService.baseCtx.save();
+            this.drawingService.baseCtx.translate(centre.x, centre.y);
+            this.drawingService.baseCtx.rotate((this.degres * Math.PI) / PI_DEGREE);
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            if (this.selectionStyle === 1) {
+                this.clipImageWithEllipse();
+            } else {
+                this.drawingService.baseCtx.drawImage(this.selectionData, -this.width / 2, -this.height / 2, this.width, this.height);
+            }
+            if (this.selectionCommand) {
+                this.selectionCommand.setStartPos(this.selectionStartPoint);
+                this.selectionCommand.setEndPos(this.selectionEndPoint);
+                this.selectionCommand.setSelectionStyle(this.selectionStyle);
+                this.selectionCommand.setSize(this.width, this.height);
+                this.selectionCommand.setCanvas(this.selectionData);
+                this.invoker.addToUndo(this.selectionCommand);
+                this.invoker.setIsAllowed(true);
+            }
+            this.drawingService.baseCtx.restore();
+            this.resetSelection();
+            this.selectionActivated = false;
         }
-        if (this.selectionCommand) {
-            this.selectionCommand.setStartPos(this.selectionStartPoint);
-            this.selectionCommand.setEndPos(this.selectionEndPoint);
-            this.selectionCommand.setSelectionStyle(this.selectionStyle);
-            this.selectionCommand.setSize(this.width, this.height);
-            this.selectionCommand.setCanvas(this.selectionData);
-            this.invoker.addToUndo(this.selectionCommand);
-            this.invoker.setIsAllowed(true);
-        }
-        this.drawingService.baseCtx.restore();
-        this.resetSelection();
-        this.selectionActivated = false;
     }
 
     updateSelectionNodes(): number {

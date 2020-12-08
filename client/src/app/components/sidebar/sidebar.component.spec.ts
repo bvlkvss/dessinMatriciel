@@ -4,6 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Tool } from '@app/classes/tool';
 import { MockDrawingService } from '@app/components/drawing/drawing.component.spec';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { SelectionClipboardService } from '@app/services/selection-clipboard/selection-clipboard.service';
 import { ToolsManagerService } from '@app/services/tools-manager/tools-manager.service';
 import { BrushService } from '@app/services/tools/brush/brush.service';
 import { EllipseService } from '@app/services/tools/ellipse/ellipse.service';
@@ -48,11 +49,13 @@ describe('SidebarComponent', () => {
     let matDialogSpy: jasmine.SpyObj<MatDialog>;
     let gridStub: GridService;
     let magicWandStub: MagicWandService;
+    let clipboardStub: SelectionClipboardService;
 
     let stampStub: StampService;
     beforeEach(async(() => {
         drawServiceMock = new MockDrawingService();
         UndoRedoServiceMock = new MockUndoRedoService(drawServiceMock);
+        clipboardStub = new SelectionClipboardService();
         pencilStub = new PencilService(drawServiceMock, UndoRedoServiceMock);
         brushStub = new BrushService(drawServiceMock, UndoRedoServiceMock);
         rectangleStub = new RectangleService(drawServiceMock, UndoRedoServiceMock);
@@ -78,6 +81,7 @@ describe('SidebarComponent', () => {
                 { provide: DrawingService, useValue: drawServiceMock },
                 { provide: MatDialog, useValue: matDialogSpy },
                 { provide: UndoRedoService, useValue: UndoRedoServiceMock },
+                { provide: SelectionClipboardService, useValue: clipboardStub },
                 { provide: ComponentFixtureAutoDetect, useValue: true },
             ],
         }).compileComponents();
@@ -269,6 +273,92 @@ describe('SidebarComponent', () => {
         component.onkeyDownWindow(event)
         expect(preventSpy).not.toHaveBeenCalled();
 
+    });
+
+    it('is should return value of invoker.getIsAllowed', () => {
+        UndoRedoServiceMock.setIsAllowed(true);
+        expect(component.undoRedoAllowed()).toEqual(true);
+    });
+
+    it('is should return value of invoker.getIsAllowed', () => {
+        UndoRedoServiceMock.setIsAllowed(false);
+        expect(component.undoRedoAllowed()).toEqual(false);
+    });
+
+    it('should call on keydown of clipboard', () => {
+        (component as any).tools.currentTool = (component as any).tools.getTools().get('selection');
+        clipboardStub.onKeyDown = jasmine.createSpy().and.callThrough().and.callFake(() => { });
+        component.onCopy();
+        expect(clipboardStub.onKeyDown).toHaveBeenCalled();
+    });
+
+    it('should call on keydown of clipboard', () => {
+        (component as any).tools.currentTool = (component as any).tools.getTools().get('selection');
+        clipboardStub.onKeyDown = jasmine.createSpy().and.callThrough().and.callFake(() => { });
+        component.onCut();
+        expect(clipboardStub.onKeyDown).toHaveBeenCalled();
+    });
+
+    it('should call on keydown of clipboard', () => {
+        (component as any).tools.currentTool = (component as any).tools.getTools().get('selection');
+        clipboardStub.onKeyDown = jasmine.createSpy().and.callThrough().and.callFake(() => { });
+        component.onPaste();
+        expect(clipboardStub.onKeyDown).toHaveBeenCalled();
+    });
+
+    it('should call on keydown of clipboard', () => {
+        (component as any).tools.currentTool = (component as any).tools.getTools().get('selection');
+        clipboardStub.onKeyDown = jasmine.createSpy().and.callThrough().and.callFake(() => { });
+        component.onDelete();
+        expect(clipboardStub.onKeyDown).toHaveBeenCalled();
+    });
+
+    it('should not call on keydown of clipboard', () => {
+        (component as any).tools.currentTool = (component as any).tools.getTools().get('pencil');
+        clipboardStub.onKeyDown = jasmine.createSpy().and.callThrough().and.callFake(() => { });
+        component.onCopy();
+        expect(clipboardStub.onKeyDown).not.toHaveBeenCalled();
+    });
+
+    it('should not call on keydown of clipboard', () => {
+        (component as any).tools.currentTool = (component as any).tools.getTools().get('pencil');
+        clipboardStub.onKeyDown = jasmine.createSpy().and.callThrough().and.callFake(() => { });
+        component.onCopy();
+        expect(clipboardStub.onKeyDown).not.toHaveBeenCalled();
+    });
+
+
+    it('should not call on keydown of clipboard', () => {
+        (component as any).tools.currentTool = (component as any).tools.getTools().get('pencil');
+        clipboardStub.onKeyDown = jasmine.createSpy().and.callThrough().and.callFake(() => { });
+        component.onPaste();
+        expect(clipboardStub.onKeyDown).not.toHaveBeenCalled();
+    });
+
+    it('should not call on keydown of clipboard', () => {
+        (component as any).tools.currentTool = (component as any).tools.getTools().get('pencil');
+        clipboardStub.onKeyDown = jasmine.createSpy().and.callThrough().and.callFake(() => { });
+        component.onCut();
+        expect(clipboardStub.onKeyDown).not.toHaveBeenCalled();
+    });
+
+    it('should not call on keydown of clipboard', () => {
+        (component as any).tools.currentTool = (component as any).tools.getTools().get('pencil');
+        clipboardStub.onKeyDown = jasmine.createSpy().and.callThrough().and.callFake(() => { });
+        component.onDelete();
+        expect(clipboardStub.onKeyDown).not.toHaveBeenCalled();
+    });
+
+    it('should call undoLast', () => {
+        (component as any).invoker.undoLast = jasmine.createSpy().and.callThrough().and.callFake(() => { });
+        component.undo();
+        expect((component as any).invoker.undoLast).toHaveBeenCalled();
+    });
+
+    it('should call redoPrev', () => {
+        (component as any).invoker.redoPrev = jasmine.createSpy().and.callThrough().and.callFake(() => { });
+        component.redo();
+        expect((component as any).invoker.redoPrev).toHaveBeenCalled();
     });
 
 });

@@ -6,8 +6,10 @@ import { ExportComponent } from '@app/components/export/export.component';
 import { SavingComponent } from '@app/components/saving/saving.component';
 import { UserGuideComponent } from '@app/components/user-guide/user-guide.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { SelectionClipboardService } from '@app/services/selection-clipboard/selection-clipboard.service';
 import { ToolsManagerService } from '@app/services/tools-manager/tools-manager.service';
 import { GridService } from '@app/services/tools/grid/grid.service';
+import { MagicWandService } from '@app/services/tools/magic-wand/magic-wand.service';
 import { SelectionService } from '@app/services/tools/selection/selection.service';
 import { TextService } from '@app/services/tools/text/text.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
@@ -31,6 +33,7 @@ export class SidebarComponent implements OnChanges {
         protected drawingService: DrawingService,
         protected invoker: UndoRedoService,
         private dialog: MatDialog,
+        private clipboard: SelectionClipboardService,
     ) {
         this.isRevertClicked = false;
         this.attributeBarIsActive = false;
@@ -54,12 +57,58 @@ export class SidebarComponent implements OnChanges {
         }
         this.isRevertClicked = false;
     }
+
     undo(): void {
         this.invoker.undoLast();
     }
 
     redo(): void {
         this.invoker.redoPrev();
+    }
+
+    undoRedoAllowed(): boolean {
+        return this.invoker.getIsAllowed();
+    }
+
+    clipboardBarAllowed(): boolean {
+        return (
+            this.tools.getTools().get('selection') === this.tools.currentTool || this.tools.getTools().get('magic-wand') === this.tools.currentTool
+        );
+    }
+
+    onCopy(): void {
+        const event = {
+            key: 'c',
+        } as KeyboardEvent;
+        if (this.tools.getTools().get('selection') === this.tools.currentTool || this.tools.getTools().get('magic-wand') === this.tools.currentTool) {
+            this.clipboard.onKeyDown(event, this.tools.currentTool as SelectionService | MagicWandService);
+        }
+    }
+
+    onPaste(): void {
+        const event = {
+            key: 'v',
+        } as KeyboardEvent;
+        if (this.tools.getTools().get('selection') === this.tools.currentTool || this.tools.getTools().get('magic-wand') === this.tools.currentTool) {
+            this.clipboard.onKeyDown(event, this.tools.currentTool as SelectionService | MagicWandService);
+        }
+    }
+
+    onDelete(): void {
+        const event = {
+            key: 'Delete',
+        } as KeyboardEvent;
+        if (this.tools.getTools().get('selection') === this.tools.currentTool || this.tools.getTools().get('magic-wand') === this.tools.currentTool) {
+            this.clipboard.onKeyDown(event, this.tools.currentTool as SelectionService | MagicWandService);
+        }
+    }
+    onCut(): void {
+        const event = {
+            key: 'x',
+        } as KeyboardEvent;
+        if (this.tools.getTools().get('selection') === this.tools.currentTool || this.tools.getTools().get('magic-wand') === this.tools.currentTool) {
+            this.clipboard.onKeyDown(event, this.tools.currentTool as SelectionService | MagicWandService);
+        }
     }
 
     openExportDialog(): void {
