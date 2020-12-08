@@ -328,4 +328,10 @@ export class AttributeBarComponent implements OnInit, AfterViewChecked, AfterVie
     checkIfMagnetismActivated(): boolean{
         return Movable.magnetismActivated;
     }
+
+
+    selectAll(): void {
+        (this.tools.currentTool as SelectionService).selectionStyle = 0;
+        (this.tools.currentTool as SelectionService).selectAllCanvas();
+    }
 }

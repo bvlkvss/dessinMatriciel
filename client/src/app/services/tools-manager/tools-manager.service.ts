@@ -157,6 +157,7 @@ export class ToolsManagerService {
         Movable.magnetismAnchorPoint = value;
         Tool.shouldAlign = true;
     }
+    
 
 
 }
