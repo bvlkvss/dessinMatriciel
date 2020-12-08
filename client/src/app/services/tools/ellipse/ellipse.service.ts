@@ -19,6 +19,7 @@ export class EllipseService extends Tool {
     isOut: boolean;
     currentPos: Vec2;
     ellipseStyle: EllipseStyle;
+    lineDash: boolean;
     constructor(drawingService: DrawingService, protected invoker: UndoRedoService) {
         super(drawingService);
         this.toSquare = false;
@@ -26,6 +27,7 @@ export class EllipseService extends Tool {
         this.lineWidth = 1;
         this.ellipseStyle = 2;
         this.toolAttributes = ['ellipseStyle', 'strokeWidth'];
+        this.lineDash = false;
     }
 
     onMouseDown(event: MouseEvent, isSelection: boolean = false): void {
@@ -144,7 +146,8 @@ export class EllipseService extends Tool {
             const radiusY = Math.abs(Math.abs(height / 2) - this.lineWidth / 2 - 1);
 
             ctx.beginPath();
-            ctx.setLineDash([0, 0]);
+            if (!this.lineDash) ctx.setLineDash([0, 0]);
+            else ctx.setLineDash([2, 2]);
             ctx.lineWidth = this.lineWidth;
             ctx.fillStyle = this.primaryColor;
             ctx.strokeStyle = this.secondaryColor;

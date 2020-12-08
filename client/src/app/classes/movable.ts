@@ -76,6 +76,7 @@ export abstract class Movable extends Tool implements Rotationable, Resizable {
         this.ellipseService.setStyle(0);
         this.ellipseService.secondaryColor = 'black';
         this.ellipseService.primaryColor = 'black';
+        this.ellipseService.lineDash=true;
         this.selectionActivated = false;
         this.deltaY = 0;
         this.deltaX = 0;
@@ -264,14 +265,28 @@ export abstract class Movable extends Tool implements Rotationable, Resizable {
         this.height = this.selectionEndPoint.y - this.selectionStartPoint.y;
 
         if (this.rectangleService.toSquare) {
+
+            if(this.flipedH){
+                this.updateSelectionNodes();
+                this.flipedH=false;
+                this.updateResizingHandles();
+                this.width=Math.abs(this.width);
+                if(this.currenthandle==1)
+                    this.currenthandle=3;
+
+            }
+
             if (this.currenthandle === HANDLES.one || this.currenthandle === HANDLES.four || this.currenthandle === HANDLES.six) {
                 this.selectionStartPoint.x += this.width - Math.min(this.width, this.height);
             }
             if (this.currenthandle === HANDLES.one || this.currenthandle === HANDLES.two || this.currenthandle === HANDLES.three) {
                 this.selectionStartPoint.y += this.height - Math.min(this.width, this.height);
             }
-            this.width = Math.min(this.width, this.height);
-            this.height = this.width;
+            if (Math.abs(this.width) > Math.abs(this.height)) {
+                this.width = this.height * Math.sign(this.height) * Math.sign(this.width);
+            } else {
+                this.height = this.width * Math.sign(this.width) * Math.sign(this.height);
+            }
         }
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.drawingService.previewCtx.save();
