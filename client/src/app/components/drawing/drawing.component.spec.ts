@@ -37,7 +37,7 @@ class MockResizingService extends ResizingService {
     }
 }
 
-describe('DrawingComponent', () => {
+fdescribe('DrawingComponent', () => {
     let component: DrawingComponent;
     let fixture: ComponentFixture<DrawingComponent>;
     let toolManagerStub: ToolsManagerService;
@@ -82,7 +82,7 @@ describe('DrawingComponent', () => {
         gridStub = new GridService(drawServiceMock);
         stampStub = new StampService(drawServiceMock);
 
-        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub, selectionStub, paintBucketStub, polygonStub, pipetteStub, textStub, sprayPaintStub, plumeStub, gridStub, magicWandStub,stampStub);
+        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub, selectionStub, paintBucketStub, polygonStub, pipetteStub, textStub, sprayPaintStub, plumeStub, gridStub, magicWandStub, stampStub);
         toolManagerStub.currentTool = toolManagerStub.getTools().get('pencil') as Tool;
         matDialogSpy = jasmine.createSpyObj('MatDialog', ['open']);
         TestBed.configureTestingModule({
@@ -316,6 +316,15 @@ describe('DrawingComponent', () => {
         component.onMouseDown(event);
         expect(onMouseDownSpy).toHaveBeenCalled();
     });
+    it('should call tool.onRightClick when onRightClick is called ', () => {
+        const event = new MouseEvent('contextmenu');
+        let onRightClickSpy = spyOn<any>((component as any).tools.currentTool, 'onRightClick');
+        let eventSpy = spyOn<any>(event, 'preventDefault');
+        component.onRightClick(event);
+        expect(eventSpy).toHaveBeenCalled();
+        expect(onRightClickSpy).toHaveBeenCalledWith(event);
+
+    });
 
     it('should not call tool.onMouseEnter when onMouseEnter is called if resizing is true ', () => {
         let target_ = { className: 'resizer right' };
@@ -356,7 +365,16 @@ describe('DrawingComponent', () => {
         component.onClick(event);
         expect(onClickSpy).not.toHaveBeenCalled();
     });
-
+    it('should call set mouseFired to false is resizer is maximased ', () => {
+        let event = {} as MouseEvent;
+        component['resizer'] = resizingServiceMock;
+        component['resizer'].isMaximazed = true;
+        component['mouseFired'] = true;
+        let onMouseUpSpy = spyOn<any>((component as any).tools.currentTool, 'onMouseUp');
+        component.onMouseUp(event);
+        expect(component['mouseFired']).toEqual(false);
+        expect(onMouseUpSpy).toHaveBeenCalled();
+    });
     it('should call tool.onMouseUp when onMouseUp is called ', () => {
         let event = {} as MouseEvent;
         event = jasmine.createSpyObj('event', ['preventDefault', 'stopPropagation']);

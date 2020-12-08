@@ -150,6 +150,13 @@ describe('SidebarComponent', () => {
         expect(newDrawingSpy).toHaveBeenCalled();
     });
 
+    it('should call onKeyDown of grid service with g as key ', () => {
+        toolManagerStub.currentTool = gridStub;
+        let keyDownSpy = spyOn(gridStub, 'onKeyDown').and.stub();
+        spyOn(drawServiceMock, 'restoreCanvasState').and.stub();
+        component.changeTools('grid');
+        expect(keyDownSpy).toHaveBeenCalledWith({ key: 'g' });
+    });
     it('should call restoreCanvasState when changeTools is called', () => {
         toolManagerStub.currentTool = toolManagerStub.getTools().get('pencil') as Tool;
         let restoreCanvasStateSpy = spyOn(drawServiceMock, 'restoreCanvasState');
