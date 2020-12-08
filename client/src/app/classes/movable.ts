@@ -325,7 +325,6 @@ export abstract class Movable extends Tool implements Rotationable, Resizable {
             );
             this.drawingService.previewCtx.clip();
         }
-
         if (!redrawAfterRotate) {
             this.flipSelection();
         }

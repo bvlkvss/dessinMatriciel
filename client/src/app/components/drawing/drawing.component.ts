@@ -122,7 +122,7 @@ export class DrawingComponent implements AfterViewInit, OnInit, DoCheck, OnDestr
         if (this.resizer.resizing) {
             this.previewCanvas.nativeElement.style.borderBottom = 'dotted #000000 1px';
             this.previewCanvas.nativeElement.style.borderRight = 'dotted #000000 1px';
-            this.resizer.resize(event, this.previewCanvas.nativeElement);
+            this.resizer.resize(event, this.previewCanvas.nativeElement, this.gridCanvas.nativeElement);
         }
     }
 
@@ -241,11 +241,8 @@ export class DrawingComponent implements AfterViewInit, OnInit, DoCheck, OnDestr
             this.drawingService.resizeCanvas();
         } else if ((event.ctrlKey && (event.key === 'x' || event.key === 'c' || event.key === 'v')) || event.key === 'Delete') {
             event.stopPropagation();
-            if (
-                this.tools.getTools().get('selection') === this.tools.currentTool ||
-                this.tools.getTools().get('magic-wand') === this.tools.currentTool
-            ) {
-                this.clipboard.onKeyDown(event, this.tools.currentTool as SelectionService | MagicWandService);
+            if (this.tools.currentTool instanceof MagicWandService || this.tools.currentTool instanceof SelectionService) {
+                this.clipboard.onKeyDown(event, this.tools.currentTool);
             }
         } else if (event.ctrlKey || (event.ctrlKey && event.shiftKey && (event.key === 'z' || event.key === 'Z'))) {
             this.invoker.onKeyDown(event);

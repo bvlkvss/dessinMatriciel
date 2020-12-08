@@ -64,7 +64,6 @@ export class TextService extends Tool {
         if (this.isRighting) this.drawTextBox();
     }
     onClick(event: MouseEvent): void {
-        console.log('OKOKOK');
         this.mouseDownCoord = this.getPositionFromMouse(event);
         if (this.firstClick) {
             this.setToInitState();
@@ -182,9 +181,6 @@ export class TextService extends Tool {
         const firstPart = this.lines[this.currentLinePosition].substr(0, this.currentChar);
         position.x = this.firstCursorPosition.x + this.measureText(firstPart);
         position.y = this.textPosition.y + this.currentLinePosition * this.fontSize - Const.CURSOR_POSITION_Y_TOLERANCE * this.fontSize;
-        console.log(position.x, 'cursor x');
-        console.log(this.textPosition.x, 'text x');
-        console.log(this.measureText(firstPart), 'leghtn x');
 
         if (this.fontSize <= Const.SMALL_TEXT_SIZE) position.x += 2;
         ctx.font = this.fontStyle + ' ' + this.fontText;

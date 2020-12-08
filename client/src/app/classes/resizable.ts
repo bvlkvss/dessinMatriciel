@@ -172,7 +172,6 @@ export class Resizable {
                 this.adjustRectangle(this.selectionStartPoint, newStart, 1);
                 break;
             case HANDLES.four:
-                console.log(this.currentPos);
                 direction = { x: this.selectionEndPoint.x + this.width / 2 + DEFAULT_VECTOR_START, y: this.selectionStartPoint.y };
                 newStart = this.handleNewPos(this.selectionStartPoint, direction);
                 this.adjustRectangle(newStart, this.selectionEndPoint, 0);
