@@ -99,10 +99,10 @@ export class Const {
     static readonly MIN_TOLERANCE: number = 0;
     static readonly MAX_TOLERANCE: number = 100;
 
-    //pencil tool constants
+    // pencil tool constants
     static readonly DEFAULT_PENCIL_WIDTH: number = 1;
 
-    //pipette tool constants
+    // pipette tool constants
     static readonly OPACITY_INDEX: number = 3;
 
     // plume tool constants
@@ -114,13 +114,13 @@ export class Const {
     static readonly MULTIPLE_STEP: number = 0.261799; // 15° en radians
     static readonly PI: number = Math.PI;
     static readonly POS_NUMBER: number = 1;
-    //polygone tool constants
+    // polygone tool constants
     static readonly MINIMUM_NUMBER_OF_SIDES: number = 3;
     static readonly PREVIEW_CIRCLE_LINE_WIDTH: number = 3;
     static readonly PREVIEW_CIRCLE_LINE_DASH_MIN: number = 5;
     static readonly PREVIEW_CIRCLE_LINE_DASH_MAX: number = 15;
 
-    //spray tool constants
+    // spray tool constants
     static readonly DEFAULT_FREQUENCY: number = 700;
     static readonly DEFAULT_RADIUS: number = 20;
     static readonly DENSITY: number = 10;
@@ -129,7 +129,7 @@ export class Const {
     // stamp tool constants
     static readonly DEFAULT_IMAGE_SIZE: number = 100;
 
-    //Text service constants
+    // Text service constants
     static readonly DEFAULT_BOX_WIDTH: number = 200;
     static readonly DEFAULT_FONT_SIZE: number = 30;
     static readonly CURSOR_LENGHT: number = 8;

@@ -14,7 +14,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { Command } from '@app/classes/command';
 import { Const } from '@app/classes/constants';
 import { Movable } from '@app/classes/movable';
-import { Tool } from '@app/classes/tool';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ResizingService } from '@app/services/resizing/resizing.service';
 import { SelectionClipboardService } from '@app/services/selection-clipboard/selection-clipboard.service';
@@ -40,7 +39,7 @@ export class DrawingComponent implements AfterViewInit, OnInit, DoCheck, OnDestr
     // On utilise ce canvas pour dessiner sans affecter le dessin final
     @ViewChild('previewCanvas', { static: false }) previewCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('gridCanvas', { static: false }) gridCanvas: ElementRef<HTMLCanvasElement>;
-    private keyBindings: Map<string, Tool> = new Map();
+    private keyBindings: Map<string, string> = new Map();
     private baseCtx: CanvasRenderingContext2D;
     private previewCtx: CanvasRenderingContext2D;
     private gridCtx: CanvasRenderingContext2D;
@@ -72,22 +71,22 @@ export class DrawingComponent implements AfterViewInit, OnInit, DoCheck, OnDestr
 
     ngAfterViewInit(): void {
         this.keyBindings
-            .set('c', this.tools.getTools().get('pencil') as Tool)
-            .set('w', this.tools.getTools().get('brush') as Tool)
-            .set('e', this.tools.getTools().get('eraser') as Tool)
-            .set('1', this.tools.getTools().get('rectangle') as Tool)
-            .set('2', this.tools.getTools().get('ellipse') as Tool)
-            .set('l', this.tools.getTools().get('line') as Tool)
-            .set('b', this.tools.getTools().get('paintBucket') as Tool)
-            .set('3', this.tools.getTools().get('polygon') as Tool)
-            .set('r', this.tools.getTools().get('selection') as Tool)
-            .set('s', this.tools.getTools().get('selection') as Tool)
-            .set('i', this.tools.getTools().get('pipette') as Tool)
-            .set('t', this.tools.getTools().get('text') as Tool)
-            .set('a', this.tools.getTools().get('aerosol') as Tool)
-            .set('p', this.tools.getTools().get('plume') as Tool)
-            .set('g', this.tools.getTools().get('grid') as Tool)
-            .set('v', this.tools.getTools().get('magic-wand') as Tool);
+            .set('c', 'pencil')
+            .set('w', 'brush')
+            .set('e', 'eraser')
+            .set('1', 'rectangle')
+            .set('2', 'ellipse')
+            .set('l', 'line')
+            .set('b', 'paintBucket')
+            .set('3', 'polygon')
+            .set('r', 'selection')
+            .set('s', 'selection')
+            .set('i', 'pipette')
+            .set('t', 'text')
+            .set('a', 'aerosol')
+            .set('p', 'plume')
+            .set('g', 'grid')
+            .set('v', 'magic-wand');
 
         this.baseCtx = this.baseCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.previewCtx = this.previewCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
@@ -251,7 +250,7 @@ export class DrawingComponent implements AfterViewInit, OnInit, DoCheck, OnDestr
         } else if (event.ctrlKey || (event.ctrlKey && event.shiftKey && (event.key === 'z' || event.key === 'Z'))) {
             this.invoker.onKeyDown(event);
         } else if (event.ctrlKey && event.key === 'a') {
-            this.tools.currentTool = this.keyBindings.get('r') as Tool;
+            this.tools.setTools(this.keyBindings.get('r') as string);
             this.tools.currentTool.onKeyDown(event);
         }
         this.onKeyDown(event);
@@ -265,7 +264,7 @@ export class DrawingComponent implements AfterViewInit, OnInit, DoCheck, OnDestr
                 Movable.magnetismActivated = !Movable.magnetismActivated;
             } else if (this.keyBindings.has(event.key)) {
                 this.drawingService.restoreCanvasState();
-                this.tools.currentTool = this.keyBindings.get(event.key) as Tool;
+                this.tools.setTools(this.keyBindings.get(event.key) as string);
                 switch (event.key) {
                     case 'r': {
                         (this.tools.currentTool as SelectionService).selectionStyle = 0;
