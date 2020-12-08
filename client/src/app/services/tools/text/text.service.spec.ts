@@ -39,6 +39,10 @@ describe('TextService', () => {
     const returnedValue: boolean = service['isInsideRect']();
     expect(returnedValue).toEqual(true);
   });
+  it('isInsideRect should return false if mousedown is undefined', () => {
+    const returnedValue: boolean = service['isInsideRect']();
+    expect(returnedValue).toEqual(false);
+  });
   it('isInsideRect should return false if the click was outside the rect', () => {
     service.rectStartPoint = { x: 0, y: 0 };
     service.rectEndPoint = { x: 50, y: 250 };
@@ -530,8 +534,8 @@ describe('TextService', () => {
     expect(service.firstCursorPosition).toEqual({ x: 12, y: 21 });
     expect(measureTextSpy).toHaveBeenCalled();
   });
-  
-  /*it('drawBox should drawBox at specified position with font size 70', () => {
+
+  it('drawBox should drawBox at specified position', () => {
     const findLongestLineSpy = spyOn<any>(service, "findLongestLine").and.callFake(() => { return 250; });
     service.fontSize = 70;
     service.lines = [" "];
@@ -540,23 +544,12 @@ describe('TextService', () => {
     const mockPosition = { x: 200, y: 198 };
     service["drawBox"](baseCtxStub, mockPosition);
     expect(service.rectWidth).toEqual(250);
-    expect(service.rectEndPoint).toEqual({ x: 268, y: 107.5 });
-    expect(service.rectHeight).toEqual(87.5);
+    expect(service.rectEndPoint).toEqual({ x: 285.5, y: 69 });
+    expect(service.rectHeight).toEqual(49);
     expect(findLongestLineSpy).toHaveBeenCalled();
-  });*/
+  });
 
-  /*it('drawBox should drawBox at specified position with font size 30', () => {
-    const findLongestLineSpy = spyOn<any>(service, "findLongestLine").and.callFake(() => { return 50; });
-    service.fontSize = 30;
-    service.lines = [" "];
-    service.rectEndPoint = { x: 0, y: 0 };
-    const mockPosition = { x: 200, y: 198 };
-    service["drawBox"](baseCtxStub, mockPosition);
-    expect(service.rectWidth).toEqual(200);
-    expect(service.rectEndPoint).toEqual({ x: 0, y: 0 });
-    expect(service.rectHeight).toBeCloseTo(40, 0);
-    expect(findLongestLineSpy).toHaveBeenCalled();
-  });*/
+
   it('onClick should launch the setInterval if first click', () => {
     const setToInitStateSpy = spyOn<any>(service, "setToInitState").and.stub();
     const setIntervalSpy = spyOn<any>(global, "setInterval").and.stub();

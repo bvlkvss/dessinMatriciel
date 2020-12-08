@@ -108,10 +108,9 @@ export class TextService extends Tool {
         ctx.setLineDash([Const.LINE_DASH_MIN, Const.LINE_DASH_MAX]);
         let widthToAdd = this.fontSize / Const.TEXT_POSITION_TOLERANCE;
         if (widthToAdd <= Const.CURSOR_LENGHT) widthToAdd = Const.WIDTH_TOLERANCE;
+        const HeightToAdd = this.fontSize * this.lines.length + this.fontSize;
         this.rectHeight =
-            this.fontSize >= Const.BIG_TEXT_SIZE
-                ? this.fontSize * this.lines.length + this.fontSize * Const.HEIGHT_TOLERANCE_BIG_TEXT
-                : this.fontSize * this.lines.length + this.fontSize * Const.HEIGHT_TOLERANCE_SMALL_TEXT;
+            this.fontSize >= Const.BIG_TEXT_SIZE ? HeightToAdd * Const.HEIGHT_TOLERANCE_BIG_TEXT : HeightToAdd * Const.HEIGHT_TOLERANCE_SMALL_TEXT;
         ctx.strokeStyle = 'blue';
         this.rectWidth = textMeasure > Const.DEFAULT_BOX_WIDTH ? textMeasure : Const.DEFAULT_BOX_WIDTH;
         ctx.strokeRect(position.x, position.y, this.rectWidth + widthToAdd + Const.CURSOR_LENGHT, this.rectHeight);

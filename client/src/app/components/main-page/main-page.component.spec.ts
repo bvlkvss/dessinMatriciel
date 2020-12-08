@@ -8,8 +8,8 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { IndexService } from '@app/services/index/index.service';
 import { of } from 'rxjs';
 import { DrawingCardComponent } from '../drawing-card/drawing-card.component';
+import { UserGuideComponent } from '../user-guide/user-guide.component';
 import { MainPageComponent } from './main-page.component';
-
 import SpyObj = jasmine.SpyObj;
 
 describe('MainPageComponent', () => {
@@ -28,7 +28,7 @@ describe('MainPageComponent', () => {
         TestBed.configureTestingModule({
             imports: [RouterTestingModule, HttpClientModule, MatDialogModule],
             declarations: [MainPageComponent, MatFormField, MatChipList],
-            providers: [{ provide: IndexService, useValue: indexServiceSpy },{ provide: MatDialog, useValue: matDialogSpy }],
+            providers: [{ provide: IndexService, useValue: indexServiceSpy }, { provide: MatDialog, useValue: matDialogSpy }],
         }).compileComponents();
     }));
 
@@ -79,4 +79,18 @@ describe('MainPageComponent', () => {
         component.openCarousel();
         expect(matDialogSpy.open).toHaveBeenCalled();
     });
+    it('openUserGuide should call displayUserGuide', () => {
+        const userGuideSpy = spyOn(UserGuideComponent, 'displayUserGuide').and.stub();
+        component.openUserGuide();
+        expect(userGuideSpy).toHaveBeenCalled();
+    });
+    it('should call setItem when afterView is triggered  ', () => {
+        spyOn<any>((component as any).drawingService, "getAfterViewObservable").and.returnValue(of(null));
+        let setItemSpy = spyOn(localStorage.__proto__, "setItem").and.stub();
+        component['drawingService'].canvas = document.createElement('canvas');
+        component.newDrawing();
+        expect(setItemSpy).toHaveBeenCalled();
+    });
+
+
 });

@@ -64,8 +64,7 @@ export class DrawingComponent implements AfterViewInit, OnInit, DoCheck, OnDestr
         }
     }
     ngOnDestroy(): void {
-        console.log('Okosksodksds');
-        location.replace('main-page.component.html');
+        //    location.replace('main-page.component.html');
     }
     ngOnInit(): void {
         this.drawingService.resizeCanvas();
@@ -259,7 +258,7 @@ export class DrawingComponent implements AfterViewInit, OnInit, DoCheck, OnDestr
     }
 
     onKeyDown(event: KeyboardEvent): void {
-        if (!((this.tools.currentTool instanceof TextService) && this.tools.currentTool.isRighting))
+        if (!(this.tools.currentTool instanceof TextService && this.tools.currentTool.isRighting))
             if (event.ctrlKey) {
                 return;
             } else if (event.key === 'm') {
@@ -279,7 +278,6 @@ export class DrawingComponent implements AfterViewInit, OnInit, DoCheck, OnDestr
                         break;
                     }
                 }
-
             }
         this.tools.currentTool.onKeyDown(event);
     }
