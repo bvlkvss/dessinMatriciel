@@ -2,6 +2,7 @@
 import { Target } from '@angular/compiler';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
+import { PencilCommand } from '@app/classes/pencil-command';
 import { Tool } from '@app/classes/tool';
 import { DrawingComponent } from '@app/components/drawing/drawing.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -12,7 +13,6 @@ import { EllipseService } from '@app/services/tools/ellipse/ellipse.service';
 import { EraserService } from '@app/services/tools/eraser/eraser-service';
 import { GridService } from '@app/services/tools/grid/grid.service';
 import { LineService } from '@app/services/tools/line/line.service';
-//import { MagicWandSelection } from '@app/services/tools/magic-wand/magic-wand-selection';
 import { MagicWandService } from '@app/services/tools/magic-wand/magic-wand.service';
 import { PaintBucketService } from '@app/services/tools/paint-bucket/paint-bucket.service';
 import { PencilService } from '@app/services/tools/pencil/pencil-service';
@@ -24,10 +24,13 @@ import { SelectionService } from '@app/services/tools/selection/selection.servic
 import { SprayPaintService } from '@app/services/tools/spray-paint/spray-paint.service';
 import { StampService } from '@app/services/tools/stamp/stamp.service';
 import { TextService } from '@app/services/tools/text/text.service';
-import { MockUndoRedoService } from '../attribute-bar/attributebar.component.spec';
+import { MockUndoRedoService } from '../attribute-bar/attribute-bar.component.spec';
 
 export class MockDrawingService extends DrawingService {
     resizeCanvas(): void {
+    }
+    restoreCanvasState(){
+        console.log('restoreCanvas');
     }
 }
 
@@ -93,6 +96,7 @@ describe('DrawingComponent', () => {
                 { provide: MatDialog, useValue: matDialogSpy },
             ],
         }).compileComponents();
+        (matDialogSpy as any).openDialogs=[] as any;
     }));
 
     beforeEach(() => {
@@ -162,6 +166,7 @@ describe('DrawingComponent', () => {
     });
 
     it('on key w pressed current tool should change to brush ', () => {
+        (matDialogSpy.openDialogs as any) = { length: 0 };
         const event = new KeyboardEvent('document:keydown', {
             key: 'w',
         });
@@ -192,6 +197,7 @@ describe('DrawingComponent', () => {
     });
 
     it('on key e pressed current tool should change to eraser ', () => {
+        (matDialogSpy.openDialogs as any) = { length: 0 };
         const event = new KeyboardEvent('document:keydown', {
             key: 'e',
         });
@@ -200,6 +206,7 @@ describe('DrawingComponent', () => {
     });
 
     it('on key c pressed current tool should change to pencil ', () => {
+        (matDialogSpy.openDialogs as any) = { length: 0 };
         const event = new KeyboardEvent('document:keydown', {
             key: 'c',
         });
@@ -208,6 +215,7 @@ describe('DrawingComponent', () => {
     });
 
     it('on key 1 pressed current tool should change to rectangle ', () => {
+        (matDialogSpy.openDialogs as any) = { length: 0 };
         const event = new KeyboardEvent('document:keydown', {
             key: '1',
         });
@@ -216,6 +224,7 @@ describe('DrawingComponent', () => {
     });
 
     it('on key 2 pressed current tool should change to ellipse ', () => {
+        (matDialogSpy.openDialogs as any) = { length: 0 };
         const event = new KeyboardEvent('document:keydown', {
             key: '2',
         });
@@ -223,6 +232,7 @@ describe('DrawingComponent', () => {
         expect(toolManagerStub.currentTool).toEqual(toolManagerStub.getTools().get('ellipse') as Tool);
     });
     it('on key l pressed current tool should change to line ', () => {
+        (matDialogSpy.openDialogs as any) = { length: 0 };
         const event = new KeyboardEvent('document:keydown', {
             key: 'l',
         });
@@ -231,6 +241,7 @@ describe('DrawingComponent', () => {
     });
 
     it('on key 3 pressed current tool should change to polygon ', () => {
+        (matDialogSpy.openDialogs as any) = { length: 0 };
         const event = new KeyboardEvent('document:keydown', {
             key: '3',
         });
@@ -239,6 +250,7 @@ describe('DrawingComponent', () => {
     });
 
     it('on another key down, current tool should call tool on key down', () => {
+        (matDialogSpy.openDialogs as any) = { length: 0 };
         const event = new KeyboardEvent('document:keydown', {
             key: 'z',
         });
@@ -409,6 +421,7 @@ describe('DrawingComponent', () => {
     });
 
     it('should call newDrawing when ctrl-O is pressed', () => {
+        (component as any).invoker.addToUndo(new PencilCommand([],pencilStub,drawServiceMock));
         let event = {
             key: 'o',
             ctrlKey: true,

@@ -10,7 +10,7 @@ import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
     providedIn: 'root',
 })
 export class TextService extends Tool {
-    isRighting: boolean;
+    isWriting: boolean;
     lines: string[];
     cursor: string;
     firstCursorPosition: Vec2;
@@ -35,7 +35,7 @@ export class TextService extends Tool {
         this.lines = [];
         this.lines.push('');
         this.toolAttributes = ['textPolice'];
-        this.isRighting = false;
+        this.isWriting = false;
         this.cursor = '|';
         this.currentLinePosition = 0;
         this.textAlignement = 'left';
@@ -51,19 +51,19 @@ export class TextService extends Tool {
 
     setLineWidth(width: number): void {
         this.fontSize = width;
-        if (this.isRighting) this.drawTextBox();
+        if (this.isWriting) this.drawTextBox();
     }
     setFontText(font: string): void {
         this.fontText = font;
-        if (this.isRighting) this.drawTextBox();
+        if (this.isWriting) this.drawTextBox();
     }
     setFontStyle(font: string): void {
         this.fontStyle = font;
-        if (this.isRighting) this.drawTextBox();
+        if (this.isWriting) this.drawTextBox();
     }
     setAllignement(allignement: string): void {
         this.textAlignement = allignement;
-        if (this.isRighting) this.drawTextBox();
+        if (this.isWriting) this.drawTextBox();
     }
     onClick(event: MouseEvent): void {
         this.mouseDownCoord = this.getPositionFromMouse(event);
@@ -93,7 +93,7 @@ export class TextService extends Tool {
         this.rectHeight = this.fontSize + Const.HEIGHT_TOLERANCE;
         this.textPosition = { ...this.firstCursorPosition } = { ...this.mouseDownCoord };
         this.rectWidth = Const.DEFAULT_BOX_WIDTH;
-        this.isRighting = true;
+        this.isWriting = true;
         this.rectStartPoint = { x: this.mouseDownCoord.x, y: this.mouseDownCoord.y - this.fontSize };
         this.rectEndPoint = { x: this.mouseDownCoord.x + this.rectWidth + Const.CURSOR_LENGHT, y: this.mouseDownCoord.y + Const.HEIGHT_TOLERANCE };
         this.drawTextBox();
@@ -197,7 +197,7 @@ export class TextService extends Tool {
         ctx.restore();
     }
     onKeyDown(event: KeyboardEvent): void {
-        if (this.isRighting) {
+        if (this.isWriting) {
             this.isCursorMoving = true;
             if (event.key.length === 1) this.printableKeyTreatment(event);
             else {
@@ -275,7 +275,7 @@ export class TextService extends Tool {
 
     private restoreToInitState(): void {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
-        this.isRighting = false;
+        this.isWriting = false;
         this.firstClick = true;
         this.lines = [];
         this.currentLinePosition = 0;

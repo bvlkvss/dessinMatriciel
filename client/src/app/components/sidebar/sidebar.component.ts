@@ -47,6 +47,10 @@ export class SidebarComponent implements OnChanges {
                 this.toolIcons.nativeElement.getElementsByTagName('a')[i].classList.remove('active');
             }
             this.toolIcons.nativeElement.querySelector('#' + message)?.setAttribute('class', 'active');
+            if (message === 'selection' || 'magic-wand') {
+                this.togglecanvas('drawing-container-open');
+                this.toggleAttributeBar('attribute-open');
+            }
         });
 
         if (!this.isRevertClicked) {
@@ -207,7 +211,7 @@ export class SidebarComponent implements OnChanges {
     }
 
     newDrawing(): void {
-        if (this.invoker.undoStack.length !== 0) {
+        if (this.invoker.getUndo().length !== 0) {
             this.drawingService.newDrawing();
         }
     }
@@ -218,7 +222,7 @@ export class SidebarComponent implements OnChanges {
     }
 
     warningMessage(): void {
-        if (window.confirm('Le dessin sera effacé.\n Voulez-vous continuer vers le menu?')) {
+        if (window.confirm('Voulez-vous vraiment continuer vers le menu?')) {
             location.replace('main-page.component.html');
         }
     }

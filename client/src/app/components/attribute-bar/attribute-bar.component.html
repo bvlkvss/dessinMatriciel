@@ -73,23 +73,56 @@
     </div>
     <div id="lineWidthcontainer" *ngIf="checkIfContainAttribute('squareSize')">
         <p id="header" for="volume">Taille des carrés</p>
-        <input class="textInput" type="text" pattern="([0-9]|[1-9][0-9]|100)" minlength="1" maxlength="3" (keydown)="validate($event)" (change)="setSquareSize($event.target.value)" [value]="widthValue" />
+        <input
+            class="textInput"
+            type="text"
+            pattern="([0-9]|[1-9][0-9]|100)"
+            minlength="1"
+            maxlength="3"
+            (keydown)="validate($event)"
+            (change)="setSquareSize($event.target.value)"
+            [value]="squareSize"
+        />
         <input class="size-slider" type="range" (change)="setSquareSize($event.target.value)" [value]="widthValue" min="1" max="100" />
         <label id="label">px</label>
     </div>
     <div id="lineWidthcontainer" *ngIf="checkIfContainAttribute('opacity')">
         <p id="header" for="volume">Opacité</p>
-        <input class="textInput" type="text" pattern="([0-9]|[1-9][0-9]|100)" minlength="1" maxlength="3" (keydown)="validate($event)" (change)="setOpacity($event.target.value)" [value]="widthValue" />
+        <input
+            class="textInput"
+            type="text"
+            pattern="([0-9]|[1-9][0-9]|100)"
+            minlength="1"
+            maxlength="3"
+            (keydown)="validate($event)"
+            (change)="setOpacity($event.target.value)"
+            [value]="opacity"
+        />
         <input class="size-slider" type="range" (change)="setOpacity($event.target.value)" [value]="widthValue" min="1" max="100" />
         <label id="label">px</label>
     </div>
     <div id="policeContainer" *ngIf="checkIfContainAttribute('textPolice')">
         <p id="header" for="volume">Police</p>
-        <input class="textInput" type="text" pattern="([0-9]|[1-9][0-9]|100)" minlength="1" maxlength="3" (keydown)="validate($event)" (change)="setLineWidth($event.target.value)" [value]="widthValue" />
+        <input
+            class="textInput"
+            type="text"
+            pattern="([0-9]|[1-9][0-9]|100)"
+            minlength="1"
+            maxlength="3"
+            (keydown)="validate($event)"
+            (change)="setLineWidth($event.target.value)"
+            [value]="widthValue"
+        />
         <label id="label">px</label>
         <mat-form-field appearance="fill">
             <mat-label>Font family</mat-label>
-            <mat-select [(ngModel)]="selectedValue" (selectionChange)="setFontFamily($event)" [value]="polices[0]" [ngStyle]="{ 'font-family': selectedValue }" name="police">
+            <mat-select
+                [(ngModel)]="selectedValue"
+                (selectionChange)="setFontFamily($event)"
+                [value]="polices[0]"
+                [ngStyle]="{ 'font-family': selectedValue }"
+                name="police"
+            >
                 <mat-option *ngFor="let police of polices" [value]="police">
                     <p [ngStyle]="{ 'font-family': police }" id="currentPolice">
                         {{ police }}
@@ -101,7 +134,7 @@
             <mat-button-toggle value="bold"> <mat-icon>format_bold</mat-icon> </mat-button-toggle>
             <mat-button-toggle value="italic"> <mat-icon>format_italic</mat-icon> </mat-button-toggle>
         </mat-button-toggle-group>
-        <mat-button-toggle-group  id="allignement" #group="matButtonToggleGroup" value="left" (change)="setAllignement($event)">
+        <mat-button-toggle-group id="allignement" #group="matButtonToggleGroup" value="left" (change)="setAllignement($event)">
             <mat-button-toggle value="left" aria-label="Text align left">
                 <mat-icon>format_align_left</mat-icon>
             </mat-button-toggle>
@@ -195,14 +228,32 @@
 
     <div id="lineWidthcontainer" *ngIf="checkIfContainAttribute('lineLenght')">
         <p id="header" for="volume">Taille Ligne</p>
-        <input class="textInput" type="text" (change)="setLineLength($event.target.value)" [value]="lenghtValue" pattern="([0-9]|[1-9][0-9]|100)" minlength="1" maxlength="3" (keydown)="validate($event)" />
+        <input
+            class="textInput"
+            type="text"
+            (change)="setLineLength($event.target.value)"
+            [value]="lenghtValue"
+            pattern="([0-9]|[1-9][0-9]|100)"
+            minlength="1"
+            maxlength="3"
+            (keydown)="validate($event)"
+        />
         <input class="size-slider" type="range" (change)="setLineLength($event.target.value)" [value]="lenghtValue" min="5" max="100" />
         <label id="label">px</label>
     </div>
 
     <div id="lineWidthcontainer" *ngIf="checkIfContainAttribute('angle')">
         <p id="header" for="volume">Angle</p>
-        <input class="textInput" type="text" (change)="setAngle($event.target.value)" [value]="angleValue" pattern="([0-9]|[1-9][0-9]|100)" minlength="1" maxlength="3" (keydown)="validate($event)" />
+        <input
+            class="textInput"
+            type="text"
+            (change)="setAngle($event.target.value)"
+            [value]="angleValue"
+            pattern="([0-9]|[1-9][0-9]|100)"
+            minlength="1"
+            maxlength="3"
+            (keydown)="validate($event)"
+        />
         <input class="size-slider" type="range" (change)="setAngle($event.target.value)" [value]="angleValue" min="0" max="360" />
         <label id="label">°</label>
     </div>
@@ -273,10 +324,8 @@
         </div>
     </div>
 
-
-
     <div id="dropletsWidthContainer" *ngIf="checkIfContainAttribute('dropletsWidth')">
-        <p id="header" for="volume">Diamètre goutelettes </p> 
+        <p id="header" for="volume">Diamètre goutelettes</p>
         <input
             class="textInput"
             type="text"
@@ -292,7 +341,7 @@
     </div>
 
     <div id="sprayIntervalContainer" *ngIf="checkIfContainAttribute('sprayInterval')">
-        <p id="header" for="volume">Fréquence</p> 
+        <p id="header" for="volume">Fréquence</p>
         <input
             class="textInput"
             type="text"
@@ -308,7 +357,7 @@
     </div>
 
     <div id="sprayWidthContainer" *ngIf="checkIfContainAttribute('sprayWidth')">
-        <p id="header" for="volume">Diamètre Aérosol</p> 
+        <p id="header" for="volume">Diamètre Aérosol</p>
         <input
             class="textInput"
             type="text"
@@ -322,5 +371,68 @@
         <input class="size-slider" type="range" (change)="setRadius($event.target.value)" [value]="radius" min="20" max="70" />
         <label id="label">Px</label>
     </div>
-   
+
+    <div #selectionIcons id="SelectionContainer" *ngIf="checkIfContainAttribute('typeSelection')">
+        <div>
+            <p id="header" for="volume">Selection</p>
+            <p id="header" for="volume">Type De Selection:</p>
+            <div class="selectionOptionButtonContainer">
+                <button
+                    style="
+                        width: 90%;
+                        cursor: pointer;
+                        position: relative;
+                        top: 5px;
+                        height: 20px;
+                        border: none;
+                        border-radius: 6px;
+                        color: white;
+                        background-color: red;
+                    "
+                    (click)="selectAll()"
+                >
+                    Tout Selectionner
+                </button>
+                <div class="buttonContainer">
+                    <a #a id="rectSelection" class="inactive">
+                        <i class="material-icons">highlight_alt</i>
+                    </a>
+                    <a id="ellipseSelection" class="inactive">
+                        <i class="material-icons">panorama_fish_eye</i>
+                    </a>
+                    <a id="wandSelection" class="inactive">
+                        <i class="material-icons">gesture</i>
+                    </a>
+                </div>
+                <!-- <div class="selectAllButton"><button style="height: 30px; width: 90%;">Tout Selectionner</button></div> -->
+            </div>
+
+            <div class="selectWholeCanvas" style="background-color: rgb(248, 56, 56)"></div>
+        </div>
+        <div id="MagnetismContainer" style="display: block">
+            <p id="header" class="header">Magnétisme (M)</p>
+            <br />
+            <div *ngIf="checkIfMagnetismActivated()">
+                <div style="background-color: rgb(64, 61, 85); padding-top: 10px; height: 160px; border-radius: 6px; width: 100%">
+                    <p id="header" for="volume">Choisir un point de controle</p>
+                    <div class="typeSelectionContainer">
+                        <div class="parentRectangle" style="width: 190px; height: 115px">
+                            <div class="child" style="width: 170px; height: 100px; outline: dashed 1px rgb(255, 255, 255)"></div>
+                            <div class="radioContainer">
+                                <input type="radio" value="1" name="referencePoint" class="radio top-left" (click)="setAnchorPoint(1)" checked />
+                                <input type="radio" value="2" name="referencePoint" class="radio top-mid" (click)="setAnchorPoint(2)" />
+                                <input type="radio" value="3" name="referencePoint" class="radio top-right" (click)="setAnchorPoint(3)" />
+                                <input type="radio" value="6" name="referencePoint" class="radio bottom-left" (click)="setAnchorPoint(6)" />
+                                <input type="radio" value="7" name="referencePoint" class="radio bottom-mid" (click)="setAnchorPoint(7)" />
+                                <input type="radio" value="8" name="referencePoint" class="radio bottom-right" (click)="setAnchorPoint(8)" />
+                                <input type="radio" value="4" name="referencePoint" class="radio left-mid" (click)="setAnchorPoint(4)" />
+                                <input type="radio" value="5" name="referencePoint" class="radio right-mid" (click)="setAnchorPoint(5)" />
+                                <input type="radio" value="9" name="referencePoint" class="radio bullseye" (click)="setAnchorPoint(9)" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

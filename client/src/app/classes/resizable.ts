@@ -1,6 +1,7 @@
 import { Vec2 } from '@app/classes/vec2';
 import { Movable } from './movable';
 import { PI_DEGREE } from './rotationable';
+import { Tool } from './tool';
 
 export const HANDLE_LENGTH = 6;
 export const HANDLE_OFFSET = HANDLE_LENGTH / 2;
@@ -199,6 +200,7 @@ export class Resizable {
                 break;
         }
         this.redrawSelection();
+        Tool.shouldAlign = true;
     }
 
     handleNewPos(this: Movable, handleToMove: Vec2, direction: Vec2): Vec2 {

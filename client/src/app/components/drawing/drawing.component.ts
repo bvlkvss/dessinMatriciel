@@ -1,15 +1,4 @@
-import {
-    AfterViewInit,
-    Component,
-    DoCheck,
-    ElementRef,
-    HostListener,
-    IterableDiffer,
-    IterableDiffers,
-    OnDestroy,
-    OnInit,
-    ViewChild,
-} from '@angular/core';
+import { AfterViewInit, Component, DoCheck, ElementRef, HostListener, IterableDiffer, IterableDiffers, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Command } from '@app/classes/command';
 import { Const } from '@app/classes/constants';
@@ -31,7 +20,7 @@ import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
     templateUrl: './drawing.component.html',
     styleUrls: ['./drawing.component.scss'],
 })
-export class DrawingComponent implements AfterViewInit, OnInit, DoCheck, OnDestroy {
+export class DrawingComponent implements AfterViewInit, OnInit, DoCheck {
     @ViewChild('baseCanvas', { static: false }) baseCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('container') container: ElementRef<HTMLDivElement>;
     @ViewChild('resizeContainer') resizeContainer: ElementRef<HTMLDivElement>;
@@ -57,13 +46,10 @@ export class DrawingComponent implements AfterViewInit, OnInit, DoCheck, OnDestr
         this.iterableDiffer = iDiffers.find([]).create();
     }
     ngDoCheck(): void {
-        const changesUndo = this.iterableDiffer.diff(this.invoker.undoStack);
+        const changesUndo = this.iterableDiffer.diff(this.invoker.getUndo());
         if (changesUndo) {
             localStorage.setItem('drawing', this.baseCtx.canvas.toDataURL());
         }
-    }
-    ngOnDestroy(): void {
-        //    location.replace('main-page.component.html');
     }
     ngOnInit(): void {
         this.drawingService.resizeCanvas();
@@ -224,36 +210,44 @@ export class DrawingComponent implements AfterViewInit, OnInit, DoCheck, OnDestr
     @HostListener('document:keyup', ['$event'])
     onKeyUp(event: KeyboardEvent): void {
         this.tools.currentTool.onKeyUp(event);
-        if (this.dialog.openDialogs.length === 0) {
-            this.drawingService.sendMessage(this.tools.getByValue(this.tools.currentTool));
-        }
     }
 
-    // tslint:disable-next-line:cyclomatic-complexity
     @HostListener('window:keydown', ['$event'])
     onkeyDownWindow(event: KeyboardEvent): void {
         const element = event.target as HTMLElement;
-        if (element.className === 'textInput') return;
-        if (event.ctrlKey && event.key === 'o') {
-            event.preventDefault();
-            event.stopPropagation();
-            this.drawingService.newDrawing();
-            this.drawingService.resizeCanvas();
-        } else if ((event.ctrlKey && (event.key === 'x' || event.key === 'c' || event.key === 'v')) || event.key === 'Delete') {
-            if (this.tools.currentTool instanceof MagicWandService || this.tools.currentTool instanceof SelectionService) {
-                this.clipboard.onKeyDown(event, this.tools.currentTool);
+        if (element.className === 'textInput' || this.dialog.openDialogs.length) return;
+
+        if (event.ctrlKey) {
+            switch (event.key) {
+                case 'o':
+                    if (this.invoker.getUndo().length !== 0) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        this.drawingService.newDrawing();
+                        this.drawingService.resizeCanvas();
+                    }
+                    break;
+                case 'a':
+                    event.preventDefault();
+                    event.stopPropagation();
+                    this.tools.setTools(this.keyBindings.get('r') as string);
+                    this.tools.currentTool.onKeyDown(event);
+                    break;
+
+                default:
+                    if (event.key === 'z' || event.key === 'Z') {
+                        this.invoker.onKeyDown(event);
+                    } else if (this.tools.currentTool instanceof MagicWandService || this.tools.currentTool instanceof SelectionService) {
+                        this.clipboard.onKeyDown(event, this.tools.currentTool);
+                    }
+                    break;
             }
-        } else if (event.ctrlKey || (event.ctrlKey && event.shiftKey && (event.key === 'z' || event.key === 'Z'))) {
-            this.invoker.onKeyDown(event);
-        } else if (event.ctrlKey && event.key === 'a') {
-            this.tools.setTools(this.keyBindings.get('r') as string);
-            this.tools.currentTool.onKeyDown(event);
         }
         this.onKeyDown(event);
     }
 
     onKeyDown(event: KeyboardEvent): void {
-        if (!(this.tools.currentTool instanceof TextService && this.tools.currentTool.isRighting))
+        if (!(this.tools.currentTool instanceof TextService && this.tools.currentTool.isWriting))
             if (event.ctrlKey) {
                 return;
             } else if (event.key === 'm') {
@@ -272,6 +266,9 @@ export class DrawingComponent implements AfterViewInit, OnInit, DoCheck, OnDestr
                         (this.tools.currentTool as SelectionService).resetSelection();
                         break;
                     }
+                }
+                if (this.dialog.openDialogs.length === 0) {
+                    this.drawingService.sendMessage(this.tools.getByValue(this.tools.currentTool));
                 }
             }
         this.tools.currentTool.onKeyDown(event);

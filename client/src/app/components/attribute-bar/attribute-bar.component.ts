@@ -2,20 +2,23 @@ import { AfterViewChecked, AfterViewInit, Component, ElementRef, OnInit, ViewChi
 import { MatButtonToggleChange } from '@angular/material/button-toggle';
 import { MatSelectChange } from '@angular/material/select';
 import { Const } from '@app/classes/constants';
+import { Movable } from '@app/classes/movable';
 import { Tool } from '@app/classes/tool';
 import { ToolsManagerService } from '@app/services/tools-manager/tools-manager.service';
 import { BrushService } from '@app/services/tools/brush/brush.service';
 import { GridService } from '@app/services/tools/grid/grid.service';
+import { MagicWandService } from '@app/services/tools/magic-wand/magic-wand.service';
 import { Arguments, PipetteService } from '@app/services/tools/pipette/pipette.service';
 import { PlumeService } from '@app/services/tools/plume/plume.service';
+import { SelectionService } from '@app/services/tools/selection/selection.service';
 import { StampService } from '@app/services/tools/stamp/stamp.service';
 import { TextService } from '@app/services/tools/text/text.service';
 import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'app-attributebar',
-    templateUrl: './attributebar.component.html',
-    styleUrls: ['./attributebar.component.scss'],
+    templateUrl: './attribute-bar.component.html',
+    styleUrls: ['./attribute-bar.component.scss'],
 })
 export class AttributeBarComponent implements OnInit, AfterViewChecked, AfterViewInit {
     static showStamps: boolean = false;
@@ -39,6 +42,7 @@ export class AttributeBarComponent implements OnInit, AfterViewChecked, AfterVie
     circleIsShown: boolean;
     @ViewChild('pipette', { static: false }) pipetteCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('stampIcon') stampIcon: ElementRef<HTMLElement>;
+    @ViewChild('a') a: ElementRef<HTMLElement>;
 
     pipetteCtx: CanvasRenderingContext2D;
     currentStamp: string = '../../../assets/Stamps/Poop Emoji.png';
@@ -191,6 +195,26 @@ export class AttributeBarComponent implements OnInit, AfterViewChecked, AfterVie
             this.currentStamp = (this.tools.currentTool as StampService).image.src;
             this.degreeValue = (this.tools.currentTool as StampService).degres.toString(10);
         }
+        const numberOfTools = document.querySelectorAll('#a').length;
+        for (let i = 0; i < numberOfTools; i++) {
+            document.querySelectorAll('#a')[i].classList.remove('active');
+        }
+        if (this.tools.currentTool instanceof SelectionService) {
+            if ((this.tools.currentTool as SelectionService).selectionStyle === 0) {
+                document.querySelector('#rectSelection')?.setAttribute('class', 'active');
+                document.querySelector('#ellipseSelection')?.setAttribute('class', 'inactive');
+                document.querySelector('#wandSelection')?.setAttribute('class', 'inactive');
+            } else if ((this.tools.currentTool as SelectionService).selectionStyle === 1) {
+                document.querySelector('#ellipseSelection')?.setAttribute('class', 'active');
+                document.querySelector('#rectSelection')?.setAttribute('class', 'inactive');
+                document.querySelector('#wandSelection')?.setAttribute('class', 'inactive');
+            }
+        }
+        if (this.tools.currentTool instanceof MagicWandService) {
+            document.querySelector('#wandSelection')?.setAttribute('class', 'active');
+            document.querySelector('#rectSelection')?.setAttribute('class', 'inactive');
+            document.querySelector('#ellipseSelection')?.setAttribute('class', 'inactive');
+        }
         return this.tools.currentTool.toolAttributes.includes(attribute);
     }
 
@@ -290,5 +314,18 @@ export class AttributeBarComponent implements OnInit, AfterViewChecked, AfterVie
         this.widthValue = input;
         if (Number(this.widthValue) > Const.MAX_WIDTH_VALUE) this.widthValue = '100';
         this.tools.setLineWidth(Number(this.widthValue));
+    }
+
+    setAnchorPoint(anchorPoint: number): void {
+        this.tools.setAnchorPoint(anchorPoint);
+    }
+
+    checkIfMagnetismActivated(): boolean {
+        return Movable.magnetismActivated;
+    }
+
+    selectAll(): void {
+        (this.tools.currentTool as SelectionService).selectionStyle = 0;
+        (this.tools.currentTool as SelectionService).selectAllCanvas();
     }
 }

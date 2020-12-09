@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Movable } from '@app/classes/movable';
 import { DEFAULT_HANDLE_INDEX } from '@app/classes/resizable';
-import { MouseButton } from '@app/classes/tool';
+import { MouseButton, Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { RectangleService, RectangleStyle } from '@app/services/tools/rectangle/rectangle.service';
@@ -25,7 +25,7 @@ export class SelectionService extends Movable {
     constructor(drawingService: DrawingService, protected invoker: UndoRedoService) {
         super(drawingService, invoker);
         this.selectionActivated = false;
-        this.toolAttributes = [];
+        this.toolAttributes = ['typeSelection'];
         this.hFlip = false;
         this.vFlip = false;
         this.hScale = 1;
@@ -39,18 +39,18 @@ export class SelectionService extends Movable {
             this.drawingService.previewCtx.shadowOffsetX = 1;
             this.drawingService.previewCtx.shadowOffsetY = 1;
             this.mouseDownCoord = this.getPositionFromMouse(event);
-
             if (this.selectionActivated) {
+                const mouseDownUnrotated = this.getUnrotatedPos(this.mouseDownCoord);
                 if (this.mouseDownOnHandle(this.mouseDownCoord) !== DEFAULT_HANDLE_INDEX) {
                     this.currenthandle = this.mouseDownOnHandle(this.mouseDownCoord);
                     this.invoker.ClearRedo();
                     this.invoker.setIsAllowed(false);
                     return;
                 } else if (
-                    this.getUnrotatedPos(this.mouseDownCoord).x >= this.selectionStartPoint.x &&
-                    this.getUnrotatedPos(this.mouseDownCoord).x <= this.selectionEndPoint.x &&
-                    this.getUnrotatedPos(this.mouseDownCoord).y >= this.selectionStartPoint.y &&
-                    this.getUnrotatedPos(this.mouseDownCoord).y <= this.selectionEndPoint.y
+                    mouseDownUnrotated.x >= this.selectionStartPoint.x &&
+                    mouseDownUnrotated.x <= this.selectionEndPoint.x &&
+                    mouseDownUnrotated.y >= this.selectionStartPoint.y &&
+                    mouseDownUnrotated.y <= this.selectionEndPoint.y
                 ) {
                     this.invoker.ClearRedo();
                     this.invoker.setIsAllowed(false);
@@ -125,10 +125,7 @@ export class SelectionService extends Movable {
             this.updateSelectionNodes();
             if (!this.selectionActivated) {
                 this.saveSelection();
-
-                if (this.selectionStyle === 1) {
-                    // this.clipImageWithEllipse(); CA SERT A RIEN POURQUOI TU DESSINE SUR LE BASE ?
-                } else {
+                if (this.selectionStyle === 0) {
                     this.drawingService.previewCtx.drawImage(this.selectionData, this.selectionStartPoint.x, this.selectionStartPoint.y);
                 }
                 this.rectangleService.drawRectangle(
@@ -233,15 +230,13 @@ export class SelectionService extends Movable {
     resetSelection(): void {
         this.resizingHandles = [];
         this.rectangleService = new RectangleService(this.drawingService, this.invoker);
-        // this.selectionStyle=0;
         this.rectangleService.setStyle(RectangleStyle.Selection);
         this.rectangleService.lineDash = true;
         this.ellipseService.setStyle(0);
         this.selectionActivated = false;
-        this.toolAttributes = [];
         this.firstSelectionMove = true;
         this.degres = 0;
-        this.shouldAlign = true;
+        Tool.shouldAlign = true;
     }
 
     selectAllCanvas(): void {

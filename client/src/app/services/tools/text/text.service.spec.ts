@@ -147,12 +147,12 @@ describe('TextService', () => {
   it('restoreToInitState should restore attributes values and clear canvas', () => {
     service["restoreToInitState"]();
     expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
-    expect(service.isRighting).toEqual(false);
+    expect(service.isWriting).toEqual(false);
     expect(service.firstClick).toEqual(true);
     expect(service.lines).toEqual([""]);
     expect(service.currentLinePosition).toEqual(0);
     expect(service.currentChar).toEqual(0);
-    expect(service.isRighting).toEqual(false);
+    expect(service.isWriting).toEqual(false);
 
   });
   it('setPrimaryColor should set primaryColor to correct value', () => {
@@ -162,14 +162,14 @@ describe('TextService', () => {
   });
   it('setLineWidth should set primaryColor to correct value and call drawTextBox if is righting', () => {
     const drawTextBoxSpy = spyOn<any>(service, "drawTextBox").and.stub();
-    service.isRighting = true;
+    service.isWriting = true;
     service.setLineWidth(9);
     expect(service.fontSize).toEqual(9);
     expect(drawTextBoxSpy).toHaveBeenCalled();
   });
   it('setLineWidth should set fontSize to correct value and not call drawTextBox if is not righting', () => {
     const drawTextBoxSpy = spyOn<any>(service, "drawTextBox").and.stub();
-    service.isRighting = false;
+    service.isWriting = false;
     service.setLineWidth(9);
     expect(service.fontSize).toEqual(9);
     expect(drawTextBoxSpy).not.toHaveBeenCalled();
@@ -177,42 +177,42 @@ describe('TextService', () => {
 
   it('setFontText should set fontText to correct value and call drawTextBox if is righting', () => {
     const drawTextBoxSpy = spyOn<any>(service, "drawTextBox").and.stub();
-    service.isRighting = true;
+    service.isWriting = true;
     service.setFontText("Arial");
     expect(service.fontText).toEqual("Arial");
     expect(drawTextBoxSpy).toHaveBeenCalled();
   });
   it('setFontText should set fontText to correct value and not call drawTextBox if is not righting', () => {
     const drawTextBoxSpy = spyOn<any>(service, "drawTextBox").and.stub();
-    service.isRighting = false;
+    service.isWriting = false;
     service.setFontText("Arial");
     expect(service.fontText).toEqual("Arial");
     expect(drawTextBoxSpy).not.toHaveBeenCalled();
   });
   it('setFontStyle should set fontStyle to correct value and call drawTextBox if is righting', () => {
     const drawTextBoxSpy = spyOn<any>(service, "drawTextBox").and.stub();
-    service.isRighting = true;
+    service.isWriting = true;
     service.setFontStyle("bold");
     expect(service.fontStyle).toEqual("bold");
     expect(drawTextBoxSpy).toHaveBeenCalled();
   });
   it('setFontStyle should set fontStyle to correct value and not call drawTextBox if is not righting', () => {
     const drawTextBoxSpy = spyOn<any>(service, "drawTextBox").and.stub();
-    service.isRighting = false;
+    service.isWriting = false;
     service.setFontStyle("bold");
     expect(service.fontStyle).toEqual("bold");
     expect(drawTextBoxSpy).not.toHaveBeenCalled();
   });
   it('setAllignement should set textAllignement to correct value and call drawTextBox if is righting', () => {
     const drawTextBoxSpy = spyOn<any>(service, "drawTextBox").and.stub();
-    service.isRighting = true;
+    service.isWriting = true;
     service.setAllignement("center");
     expect(service.textAlignement).toEqual("center");
     expect(drawTextBoxSpy).toHaveBeenCalled();
   });
   it('setAllignement should set textAllignement to correct value and call drawTextBox if is righting', () => {
     const drawTextBoxSpy = spyOn<any>(service, "drawTextBox").and.stub();
-    service.isRighting = false;
+    service.isWriting = false;
     service.setAllignement("left");
     expect(service.textAlignement).toEqual("left");
     expect(drawTextBoxSpy).not.toHaveBeenCalled();
@@ -225,7 +225,7 @@ describe('TextService', () => {
     service["setToInitState"]();
     expect(service.rectWidth).toEqual(200);
     expect(service.rectHeight).toEqual(60);
-    expect(service.isRighting).toEqual(true);
+    expect(service.isWriting).toEqual(true);
     expect(service.textPosition).toEqual({ x: 233, y: 132 });
     expect(service.firstCursorPosition).toEqual({ x: 233, y: 132 });
     expect(service.rectStartPoint).toEqual({ x: 233, y: 82 });
@@ -239,7 +239,7 @@ describe('TextService', () => {
     const drawTextBoxSpy = spyOn<any>(service, "drawTextBox").and.callFake(() => { return; });
     const updateTextPositionSpy = spyOn<any>(service, "updateTextPosition").and.callFake(() => { return; });
     //new KeyboardEvent('keydown', { key: 'ArrowRight' })
-    service.isRighting = true;
+    service.isWriting = true;
     service["onKeyDown"](new KeyboardEvent('keydown', { key: 'e' }));
     expect(printibaleKeySpy).toHaveBeenCalled();
     expect(drawTextBoxSpy).toHaveBeenCalled();
@@ -251,7 +251,7 @@ describe('TextService', () => {
     const drawTextBoxSpy = spyOn<any>(service, "drawTextBox").and.callFake(() => { return; });
     const updateTextPositionSpy = spyOn<any>(service, "updateTextPosition").and.callFake(() => { return; });
     //new KeyboardEvent('keydown', { key: 'ArrowRight' })
-    service.isRighting = true;
+    service.isWriting = true;
     service["onKeyDown"](new KeyboardEvent('keydown', { key: 'Backspace' }));
     expect(backSpaceKeyKeySpy).toHaveBeenCalled();
     expect(drawTextBoxSpy).toHaveBeenCalled();
@@ -262,7 +262,7 @@ describe('TextService', () => {
     const drawTextBoxSpy = spyOn<any>(service, "drawTextBox").and.callFake(() => { return; });
     const updateTextPositionSpy = spyOn<any>(service, "updateTextPosition").and.callFake(() => { return; });
     //new KeyboardEvent('keydown', { key: 'ArrowRight' })
-    service.isRighting = true;
+    service.isWriting = true;
     service["onKeyDown"](new KeyboardEvent('keydown', { key: 'Delete' }));
     expect(deleteKeySpy).toHaveBeenCalled();
     expect(drawTextBoxSpy).toHaveBeenCalled();
@@ -273,7 +273,7 @@ describe('TextService', () => {
     const drawTextBoxSpy = spyOn<any>(service, "drawTextBox").and.callFake(() => { return; });
     const updateTextPositionSpy = spyOn<any>(service, "updateTextPosition").and.callFake(() => { return; });
     //new KeyboardEvent('keydown', { key: 'ArrowRight' })
-    service.isRighting = true;
+    service.isWriting = true;
     service["onKeyDown"](new KeyboardEvent('keydown', { key: 'Enter' }));
     expect(enterKeySpy).toHaveBeenCalled();
     expect(drawTextBoxSpy).toHaveBeenCalled();
@@ -284,7 +284,7 @@ describe('TextService', () => {
     const drawTextBoxSpy = spyOn<any>(service, "drawTextBox").and.callFake(() => { return; });
     const updateTextPositionSpy = spyOn<any>(service, "updateTextPosition").and.callFake(() => { return; });
     //new KeyboardEvent('keydown', { key: 'ArrowRight' })
-    service.isRighting = true;
+    service.isWriting = true;
     service["onKeyDown"](new KeyboardEvent('keydown', { key: 'Escape' }));
     expect(restoreToInitSpy).toHaveBeenCalled();
     expect(drawTextBoxSpy).toHaveBeenCalled();
@@ -295,7 +295,7 @@ describe('TextService', () => {
     const drawTextBoxSpy = spyOn<any>(service, "drawTextBox").and.callFake(() => { return; });
     const updateTextPositionSpy = spyOn<any>(service, "updateTextPosition").and.callFake(() => { return; });
     //new KeyboardEvent('keydown', { key: 'ArrowRight' })
-    service.isRighting = true;
+    service.isWriting = true;
     service["onKeyDown"](new KeyboardEvent('keydown', { key: 'ArrowRight' }));
     expect(shiftHorizontallySpy).toHaveBeenCalled();
     expect(drawTextBoxSpy).toHaveBeenCalled();
@@ -306,7 +306,7 @@ describe('TextService', () => {
     const drawTextBoxSpy = spyOn<any>(service, "drawTextBox").and.callFake(() => { return; });
     const updateTextPositionSpy = spyOn<any>(service, "updateTextPosition").and.callFake(() => { return; });
     //new KeyboardEvent('keydown', { key: 'ArrowRight' })
-    service.isRighting = true;
+    service.isWriting = true;
     service["onKeyDown"](new KeyboardEvent('keydown', { key: 'ArrowLeft' }));
     expect(shiftHorizontallySpy).toHaveBeenCalled();
     expect(drawTextBoxSpy).toHaveBeenCalled();
@@ -317,7 +317,7 @@ describe('TextService', () => {
     const drawTextBoxSpy = spyOn<any>(service, "drawTextBox").and.callFake(() => { return; });
     const updateTextPositionSpy = spyOn<any>(service, "updateTextPosition").and.callFake(() => { return; });
     //new KeyboardEvent('keydown', { key: 'ArrowRight' })
-    service.isRighting = true;
+    service.isWriting = true;
     service["onKeyDown"](new KeyboardEvent('keydown', { key: 'ArrowUp' }));
     expect(shiftVerticallySpy).toHaveBeenCalled();
     expect(drawTextBoxSpy).toHaveBeenCalled();
@@ -328,7 +328,7 @@ describe('TextService', () => {
     const drawTextBoxSpy = spyOn<any>(service, "drawTextBox").and.callFake(() => { return; });
     const updateTextPositionSpy = spyOn<any>(service, "updateTextPosition").and.callFake(() => { return; });
     //new KeyboardEvent('keydown', { key: 'ArrowRight' })
-    service.isRighting = true;
+    service.isWriting = true;
     service["onKeyDown"](new KeyboardEvent('keydown', { key: 'ArrowDown' }));
     expect(shiftVerticallySpy).toHaveBeenCalled();
     expect(drawTextBoxSpy).toHaveBeenCalled();

@@ -17,6 +17,7 @@ const CONTINUOUS_MOVE_DELAY = 100;
 // tslint:disable:no-empty cause it an abstract class
 export abstract class Movable extends Tool implements Rotationable, Resizable {
     static magnetismActivated: boolean = false;
+    static magnetismAnchorPoint: number;
     ellipseService: EllipseService;
     rectangleService: RectangleService;
     currenthandle: number;
@@ -41,7 +42,6 @@ export abstract class Movable extends Tool implements Rotationable, Resizable {
     selectionActivated: boolean;
     mouseDownInsideSelection: boolean;
     magicSelectionObj: MagicWandSelection;
-    magnetismAnchorPoint: number;
     deltaX: number;
     deltaY: number;
     tmpAlignmentPoint: Vec2;
@@ -58,7 +58,6 @@ export abstract class Movable extends Tool implements Rotationable, Resizable {
     drawResizingHandles: () => void = Resizable.prototype.drawResizingHandles;
     handleNewPos: (handleToMove: Vec2, direction: Vec2) => Vec2 = Resizable.prototype.handleNewPos;
     mouseDownOnHandle: (mousedownpos: Vec2) => number = Resizable.prototype.mouseDownOnHandle;
-
     switchHandlesHorizontal: () => void = Resizable.prototype.switchHandlesHorizontal;
     switchHandlesVertical: () => void = Resizable.prototype.switchHandlesVertical;
 
@@ -69,7 +68,7 @@ export abstract class Movable extends Tool implements Rotationable, Resizable {
         this.moveDelayActive = false;
         this.continuousMove = false;
         this.firstSelectionMove = true;
-        this.magnetismAnchorPoint = 1;
+        Movable.magnetismAnchorPoint = 1;
         this.currenthandle = DEFAULT_HANDLE_INDEX;
         this.rectangleService = new RectangleService(drawingService, this.invoker);
         this.rectangleService.setStyle(RectangleStyle.Selection);
@@ -83,7 +82,7 @@ export abstract class Movable extends Tool implements Rotationable, Resizable {
         this.selectionActivated = false;
         this.deltaY = 0;
         this.deltaX = 0;
-        this.shouldAlign = true;
+        Tool.shouldAlign = true;
     }
 
     eraseSelectionFromBase(endPos: Vec2): void {}
@@ -146,51 +145,30 @@ export abstract class Movable extends Tool implements Rotationable, Resizable {
 
         if (Movable.magnetismActivated) {
             this.updateResizingHandles();
-            switch (this.magnetismAnchorPoint) {
+            switch (Movable.magnetismAnchorPoint) {
                 case HANDLES.one:
                     this.tmpAlignmentPoint = this.getRotatedPos(this.selectionStartPoint);
                     break;
                 case HANDLES.two:
-                    this.tmpAlignmentPoint = {
-                        x: this.getRotatedPos(this.resizingHandles[HANDLES.two - 1]).x + HANDLE_OFFSET,
-                        y: this.getRotatedPos(this.resizingHandles[HANDLES.two - 1]).y + HANDLE_OFFSET,
-                    };
+                    this.tmpAlignmentPoint = this.getRotatedAlignementPoint(HANDLES.two);
                     break;
                 case HANDLES.three:
-                    this.tmpAlignmentPoint = {
-                        x: this.getRotatedPos(this.resizingHandles[HANDLES.three - 1]).x + HANDLE_OFFSET,
-                        y: this.getRotatedPos(this.resizingHandles[HANDLES.three - 1]).y + HANDLE_OFFSET,
-                    };
+                    this.tmpAlignmentPoint = this.getRotatedAlignementPoint(HANDLES.three);
                     break;
                 case HANDLES.four:
-                    this.tmpAlignmentPoint = {
-                        x: this.getRotatedPos(this.resizingHandles[HANDLES.four - 1]).x + HANDLE_OFFSET,
-                        y: this.getRotatedPos(this.resizingHandles[HANDLES.four - 1]).y + HANDLE_OFFSET,
-                    };
+                    this.tmpAlignmentPoint = this.getRotatedAlignementPoint(HANDLES.four);
                     break;
                 case HANDLES.five:
-                    this.tmpAlignmentPoint = {
-                        x: this.getRotatedPos(this.resizingHandles[HANDLES.five - 1]).x + HANDLE_OFFSET,
-                        y: this.getRotatedPos(this.resizingHandles[HANDLES.five - 1]).y + HANDLE_OFFSET,
-                    };
+                    this.tmpAlignmentPoint = this.getRotatedAlignementPoint(HANDLES.five);
                     break;
                 case HANDLES.six:
-                    this.tmpAlignmentPoint = {
-                        x: this.getRotatedPos(this.resizingHandles[HANDLES.six - 1]).x + HANDLE_OFFSET,
-                        y: this.getRotatedPos(this.resizingHandles[HANDLES.six - 1]).y + HANDLE_OFFSET,
-                    };
+                    this.tmpAlignmentPoint = this.getRotatedAlignementPoint(HANDLES.six);
                     break;
                 case HANDLES.seven:
-                    this.tmpAlignmentPoint = {
-                        x: this.getRotatedPos(this.resizingHandles[HANDLES.seven - 1]).x + HANDLE_OFFSET,
-                        y: this.getRotatedPos(this.resizingHandles[HANDLES.seven - 1]).y + HANDLE_OFFSET,
-                    };
+                    this.tmpAlignmentPoint = this.getRotatedAlignementPoint(HANDLES.seven);
                     break;
                 case HANDLES.eight:
-                    this.tmpAlignmentPoint = {
-                        x: this.getRotatedPos(this.resizingHandles[HANDLES.eight - 1]).x + HANDLE_OFFSET,
-                        y: this.getRotatedPos(this.resizingHandles[HANDLES.eight - 1]).y + HANDLE_OFFSET,
-                    };
+                    this.tmpAlignmentPoint = this.getRotatedAlignementPoint(HANDLES.eight);
                     break;
                 case HANDLES.center:
                     this.tmpAlignmentPoint = {
@@ -199,10 +177,10 @@ export abstract class Movable extends Tool implements Rotationable, Resizable {
                     };
                     break;
             }
-            if (this.shouldAlign) {
+            if (Tool.shouldAlign) {
                 this.deltaX = this.selectionStartPoint.x - this.tmpAlignmentPoint.x;
                 this.deltaY = this.selectionStartPoint.y - this.tmpAlignmentPoint.y;
-                this.shouldAlign = false;
+                Tool.shouldAlign = false;
             }
             if (this.tmpAlignmentPoint.x % GridService.squareSize === 0 && this.tmpAlignmentPoint.y % GridService.squareSize === 0) {
                 return;
@@ -217,6 +195,13 @@ export abstract class Movable extends Tool implements Rotationable, Resizable {
         this.selectionEndPoint = {
             x: this.selectionStartPoint.x + this.width,
             y: this.selectionStartPoint.y + this.height,
+        };
+    }
+
+    private getRotatedAlignementPoint(handle: number): Vec2 {
+        return {
+            x: this.getRotatedPos(this.resizingHandles[handle - 1]).x + HANDLE_OFFSET,
+            y: this.getRotatedPos(this.resizingHandles[handle - 1]).y + HANDLE_OFFSET,
         };
     }
 

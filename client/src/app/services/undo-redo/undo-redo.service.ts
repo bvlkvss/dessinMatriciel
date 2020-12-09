@@ -6,8 +6,8 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
     providedIn: 'root',
 })
 export class UndoRedoService {
-    undoStack: Command[];
-    redoStack: Command[];
+    private undoStack: Command[];
+    private redoStack: Command[];
     private isAllowed: boolean;
 
     constructor(protected drawingService: DrawingService) {

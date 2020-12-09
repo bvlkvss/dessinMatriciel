@@ -1,6 +1,6 @@
 import { AfterViewChecked, Component, ViewChild } from '@angular/core';
 import { Tool } from '@app/classes/tool';
-import { AttributeBarComponent } from '@app/components/attribute-bar/attributebar.component';
+import { AttributeBarComponent } from '@app/components/attribute-bar/attribute-bar.component';
 import { ToolsManagerService } from '@app/services/tools-manager/tools-manager.service';
 import { StampService } from '@app/services/tools/stamp/stamp.service';
 

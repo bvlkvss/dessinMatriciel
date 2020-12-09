@@ -23,7 +23,7 @@ import { StampService } from '@app/services/tools/stamp/stamp.service';
 import { TextService } from '@app/services/tools/text/text.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { of } from 'rxjs';
-import { AttributeBarComponent } from './attributebar.component';
+import { AttributeBarComponent } from './attribute-bar.component';
 
 export class MockUndoRedoService extends UndoRedoService {
     executeAll(): void {

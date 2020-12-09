@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Movable } from '@app/classes/movable';
 import { Tool } from '@app/classes/tool';
 import { BrushService } from '@app/services/tools/brush/brush.service';
 import { EllipseService } from '@app/services/tools/ellipse/ellipse.service';
@@ -150,5 +151,10 @@ export class ToolsManagerService {
     setRadius(value: number): void {
         const spray = this.currentTool as SprayPaintService;
         spray.setRadius(value);
+    }
+
+    setAnchorPoint(value: number): void {
+        Movable.magnetismAnchorPoint = value;
+        Tool.shouldAlign = true;
     }
 }

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Const } from '@app/classes/constants';
-import { AttributeBarComponent } from '@app/components/attribute-bar/attributebar.component';
+import { AttributeBarComponent } from '@app/components/attribute-bar/attribute-bar.component';
 import { StampService } from '@app/services/tools/stamp/stamp.service';
 
 @Component({
