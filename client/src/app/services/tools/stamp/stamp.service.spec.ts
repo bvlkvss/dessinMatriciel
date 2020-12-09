@@ -77,4 +77,33 @@ describe('StampService', () => {
       ctx.drawImage(this.image, -this.image.width / 2, -this.image.width / 2, this.image.width, this.image.height);
       ctx.restore(); */
 
+  it('onMouseUp should call addToUndo and set isAllowed to true if this.mouseDown = true', () => {
+    service.mouseDown = true;
+    (service as any).invoker.addToUndo = jasmine.createSpy().and.callThrough().and.callFake(() => { });
+    service.onMouseUp({ offsetX: 1, offsetY: 1, button: 0 } as MouseEvent);
+    expect((service as any).invoker.addToUndo).toHaveBeenCalled();
+    expect((service as any).invoker.getIsAllowed()).toEqual(true);
+  });
+
+
+  it('onMouseUp should call addToUndo if this.mouseDown = true', () => {
+    service.mouseDown = false;
+    (service as any).invoker.addToUndo = jasmine.createSpy().and.callThrough().and.callFake(() => { });
+    service.onMouseUp({ offsetX: 1, offsetY: 1, button: 0 } as MouseEvent);
+    expect((service as any).invoker.addToUndo).not.toHaveBeenCalled();
+  });
+
+  it('onMouseDown should call clearRedo and set isAllowed to false if button = 0', () => {
+    (service as any).invoker.ClearRedo = jasmine.createSpy().and.callThrough().and.callFake(() => { });
+    service.onMouseDown({ offsetX: 1, offsetY: 1, button: 0 } as MouseEvent);
+    expect((service as any).invoker.ClearRedo).toHaveBeenCalled();
+    expect((service as any).invoker.getIsAllowed()).toEqual(false);
+  });
+
+  it('onMouseDown should not call clearRedo if button = 1', () => {
+    (service as any).invoker.ClearRedo = jasmine.createSpy().and.callThrough().and.callFake(() => { });
+    service.onMouseDown({ offsetX: 1, offsetY: 1, button: 1 } as MouseEvent);
+    expect((service as any).invoker.ClearRedo).not.toHaveBeenCalled();
+  });
+
 });

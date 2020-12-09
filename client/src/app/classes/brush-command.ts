@@ -2,10 +2,7 @@ import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { BrushService } from '@app/services/tools/brush/brush.service';
 import { Command } from './command';
-
-const MOUSE_POSITION_OFFSET_DIVIDER = 10;
-const IMAGES_PER_POINT = 5;
-const MAX_EIGHT_BIT_NB = 255;
+import { Const } from './constants';
 
 export class BrushCommand extends Command {
     private pathData: Vec2[];
@@ -35,11 +32,14 @@ export class BrushCommand extends Command {
         let k = 0;
         const image = this.tool.makeBaseImage();
         do {
-            const x = startPos.x + Math.sin(angle) * k - this.tool.image.width / MOUSE_POSITION_OFFSET_DIVIDER;
-            const y = startPos.y + Math.cos(angle) * k - this.tool.image.height / MOUSE_POSITION_OFFSET_DIVIDER;
-            this.drawingService.baseCtx.globalAlpha = this.tool.color.opacity / MAX_EIGHT_BIT_NB;
-            this.drawingService.baseCtx.drawImage(image, x, y, this.tool.lineWidth, this.tool.lineWidth);
-            k += IMAGES_PER_POINT;
+            const x = startPos.x + Math.sin(angle) * k;
+            const y = startPos.y + Math.cos(angle) * k;
+            this.drawingService.baseCtx.globalAlpha = this.tool.color.opacity / Const.MAX_EIGHT_BIT_NB;
+            this.drawingService.baseCtx.save();
+            this.drawingService.baseCtx.translate(x, y);
+            this.drawingService.baseCtx.drawImage(image, 0, 0, -this.tool.lineWidth / 2, -this.tool.lineWidth / 2);
+            this.drawingService.baseCtx.restore();
+            k += Const.IMAGES_PER_POINT;
         } while (k < dist);
         this.drawingService.baseCtx.closePath();
     }

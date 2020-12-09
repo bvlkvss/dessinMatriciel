@@ -171,6 +171,10 @@ export class AttributeBarComponent implements OnInit, AfterViewChecked, AfterVie
     }
 
     validate(event: KeyboardEvent): void {
+        if (event.ctrlKey) {
+            event.preventDefault();
+            return;
+        }
         const WIDTH_ALLOWED_CHARS_REGEXP = /\b[0-9]+\b/;
         const target = event.target as HTMLInputElement;
         if (target.selectionStart === 0 && this.checkIfContainAttribute('stamp') && target.id !== 'LeftSideInput' && target.id !== 'RightSideInput') {
