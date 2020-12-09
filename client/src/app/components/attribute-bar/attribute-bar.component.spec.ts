@@ -80,7 +80,7 @@ describe('AttributebarComponent', () => {
         plumeStub = new PlumeService(drawServiceMock, UndoRedoServiceMock);
         sprayPaintStub = new SprayPaintService(drawServiceMock, UndoRedoServiceMock);
         gridStub = new GridService(drawServiceMock);
-        stampStub = new StampService(drawServiceMock);
+        stampStub = new StampService(drawServiceMock, UndoRedoServiceMock);
         toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub, selectionStub, paintBucketStub, polygonStub, pipetteStub, textStub, sprayPaintStub, plumeStub, gridStub, magicWandStub, stampStub);
         toolManagerStub.currentTool = pencilStub;
         TestBed.configureTestingModule({
@@ -397,6 +397,53 @@ describe('AttributebarComponent', () => {
         (toolManagerStub.currentTool as SprayPaintService).setRadius = jasmine.createSpy('setRadius');
         component.setRadius('5');
         expect(component.radius).toEqual('5');
+    });
+
+    it('should make maxlength equal 4 if negative number', () => {
+        component.checkIfContainAttribute = jasmine.createSpy().and.callFake(() => true);
+        let target = { id: 'test', selectionStart: 0, maxLength: 1 };
+        const event = { key: '-', target: target } as unknown as KeyboardEvent;
+        component.validate(event);
+        expect(target.maxLength).toEqual(4);
+
+    });
+
+    it('should make maxlength equal 3 if positive number', () => {
+        component.checkIfContainAttribute = jasmine.createSpy().and.callFake(() => true);
+        let target = { id: 'test', selectionStart: 0, maxLength: 1 };
+        const event = { key: '+', target: target } as unknown as KeyboardEvent;
+        component.validate(event);
+        expect(target.maxLength).toEqual(3);
+
+    });
+
+    it('should make maxlength equal 4 if negative number', () => {
+        component.checkIfContainAttribute = jasmine.createSpy().and.callFake(() => true);
+        let target = { id: 'test', selectionStart: 0, maxLength: 1 };
+        const event = { key: '-', target: target } as unknown as KeyboardEvent;
+        component.validate(event);
+        expect(target.maxLength).toEqual(4);
+
+    });
+
+    it('should not change maxlength if stamp Rightinput or leftInput', () => {
+        component.checkIfContainAttribute = jasmine.createSpy().and.callFake(() => true);
+        let target = { selectionStart: 0, maxLength: 1, id: 'LeftSideInput' };
+        const event = { key: '-', target: target } as unknown as KeyboardEvent;
+        event.preventDefault = jasmine.createSpy().and.callFake(() => { });
+        component.validate(event);
+        expect(target.maxLength).toEqual(1);
+
+    });
+
+    it('should not change maxlength if stamp Rightinput or leftInput', () => {
+        component.checkIfContainAttribute = jasmine.createSpy().and.callFake(() => true);
+        let target = { selectionStart: 0, maxLength: 1, id: 'RightSideInput' };
+        const event = { key: '-', target: target } as unknown as KeyboardEvent;
+        event.preventDefault = jasmine.createSpy().and.callFake(() => { });
+        component.validate(event);
+        expect(target.maxLength).toEqual(1);
+
     });
 
 });

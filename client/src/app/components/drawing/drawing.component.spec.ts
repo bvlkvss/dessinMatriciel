@@ -29,7 +29,7 @@ import { MockUndoRedoService } from '../attribute-bar/attribute-bar.component.sp
 export class MockDrawingService extends DrawingService {
     resizeCanvas(): void {
     }
-    restoreCanvasState(){
+    restoreCanvasState() {
         console.log('restoreCanvas');
     }
 }
@@ -82,7 +82,7 @@ describe('DrawingComponent', () => {
         plumeStub = new PlumeService(drawServiceMock, undoRedoServiceMock);
         sprayPaintStub = new SprayPaintService(drawServiceMock, undoRedoServiceMock);
         gridStub = new GridService(drawServiceMock);
-        stampStub = new StampService(drawServiceMock);
+        stampStub = new StampService(drawServiceMock, undoRedoServiceMock);
 
         toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub, selectionStub, paintBucketStub, polygonStub, pipetteStub, textStub, sprayPaintStub, plumeStub, gridStub, magicWandStub, stampStub);
         toolManagerStub.currentTool = toolManagerStub.getTools().get('pencil') as Tool;
@@ -96,7 +96,7 @@ describe('DrawingComponent', () => {
                 { provide: MatDialog, useValue: matDialogSpy },
             ],
         }).compileComponents();
-        (matDialogSpy as any).openDialogs=[] as any;
+        (matDialogSpy as any).openDialogs = [] as any;
     }));
 
     beforeEach(() => {
@@ -421,7 +421,7 @@ describe('DrawingComponent', () => {
     });
 
     it('should call newDrawing when ctrl-O is pressed', () => {
-        (component as any).invoker.addToUndo(new PencilCommand([],pencilStub,drawServiceMock));
+        (component as any).invoker.addToUndo(new PencilCommand([], pencilStub, drawServiceMock));
         let event = {
             key: 'o',
             ctrlKey: true,
@@ -513,5 +513,33 @@ describe('DrawingComponent', () => {
         expect((component as any).tools.currentTool.magicSelectionObj.updateDegree).toHaveBeenCalled();
     });*/
 
+    it('should set invoker.isAllowed to true when changing tool', () => {
+        (component as any).invoker.setIsAllowed = jasmine.createSpy().and.callThrough().and.callFake((bool) => { (component as any).invoker.isAllowed = bool });
+        (component as any).invoker.getIsAllowed = jasmine.createSpy().and.callThrough().and.callFake(() => { return (component as any).invoker.isAllowed });
+        (component as any).keyBindings.has = jasmine.createSpy().and.callFake(() => {
+            return true;
+        });
+        (component as any).tools.setTools = jasmine.createSpy().and.callFake(() => {
+        });
+        (component as any).tools.currentTool = pencilStub;
+        component.onKeyDown({ key: 'test', } as KeyboardEvent);
+        expect((component as any).invoker.getIsAllowed()).toEqual(true);
+    });
 
+    it('should set invoker.isAllowed to false when changing tool and tool = stamp', () => {
+        (component as any).invoker.setIsAllowed = jasmine.createSpy().and.callThrough().and.callFake((bool) => { (component as any).invoker.isAllowed = bool });
+        (component as any).invoker.getIsAllowed = jasmine.createSpy().and.callFake(() => { return (component as any).invoker.isAllowed });
+
+        (component as any).keyBindings.has = jasmine.createSpy().and.callFake(() => {
+            return true;
+        });
+        (component as any).tools.setTools = jasmine.createSpy().and.callFake(() => {
+        });
+        (component as any).drawingService.restoreCanvasState = jasmine.createSpy().and.callFake(() => {
+        });
+        (component as any).tools.currentTool = stampStub;
+        component.onKeyDown({ key: 'test', ctrlKey: false } as KeyboardEvent);
+        expect((component as any).invoker.getIsAllowed()).toEqual(false);
+
+    });
 });

@@ -70,7 +70,7 @@ describe('SidebarComponent', () => {
         selectionStub = new SelectionService(drawServiceMock, UndoRedoServiceMock);
         textStub = new TextService(drawServiceMock, UndoRedoServiceMock);
         gridStub = new GridService(drawServiceMock);
-        stampStub = new StampService(drawServiceMock);
+        stampStub = new StampService(drawServiceMock, UndoRedoServiceMock);
 
         toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub, selectionStub, paintBucketStub, polygonStub, pipetteStub, textStub, sprayPaintStub, plumeStub, gridStub, magicWandStub, stampStub);
         toolManagerStub.currentTool = pencilStub;
@@ -151,7 +151,7 @@ describe('SidebarComponent', () => {
 
     it('should call newDrawing when newDrawing is called and undostack is empty', () => {
         let newDrawingSpy = spyOn(drawServiceMock, 'newDrawing');
-        (component as SidebarComponent).getInvoker().addToUndo(new PencilCommand([],pencilStub,drawServiceMock));
+        (component as SidebarComponent).getInvoker().addToUndo(new PencilCommand([], pencilStub, drawServiceMock));
         component.newDrawing();
         expect(newDrawingSpy).toHaveBeenCalled();
     });
@@ -361,6 +361,31 @@ describe('SidebarComponent', () => {
         (component as any).invoker.redoPrev = jasmine.createSpy().and.callThrough().and.callFake(() => { });
         component.redo();
         expect((component as any).invoker.redoPrev).toHaveBeenCalled();
+    });
+
+
+    it('should set invoker.isAllowed to true when changing tool', () => {
+        (component as any).invoker.setIsAllowed = jasmine.createSpy().and.callThrough().and.callFake((bool) => { (component as any).invoker.isAllowed = bool });
+        (component as any).invoker.getIsAllowed = jasmine.createSpy().and.callThrough().and.callFake(() => { return (component as any).invoker.isAllowed });
+        (component as any).tools.setTools = jasmine.createSpy().and.callFake(() => {
+        });
+        (component as any).tools.currentTool = pencilStub;
+        (component as any).toolIcons.nativeElement.getElementsByTagName = jasmine.createSpy().and.callFake(() => { return [] });
+        (component as any).toolIcons.nativeElement.querySelector = jasmine.createSpy().and.callFake(() => { });
+        component.changeTools('');
+        expect((component as any).invoker.getIsAllowed()).toEqual(true);
+    });
+
+    it('should set invoker.isAllowed to false when changing tool and tool = stamp', () => {
+        (component as any).invoker.setIsAllowed = jasmine.createSpy().and.callThrough().and.callFake((bool) => { (component as any).invoker.isAllowed = bool });
+        (component as any).invoker.getIsAllowed = jasmine.createSpy().and.callFake(() => { return (component as any).invoker.isAllowed });
+        (component as any).tools.setTools = jasmine.createSpy().and.callFake(() => {
+        });
+        (component as any).tools.currentTool = stampStub;
+        (component as any).toolIcons.nativeElement.getElementsByTagName = jasmine.createSpy().and.callFake(() => { return [] });
+        (component as any).toolIcons.nativeElement.querySelector = jasmine.createSpy().and.callFake(() => { });
+        component.changeTools('');
+        expect((component as any).invoker.getIsAllowed()).toEqual(false);
     });
 
 });

@@ -24,6 +24,7 @@ export class UndoRedoService {
         }
     }
     addToUndo(cmd: Command): void {
+        console.log('added to undo');
         if (cmd) {
             this.undoStack.push(cmd);
         }

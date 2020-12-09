@@ -68,7 +68,7 @@ describe('EditorComponent', () => {
         plumeStub = new PlumeService(drawServiceMock, UndoRedoServiceMock);
         sprayPaintStub = new SprayPaintService(drawServiceMock, UndoRedoServiceMock);
         gridStub = new GridService(drawServiceMock);
-        stampStub = new StampService(drawServiceMock);
+        stampStub = new StampService(drawServiceMock, UndoRedoServiceMock);
         toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub, selectionStub, paintBucketStub, polygonStub, pipetteStub, textStub, sprayPaintStub, plumeStub, gridStub, magicWandStub, stampStub);
         toolManagerStub.currentTool = stampStub;
         TestBed.configureTestingModule({

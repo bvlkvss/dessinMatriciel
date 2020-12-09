@@ -173,7 +173,7 @@ export class AttributeBarComponent implements OnInit, AfterViewChecked, AfterVie
     validate(event: KeyboardEvent): void {
         const WIDTH_ALLOWED_CHARS_REGEXP = /\b[0-9]+\b/;
         const target = event.target as HTMLInputElement;
-        if (target.selectionStart === 0 && this.checkIfContainAttribute('stamp')) {
+        if (target.selectionStart === 0 && this.checkIfContainAttribute('stamp') && target.id !== 'LeftSideInput' && target.id !== 'RightSideInput') {
             target.maxLength = event.key === '-' ? Const.MAX_INPUT_NEGATIVE_LENGTH : Const.MAX_INPUT_POSITIVE_LENGTH;
             return;
         }

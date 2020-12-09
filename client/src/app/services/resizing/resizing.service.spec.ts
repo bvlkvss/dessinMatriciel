@@ -28,7 +28,7 @@ describe('ResizingService', () => {
         service['drawingService'].baseCtx.canvas.height = baseCtxStub.canvas.height; // Jasmine doesnt copy properties with underlying data
         service['drawingService'].previewCtx.canvas.height = previewCtxStub.canvas.height;
         service['drawingService'].gridCanvas = document.createElement('canvas');
-        service['drawingService'].gridCanvas.width =100;
+        service['drawingService'].gridCanvas.width = 100;
         service['drawingService'].gridCanvas.height = 100;
         service['drawingService'].gridCtx = service['drawingService'].gridCanvas.getContext('2d') as CanvasRenderingContext2D;
     });
@@ -39,7 +39,7 @@ describe('ResizingService', () => {
 
     it('should set resizing to true when initResizing is called if mouseEvent is leftClick', () => {
         service.resizing = false;
-        function dummyFunction() {}
+        function dummyFunction() { }
         let mouseEvent = { button: 0, target: { className: 'lala' }, preventDefault: dummyFunction } as any;
         service.initResizing(mouseEvent);
         expect(service.resizing).toEqual(true);
@@ -47,7 +47,7 @@ describe('ResizingService', () => {
 
     it('should not set resizing to true when initResizing is called if mouseEvent is not leftClick', () => {
         service.resizing = false;
-        function dummyFunction() {}
+        function dummyFunction() { }
         let mouseEvent = { button: 1, target: { className: 'lala' }, preventDefault: dummyFunction } as any;
         service.initResizing(mouseEvent);
         expect(service.resizing).toEqual(false);
@@ -127,6 +127,7 @@ describe('ResizingService', () => {
         let event = { button: 0, pageX: 700, pageY: 700 } as MouseEvent;
         service.currentResizer = 'resizer right';
         service.resizing = true;
+        (service as any).drawingService.canvasContainer = div;
         service.resize(event, canvas, canvas2);
         expect(resizerRightSpy).toHaveBeenCalled();
     });
@@ -145,6 +146,7 @@ describe('ResizingService', () => {
         let event = { button: 0, pageX: 700, pageY: 700 } as MouseEvent;
         service.currentResizer = 'resizer bottom-right';
         service.resizing = true;
+        (service as any).drawingService.canvasContainer = div;
         service.resize(event, canvas, canvas2);
         expect(resizerBottomRightSpy).toHaveBeenCalled();
     });
@@ -163,6 +165,7 @@ describe('ResizingService', () => {
         let event = { button: 0, pageX: 700, pageY: 700 } as MouseEvent;
         service.currentResizer = 'resizer bottom';
         service.resizing = true;
+        (service as any).drawingService.canvasContainer = div;
         service.resize(event, canvas, canvas2);
         expect(resizerBottomSpy).toHaveBeenCalled();
     });
@@ -181,6 +184,7 @@ describe('ResizingService', () => {
         let event = { button: 0, pageX: 700, pageY: 700 } as MouseEvent;
         service.currentResizer = 'resizer bottom';
         service.resizing = false;
+        (service as any).drawingService.canvasContainer = div;
         service.resize(event, canvas, canvas2);
         expect(resizerBottomSpy).not.toHaveBeenCalled();
     });
@@ -199,6 +203,7 @@ describe('ResizingService', () => {
         let event = { button: 1, pageX: 700, pageY: 700 } as MouseEvent;
         service.currentResizer = 'resizer bottom';
         service.resizing = true;
+        (service as any).drawingService.canvasContainer = div;
         service.resize(event, canvas, canvas2);
         expect(resizerBottomSpy).not.toHaveBeenCalled();
     });

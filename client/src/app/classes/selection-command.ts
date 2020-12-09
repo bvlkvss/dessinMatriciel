@@ -1,8 +1,8 @@
+import { Const } from '@app/classes/constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { Command } from './command';
 import { Movable } from './movable';
 import { Vec2 } from './vec2';
-const PI_DEGREE = 180;
 export class SelectionCommand extends Command {
     private startPosErase: Vec2;
     private endPosErase: Vec2;
@@ -60,7 +60,7 @@ export class SelectionCommand extends Command {
         } else {
             this.drawingService.baseCtx.save();
             this.drawingService.baseCtx.translate(centre.x, centre.y);
-            this.drawingService.baseCtx.rotate((this.degres * Math.PI) / PI_DEGREE);
+            this.drawingService.baseCtx.rotate((this.degres * Math.PI) / Const.PI_ANGLE);
             this.drawingService.baseCtx.drawImage(this.tool.selectionData, -Math.abs(this.width) / 2, -Math.abs(this.height) / 2);
             this.drawingService.baseCtx.restore();
         }
