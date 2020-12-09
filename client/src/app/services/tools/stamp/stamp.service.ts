@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Const } from '@app/classes/constants';
 import { Rotationable } from '@app/classes/rotationable';
+import { StampCommand } from '@app/classes/stamp-command';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { Subject } from 'rxjs';
 
 @Injectable({
@@ -13,7 +15,7 @@ export class StampService extends Tool implements Rotationable {
     image: HTMLImageElement;
     degres: number;
     stampObs: Subject<boolean>;
-    constructor(drawingService: DrawingService) {
+    constructor(drawingService: DrawingService, private invoker: UndoRedoService) {
         super(drawingService);
         this.stampObs = new Subject<boolean>();
         this.degres = 0;
@@ -29,6 +31,9 @@ export class StampService extends Tool implements Rotationable {
     onClick(event: MouseEvent): void {
         const centerPos = this.getPositionFromMouse(event);
         this.rotateStamp(this.drawingService.baseCtx, centerPos);
+        const cmd = new StampCommand(centerPos, this, this.drawingService);
+        this.invoker.addToUndo(cmd);
+        this.invoker.ClearRedo();
     }
 
     getStampObs(): Subject<boolean> {

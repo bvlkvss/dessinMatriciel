@@ -17,7 +17,7 @@ export class ResizeCommand implements Command {
         this.isResize = true;
         this.oldWidth = oldW;
         this.oldHeight = oldH;
-        this.canvasContainer = document.querySelector('#canvas-container') as HTMLDivElement;
+        this.canvasContainer = this.drawingService.canvasContainer;
     }
 
     setnewSize(newW: number, newH: number): void {

@@ -18,12 +18,14 @@ import { PolygonService } from '@app/services/tools/polygon/polygon.service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle.service';
 import { SelectionService } from '@app/services/tools/selection/selection.service';
 import { SprayPaintService } from '@app/services/tools/spray-paint/spray-paint.service';
+import { StampService } from '@app/services/tools/stamp/stamp.service';
 import { TextService } from '@app/services/tools/text/text.service';
 import { BrushCommand } from '../../classes/brush-command';
 import { EllipseCommand } from '../../classes/ellipse-command';
 import { PencilCommand } from '../../classes/pencil-command';
 import { RectangleCommand } from '../../classes/rectangle-command';
 import { SelectionCommand } from '../../classes/selection-command';
+import { StampCommand } from '../../classes/stamp-command';
 //import { ResizeCommand } from '../../classes/resizeCommand';
 import { DrawingService } from '../drawing/drawing.service';
 import { ResizingService } from '../resizing/resizing.service';
@@ -70,6 +72,8 @@ describe('UndoRedoService', () => {
   let plumeCommandStub: PlumeCommand;
   let sprayStub: SprayPaintService;
   let sprayStubCommand: SprayPaintCommand;
+  let stampStub: StampService;
+  let StampCommandStub: StampCommand;
 
 
   beforeEach(() => {
@@ -133,7 +137,8 @@ describe('UndoRedoService', () => {
     plumeCommandStub = new PlumeCommand(plumeStub, DrawingServiceMock);
     sprayStub = new SprayPaintService(DrawingServiceMock, service);
     sprayStubCommand = new SprayPaintCommand(sprayStub, DrawingServiceMock);
-
+    stampStub = new StampService(DrawingServiceMock, service);
+    StampCommandStub = new StampCommand(pathData[0], stampStub, DrawingServiceMock);
 
     undoLastSpy = spyOn<any>(service, 'undoLast').and.callThrough();
     redoPrevSpy = spyOn<any>(service, 'redoPrev').and.callThrough();
@@ -301,6 +306,7 @@ describe('UndoRedoService', () => {
     service.addToUndo(textCommandStub);
     service.addToUndo(plumeCommandStub);
     service.addToUndo(sprayStubCommand);
+    service.addToUndo(StampCommandStub);
     let execute = [] as jasmine.Spy<any>[];
     for (let cmd of service.getUndo()) {
       execute.push(spyOn(cmd, 'execute').and.callThrough().and.callFake(() => { }));
@@ -470,7 +476,7 @@ describe('UndoRedoService', () => {
     expect(plumeStub.drawLine).toHaveBeenCalled();
   });
 
-  it('pushData of spray command should added vec2 to pathData', () => {
+  it('pushData of spray command should add vec2 to pathData', () => {
     sprayStubCommand.pushData({ x: 1, y: 2 });
     expect((sprayStubCommand as any).pathData[0]).toEqual({ x: 1, y: 2 });
   });
@@ -629,7 +635,11 @@ describe('UndoRedoService', () => {
 
   });
 
-
+  it('execute of stamp command should call rotateStamp', () => {
+    (StampCommandStub as any).tool.rotateStamp = jasmine.createSpy().and.callThrough().and.callFake(() => { })
+    StampCommandStub.execute();
+    expect((StampCommandStub as any).tool.rotateStamp).toHaveBeenCalled();
+  });
 
 
 

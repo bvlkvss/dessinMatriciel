@@ -1,6 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MockDrawingService } from '@app/components/drawing/drawing.component.spec';
 import { StampService } from '@app/services/tools/stamp/stamp.service';
+// tslint:disable-next-line:no-relative-imports
+import { MockUndoRedoService } from '../attribute-bar/attribute-bar.component.spec';
 import { StampsContainerComponent } from './stamps-container.component';
 /* tslint:disable */
 describe('StampsContainerComponent', () => {
@@ -10,7 +12,7 @@ describe('StampsContainerComponent', () => {
   let drawServiceMock: MockDrawingService;
   beforeEach(async(() => {
     drawServiceMock = new MockDrawingService();
-    stampServiceStub = new StampService(drawServiceMock);
+    stampServiceStub = new StampService(drawServiceMock, new MockUndoRedoService(drawServiceMock));
     TestBed.configureTestingModule({
       declarations: [StampsContainerComponent],
       providers: [{ provide: StampService, useValue: stampServiceStub },]

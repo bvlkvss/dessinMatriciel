@@ -11,6 +11,7 @@ import { ToolsManagerService } from '@app/services/tools-manager/tools-manager.s
 import { GridService } from '@app/services/tools/grid/grid.service';
 import { MagicWandService } from '@app/services/tools/magic-wand/magic-wand.service';
 import { SelectionService } from '@app/services/tools/selection/selection.service';
+import { StampService } from '@app/services/tools/stamp/stamp.service';
 import { TextService } from '@app/services/tools/text/text.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { Subscription } from 'rxjs';
@@ -182,8 +183,10 @@ export class SidebarComponent implements OnChanges {
 
     changeTools(name: string): void {
         this.drawingService.restoreCanvasState();
+        this.invoker.setIsAllowed(true);
         if (this.tools.currentTool instanceof TextService && name !== 'text') (this.tools.currentTool as TextService).drawConfirmedText(true);
         this.tools.setTools(name);
+        if (this.tools.currentTool instanceof StampService) this.invoker.setIsAllowed(false);
         if (this.tools.currentTool instanceof GridService) {
             this.tools.currentTool.onKeyDown({ key: 'g' } as KeyboardEvent);
         }
