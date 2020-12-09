@@ -58,7 +58,6 @@ export abstract class Movable extends Tool implements Rotationable, Resizable {
     drawResizingHandles: () => void = Resizable.prototype.drawResizingHandles;
     handleNewPos: (handleToMove: Vec2, direction: Vec2) => Vec2 = Resizable.prototype.handleNewPos;
     mouseDownOnHandle: (mousedownpos: Vec2) => number = Resizable.prototype.mouseDownOnHandle;
-
     switchHandlesHorizontal: () => void = Resizable.prototype.switchHandlesHorizontal;
     switchHandlesVertical: () => void = Resizable.prototype.switchHandlesVertical;
 
@@ -151,46 +150,25 @@ export abstract class Movable extends Tool implements Rotationable, Resizable {
                     this.tmpAlignmentPoint = this.getRotatedPos(this.selectionStartPoint);
                     break;
                 case HANDLES.two:
-                    this.tmpAlignmentPoint = {
-                        x: this.getRotatedPos(this.resizingHandles[HANDLES.two - 1]).x + HANDLE_OFFSET,
-                        y: this.getRotatedPos(this.resizingHandles[HANDLES.two - 1]).y + HANDLE_OFFSET,
-                    };
+                    this.tmpAlignmentPoint = this.getRotatedAlignementPoint(HANDLES.two);
                     break;
                 case HANDLES.three:
-                    this.tmpAlignmentPoint = {
-                        x: this.getRotatedPos(this.resizingHandles[HANDLES.three - 1]).x + HANDLE_OFFSET,
-                        y: this.getRotatedPos(this.resizingHandles[HANDLES.three - 1]).y + HANDLE_OFFSET,
-                    };
+                    this.tmpAlignmentPoint = this.getRotatedAlignementPoint(HANDLES.three);
                     break;
                 case HANDLES.four:
-                    this.tmpAlignmentPoint = {
-                        x: this.getRotatedPos(this.resizingHandles[HANDLES.four - 1]).x + HANDLE_OFFSET,
-                        y: this.getRotatedPos(this.resizingHandles[HANDLES.four - 1]).y + HANDLE_OFFSET,
-                    };
+                    this.tmpAlignmentPoint = this.getRotatedAlignementPoint(HANDLES.four);
                     break;
                 case HANDLES.five:
-                    this.tmpAlignmentPoint = {
-                        x: this.getRotatedPos(this.resizingHandles[HANDLES.five - 1]).x + HANDLE_OFFSET,
-                        y: this.getRotatedPos(this.resizingHandles[HANDLES.five - 1]).y + HANDLE_OFFSET,
-                    };
+                    this.tmpAlignmentPoint = this.getRotatedAlignementPoint(HANDLES.five);
                     break;
                 case HANDLES.six:
-                    this.tmpAlignmentPoint = {
-                        x: this.getRotatedPos(this.resizingHandles[HANDLES.six - 1]).x + HANDLE_OFFSET,
-                        y: this.getRotatedPos(this.resizingHandles[HANDLES.six - 1]).y + HANDLE_OFFSET,
-                    };
+                    this.tmpAlignmentPoint = this.getRotatedAlignementPoint(HANDLES.six);
                     break;
                 case HANDLES.seven:
-                    this.tmpAlignmentPoint = {
-                        x: this.getRotatedPos(this.resizingHandles[HANDLES.seven - 1]).x + HANDLE_OFFSET,
-                        y: this.getRotatedPos(this.resizingHandles[HANDLES.seven - 1]).y + HANDLE_OFFSET,
-                    };
+                    this.tmpAlignmentPoint = this.getRotatedAlignementPoint(HANDLES.seven);
                     break;
                 case HANDLES.eight:
-                    this.tmpAlignmentPoint = {
-                        x: this.getRotatedPos(this.resizingHandles[HANDLES.eight - 1]).x + HANDLE_OFFSET,
-                        y: this.getRotatedPos(this.resizingHandles[HANDLES.eight - 1]).y + HANDLE_OFFSET,
-                    };
+                    this.tmpAlignmentPoint = this.getRotatedAlignementPoint(HANDLES.eight);
                     break;
                 case HANDLES.center:
                     this.tmpAlignmentPoint = {
@@ -217,6 +195,13 @@ export abstract class Movable extends Tool implements Rotationable, Resizable {
         this.selectionEndPoint = {
             x: this.selectionStartPoint.x + this.width,
             y: this.selectionStartPoint.y + this.height,
+        };
+    }
+
+    private getRotatedAlignementPoint(handle: number): Vec2 {
+        return {
+            x: this.getRotatedPos(this.resizingHandles[handle - 1]).x + HANDLE_OFFSET,
+            y: this.getRotatedPos(this.resizingHandles[handle - 1]).y + HANDLE_OFFSET,
         };
     }
 

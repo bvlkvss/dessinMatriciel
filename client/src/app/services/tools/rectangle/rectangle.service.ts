@@ -133,6 +133,7 @@ export class RectangleService extends Tool {
         }
     }
 
+    // this function is used in other services thats why the toSquare needs to be a parameter of the function
     drawRectangle(ctx: CanvasRenderingContext2D, startPos: Vec2, currentPos: Vec2, toSquare: boolean): void {
         let width = currentPos.x - startPos.x;
         let height = currentPos.y - startPos.y;

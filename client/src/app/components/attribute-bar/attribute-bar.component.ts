@@ -17,8 +17,8 @@ import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'app-attributebar',
-    templateUrl: './attributebar.component.html',
-    styleUrls: ['./attributebar.component.scss'],
+    templateUrl: './attribute-bar.component.html',
+    styleUrls: ['./attribute-bar.component.scss'],
 })
 export class AttributeBarComponent implements OnInit, AfterViewChecked, AfterViewInit {
     static showStamps: boolean = false;

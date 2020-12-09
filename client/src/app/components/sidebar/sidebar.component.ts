@@ -222,7 +222,7 @@ export class SidebarComponent implements OnChanges {
     }
 
     warningMessage(): void {
-        if (window.confirm('Le dessin sera effacé.\n Voulez-vous continuer vers le menu?')) {
+        if (window.confirm('Voulez-vous vraiment continuer vers le menu?')) {
             location.replace('main-page.component.html');
         }
     }

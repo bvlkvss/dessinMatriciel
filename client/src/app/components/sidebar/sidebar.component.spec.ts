@@ -24,7 +24,7 @@ import { SprayPaintService } from '@app/services/tools/spray-paint/spray-paint.s
 import { StampService } from '@app/services/tools/stamp/stamp.service';
 import { TextService } from '@app/services/tools/text/text.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
-import { MockUndoRedoService } from '../attribute-bar/attributebar.component.spec';
+import { MockUndoRedoService } from '../attribute-bar/attribute-bar.component.spec';
 import { UserGuideComponent } from '../user-guide/user-guide.component';
 import { SidebarComponent } from './sidebar.component';
 

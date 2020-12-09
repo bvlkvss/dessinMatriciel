@@ -81,7 +81,7 @@
             maxlength="3"
             (keydown)="validate($event)"
             (change)="setSquareSize($event.target.value)"
-            [value]="widthValue"
+            [value]="squareSize"
         />
         <input class="size-slider" type="range" (change)="setSquareSize($event.target.value)" [value]="widthValue" min="1" max="100" />
         <label id="label">px</label>
@@ -96,7 +96,7 @@
             maxlength="3"
             (keydown)="validate($event)"
             (change)="setOpacity($event.target.value)"
-            [value]="widthValue"
+            [value]="opacity"
         />
         <input class="size-slider" type="range" (change)="setOpacity($event.target.value)" [value]="widthValue" min="1" max="100" />
         <label id="label">px</label>
@@ -413,7 +413,7 @@
             <p id="header" class="header">Magnétisme (M)</p>
             <br />
             <div *ngIf="checkIfMagnetismActivated()">
-                <div style="background-color:  rgb(64, 61, 85); padding-top: 10px; height: 160px; border-radius: 6px; width: 100%;">
+                <div style="background-color: rgb(64, 61, 85); padding-top: 10px; height: 160px; border-radius: 6px; width: 100%">
                     <p id="header" for="volume">Choisir un point de controle</p>
                     <div class="typeSelectionContainer">
                         <div class="parentRectangle" style="width: 190px; height: 115px">

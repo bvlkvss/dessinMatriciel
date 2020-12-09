@@ -1567,10 +1567,10 @@ describe('SelectionService', () => {
         let currentPos = { x: 20, y: 42 };
         service.offsetX = currentPos.x - service.selectionStartPoint.x;
         service.offsetY = currentPos.y - service.selectionStartPoint.y;
-        service.magnetismAnchorPoint = 1;
+        Movable.magnetismAnchorPoint = 1;
         service.degres = 0;
         Movable.magnetismActivated = true;
-        service.shouldAlign = true;
+        Movable.shouldAlign = true;
         service.moveSelection(currentPos);
 
         expect(service.selectionStartPoint).toEqual({ x: 0, y: 50 });
@@ -1588,10 +1588,10 @@ describe('SelectionService', () => {
         let currentPos = { x: 20, y: 42 };
         service.offsetX = currentPos.x - service.selectionStartPoint.x;
         service.offsetY = currentPos.y - service.selectionStartPoint.y;
-        service.magnetismAnchorPoint = 1;
+        Movable.magnetismAnchorPoint = 1;
         service.degres = 0;
         Movable.magnetismActivated = false;
-        service.shouldAlign = true;
+        Movable.shouldAlign = true;
         service.moveSelection(currentPos);
         expect(service.selectionStartPoint).toEqual({ x: 11, y: 40 });
     });
@@ -1602,11 +1602,11 @@ describe('SelectionService', () => {
         service.width = 30;
         service.height = 50;
         service.selectionEndPoint = { x: 11 + 30, y: 40 + 50 }
-        service.magnetismAnchorPoint = 1;
+        Movable.magnetismAnchorPoint = 1;
         service.degres = 0;
         Movable.magnetismActivated = true;
         service.keysDown['ArrowRight'] = true;
-        service.shouldAlign = true;
+        Movable.shouldAlign = true;
 
         service.moveSelectionWithKeys();
         expect(service.selectionStartPoint).toEqual({ x: 50, y: 100 });
@@ -1618,7 +1618,7 @@ describe('SelectionService', () => {
         service.width = 30;
         service.height = 50;
         service.selectionEndPoint = { x: 11 + 30, y: 40 + 50 }
-        service.magnetismAnchorPoint = 1;
+        Movable.magnetismAnchorPoint = 1;
         service.degres = 0;
         Movable.magnetismActivated = false;
         service.keysDown['ArrowRight'] = true;
@@ -1642,10 +1642,10 @@ describe('SelectionService', () => {
         let currentPos = { x: 20, y: 42 };
         service.offsetX = currentPos.x - service.selectionStartPoint.x;
         service.offsetY = currentPos.y - service.selectionStartPoint.y;
-        service.magnetismAnchorPoint = 2;
+        Movable.magnetismAnchorPoint = 2;
         service.degres = 0;
         Movable.magnetismActivated = true;
-        service.shouldAlign = true;
+        Movable.shouldAlign = true;
 
         service.moveSelection(currentPos);
         service.updateResizingHandles();
@@ -1670,10 +1670,10 @@ describe('SelectionService', () => {
         let currentPos = { x: 20, y: 42 };
         service.offsetX = currentPos.x - service.selectionStartPoint.x;
         service.offsetY = currentPos.y - service.selectionStartPoint.y;
-        service.magnetismAnchorPoint = 3;
+        Movable.magnetismAnchorPoint = 3;
         service.degres = 0;
         Movable.magnetismActivated = true;
-        service.shouldAlign = true;
+        Movable.shouldAlign = true;
 
         service.moveSelection(currentPos);
         service.updateResizingHandles();
@@ -1697,10 +1697,10 @@ describe('SelectionService', () => {
         let currentPos = { x: 20, y: 42 };
         service.offsetX = currentPos.x - service.selectionStartPoint.x;
         service.offsetY = currentPos.y - service.selectionStartPoint.y;
-        service.magnetismAnchorPoint = 4;
+        Movable.magnetismAnchorPoint = 4;
         service.degres = 0;
         Movable.magnetismActivated = true;
-        service.shouldAlign = true;
+        Movable.shouldAlign = true;
 
         service.moveSelection(currentPos);
         service.updateResizingHandles();
@@ -1724,10 +1724,10 @@ describe('SelectionService', () => {
         let currentPos = { x: 20, y: 42 };
         service.offsetX = currentPos.x - service.selectionStartPoint.x;
         service.offsetY = currentPos.y - service.selectionStartPoint.y;
-        service.magnetismAnchorPoint = 5;
+        Movable.magnetismAnchorPoint = 5;
         service.degres = 0;
         Movable.magnetismActivated = true;
-        service.shouldAlign = true;
+        Movable.shouldAlign = true;
 
         service.moveSelection(currentPos);
         service.updateResizingHandles();
@@ -1750,10 +1750,10 @@ describe('SelectionService', () => {
         let currentPos = { x: 20, y: 42 };
         service.offsetX = currentPos.x - service.selectionStartPoint.x;
         service.offsetY = currentPos.y - service.selectionStartPoint.y;
-        service.magnetismAnchorPoint = 6;
+        Movable.magnetismAnchorPoint = 6;
         service.degres = 0;
         Movable.magnetismActivated = true;
-        service.shouldAlign = true;
+        Movable.shouldAlign = true;
 
         service.moveSelection(currentPos);
         service.updateResizingHandles();
@@ -1776,10 +1776,10 @@ describe('SelectionService', () => {
         let currentPos = { x: 20, y: 42 };
         service.offsetX = currentPos.x - service.selectionStartPoint.x;
         service.offsetY = currentPos.y - service.selectionStartPoint.y;
-        service.magnetismAnchorPoint = 7;
+        Movable.magnetismAnchorPoint = 7;
         service.degres = 0;
         Movable.magnetismActivated = true;
-        service.shouldAlign = true;
+        Movable.shouldAlign = true;
 
         service.moveSelection(currentPos);
         service.updateResizingHandles();
@@ -1803,10 +1803,10 @@ describe('SelectionService', () => {
         let currentPos = { x: 20, y: 42 };
         service.offsetX = currentPos.x - service.selectionStartPoint.x;
         service.offsetY = currentPos.y - service.selectionStartPoint.y;
-        service.magnetismAnchorPoint = 8;
+        Movable.magnetismAnchorPoint = 8;
         service.degres = 0;
         Movable.magnetismActivated = true;
-        service.shouldAlign = true;
+        Movable.shouldAlign = true;
 
         service.moveSelection(currentPos);
         service.updateResizingHandles();
@@ -1830,10 +1830,10 @@ describe('SelectionService', () => {
         let currentPos = { x: 20, y: 42 };
         service.offsetX = currentPos.x - service.selectionStartPoint.x;
         service.offsetY = currentPos.y - service.selectionStartPoint.y;
-        service.magnetismAnchorPoint = 9;
+        Movable.magnetismAnchorPoint = 9;
         service.degres = 0;
         Movable.magnetismActivated = true;
-        service.shouldAlign = true;
+        Movable.shouldAlign = true;
 
         service.moveSelection(currentPos);
         service.updateResizingHandles();
@@ -1853,7 +1853,7 @@ describe('SelectionService', () => {
         let currentPos = { x: 20, y: 42 };
         service.offsetX = currentPos.x - service.selectionStartPoint.x;
         service.offsetY = currentPos.y - service.selectionStartPoint.y;
-        service.magnetismAnchorPoint = 9;
+        Movable.magnetismAnchorPoint = 9;
         service.currenthandle=1;
         service.degres = 0;
         service.rectangleService.toSquare=true;
@@ -1875,7 +1875,7 @@ describe('SelectionService', () => {
         let currentPos = { x: 20, y: 42 };
         service.offsetX = currentPos.x - service.selectionStartPoint.x;
         service.offsetY = currentPos.y - service.selectionStartPoint.y;
-        service.magnetismAnchorPoint = 9;
+        Movable.magnetismAnchorPoint = 9;
         service.degres = 0;
         service.currenthandle=3;
         service.flipedV=true;
@@ -1896,7 +1896,7 @@ describe('SelectionService', () => {
         let currentPos = { x: 20, y: 42 };
         service.offsetX = currentPos.x - service.selectionStartPoint.x;
         service.offsetY = currentPos.y - service.selectionStartPoint.y;
-        service.magnetismAnchorPoint = 9;
+        Movable.magnetismAnchorPoint = 9;
         service.degres = 0;
         service.currenthandle=5;
         service.flipedV=true;

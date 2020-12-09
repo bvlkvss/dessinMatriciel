@@ -226,25 +226,34 @@ export class DrawingComponent implements AfterViewInit, OnInit, DoCheck, OnDestr
         this.tools.currentTool.onKeyUp(event);
     }
 
-    // tslint:disable-next-line:cyclomatic-complexity
     @HostListener('window:keydown', ['$event'])
     onkeyDownWindow(event: KeyboardEvent): void {
         const element = event.target as HTMLElement;
-        if (element.className === 'textInput') return;
-        if (event.ctrlKey && event.key === 'o') {
-            event.preventDefault();
-            event.stopPropagation();
-            this.drawingService.newDrawing();
-            this.drawingService.resizeCanvas();
-        } else if ((event.ctrlKey && (event.key === 'x' || event.key === 'c' || event.key === 'v')) || event.key === 'Delete') {
-            if (this.tools.currentTool instanceof MagicWandService || this.tools.currentTool instanceof SelectionService) {
-                this.clipboard.onKeyDown(event, this.tools.currentTool);
+        if (element.className === 'textInput' || this.dialog.openDialogs.length) return;
+
+        if (event.ctrlKey) {
+            switch (event.key) {
+                case 'o':
+                    event.preventDefault();
+                    event.stopPropagation();
+                    this.drawingService.newDrawing();
+                    this.drawingService.resizeCanvas();
+                    break;
+                case 'a':
+                    event.preventDefault();
+                    event.stopPropagation();
+                    this.tools.setTools(this.keyBindings.get('r') as string);
+                    this.tools.currentTool.onKeyDown(event);
+                    break;
+
+                default:
+                    if (event.key === 'z' || event.key === 'Z') {
+                        this.invoker.onKeyDown(event);
+                    } else if (this.tools.currentTool instanceof MagicWandService || this.tools.currentTool instanceof SelectionService) {
+                        this.clipboard.onKeyDown(event, this.tools.currentTool);
+                    }
+                    break;
             }
-        } else if (event.ctrlKey || (event.ctrlKey && event.shiftKey && (event.key === 'z' || event.key === 'Z'))) {
-            this.invoker.onKeyDown(event);
-        } else if (event.ctrlKey && event.key === 'a') {
-            this.tools.setTools(this.keyBindings.get('r') as string);
-            this.tools.currentTool.onKeyDown(event);
         }
         this.onKeyDown(event);
     }

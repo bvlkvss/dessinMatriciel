@@ -19,7 +19,7 @@ import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { AppRoutingModule } from './app-routing.module';
 import { AddTagsComponent } from './components/add-tags/add-tags.component';
 import { AppComponent } from './components/app/app.component';
-import { AttributeBarComponent } from './components/attribute-bar/attributebar.component';
+import { AttributeBarComponent } from './components/attribute-bar/attribute-bar.component';
 import { CarrouselComponent } from './components/carrousel/carrousel.component';
 import { DrawingCardComponent } from './components/drawing-card/drawing-card.component';
 import { DrawingComponent } from './components/drawing/drawing.component';
