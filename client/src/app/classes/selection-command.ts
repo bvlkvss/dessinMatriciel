@@ -14,10 +14,11 @@ export class SelectionCommand extends Command {
     private selectionData: HTMLCanvasElement;
     private degres: number;
 
-    isResize: boolean = false;
+    isResize: boolean;
 
     constructor(startPosErase: Vec2, protected tool: Movable, protected drawingService: DrawingService) {
         super();
+        this.isResize = false;
         this.startPosErase = startPosErase;
     }
     setDegres(degres: number): void {

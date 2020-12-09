@@ -33,7 +33,6 @@ describe('SavingComponent', () => {
 
         matDialogRefSpy = jasmine.createSpyObj({ afterClosed: of({ subscribe: jasmine.createSpy }), close: null });
         savingerviceStub = new MockSavingService(httpMock, drawServiceMock);
-
         TestBed.configureTestingModule({
             declarations: [SavingComponent, MatDialogContent, AddTagsComponent, MatSpinner],
             imports: [HttpClientModule, HttpClientTestingModule, BrowserAnimationsModule, MatChipsModule, MatFormFieldModule],

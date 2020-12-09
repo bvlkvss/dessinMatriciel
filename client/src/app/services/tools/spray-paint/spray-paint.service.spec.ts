@@ -1,7 +1,7 @@
 /* tslint:disable */
 import { TestBed } from '@angular/core/testing';
 import { Vec2 } from '@app/classes/vec2';
-import { MockUndoRedoService } from '@app/components/attributebar/attributebar.component.spec';
+import { MockUndoRedoService } from '@app/components/attribute-bar/attributebar.component.spec';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { SprayPaintService } from './spray-paint.service';

@@ -1,7 +1,8 @@
-import { HttpClient } from '@angular/common/http';
-import { AfterViewChecked, Component, ElementRef, HostListener, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { AfterViewChecked, Component, ElementRef, HostListener, QueryList, ViewChildren } from '@angular/core';
+import { Const } from '@app/classes/constants';
 import { DrawingCardComponent } from '@app/components/drawing-card/drawing-card.component';
 import { FilterByTagService } from '@app/services/filterByTag/filter-by-tag.service';
+import { HttpClientRequestService } from '@app/services/http-client-request/http-client-request.service';
 import { Observable } from 'rxjs';
 
 export interface Drawings {
@@ -10,28 +11,33 @@ export interface Drawings {
     tag: string[];
     _id?: string;
 }
-const DRAWINGS_TO_SHOW_LIMIT = 3;
 @Component({
     selector: 'app-carrousel',
     templateUrl: './carrousel.component.html',
     styleUrls: ['./carrousel.component.scss'],
 })
-export class CarrouselComponent implements OnInit, AfterViewChecked {
+export class CarrouselComponent implements AfterViewChecked {
     allDrawings: Drawings[];
     drawingsToShow: Drawings[];
-    middlePosition: number;
-    previousCount: number = 0;
-    errorMessageVisible: boolean = false;
-    spinnerVisible: boolean = false;
-    deleteErrorMessage: boolean = false;
-    emptyCarrouselMessage: boolean = false;
-    carouselVisible: boolean = true;
+    private middlePosition: number;
+    previousCount: number;
+    errorMessageVisible: boolean;
+    spinnerVisible: boolean;
+    deleteErrorMessage: boolean;
+    emptyCarrouselMessage: boolean;
+    carouselVisible: boolean;
     drawing: Drawings;
-    step: number;
+    private step: number;
     @ViewChildren('button') buttons: QueryList<ElementRef<HTMLButtonElement>>;
     @ViewChildren('card') cards: QueryList<DrawingCardComponent>;
 
-    constructor(private http: HttpClient, public filter: FilterByTagService) {
+    constructor(private httpService: HttpClientRequestService, public filter: FilterByTagService) {
+        this.previousCount = 0;
+        this.errorMessageVisible = false;
+        this.spinnerVisible = false;
+        this.deleteErrorMessage = false;
+        this.emptyCarrouselMessage = false;
+        this.carouselVisible = true;
         this.allDrawings = [];
         this.drawingsToShow = [];
         this.fillCarousel();
@@ -42,18 +48,16 @@ export class CarrouselComponent implements OnInit, AfterViewChecked {
         if (event.key === 'ArrowLeft' && this.drawingsToShow.length >= 2) this.previous();
         else if (event.key === 'ArrowRight' && this.drawingsToShow.length >= 2) this.next();
     }
-
-    fillCarousel(): void {
+    private fillCarousel(): void {
         this.getDrawings().subscribe(
             (drawings) => {
                 this.allDrawings = drawings;
                 this.spinnerVisible = false;
-                this.step = this.allDrawings.length >= DRAWINGS_TO_SHOW_LIMIT ? DRAWINGS_TO_SHOW_LIMIT : this.allDrawings.length;
+                this.step = this.allDrawings.length >= Const.DRAWINGS_TO_SHOW_LIMIT ? Const.DRAWINGS_TO_SHOW_LIMIT : this.allDrawings.length;
                 for (let i = 0; i < this.step; i++) {
                     if (this.allDrawings[i]) this.drawingsToShow.push(this.allDrawings[i]);
                 }
                 this.filter.drawings = this.allDrawings;
-                console.log(this.filter.drawings, 'on init');
                 this.filter.drawingsToShow = this.drawingsToShow;
                 this.middlePosition = this.drawingsToShow.length - this.step + 1;
             },
@@ -75,20 +79,18 @@ export class CarrouselComponent implements OnInit, AfterViewChecked {
                 element.nativeElement.style.visibility = 'visible';
             });
     }
-    /* tslint:disable:no-empty */
-    ngOnInit(): void {}
-    getDrawings(): Observable<Drawings[]> {
+    private getDrawings(): Observable<Drawings[]> {
         this.spinnerVisible = true;
         this.emptyCarrouselMessage = false;
-        return this.http.get<Drawings[]>('http://localhost:3000/api/drawings/localServer');
+        return this.httpService.getRequest();
     }
-    addDrawing(drawing: Drawings): void {
+    private addDrawing(drawing: Drawings): void {
         if (!this.drawingsToShow.find((element) => element === drawing)) this.drawingsToShow.push(drawing);
     }
-    deleteFromServer(drawingToDelete: number): Observable<object> {
+    private deleteFromServer(drawingToDelete: number): Observable<object> {
         this.spinnerVisible = true;
         this.carouselVisible = false;
-        return this.http.delete('http://localhost:3000/api/drawings/' + this.allDrawings[drawingToDelete]._id);
+        return this.httpService.deleteRequest(this.allDrawings[drawingToDelete]._id);
     }
     delete(drawing: Drawings): void {
         const drawingToHide: number = this.drawingsToShow.indexOf(drawing);
@@ -100,7 +102,7 @@ export class CarrouselComponent implements OnInit, AfterViewChecked {
                 this.deleteErrorMessage = false;
                 this.allDrawings.splice(drawingToDelete, 1);
                 this.drawingsToShow.splice(drawingToHide, 1);
-                if (this.allDrawings.length >= DRAWINGS_TO_SHOW_LIMIT) {
+                if (this.allDrawings.length >= Const.DRAWINGS_TO_SHOW_LIMIT) {
                     if (this.allDrawings[this.middlePosition + 1]) this.addDrawing(this.allDrawings[this.middlePosition + 1]);
                     else this.addDrawing(this.allDrawings[1]);
                 }
@@ -113,29 +115,28 @@ export class CarrouselComponent implements OnInit, AfterViewChecked {
         );
     }
     previous(): void {
-        if (this.allDrawings.length < DRAWINGS_TO_SHOW_LIMIT) {
+        if (this.allDrawings.length < Const.DRAWINGS_TO_SHOW_LIMIT) {
             this.swapDrawings();
-        } else {
-            this.middlePosition = (this.middlePosition - 1 + this.allDrawings.length) % this.allDrawings.length;
-            this.drawingsToShow.pop();
-            if (this.allDrawings[this.middlePosition - 1]) this.drawingsToShow.unshift(this.allDrawings[this.middlePosition - 1]);
-            else this.drawingsToShow.unshift(this.allDrawings[this.allDrawings.length - 1]);
+            return;
         }
+        this.middlePosition = (this.middlePosition - 1 + this.allDrawings.length) % this.allDrawings.length;
+        this.drawingsToShow.pop();
+        if (this.allDrawings[this.middlePosition - 1]) this.drawingsToShow.unshift(this.allDrawings[this.middlePosition - 1]);
+        else this.drawingsToShow.unshift(this.allDrawings[this.allDrawings.length - 1]);
     }
     swapDrawings(): void {
         const tmp = this.drawingsToShow[0];
-        const tmp1 = this.drawingsToShow[1];
-        this.drawingsToShow[0] = tmp1;
-        this.drawingsToShow[1] = tmp;
+        this.drawingsToShow[0] = { ...this.drawingsToShow[1] };
+        this.drawingsToShow[1] = { ...tmp };
     }
     next(): void {
-        if (this.allDrawings.length < DRAWINGS_TO_SHOW_LIMIT) {
+        if (this.allDrawings.length < Const.DRAWINGS_TO_SHOW_LIMIT) {
             this.swapDrawings();
-        } else {
-            this.middlePosition = (this.middlePosition + 1) % this.allDrawings.length;
-            this.drawingsToShow.splice(0, 1);
-            if (this.allDrawings[this.middlePosition + 1]) this.addDrawing(this.allDrawings[this.middlePosition + 1]);
-            else this.addDrawing(this.allDrawings[0]);
+            return;
         }
+        this.middlePosition = (this.middlePosition + 1) % this.allDrawings.length;
+        this.drawingsToShow.splice(0, 1);
+        if (this.allDrawings[this.middlePosition + 1]) this.addDrawing(this.allDrawings[this.middlePosition + 1]);
+        else this.addDrawing(this.allDrawings[0]);
     }
 }

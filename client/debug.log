@@ -101,6 +101,8 @@
 [1124/193808.316:ERROR:directory_reader_win.cc(43)] FindFirstFile: Le chemin d’accès spécifié est introuvable. (0x3)
 [1124/200537.042:ERROR:directory_reader_win.cc(43)] FindFirstFile: Le chemin d’accès spécifié est introuvable. (0x3)
 [1124/205414.947:ERROR:directory_reader_win.cc(43)] FindFirstFile: Le chemin d’accès spécifié est introuvable. (0x3)
+<<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 [1106/022440.569:ERROR:directory_reader_win.cc(43)] FindFirstFile: Le chemin d’accès spécifié est introuvable. (0x3)
@@ -115,3 +117,41 @@
 [1129/030704.764:ERROR:directory_reader_win.cc(43)] FindFirstFile: Le chemin d’accès spécifié est introuvable. (0x3)
 [1129/052413.336:ERROR:directory_reader_win.cc(43)] FindFirstFile: Le chemin d’accès spécifié est introuvable. (0x3)
 >>>>>>> 4fde299... first implimentation
+=======
+=======
+>>>>>>> a86c7a2b93dbccca1f8131c035652b9bcff78619
+[1124/234729.589:ERROR:directory_reader_win.cc(43)] FindFirstFile: Le chemin d’accès spécifié est introuvable. (0x3)
+[1125/114238.795:ERROR:directory_reader_win.cc(43)] FindFirstFile: Le chemin d’accès spécifié est introuvable. (0x3)
+[1126/170158.740:ERROR:directory_reader_win.cc(43)] FindFirstFile: Le chemin d’accès spécifié est introuvable. (0x3)
+[1126/230502.572:ERROR:directory_reader_win.cc(43)] FindFirstFile: Le chemin d’accès spécifié est introuvable. (0x3)
+[1126/233934.047:ERROR:directory_reader_win.cc(43)] FindFirstFile: Le chemin d’accès spécifié est introuvable. (0x3)
+[1126/235435.388:ERROR:directory_reader_win.cc(43)] FindFirstFile: Le chemin d’accès spécifié est introuvable. (0x3)
+[1127/144841.859:ERROR:directory_reader_win.cc(43)] FindFirstFile: Le chemin d’accès spécifié est introuvable. (0x3)
+[1127/152255.961:ERROR:directory_reader_win.cc(43)] FindFirstFile: Le chemin d’accès spécifié est introuvable. (0x3)
+[1127/234141.293:ERROR:process_info.cc(359)] UncheckedAllocate
+[1127/234141.301:ERROR:process_info.cc(359)] UncheckedAllocate
+[1127/234141.346:ERROR:filesystem_win.cc(129)] GetFileAttributes C:\Users\nassi\AppData\Local\Google\Chrome\User Data\Crashpad\attachments\87c24e08-89aa-4cfb-af73-25272da381b8: Le chemin d’accès spécifié est introuvable. (0x3)
+[1127/234141.540:ERROR:http_transport_win.cc(276)] WinHttpSendRequest: L’opération a réussi. (0x0)
+[1129/193603.527:ERROR:directory_reader_win.cc(43)] FindFirstFile: Le chemin d’accès spécifié est introuvable. (0x3)
+[1201/220518.323:ERROR:directory_reader_win.cc(43)] FindFirstFile: Le chemin d’accès spécifié est introuvable. (0x3)
+[1201/222601.023:ERROR:directory_reader_win.cc(43)] FindFirstFile: Le chemin d’accès spécifié est introuvable. (0x3)
+[1201/225313.282:ERROR:directory_reader_win.cc(43)] FindFirstFile: Le chemin d’accès spécifié est introuvable. (0x3)
+[1201/233049.601:ERROR:directory_reader_win.cc(43)] FindFirstFile: Le chemin d’accès spécifié est introuvable. (0x3)
+[1202/120644.870:ERROR:directory_reader_win.cc(43)] FindFirstFile: Le chemin d’accès spécifié est introuvable. (0x3)
+<<<<<<< HEAD
+>>>>>>> stamp service done
+=======
+>>>>>>> a86c7a2b93dbccca1f8131c035652b9bcff78619
+[1202/152132.687:ERROR:directory_reader_win.cc(43)] FindFirstFile: Le chemin d’accès spécifié est introuvable. (0x3)
+[1202/154203.394:ERROR:directory_reader_win.cc(43)] FindFirstFile: Le chemin d’accès spécifié est introuvable. (0x3)
+[1202/182607.715:ERROR:directory_reader_win.cc(43)] FindFirstFile: Le chemin d’accès spécifié est introuvable. (0x3)
+[1202/184105.964:ERROR:directory_reader_win.cc(43)] FindFirstFile: Le chemin d’accès spécifié est introuvable. (0x3)
+[1203/225759.374:ERROR:directory_reader_win.cc(43)] FindFirstFile: Le chemin d’accès spécifié est introuvable. (0x3)
+<<<<<<< HEAD
+[1205/225148.331:ERROR:directory_reader_win.cc(43)] FindFirstFile: Le chemin d’accès spécifié est introuvable. (0x3)
+=======
+[1206/021235.479:ERROR:directory_reader_win.cc(43)] FindFirstFile: Le chemin d’accès spécifié est introuvable. (0x3)
+>>>>>>> b8faeb1... tests and linting done
+[1207/205731.946:ERROR:directory_reader_win.cc(43)] FindFirstFile: Le chemin d’accès spécifié est introuvable. (0x3)
+[1207/214217.942:ERROR:directory_reader_win.cc(43)] FindFirstFile: Le chemin d’accès spécifié est introuvable. (0x3)
+[1208/035809.278:ERROR:directory_reader_win.cc(43)] FindFirstFile: Le chemin d’accès spécifié est introuvable. (0x3)

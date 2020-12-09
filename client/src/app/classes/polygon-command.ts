@@ -11,10 +11,11 @@ export class PolygonCommand extends Command {
     private secondaryColor: string;
     private opacity: number;
     private numberside: number;
-    isResize: boolean = false;
+    isResize: boolean;
 
     constructor(startPos: Vec2, endPos: Vec2, style: number, protected tool: PolygonService, protected drawingService: DrawingService) {
         super();
+        this.isResize = false;
         this.startPos = startPos;
         this.endPos = endPos;
         this.style = style;
@@ -29,6 +30,6 @@ export class PolygonCommand extends Command {
         this.tool.primaryColor = this.primaryColor;
         this.tool.secondaryColor = this.secondaryColor;
         this.tool.opacity = this.opacity;
-        this.tool.drawPolygon(this.drawingService.baseCtx, this.startPos, this.endPos, false);
+        this.tool.drawPolygon(this.drawingService.baseCtx, this.startPos, this.endPos);
     }
 }

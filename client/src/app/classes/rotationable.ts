@@ -1,4 +1,5 @@
 import { Vec2 } from '@app/classes/vec2';
+import { StampService } from '@app/services/tools/stamp/stamp.service';
 import { Movable } from './movable';
 const DEFAULT_DEGREE_STEP = 15;
 export const PI_DEGREE = 180;
@@ -38,11 +39,13 @@ export class Rotationable {
         } as Vec2;
     }
 
-    updateDegree(this: Movable, event: WheelEvent): void {
+    updateDegree(this: Movable | StampService, event: WheelEvent): void {
         if (event.deltaY < 0) {
             this.degres += event.altKey ? 1 : DEFAULT_DEGREE_STEP;
         } else if (event.deltaY > 0) {
             this.degres -= event.altKey ? 1 : DEFAULT_DEGREE_STEP;
         }
+
+        this.shouldAlign = true;
     }
 }

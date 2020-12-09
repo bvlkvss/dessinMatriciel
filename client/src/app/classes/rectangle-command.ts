@@ -15,6 +15,7 @@ export class RectangleCommand extends Command {
 
     constructor(startPos: Vec2, endPos: Vec2, style: number, protected tool: RectangleService, protected drawingService: DrawingService) {
         super();
+        this.isResize = false;
         this.startPos = startPos;
         this.endPos = endPos;
         this.style = style;

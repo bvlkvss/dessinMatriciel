@@ -1,0 +1,58 @@
+#container {
+    width: 380px;
+    position: relative;
+    top: 2%;
+    height: 250px;
+    overflow-y: auto;
+    border-radius: 3%;
+    background-color: #302e40;
+    padding: 5px;
+    padding-top: 0;
+}
+img {
+    width: 15%;
+    height: 10%;
+    margin-left: 5px;
+    margin-top: 5px;
+    transition: opacity 0.4s;
+    &:hover {
+        opacity: 0.5;
+    }
+    &:active {
+        opacity: 1;
+    }
+}
+h3 {
+    position: relative;
+    color: white;
+    font-size: 22px;
+    left: 2%;
+    font-family: monospace;
+}
+#container::-webkit-scrollbar {
+    border-radius: 3%;
+    width: 0.5em;
+}
+
+#container::-webkit-scrollbar-track {
+    border-radius: 3%;
+    -webkit-box-shadow: inset 0 0 6px rgba(255, 255, 255, 0.3);
+}
+
+#container::-webkit-scrollbar-thumb {
+    border-radius: 3%;
+    background-color: rgba(255, 255, 255, 0.7);
+    outline: 1px solid slategrey;
+}
+.imageContainer {
+    position: relative;
+    height: auto;
+    width: 95%;
+    bottom: 6%;
+    margin: 5px;
+    margin-bottom: 35px;
+    padding: 0;
+}
+.imageContainer:hover {
+    cursor: pointer;
+}

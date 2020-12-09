@@ -16,23 +16,23 @@ export class SavingComponent {
     @ViewChild(AddTagsComponent) child: AddTagsComponent;
     @ViewChild('div') div: ElementRef;
 
-    nameIsValid: boolean = false;
-
-    nameIsInvalid: boolean = false;
-
-    errorMessageVisible: boolean = false;
-
-    spinnerVisible: boolean = false;
-
-    isSaving: boolean = false;
-
-    isNotSaving: boolean = true;
-
+    nameIsValid: boolean;
+    nameIsInvalid: boolean;
+    errorMessageVisible: boolean;
+    spinnerVisible: boolean;
+    isSaving: boolean;
+    isNotSaving: boolean;
     drawingName: string;
-
     tagArr: string[] = [];
 
     constructor(protected drawingService: DrawingService, private dialogRef: MatDialogRef<SavingComponent>, private savingService: SavingService) {
+        this.nameIsValid = false;
+        this.nameIsInvalid = false;
+        this.errorMessageVisible = false;
+        this.spinnerVisible = false;
+        this.isSaving = false;
+        this.isNotSaving = true;
+        this.tagArr = [];
         this.image = this.savingService.createBaseImage();
     }
 
@@ -42,7 +42,6 @@ export class SavingComponent {
 
     validateName(name: string): void {
         if (name === '') {
-            // alert('Nom dessin maquant');
             this.nameIsInvalid = true;
         } else {
             this.drawingName = name;
@@ -63,18 +62,17 @@ export class SavingComponent {
 
     add(name: string): void {
         this.validateName(name);
-
         if (this.nameIsValid) {
             this.getTags();
             this.savingService.addDrawing(this.image, { name: this.drawingName, tag: this.tagArr }).subscribe(
                 /*tslint:disable-next-line:no-empty*/
-                (data) => {
+                () => {
                     this.spinnerVisible = true;
                     this.isSaving = true;
                     this.isNotSaving = false;
                     this.confirmationMessage();
                 },
-                (error) => {
+                () => {
                     this.errorMessageVisible = true;
                 },
             );

@@ -1,17 +1,19 @@
-import { Component, HostListener, Input, OnChanges } from '@angular/core';
+import { Component, ElementRef, HostListener, Input, OnChanges, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { Const } from '@app/classes/constants';
 import { CarrouselComponent } from '@app/components/carrousel/carrousel.component';
 import { ExportComponent } from '@app/components/export/export.component';
 import { SavingComponent } from '@app/components/saving/saving.component';
 import { UserGuideComponent } from '@app/components/user-guide/user-guide.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { SelectionClipboardService } from '@app/services/selection-clipboard/selection-clipboard.service';
+import { ToolsManagerService } from '@app/services/tools-manager/tools-manager.service';
 import { GridService } from '@app/services/tools/grid/grid.service';
+import { MagicWandService } from '@app/services/tools/magic-wand/magic-wand.service';
 import { SelectionService } from '@app/services/tools/selection/selection.service';
 import { TextService } from '@app/services/tools/text/text.service';
-import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
-
-const COLOR_STRING_LENGTH = 7;
+import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'app-sidebar',
@@ -19,18 +21,34 @@ const COLOR_STRING_LENGTH = 7;
     styleUrls: ['./sidebar.component.scss'],
 })
 export class SidebarComponent implements OnChanges {
+    subscription: Subscription;
+    currentToolName: string;
+    @Input() primaryColor: string = this.tools.currentTool.primaryColor.slice(0, Const.COLOR_STRING_LENGTH);
+    @Input() secondaryColor: string = this.tools.currentTool.secondaryColor.slice(0, Const.COLOR_STRING_LENGTH);
+    isRevertClicked: boolean;
+    attributeBarIsActive: boolean;
+
     constructor(
         private tools: ToolsManagerService,
         protected drawingService: DrawingService,
         protected invoker: UndoRedoService,
         private dialog: MatDialog,
-    ) {}
-    @Input() primaryColor: string = this.tools.currentTool.primaryColor.slice(0, COLOR_STRING_LENGTH);
-    @Input() secondaryColor: string = this.tools.currentTool.secondaryColor.slice(0, COLOR_STRING_LENGTH);
-    isRevertClicked: boolean = false;
-    attributeBarIsActive: boolean = false;
+        private clipboard: SelectionClipboardService,
+    ) {
+        this.isRevertClicked = false;
+        this.attributeBarIsActive = false;
+    }
 
+    @ViewChild('icons', { static: false }) toolIcons: ElementRef<HTMLCanvasElement>;
     ngOnChanges(): void {
+        this.subscription = this.drawingService.getMessage().subscribe((message: string) => {
+            const numberOfTools = this.toolIcons.nativeElement.getElementsByTagName('a').length;
+            for (let i = 0; i < numberOfTools; i++) {
+                this.toolIcons.nativeElement.getElementsByTagName('a')[i].classList.remove('active');
+            }
+            this.toolIcons.nativeElement.querySelector('#' + message)?.setAttribute('class', 'active');
+        });
+
         if (!this.isRevertClicked) {
             const primColorDiv = document.querySelector('.color-box1') as HTMLElement;
             const secondColorDiv = document.querySelector('.color-box2') as HTMLElement;
@@ -39,6 +57,7 @@ export class SidebarComponent implements OnChanges {
         }
         this.isRevertClicked = false;
     }
+
     undo(): void {
         this.invoker.undoLast();
     }
@@ -47,19 +66,67 @@ export class SidebarComponent implements OnChanges {
         this.invoker.redoPrev();
     }
 
+    undoRedoAllowed(): boolean {
+        return this.invoker.getIsAllowed();
+    }
+
+    clipboardBarAllowed(): boolean {
+        return (
+            this.tools.getTools().get('selection') === this.tools.currentTool || this.tools.getTools().get('magic-wand') === this.tools.currentTool
+        );
+    }
+
+    onCopy(): void {
+        const event = {
+            key: 'c',
+        } as KeyboardEvent;
+        if (this.tools.getTools().get('selection') === this.tools.currentTool || this.tools.getTools().get('magic-wand') === this.tools.currentTool) {
+            this.clipboard.onKeyDown(event, this.tools.currentTool as SelectionService | MagicWandService);
+        }
+    }
+
+    onPaste(): void {
+        const event = {
+            key: 'v',
+        } as KeyboardEvent;
+        if (this.tools.getTools().get('selection') === this.tools.currentTool || this.tools.getTools().get('magic-wand') === this.tools.currentTool) {
+            this.clipboard.onKeyDown(event, this.tools.currentTool as SelectionService | MagicWandService);
+        }
+    }
+
+    onDelete(): void {
+        const event = {
+            key: 'Delete',
+        } as KeyboardEvent;
+        if (this.tools.getTools().get('selection') === this.tools.currentTool || this.tools.getTools().get('magic-wand') === this.tools.currentTool) {
+            this.clipboard.onKeyDown(event, this.tools.currentTool as SelectionService | MagicWandService);
+        }
+    }
+    onCut(): void {
+        const event = {
+            key: 'x',
+        } as KeyboardEvent;
+        if (this.tools.getTools().get('selection') === this.tools.currentTool || this.tools.getTools().get('magic-wand') === this.tools.currentTool) {
+            this.clipboard.onKeyDown(event, this.tools.currentTool as SelectionService | MagicWandService);
+        }
+    }
+
     openExportDialog(): void {
         if (this.dialog.openDialogs.length === 0) {
             this.dialog.open(ExportComponent);
             ExportComponent.isExportOpen = true;
         }
     }
+
     openCarousel(): void {
-        this.dialog.open(CarrouselComponent, {
-            maxWidth: 'none',
-            height: '460px',
-            width: 'auto',
-            minWidth: '615px',
-        });
+        if (this.dialog.openDialogs.length === 0) {
+            this.dialog.open(CarrouselComponent, {
+                maxWidth: 'none',
+                height: '460px',
+                width: 'auto',
+                minWidth: '615px',
+            });
+        }
     }
 
     openSavingDialog(): void {
@@ -74,12 +141,10 @@ export class SidebarComponent implements OnChanges {
             this.attributeBarIsActive = true;
             this.togglecanvas('drawing-container-open');
             this.toggleAttributeBar('attribute-open');
-        } else {
-            if (this.tools.getTools().get(toolName) === this.tools.currentTool) {
-                this.attributeBarIsActive = false;
-                this.togglecanvas('drawing-container');
-                this.toggleAttributeBar('attribute-close');
-            }
+        } else if (this.tools.getTools().get(toolName) === this.tools.currentTool) {
+            this.attributeBarIsActive = false;
+            this.togglecanvas('drawing-container');
+            this.toggleAttributeBar('attribute-close');
         }
     }
 
@@ -118,13 +183,11 @@ export class SidebarComponent implements OnChanges {
         if (this.tools.currentTool instanceof GridService) {
             this.tools.currentTool.onKeyDown({ key: 'g' } as KeyboardEvent);
         }
-        const numberOfTools = document.getElementsByTagName('a').length;
-
+        const numberOfTools = this.toolIcons.nativeElement.getElementsByTagName('a').length;
         for (let i = 0; i < numberOfTools; i++) {
-            document.getElementsByTagName('a')[i].classList.remove('active');
+            this.toolIcons.nativeElement.getElementsByTagName('a')[i].classList.remove('active');
         }
-
-        document.getElementById(name)?.setAttribute('class', 'active');
+        this.toolIcons.nativeElement.querySelector('#' + name)?.setAttribute('class', 'active');
     }
 
     revertColors(): void {
@@ -144,7 +207,9 @@ export class SidebarComponent implements OnChanges {
     }
 
     newDrawing(): void {
-        this.drawingService.newDrawing();
+        if (this.invoker.undoStack.length !== 0) {
+            this.drawingService.newDrawing();
+        }
     }
 
     selectAll(): void {
@@ -157,7 +222,6 @@ export class SidebarComponent implements OnChanges {
             location.replace('main-page.component.html');
         }
     }
-
     @HostListener('window:keydown', ['$event'])
     onkeyDownWindow(event: KeyboardEvent): void {
         if (event.ctrlKey && event.key === 'e') {
@@ -170,5 +234,9 @@ export class SidebarComponent implements OnChanges {
             event.preventDefault();
             this.openCarousel();
         }
+    }
+
+    getInvoker(): UndoRedoService {
+        return this.invoker;
     }
 }

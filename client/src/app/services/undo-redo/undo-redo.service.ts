@@ -6,11 +6,14 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
     providedIn: 'root',
 })
 export class UndoRedoService {
-    private undoStack: Command[] = [];
-    private redoStack: Command[] = [];
+    undoStack: Command[];
+    redoStack: Command[];
     private isAllowed: boolean;
 
-    constructor(protected drawingService: DrawingService) { }
+    constructor(protected drawingService: DrawingService) {
+        this.undoStack = [];
+        this.redoStack = [];
+    }
     onKeyDown(event: KeyboardEvent): void {
         if (this.isAllowed) {
             if (event.ctrlKey && event.shiftKey && (event.key === 'z' || event.key === 'Z')) {
@@ -21,7 +24,6 @@ export class UndoRedoService {
         }
     }
     addToUndo(cmd: Command): void {
-        console.log('added to undo');
         if (cmd) {
             this.undoStack.push(cmd);
         }
@@ -58,7 +60,6 @@ export class UndoRedoService {
                 this.executeAll();
             }
         }
-        console.log(this);
     }
     redoPrev(): void {
         if (this.isAllowed) {
@@ -70,7 +71,6 @@ export class UndoRedoService {
                 this.executeAll();
             }
         }
-        console.log(this);
     }
 
     ClearRedo(): void {
@@ -81,7 +81,6 @@ export class UndoRedoService {
     }
 
     executeAll(): void {
-        console.log(this);
         for (const cmd of this.undoStack) {
             cmd.execute();
         }

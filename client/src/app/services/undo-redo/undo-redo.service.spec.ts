@@ -322,7 +322,7 @@ describe('UndoRedoService', () => {
   it('undoLAst should call unexecute of resizeCommand', () => {
     service.setIsAllowed(true);
     service.addToUndo(ResizeCommandStub);
-    let execute = spyOn(ResizeCommandStub, 'unexecute').and.callThrough();
+    let execute = spyOn(ResizeCommandStub, 'unexecute').and.callThrough().and.callFake(() => { });
     service.undoLast();
     expect(execute).toHaveBeenCalled();
   });
@@ -397,7 +397,7 @@ describe('UndoRedoService', () => {
 
   it('shoud call unexecute if isREsize', () => {
     service.setIsAllowed(true);
-    let execute = spyOn(ResizeCommandStub, 'unexecute').and.callThrough();
+    let execute = spyOn(ResizeCommandStub, 'unexecute').and.callThrough().and.callFake(() => { });
     service.addToUndo(ResizeCommandStub);
     service.undoLast();
     expect(execute).toHaveBeenCalled();
@@ -527,12 +527,22 @@ describe('UndoRedoService', () => {
   });
 
   it('execute of resize should call saveCanvas and drawCanvas', () => {
+    (ResizeCommandStub as any).drawingService.gridCanvas = document.createElement('canvas');
     (ResizeCommandStub as any).tool.saveCanvas = jasmine.createSpy().and.callThrough().and.callFake(() => { });
     (ResizeCommandStub as any).tool.drawCanvas = jasmine.createSpy().and.callThrough().and.callFake(() => { });
     ResizeCommandStub.execute();
     expect((ResizeCommandStub as any).tool.saveCanvas).toHaveBeenCalled();
     expect((ResizeCommandStub as any).tool.drawCanvas).toHaveBeenCalled();
   });
+
+  it('unexecute of resize should call drawCanvas', () => {
+    (ResizeCommandStub as any).drawingService.gridCanvas = document.createElement('canvas');
+    (ResizeCommandStub as any).tool.saveCanvas = jasmine.createSpy().and.callThrough().and.callFake(() => { });
+    (ResizeCommandStub as any).tool.drawCanvas = jasmine.createSpy().and.callThrough().and.callFake(() => { });
+    ResizeCommandStub.unexecute();
+    expect((ResizeCommandStub as any).tool.drawCanvas).toHaveBeenCalled();
+  });
+
 
   it('execute of polygoncommand should call drawpolygon ', () => {
     (PolygonCommandStub as any).tool.drawPolygon = jasmine.createSpy().and.callThrough().and.callFake(() => { });

@@ -1,17 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Movable } from '@app/classes/movable';
 import { DEFAULT_HANDLE_INDEX } from '@app/classes/resizable';
+import { MouseButton } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { RectangleService, RectangleStyle } from '@app/services/tools/rectangle/rectangle.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
-export enum MouseButton {
-    Left = 0,
-    Middle = 1,
-    Right = 2,
-    Back = 3,
-    Forward = 4,
-}
 
 @Injectable({
     providedIn: 'root',
@@ -132,9 +126,10 @@ export class SelectionService extends Movable {
             if (!this.selectionActivated) {
                 this.saveSelection();
 
-                if (this.selectionStyle !== 1) {
+                if (this.selectionStyle === 1) {
+                    // this.clipImageWithEllipse(); CA SERT A RIEN POURQUOI TU DESSINE SUR LE BASE ?
+                } else {
                     this.drawingService.previewCtx.drawImage(this.selectionData, this.selectionStartPoint.x, this.selectionStartPoint.y);
-                    // this.clipImageWithEllipse();
                 }
                 this.rectangleService.drawRectangle(
                     this.drawingService.previewCtx,
@@ -165,27 +160,16 @@ export class SelectionService extends Movable {
         this.currentPos = this.getPositionFromMouse(event);
         if (this.selectionActivated && this.mouseDown) {
             this.resizeSelection();
-            this.ellipseService.setStyle(0);
-            if (this.selectionStyle === 1) {
-                this.ellipseService.drawEllipse(
-                    this.drawingService.previewCtx,
-                    this.selectionStartPoint,
-                    this.currentPos,
-                    this.rectangleService.toSquare,
-                    false,
-                );
-            }
             return;
         }
 
         if (this.mouseDownInsideSelection) {
             this.moveSelection(this.currentPos);
-
-            this.redrawSelection();
             if (this.selectionStyle === 1) {
                 this.ellipseService.secondaryColor = 'black';
                 this.ellipseService.setStyle(0);
             }
+            this.redrawSelection();
         } else if (this.mouseDown) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.rectangleService.onMouseMove(event);
@@ -207,7 +191,7 @@ export class SelectionService extends Movable {
             this.resizeSelection();
         }
         if (this.selectionStyle === 1 && !event.shiftKey && this.mouseDown) {
-            this.ellipseService.drawEllipse(this.drawingService.previewCtx, this.mouseDownCoord, this.currentPos, this.rectangleService.toSquare);
+            this.redrawSelection(false, false);
         }
         this.keysDown[event.key] = event.type === 'keydown';
         this.mouseDownInsideSelection = false;
@@ -225,8 +209,8 @@ export class SelectionService extends Movable {
                 this.rectangleService.toSquare = true;
                 this.resizeSelection();
             }
-            if (this.selectionStyle === 1 && event.shiftKey) {
-                this.ellipseService.drawEllipse(this.drawingService.previewCtx, this.mouseDownCoord, this.currentPos, this.rectangleService.toSquare);
+            if (this.selectionStyle === 1 && event.shiftKey && this.mouseDown) {
+                this.redrawSelection(false, true);
             }
 
             this.keysDown[event.key] = event.type === 'keydown';
@@ -256,6 +240,8 @@ export class SelectionService extends Movable {
         this.selectionActivated = false;
         this.toolAttributes = [];
         this.firstSelectionMove = true;
+        this.degres = 0;
+        this.shouldAlign = true;
     }
 
     selectAllCanvas(): void {

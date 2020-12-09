@@ -1,15 +1,18 @@
 /* tslint:disable */
 import { Target } from '@angular/compiler';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatDialog } from '@angular/material/dialog';
 import { Tool } from '@app/classes/tool';
 import { DrawingComponent } from '@app/components/drawing/drawing.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ResizingService } from '@app/services/resizing/resizing.service';
+import { ToolsManagerService } from '@app/services/tools-manager/tools-manager.service';
 import { BrushService } from '@app/services/tools/brush/brush.service';
 import { EllipseService } from '@app/services/tools/ellipse/ellipse.service';
 import { EraserService } from '@app/services/tools/eraser/eraser-service';
 import { GridService } from '@app/services/tools/grid/grid.service';
 import { LineService } from '@app/services/tools/line/line.service';
+//import { MagicWandSelection } from '@app/services/tools/magic-wand/magic-wand-selection';
 import { MagicWandService } from '@app/services/tools/magic-wand/magic-wand.service';
 import { PaintBucketService } from '@app/services/tools/paint-bucket/paint-bucket.service';
 import { PencilService } from '@app/services/tools/pencil/pencil-service';
@@ -19,19 +22,17 @@ import { PolygonService } from '@app/services/tools/polygon/polygon.service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle.service';
 import { SelectionService } from '@app/services/tools/selection/selection.service';
 import { SprayPaintService } from '@app/services/tools/spray-paint/spray-paint.service';
+import { StampService } from '@app/services/tools/stamp/stamp.service';
 import { TextService } from '@app/services/tools/text/text.service';
-import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
-import { MockUndoRedoService } from '../attributebar/attributebar.component.spec';
+import { MockUndoRedoService } from '../attribute-bar/attributebar.component.spec';
 
 export class MockDrawingService extends DrawingService {
     resizeCanvas(): void {
-        console.log('RESIZE CANVAS CALLED');
     }
 }
 
 class MockResizingService extends ResizingService {
     initResizing(event: MouseEvent) {
-        console.log('INIT RESIZING CALLED');
     }
 }
 
@@ -55,10 +56,12 @@ describe('DrawingComponent', () => {
     let resizingServiceMock: MockResizingService;
     let polygonStub: PolygonService;
     let textStub: TextService;
+    let matDialogSpy: jasmine.SpyObj<MatDialog>;
     let gridStub;
     let magicWandStub: MagicWandService;
 
 
+    let stampStub: StampService;
     beforeEach(async(() => {
         drawServiceMock = new MockDrawingService();
         undoRedoServiceMock = new MockUndoRedoService(drawServiceMock);
@@ -76,15 +79,18 @@ describe('DrawingComponent', () => {
         plumeStub = new PlumeService(drawServiceMock, undoRedoServiceMock);
         sprayPaintStub = new SprayPaintService(drawServiceMock, undoRedoServiceMock);
         gridStub = new GridService(drawServiceMock);
+        stampStub = new StampService(drawServiceMock);
 
-        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub, selectionStub, paintBucketStub, polygonStub, pipetteStub, textStub, sprayPaintStub, plumeStub, gridStub, magicWandStub);
+        toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub, selectionStub, paintBucketStub, polygonStub, pipetteStub, textStub, sprayPaintStub, plumeStub, gridStub, magicWandStub, stampStub);
         toolManagerStub.currentTool = toolManagerStub.getTools().get('pencil') as Tool;
+        matDialogSpy = jasmine.createSpyObj('MatDialog', ['open']);
         TestBed.configureTestingModule({
             declarations: [DrawingComponent],
             providers: [
                 { provide: DrawingService, useValue: drawServiceMock },
                 { provide: ToolsManagerService, useValue: toolManagerStub },
                 { provide: ResizingService, useValue: resizingServiceMock },
+                { provide: MatDialog, useValue: matDialogSpy },
             ],
         }).compileComponents();
     }));
@@ -147,6 +153,7 @@ describe('DrawingComponent', () => {
     });
 
     it(" should call the tool's key up when receiving a key up event", () => {
+        (matDialogSpy.openDialogs as any) = { length: 0 };
         const event = {} as KeyboardEvent;
         const KeyboardEventSpy = spyOn(toolManagerStub.currentTool, 'onKeyUp').and.callThrough();
         component.onKeyUp(event);
@@ -308,6 +315,15 @@ describe('DrawingComponent', () => {
         component.onMouseDown(event);
         expect(onMouseDownSpy).toHaveBeenCalled();
     });
+    it('should call tool.onRightClick when onRightClick is called ', () => {
+        const event = new MouseEvent('contextmenu');
+        let onRightClickSpy = spyOn<any>((component as any).tools.currentTool, 'onRightClick');
+        let eventSpy = spyOn<any>(event, 'preventDefault');
+        component.onRightClick(event);
+        expect(eventSpy).toHaveBeenCalled();
+        expect(onRightClickSpy).toHaveBeenCalledWith(event);
+
+    });
 
     it('should not call tool.onMouseEnter when onMouseEnter is called if resizing is true ', () => {
         let target_ = { className: 'resizer right' };
@@ -348,7 +364,16 @@ describe('DrawingComponent', () => {
         component.onClick(event);
         expect(onClickSpy).not.toHaveBeenCalled();
     });
-
+    it('should call set mouseFired to false is resizer is maximased ', () => {
+        let event = {} as MouseEvent;
+        component['resizer'] = resizingServiceMock;
+        component['resizer'].isMaximazed = true;
+        (component as any).mouseFired = true;
+        let onMouseUpSpy = spyOn<any>((component as any).tools.currentTool, 'onMouseUp');
+        component.onMouseUp(event);
+        expect(component['mouseFired']).toEqual(false);
+        expect(onMouseUpSpy).toHaveBeenCalled();
+    });
     it('should call tool.onMouseUp when onMouseUp is called ', () => {
         let event = {} as MouseEvent;
         event = jasmine.createSpyObj('event', ['preventDefault', 'stopPropagation']);
@@ -375,6 +400,7 @@ describe('DrawingComponent', () => {
     });
 
     it('should call tool.onKeyUp when onKeyUp', () => {
+        (matDialogSpy.openDialogs as any) = { length: 0 };
         let event = {} as KeyboardEvent;
         let onKeyUpSpy = spyOn<any>((component as any).tools.currentTool, 'onKeyUp');
         resizingServiceMock.resizing = true;
@@ -408,4 +434,71 @@ describe('DrawingComponent', () => {
         component.onKeyDown(event);
         expect(onKeyDownSpy).not.toHaveBeenCalled();
     });
+
+    it('updateDegree should call selection updatedegree and redrawslection', () => {
+        (component as any).tools.currentTool = (component as any).tools.getTools().get('selection');
+        (component as any).tools.currentTool.updateDegree = jasmine.createSpy().and.callThrough().and.callFake(() => { });
+        (component as any).tools.currentTool.redrawSelection = jasmine.createSpy().and.callThrough().and.callFake(() => { });
+        component.updateDegree({ deltaY: 1, } as WheelEvent);
+        expect((component as any).tools.currentTool.updateDegree).toHaveBeenCalled();
+    });
+
+
+
+    it('updateDegree should call selection updatedegree and redrawslection', () => {
+        (component as any).tools.currentTool = (component as any).tools.getTools().get('plume');
+        (component as any).tools.currentTool.adjustAngle = jasmine.createSpy().and.callThrough().and.callFake(() => { });
+        (component as any).tools.currentTool.redrawSelection = jasmine.createSpy().and.callThrough().and.callFake(() => { });
+        component.updateDegree({ deltaY: 1, } as WheelEvent);
+        expect((component as any).tools.currentTool.adjustAngle).toHaveBeenCalled();
+    });
+
+    it('updateDegree should call selection updatedegree and redrawslection', () => {
+        (component as any).tools.currentTool = (component as any).tools.getTools().get('stamp');
+        (component as any).tools.currentTool.updateDegree = jasmine.createSpy().and.callThrough().and.callFake(() => { });
+        (component as any).tools.currentTool.redrawSelection = jasmine.createSpy().and.callThrough().and.callFake(() => { });
+        component.updateDegree({ deltaY: 1, } as WheelEvent);
+        expect((component as any).tools.currentTool.updateDegree).toHaveBeenCalled();
+    });
+
+    it('should call onkeydown of clipboard', () => {
+        const element = { className: "dds" };
+        const event = { key: 'c', ctrlKey: true, target: element } as unknown as KeyboardEvent;
+        (component as any).tools.currentTool = (component as any).tools.getTools().get('selection');
+        (component as any).clipboard.onKeyDown = jasmine.createSpy().and.callThrough().and.callFake(() => { });
+        component.onkeyDownWindow(event);
+        expect((component as any).clipboard.onKeyDown).toHaveBeenCalled();
+
+    });
+
+    it('should not call onkeydown of clipboard', () => {
+        const element = { className: "dds" };
+        const event = { key: 'c', ctrlKey: true, target: element } as unknown as KeyboardEvent;
+        (component as any).tools.currentTool = (component as any).tools.getTools().get('stamp');
+        (component as any).clipboard.onKeyDown = jasmine.createSpy().and.callThrough().and.callFake(() => { });
+        component.onkeyDownWindow(event);
+        expect((component as any).clipboard.onKeyDown).not.toHaveBeenCalled();
+    });
+
+    it('should call onkeydown of invoker', () => {
+        const element = { className: "dds" };
+        const event = { key: 'z', ctrlKey: true, target: element } as unknown as KeyboardEvent;
+        (component as any).tools.currentTool = (component as any).tools.getTools().get('stamp');
+        (component as any).invoker.onKeyDown = jasmine.createSpy().and.callThrough().and.callFake(() => { });
+        component.onkeyDownWindow(event);
+        expect((component as any).invoker.onKeyDown).toHaveBeenCalled();
+    });
+
+
+    /*it('should call updateDegree of magicselectionObj', () => {
+        (component as any).tools.getTools().get = jasmine.createSpy().and.callFake(() => { return {} as MagicWandService });
+        (component as any).tools.currentTool = (component as any).tools.getTools().get('magic-wand');
+        (component as any).tools.currentTool.magicSelectionObj = {} as MagicWandSelection;
+        (component as any).tools.currentTool.magicSelectionObj.isActive = true;
+        (component as any).tools.currentTool.magicSelectionObj.updateDegree = jasmine.createSpy().and.callThrough().and.callFake(() => { });
+        component.updateDegree({ deltaY: 1, } as WheelEvent);
+        expect((component as any).tools.currentTool.magicSelectionObj.updateDegree).toHaveBeenCalled();
+    });*/
+
+
 });

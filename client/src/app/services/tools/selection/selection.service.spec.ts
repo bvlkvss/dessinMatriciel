@@ -1,10 +1,12 @@
 /* tslint:disable */
 import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
+import { Movable } from '@app/classes/movable';
 import { SelectionCommand } from '@app/classes/selection-command';
 import { MockDrawingService } from '@app/components/drawing/drawing.component.spec';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
+import { GridService } from '../grid/grid.service';
 //import { RectangleService } from '../rectangle/rectangle.service';
 import { SelectionService } from './selection.service';
 
@@ -19,8 +21,7 @@ describe('SelectionService', () => {
     let previewCtxStub: CanvasRenderingContext2D;
     let canvasStub: HTMLCanvasElement;
     let DrawingServiceMock: MockDrawingService;
-    //let drawRectangleSpy: jasmine.Spy<any>;
-
+    GridService.squareSize = 25;
     beforeEach(() => {
         DrawingServiceMock = new MockDrawingService();
         canvasStub = canvasTestHelper.canvas;
@@ -44,6 +45,7 @@ describe('SelectionService', () => {
         service['drawingService'].baseCtx.canvas.height = baseCtxStub.canvas.height;
         service['drawingService'].previewCtx.canvas.height = previewCtxStub.canvas.height;
         service.selectionData = document.createElement('canvas') as HTMLCanvasElement;
+        Movable.magnetismActivated = false;
 
         invokerStub = new UndoRedoService(DrawingServiceMock);
         selectionStub = new SelectionService(DrawingServiceMock, invokerStub);
@@ -131,7 +133,7 @@ describe('SelectionService', () => {
     });
 
     it('onmousemove should call eraseSelectionFromBase if its the first move', () => {
-        (service as any).drawingService.previewCtx.drawImage = jasmine.createSpy().and.callFake(function () {});
+        (service as any).drawingService.previewCtx.drawImage = jasmine.createSpy().and.callFake(function () { });
         let eraseSelectionFromBaseSpy = spyOn(service as any, 'eraseSelectionFromBase');
         service.width = 60;
         service.height = 50;
@@ -146,7 +148,7 @@ describe('SelectionService', () => {
     });
 
     it('moveSelection should not call eraseSelectionFromBase if its the first move', () => {
-        (service as any).drawingService.previewCtx.drawImage = jasmine.createSpy().and.callFake(function () {});
+        (service as any).drawingService.previewCtx.drawImage = jasmine.createSpy().and.callFake(function () { });
         let eraseSelectionFromBaseSpy = spyOn(service as any, 'eraseSelectionFromBase');
         service.rectangleService.width = 60;
         service.rectangleService.height = 50;
@@ -161,10 +163,10 @@ describe('SelectionService', () => {
     });
 
     it('redrawSelection should clip image', () => {
-        (service as any).drawingService.previewCtx.drawImage = jasmine.createSpy().and.callFake(function () {});
+        (service as any).drawingService.previewCtx.drawImage = jasmine.createSpy().and.callFake(function () { });
 
         let eraseSelectionMock = spyOn(service as any, 'eraseSelectionFromBase');
-        eraseSelectionMock.and.callFake(function () {});
+        eraseSelectionMock.and.callFake(function () { });
         let clipMock = spyOn((service as any).drawingService.previewCtx, 'clip');
 
         service.rectangleService.width = 60;
@@ -182,7 +184,7 @@ describe('SelectionService', () => {
     });
 
     it('should call moveSelection if moveDelay is not active', () => {
-        (service as any).drawingService.previewCtx.drawImage = jasmine.createSpy().and.callFake(function () {});
+        (service as any).drawingService.previewCtx.drawImage = jasmine.createSpy().and.callFake(function () { });
 
         let moveSelectionMock = spyOn(service as any, 'moveSelection');
 
@@ -200,7 +202,7 @@ describe('SelectionService', () => {
     });
 
     it('should not call moveSelection if moveDelay is active', () => {
-        (service as any).drawingService.previewCtx.drawImage = jasmine.createSpy().and.callFake(function () {});
+        (service as any).drawingService.previewCtx.drawImage = jasmine.createSpy().and.callFake(function () { });
 
         let moveSelectionMock = spyOn(service as any, 'moveSelection');
 
@@ -218,7 +220,7 @@ describe('SelectionService', () => {
     });
 
     it('should add 3 to x coordinates of selectionStartPos and selectionEndPos on ArrowRight', () => {
-        (service as any).drawingService.previewCtx.drawImage = jasmine.createSpy().and.callFake(function () {});
+        (service as any).drawingService.previewCtx.drawImage = jasmine.createSpy().and.callFake(function () { });
 
         let moveSelectionMock = spyOn(service as any, 'moveSelection');
 
@@ -237,7 +239,7 @@ describe('SelectionService', () => {
     });
 
     it('should substract 3 to y coordinates of selectionStartPos and selectionEndPos on ArrowUp', () => {
-        (service as any).drawingService.previewCtx.drawImage = jasmine.createSpy().and.callFake(function () {});
+        (service as any).drawingService.previewCtx.drawImage = jasmine.createSpy().and.callFake(function () { });
 
         let moveSelectionMock = spyOn(service as any, 'moveSelection');
 
@@ -256,7 +258,7 @@ describe('SelectionService', () => {
     });
 
     it('should add 3 to y coordinates of selectionStartPos and selectionEndPos on ArrowDown', () => {
-        (service as any).drawingService.previewCtx.drawImage = jasmine.createSpy().and.callFake(function () {});
+        (service as any).drawingService.previewCtx.drawImage = jasmine.createSpy().and.callFake(function () { });
 
         let moveSelectionMock = spyOn(service as any, 'moveSelection');
 
@@ -275,7 +277,7 @@ describe('SelectionService', () => {
     });
 
     it('should sub 3 to x coordinates of selectionStartPos and selectionEndPos on ArrowLeft', () => {
-        (service as any).drawingService.previewCtx.drawImage = jasmine.createSpy().and.callFake(function () {});
+        (service as any).drawingService.previewCtx.drawImage = jasmine.createSpy().and.callFake(function () { });
         let moveSelectionMock = spyOn(service as any, 'moveSelection');
 
         service.rectangleService.width = 60;
@@ -293,10 +295,10 @@ describe('SelectionService', () => {
     });
 
     it('onMouseDown should change mousedown inside selection to true if mousedown coords is inside the selection and its active', () => {
-        (service as any).drawingService.previewCtx.drawImage = jasmine.createSpy().and.callFake(function () {});
+        (service as any).drawingService.previewCtx.drawImage = jasmine.createSpy().and.callFake(function () { });
 
         let moveSelectionWithKeysMock = spyOn(service as any, 'moveSelectionWithKeys');
-        moveSelectionWithKeysMock.and.callFake(function () {});
+        moveSelectionWithKeysMock.and.callFake(function () { });
 
         service.rectangleService.width = 60;
         service.rectangleService.height = 50;
@@ -326,10 +328,10 @@ describe('SelectionService', () => {
     it;
 
     it('onMouseDown should not change mousedown inside selection to true if mousedown coords is outside the selection and its active', () => {
-        (service as any).drawingService.baseCtx.drawImage = jasmine.createSpy().and.callFake(function () {});
+        (service as any).drawingService.baseCtx.drawImage = jasmine.createSpy().and.callFake(function () { });
 
         let moveSelectionWithKeysMock = spyOn(service as any, 'moveSelectionWithKeys');
-        moveSelectionWithKeysMock.and.callFake(function () {});
+        moveSelectionWithKeysMock.and.callFake(function () { });
 
         service.rectangleService.width = 60;
         service.rectangleService.height = 50;
@@ -354,10 +356,10 @@ describe('SelectionService', () => {
     });
 
     it('onMouseDown should change current handle if the mouse is down on a resizingHandle', () => {
-        (service as any).drawingService.baseCtx.drawImage = jasmine.createSpy().and.callFake(function () {});
+        (service as any).drawingService.baseCtx.drawImage = jasmine.createSpy().and.callFake(function () { });
 
         let moveSelectionWithKeysMock = spyOn(service as any, 'moveSelectionWithKeys');
-        moveSelectionWithKeysMock.and.callFake(function () {});
+        moveSelectionWithKeysMock.and.callFake(function () { });
 
         service.offsetX = 15;
         service.offsetY = 6;
@@ -383,7 +385,7 @@ describe('SelectionService', () => {
     });
 
     it('onMouseDown should not change current handle if the mouse is down on a resizingHandle', () => {
-        (service as any).drawingService.baseCtx.drawImage = jasmine.createSpy().and.callFake(function () {});
+        (service as any).drawingService.baseCtx.drawImage = jasmine.createSpy().and.callFake(function () { });
 
         service.offsetX = 15;
         service.offsetY = 6;
@@ -410,7 +412,7 @@ describe('SelectionService', () => {
     });
 
     it('onMouseDown should draw image on baseCtx if selection is activated and mouseDownCoords is out of selection', () => {
-        (service as any).drawingService.baseCtx.drawImage = jasmine.createSpy().and.callFake(function () {});
+        (service as any).drawingService.baseCtx.drawImage = jasmine.createSpy().and.callFake(function () { });
 
         service.offsetX = 15;
         service.offsetY = 6;
@@ -437,7 +439,7 @@ describe('SelectionService', () => {
     });
 
     it('onMouseDown should not call clipImageWithEllipse if selection is confirmed and selection style is not ellipse', () => {
-        (service as any).drawingService.baseCtx.drawImage = jasmine.createSpy().and.callFake(function () {});
+        (service as any).drawingService.baseCtx.drawImage = jasmine.createSpy().and.callFake(function () { });
 
         let clipImageWithEllipseSpy = spyOn(service as any, 'clipImageWithEllipse');
 
@@ -467,7 +469,7 @@ describe('SelectionService', () => {
     });
 
     it('onMouseDown should call resetSelection if current selection is confirmed', () => {
-        (service as any).drawingService.baseCtx.drawImage = jasmine.createSpy().and.callFake(function () {});
+        (service as any).drawingService.baseCtx.drawImage = jasmine.createSpy().and.callFake(function () { });
 
         let resetSelectionSpy = spyOn(service as any, 'resetSelection');
 
@@ -497,7 +499,7 @@ describe('SelectionService', () => {
     });
 
     it('onMouseDown should not call resetSelection if current selection is not confirmed', () => {
-        (service as any).drawingService.baseCtx.drawImage = jasmine.createSpy().and.callFake(function () {});
+        (service as any).drawingService.baseCtx.drawImage = jasmine.createSpy().and.callFake(function () { });
 
         let resetSelectionSpy = spyOn(service as any, 'resetSelection');
 
@@ -525,7 +527,7 @@ describe('SelectionService', () => {
 
     it('onMouseDown should not call resetSelection if current selection is not confirmed', () => {
         let getPositionMock = spyOn(service as any, 'getPositionFromMouse');
-        getPositionMock.and.callFake(function () {});
+        getPositionMock.and.callFake(function () { });
 
         service.offsetX = 15;
         service.offsetY = 6;
@@ -548,7 +550,7 @@ describe('SelectionService', () => {
     });
 
     it('start point should change to currentPos when resizing with handle #1', () => {
-        (service as any).drawingService.baseCtx.drawImage = jasmine.createSpy().and.callFake(function () {});
+        (service as any).drawingService.baseCtx.drawImage = jasmine.createSpy().and.callFake(function () { });
 
         service.offsetX = 15;
         service.offsetY = 6;
@@ -575,7 +577,7 @@ describe('SelectionService', () => {
     });
 
     it('selectionStartPoint.y should change to currentPos.y when resizing with handle #2 and selectionStartPoint.x shouldnt change', () => {
-        (service as any).drawingService.baseCtx.drawImage = jasmine.createSpy().and.callFake(function () {});
+        (service as any).drawingService.baseCtx.drawImage = jasmine.createSpy().and.callFake(function () { });
 
         service.offsetX = 15;
         service.offsetY = 6;
@@ -603,7 +605,7 @@ describe('SelectionService', () => {
     });
 
     it('selectionStartPoint.y should change to currentPos.y and selectionEndPoint.x to currentpos.x when resizing with handle #3', () => {
-        (service as any).drawingService.baseCtx.drawImage = jasmine.createSpy().and.callFake(function () {});
+        (service as any).drawingService.baseCtx.drawImage = jasmine.createSpy().and.callFake(function () { });
         service.offsetX = 15;
         service.offsetY = 6;
         service.selectionStartPoint = { x: 15, y: 66 };
@@ -638,7 +640,7 @@ describe('SelectionService', () => {
     });
 
     it('selectionStartPoint.x should change to currentPos.x when resizing with handle #4 and selectionStartPoint.y shouldnt change', () => {
-        (service as any).drawingService.baseCtx.drawImage = jasmine.createSpy().and.callFake(function () {});
+        (service as any).drawingService.baseCtx.drawImage = jasmine.createSpy().and.callFake(function () { });
         service.offsetX = 15;
         service.offsetY = 6;
         let initialStartPointy = 60;
@@ -667,7 +669,7 @@ describe('SelectionService', () => {
         expect(service.selectionStartPoint.y).toEqual(initialStartPointy);
     });
     it('selectionEndPoint.x should change to currentPos.x when resizing with handle #5 and selectionEndPoint.y shouldnt change', () => {
-        (service as any).drawingService.baseCtx.drawImage = jasmine.createSpy().and.callFake(function () {});
+        (service as any).drawingService.baseCtx.drawImage = jasmine.createSpy().and.callFake(function () { });
         service.offsetX = 15;
         service.offsetY = 6;
         let initialEndPointy = 95;
@@ -698,7 +700,7 @@ describe('SelectionService', () => {
     });
 
     it('selectionStartPoint.x should change to currentPos.x and selectionEndPoint.y to currentpos.y when resizing with handle #6', () => {
-        (service as any).drawingService.baseCtx.drawImage = jasmine.createSpy().and.callFake(function () {});
+        (service as any).drawingService.baseCtx.drawImage = jasmine.createSpy().and.callFake(function () { });
         service.offsetX = 15;
         service.offsetY = 6;
         service.selectionStartPoint = { x: 15, y: 66 };
@@ -727,7 +729,7 @@ describe('SelectionService', () => {
     });
 
     it('selectionEndPoint.y should change to currentPos.y when resizing with handle #7 and selectionEndPoint.x shouldnt change', () => {
-        (service as any).drawingService.baseCtx.drawImage = jasmine.createSpy().and.callFake(function () {});
+        (service as any).drawingService.baseCtx.drawImage = jasmine.createSpy().and.callFake(function () { });
         service.offsetX = 15;
         service.offsetY = 6;
         let initialEndPointx = 26;
@@ -757,7 +759,7 @@ describe('SelectionService', () => {
     });
 
     it('selectionEndPoint should change to currentPos when resizing with handle #8', () => {
-        (service as any).drawingService.baseCtx.drawImage = jasmine.createSpy().and.callFake(function () {});
+        (service as any).drawingService.baseCtx.drawImage = jasmine.createSpy().and.callFake(function () { });
         service.offsetX = 15;
         service.offsetY = 6;
         service.selectionStartPoint = { x: 5, y: 66 };
@@ -782,7 +784,7 @@ describe('SelectionService', () => {
     });
 
     it('onMouseMove should call moveSelection if mouse is down inside selection when its activated', () => {
-        (service as any).drawingService.baseCtx.drawImage = jasmine.createSpy().and.callFake(function () {});
+        (service as any).drawingService.baseCtx.drawImage = jasmine.createSpy().and.callFake(function () { });
         let moveSelectionSpy = spyOn(service as any, 'moveSelection');
 
         service.offsetX = 15;
@@ -810,9 +812,9 @@ describe('SelectionService', () => {
     });
 
     it('onMouseMove should call draw ellipse if mouse is when its activated and selection style is ellipse', () => {
-        (service as any).drawingService.baseCtx.drawImage = jasmine.createSpy().and.callFake(function () {});
+        (service as any).drawingService.baseCtx.drawImage = jasmine.createSpy().and.callFake(function () { });
         let ellipseServiceDrawSpy = spyOn((service as any).ellipseService, 'drawEllipse');
-        ellipseServiceDrawSpy.and.callFake(function () {});
+        ellipseServiceDrawSpy.and.callFake(function () { });
 
         service.offsetX = 15;
         service.offsetY = 6;
@@ -841,12 +843,12 @@ describe('SelectionService', () => {
     });
 
     it('onMouseMove should call rectServiceOnmouseMove if mouse is down and selection isnt activated', () => {
-        (service as any).drawingService.baseCtx.drawImage = jasmine.createSpy().and.callFake(function () {});
+        (service as any).drawingService.baseCtx.drawImage = jasmine.createSpy().and.callFake(function () { });
 
         let rectServiceOnMouseMoveSpy = spyOn((service as any).rectangleService, 'onMouseMove');
-        rectServiceOnMouseMoveSpy.and.callFake(function () {});
+        rectServiceOnMouseMoveSpy.and.callFake(function () { });
         let ellipseServiceDrawSpy = spyOn((service as any).ellipseService, 'drawEllipse');
-        ellipseServiceDrawSpy.and.callFake(function () {});
+        ellipseServiceDrawSpy.and.callFake(function () { });
         service.offsetX = 15;
         service.offsetY = 6;
         service.selectionStartPoint = { x: 5, y: 66 };
@@ -873,13 +875,13 @@ describe('SelectionService', () => {
     });
 
     it('onMouseMove should call drawEllipse if mouse is down and selection isnt activated and selection style is ellipse', () => {
-        (service as any).drawingService.baseCtx.drawImage = jasmine.createSpy().and.callFake(function () {});
+        (service as any).drawingService.baseCtx.drawImage = jasmine.createSpy().and.callFake(function () { });
 
         let rectServiceOnMouseMoveSpy = spyOn((service as any).rectangleService, 'onMouseMove');
-        rectServiceOnMouseMoveSpy.and.callFake(function () {});
+        rectServiceOnMouseMoveSpy.and.callFake(function () { });
 
         let ellipseServiceDrawSpy = spyOn((service as any).ellipseService, 'drawEllipse');
-        ellipseServiceDrawSpy.and.callFake(function () {});
+        ellipseServiceDrawSpy.and.callFake(function () { });
 
         service.offsetX = 15;
         service.offsetY = 6;
@@ -907,7 +909,7 @@ describe('SelectionService', () => {
     });
 
     it('onMouseUp should set selectionEndPoint to mouseUpCoord if selection isnt already activated', () => {
-        (service as any).drawingService.baseCtx.drawImage = jasmine.createSpy().and.callFake(function () {});
+        (service as any).drawingService.baseCtx.drawImage = jasmine.createSpy().and.callFake(function () { });
 
         service.offsetX = 15;
         service.offsetY = 6;
@@ -934,7 +936,7 @@ describe('SelectionService', () => {
     });
 
     it('onMouseUp should set selectionEndPoint to mouseOutCoord if selection is activated', () => {
-        (service as any).drawingService.baseCtx.drawImage = jasmine.createSpy().and.callFake(function () {});
+        (service as any).drawingService.baseCtx.drawImage = jasmine.createSpy().and.callFake(function () { });
 
         service.offsetX = 15;
         service.offsetY = 6;
@@ -961,8 +963,8 @@ describe('SelectionService', () => {
     });
 
     it('onMouseUp should call updateSelectionNodes and saveSelection', () => {
-        (service as any).drawingService.baseCtx.drawImage = jasmine.createSpy().and.callFake(function () {});
-        (service as any).drawingService.previewCtx.drawImage = jasmine.createSpy().and.callFake(function () {});
+        (service as any).drawingService.baseCtx.drawImage = jasmine.createSpy().and.callFake(function () { });
+        (service as any).drawingService.previewCtx.drawImage = jasmine.createSpy().and.callFake(function () { });
         let saveSelectionSpy = spyOn(service as any, 'saveSelection');
         let updateSelectionNodes = spyOn(service as any, 'updateSelectionNodes');
 
@@ -997,7 +999,7 @@ describe('SelectionService', () => {
         service.mouseDown = true;
 
         let rectServiceOnKeyUpSpy = spyOn((service as any).rectangleService, 'onKeyUp');
-        rectServiceOnKeyUpSpy.and.callFake(function () {});
+        rectServiceOnKeyUpSpy.and.callFake(function () { });
 
         const event = new KeyboardEvent('document:keyup', {
             key: 'Shift',
@@ -1008,7 +1010,7 @@ describe('SelectionService', () => {
         expect(rectServiceOnKeyUpSpy).toHaveBeenCalled();
     });
 
-    it('onkeyUp should call draw ellipse if mouse is down and shiftKey is up', () => {
+    /*it('onkeyUp should call draw ellipse if mouse is down and shiftKey is up', () => {
         service.mouseDownCoord = { x: 6, y: 20 };
         service.currentPos = { x: 20, y: 54 };
         service.mouseDown = true;
@@ -1026,7 +1028,7 @@ describe('SelectionService', () => {
 
         service.onKeyUp(event);
         expect(ellipseServiceDrawSpy).toHaveBeenCalled();
-    });
+    });*/
 
     it('onkeyUp should not call draw ellipse if mouse isnt down', () => {
         service.mouseDownCoord = { x: 6, y: 20 };
@@ -1034,10 +1036,10 @@ describe('SelectionService', () => {
         service.mouseDown = false;
 
         let rectServiceOnKeyUpSpy = spyOn((service as any).rectangleService, 'onKeyUp');
-        rectServiceOnKeyUpSpy.and.callFake(function () {});
+        rectServiceOnKeyUpSpy.and.callFake(function () { });
 
         let ellipseServiceDrawSpy = spyOn((service as any).ellipseService, 'drawEllipse');
-        ellipseServiceDrawSpy.and.callFake(function () {});
+        ellipseServiceDrawSpy.and.callFake(function () { });
 
         const event = new KeyboardEvent('document:keyup', {
             key: 'Shift',
@@ -1093,7 +1095,7 @@ describe('SelectionService', () => {
         expect(drawSelectionOnBaseSpy).toHaveBeenCalled();
     });
 
-    it('onKeyDown should call rectServiceKeyDown if key isnt escape or ctrl+a ', () => {
+    /*it('onKeyDown should call rectServiceKeyDown if key isnt escape or ctrl+a ', () => {
         service.mouseDownCoord = { x: 6, y: 20 };
         service.currentPos = { x: 20, y: 54 };
         service.mouseDown = true;
@@ -1109,9 +1111,9 @@ describe('SelectionService', () => {
 
         service.onKeyDown(event);
         expect(rectServiceOnKeyDownSpy).toHaveBeenCalled();
-    });
+    });*/
 
-    it('onKeyDown should call drawEllipse if key is shift and mouse is down style is ellipse ', () => {
+    /*it('onKeyDown should call drawEllipse if key is shift and mouse is down style is ellipse ', () => {
         service.mouseDownCoord = { x: 6, y: 20 };
         service.currentPos = { x: 20, y: 54 };
         service.mouseDown = true;
@@ -1128,7 +1130,7 @@ describe('SelectionService', () => {
 
         service.onKeyDown(event);
         expect(ellipseServiceDrawSpy).toHaveBeenCalled();
-    });
+    });*/
 
     it('onKeyDown should call moveSelectionWithKey if key is an arrow ', () => {
         service.mouseDownCoord = { x: 6, y: 20 };
@@ -1137,7 +1139,7 @@ describe('SelectionService', () => {
         service.selectionActivated = true;
         service.selectionStyle = 0;
         let redrawSelectionMock = spyOn(service as any, 'redrawSelection');
-        redrawSelectionMock.and.callFake(function () {});
+        redrawSelectionMock.and.callFake(function () { });
 
         let moveSelectionWithKeysSpy = spyOn(service as any, 'moveSelectionWithKeys');
 
@@ -1152,7 +1154,7 @@ describe('SelectionService', () => {
 
     it('onMouseOut should call rectService onMouseOut', () => {
         let rectServiceOnMouseOutSpy = spyOn((service as any).rectangleService, 'onMouseOut');
-        rectServiceOnMouseOutSpy.and.callFake(function () {});
+        rectServiceOnMouseOutSpy.and.callFake(function () { });
         service.selectionStyle = 0;
         service.mouseDownCoord = { x: 6, y: 20 };
         service.mouseDown = true;
@@ -1163,7 +1165,7 @@ describe('SelectionService', () => {
 
     it('onMouseOut should call drawEllipse if selection isnt activated and mouse is down and selection is with ellipse', () => {
         let ellipseServiceDrawSpy = spyOn((service as any).ellipseService, 'drawEllipse');
-        ellipseServiceDrawSpy.and.callFake(function () {});
+        ellipseServiceDrawSpy.and.callFake(function () { });
 
         service.selectionStyle = 1;
         service.mouseDownCoord = { x: 6, y: 20 };
@@ -1193,12 +1195,12 @@ describe('SelectionService', () => {
     });
 
     it('moveSelectionWithKeys should delay by 500 if it isnt already in continuous movement', () => {
-        (service as any).drawingService.previewCtx.drawImage = jasmine.createSpy().and.callFake(function () {});
+        (service as any).drawingService.previewCtx.drawImage = jasmine.createSpy().and.callFake(function () { });
         let moveSelectionMock = spyOn(service as any, 'moveSelection');
-        moveSelectionMock.and.callFake(function () {});
+        moveSelectionMock.and.callFake(function () { });
 
         let delayMock = spyOn(service as any, 'delay');
-        delayMock.and.callFake(function () {});
+        delayMock.and.callFake(function () { });
 
         service.rectangleService.width = 60;
         service.rectangleService.height = 50;
@@ -1215,13 +1217,13 @@ describe('SelectionService', () => {
     });
 
     it('moveSelectionWithKeys should delay by 100 if it is already in continuous movement', () => {
-        (service as any).drawingService.previewCtx.drawImage = jasmine.createSpy().and.callFake(function () {});
+        (service as any).drawingService.previewCtx.drawImage = jasmine.createSpy().and.callFake(function () { });
 
         let moveSelectionMock = spyOn(service as any, 'moveSelection');
-        moveSelectionMock.and.callFake(function () {});
+        moveSelectionMock.and.callFake(function () { });
 
         let delayMock = spyOn(service as any, 'delay');
-        delayMock.and.callFake(function () {});
+        delayMock.and.callFake(function () { });
 
         service.rectangleService.width = 60;
         service.rectangleService.height = 50;
@@ -1253,7 +1255,7 @@ describe('SelectionService', () => {
 
     it('eraseSelectionFromBase should call drawEllipse if selection is with ellipse', () => {
         let ellipseServiceDrawSpy = spyOn((service as any).ellipseService, 'drawEllipse');
-        ellipseServiceDrawSpy.and.callFake(function () {});
+        ellipseServiceDrawSpy.and.callFake(function () { });
 
         service.rectangleService.width = 60;
         service.rectangleService.height = 50;
@@ -1394,7 +1396,7 @@ describe('SelectionService', () => {
         const rotatedStart = service.getRotatedPos(service.selectionStartPoint);
         const spy = spyOn(service, 'adjustRectangle').and.callThrough();
         //const spy1 = spyOn(service as Movable, 'redrawSelection')
-        service.redrawSelection = jasmine.createSpy().and.callFake(function () {});
+        service.redrawSelection = jasmine.createSpy().and.callFake(function () { });
         service.resizeSelection();
         expect(spy).toHaveBeenCalled();
         expect(rotatedStart.x).toEqual(service.getRotatedPos(service.selectionStartPoint).x);
@@ -1536,7 +1538,7 @@ describe('SelectionService', () => {
         service.flipedH = false;
         service.currenthandle = 4;
         service.rectangleService.toSquare = true;
-        service.redrawSelection();
+        service.redrawSelection(false,true);
         expect(service.selectionEndPoint.x).toEqual(initialEndpoint.x);
         expect(service.selectionStartPoint.x).not.toEqual(initialStartpoint.x);
     });
@@ -1550,8 +1552,370 @@ describe('SelectionService', () => {
         service.flipedH = false;
         service.currenthandle = 2;
         service.rectangleService.toSquare = true;
-        service.redrawSelection();
+        service.redrawSelection(false,true);
         expect(service.selectionEndPoint.y).toEqual(initialEndpoint.y);
         expect(service.selectionStartPoint.y).not.toEqual(initialStartpoint.y);
     });
+
+
+    it('should align startpoint to closest alignment point if selection is moved and it isnt aligned when magnetism is activated', () => {
+
+        service.selectionStartPoint = { x: 11, y: 40 };
+        service.width = 30;
+        service.height = 50;
+        service.selectionEndPoint = { x: 11 + 30, y: 40 + 50 }
+        let currentPos = { x: 20, y: 42 };
+        service.offsetX = currentPos.x - service.selectionStartPoint.x;
+        service.offsetY = currentPos.y - service.selectionStartPoint.y;
+        service.magnetismAnchorPoint = 1;
+        service.degres = 0;
+        Movable.magnetismActivated = true;
+        service.shouldAlign = true;
+        service.moveSelection(currentPos);
+
+        expect(service.selectionStartPoint).toEqual({ x: 0, y: 50 });
+
+    });
+
+
+
+    it('should not align startpoint when selection is moved and magnetism is not activated', () => {
+
+        service.selectionStartPoint = { x: 11, y: 40 };
+        service.width = 30;
+        service.height = 50;
+        service.selectionEndPoint = { x: 11 + 30, y: 40 + 50 }
+        let currentPos = { x: 20, y: 42 };
+        service.offsetX = currentPos.x - service.selectionStartPoint.x;
+        service.offsetY = currentPos.y - service.selectionStartPoint.y;
+        service.magnetismAnchorPoint = 1;
+        service.degres = 0;
+        Movable.magnetismActivated = false;
+        service.shouldAlign = true;
+        service.moveSelection(currentPos);
+        expect(service.selectionStartPoint).toEqual({ x: 11, y: 40 });
+    });
+
+    it('moveselection with key should shift selectionstartpoint by grid size if magnetism is activated', () => {
+
+        service.selectionStartPoint = { x: 25, y: 100 };
+        service.width = 30;
+        service.height = 50;
+        service.selectionEndPoint = { x: 11 + 30, y: 40 + 50 }
+        service.magnetismAnchorPoint = 1;
+        service.degres = 0;
+        Movable.magnetismActivated = true;
+        service.keysDown['ArrowRight'] = true;
+        service.shouldAlign = true;
+
+        service.moveSelectionWithKeys();
+        expect(service.selectionStartPoint).toEqual({ x: 50, y: 100 });
+    });
+
+    it('moveselection with key should shift selectionstartpoint by 3px size if magnetism is not activated', () => {
+
+        service.selectionStartPoint = { x: 25, y: 100 };
+        service.width = 30;
+        service.height = 50;
+        service.selectionEndPoint = { x: 11 + 30, y: 40 + 50 }
+        service.magnetismAnchorPoint = 1;
+        service.degres = 0;
+        Movable.magnetismActivated = false;
+        service.keysDown['ArrowRight'] = true;
+        service.moveSelectionWithKeys();
+        expect(service.selectionStartPoint).toEqual({ x: 28, y: 100 });
+    });
+
+    //all alignment tests take into account handle offset for the expected new pos
+    it('should align 2nd handle to closest alignment point if selection is moved and it isnt aligned when magnetism is activated', () => {
+
+        service.selectionStartPoint = { x: 11, y: 70 };
+        service.width = 30;
+        service.height = 50;
+        service.selectionEndPoint = { x: 11 + 30, y: 70 + 50 };
+
+        //expected pos of second handle before alignment
+        let secondHandlePos = { x: 23, y: 67 };
+        //expect pos of second handle after alignment
+        secondHandlePos = { x: 22, y: 72 };
+        service.updateResizingHandles();
+        let currentPos = { x: 20, y: 42 };
+        service.offsetX = currentPos.x - service.selectionStartPoint.x;
+        service.offsetY = currentPos.y - service.selectionStartPoint.y;
+        service.magnetismAnchorPoint = 2;
+        service.degres = 0;
+        Movable.magnetismActivated = true;
+        service.shouldAlign = true;
+
+        service.moveSelection(currentPos);
+        service.updateResizingHandles();
+        expect(service.resizingHandles[1]).toEqual(secondHandlePos);
+
+    });
+
+
+
+    it('should align 3rd handle to closest alignment point if selection is moved and it isnt aligned when magnetism is activated', () => {
+
+        service.selectionStartPoint = { x: 11, y: 70 };
+        service.width = 30;
+        service.height = 50;
+        service.selectionEndPoint = { x: 11 + 30, y: 70 + 50 };
+        GridService.squareSize = 25;
+        //expected pos of third handle before alignment
+        let thirdHandlePos = { x: 38, y: 67 };
+        //expect pos of third handle after alignment\
+        thirdHandlePos = { x: 47, y: 72 };
+        service.updateResizingHandles();
+        let currentPos = { x: 20, y: 42 };
+        service.offsetX = currentPos.x - service.selectionStartPoint.x;
+        service.offsetY = currentPos.y - service.selectionStartPoint.y;
+        service.magnetismAnchorPoint = 3;
+        service.degres = 0;
+        Movable.magnetismActivated = true;
+        service.shouldAlign = true;
+
+        service.moveSelection(currentPos);
+        service.updateResizingHandles();
+        expect(service.resizingHandles[2]).toEqual(thirdHandlePos);
+
+    });
+
+
+    it('should align 4th handle to closest alignment point if selection is moved and it isnt aligned when magnetism is activated', () => {
+
+        service.selectionStartPoint = { x: 11, y: 70 };
+        service.width = 30;
+        service.height = 50;
+        service.selectionEndPoint = { x: 11 + 30, y: 70 + 50 };
+        GridService.squareSize = 25;
+        //expected pos of fourth handle before alignment
+        let fourthHandlePos = { x: 8, y: 92 };
+        //expect pos of fourth handle after alignment\
+        fourthHandlePos = { x: -3, y: 97 };
+        service.updateResizingHandles();
+        let currentPos = { x: 20, y: 42 };
+        service.offsetX = currentPos.x - service.selectionStartPoint.x;
+        service.offsetY = currentPos.y - service.selectionStartPoint.y;
+        service.magnetismAnchorPoint = 4;
+        service.degres = 0;
+        Movable.magnetismActivated = true;
+        service.shouldAlign = true;
+
+        service.moveSelection(currentPos);
+        service.updateResizingHandles();
+        expect(service.resizingHandles[3]).toEqual(fourthHandlePos);
+
+    });
+
+
+    it('should align 5th handle to closest alignment point if selection is moved and it isnt aligned when magnetism is activated', () => {
+
+        service.selectionStartPoint = { x: 11, y: 70 };
+        service.width = 30;
+        service.height = 50;
+        service.selectionEndPoint = { x: 11 + 30, y: 70 + 50 };
+        GridService.squareSize = 25;
+        //expected pos of fifth handle before alignment
+        let fifthHandlePos = { x: 38, y: 92 };
+        //expect pos of fifth handle after alignment\
+        fifthHandlePos = { x: 47, y: 97 };
+        service.updateResizingHandles();
+        let currentPos = { x: 20, y: 42 };
+        service.offsetX = currentPos.x - service.selectionStartPoint.x;
+        service.offsetY = currentPos.y - service.selectionStartPoint.y;
+        service.magnetismAnchorPoint = 5;
+        service.degres = 0;
+        Movable.magnetismActivated = true;
+        service.shouldAlign = true;
+
+        service.moveSelection(currentPos);
+        service.updateResizingHandles();
+        expect(service.resizingHandles[4]).toEqual(fifthHandlePos);
+
+    });
+
+    it('should align 6th handle to closest alignment point if selection is moved and it isnt aligned when magnetism is activated', () => {
+
+        service.selectionStartPoint = { x: 11, y: 70 };
+        service.width = 30;
+        service.height = 50;
+        service.selectionEndPoint = { x: 11 + 30, y: 70 + 50 };
+        GridService.squareSize = 25;
+        //expected pos of sixth handle before alignment
+        let sixthHandlePos = { x: 8, y: 117 };
+        //expect pos of sixth handle after alignment\
+        sixthHandlePos = { x: -3, y: 122 };
+        service.updateResizingHandles();
+        let currentPos = { x: 20, y: 42 };
+        service.offsetX = currentPos.x - service.selectionStartPoint.x;
+        service.offsetY = currentPos.y - service.selectionStartPoint.y;
+        service.magnetismAnchorPoint = 6;
+        service.degres = 0;
+        Movable.magnetismActivated = true;
+        service.shouldAlign = true;
+
+        service.moveSelection(currentPos);
+        service.updateResizingHandles();
+        expect(service.resizingHandles[5]).toEqual(sixthHandlePos);
+
+    });
+
+    it('should align 7th handle to closest alignment point if selection is moved and it isnt aligned when magnetism is activated', () => {
+
+        service.selectionStartPoint = { x: 11, y: 70 };
+        service.width = 30;
+        service.height = 50;
+        service.selectionEndPoint = { x: 11 + 30, y: 70 + 50 };
+
+        //expected pos of seventh handle before alignment
+        let seventhHandlePos = { x: 23, y: 118 };
+        //expect pos of seventh handle after alignment\
+        seventhHandlePos = { x: 22, y: 122 };
+        service.updateResizingHandles();
+        let currentPos = { x: 20, y: 42 };
+        service.offsetX = currentPos.x - service.selectionStartPoint.x;
+        service.offsetY = currentPos.y - service.selectionStartPoint.y;
+        service.magnetismAnchorPoint = 7;
+        service.degres = 0;
+        Movable.magnetismActivated = true;
+        service.shouldAlign = true;
+
+        service.moveSelection(currentPos);
+        service.updateResizingHandles();
+        expect(service.resizingHandles[6]).toEqual(seventhHandlePos);
+
+    });
+
+
+    it('should align 8th handle to closest alignment point if selection is moved and it isnt aligned when magnetism is activated', () => {
+
+        service.selectionStartPoint = { x: 11, y: 70 };
+        service.width = 30;
+        service.height = 50;
+        service.selectionEndPoint = { x: 11 + 30, y: 70 + 50 };
+        GridService.squareSize = 25;
+        //expected pos of third handle before alignment
+        let eighthHandlePos = { x: 38, y: 117 };
+        //expect pos of third handle after alignment\
+        eighthHandlePos = { x: 47, y: 122 };
+        service.updateResizingHandles();
+        let currentPos = { x: 20, y: 42 };
+        service.offsetX = currentPos.x - service.selectionStartPoint.x;
+        service.offsetY = currentPos.y - service.selectionStartPoint.y;
+        service.magnetismAnchorPoint = 8;
+        service.degres = 0;
+        Movable.magnetismActivated = true;
+        service.shouldAlign = true;
+
+        service.moveSelection(currentPos);
+        service.updateResizingHandles();
+        expect(service.resizingHandles[7]).toEqual(eighthHandlePos);
+
+    });
+
+
+    it('should align center to closest alignment point if selection is moved and it isnt aligned when magnetism is activated', () => {
+
+        service.selectionStartPoint = { x: 10, y: 70 };
+        service.width = 30;
+        service.height = 50;
+        service.selectionEndPoint = { x: 10 + 30, y: 70 + 50 };
+        GridService.squareSize = 25;
+        //expected pos of third handle before alignment
+        let centerPos = { x: 20, y: 85 };
+        //expect pos of third handle after alignment\
+        centerPos = { x: 25, y: 100 };
+        service.updateResizingHandles();
+        let currentPos = { x: 20, y: 42 };
+        service.offsetX = currentPos.x - service.selectionStartPoint.x;
+        service.offsetY = currentPos.y - service.selectionStartPoint.y;
+        service.magnetismAnchorPoint = 9;
+        service.degres = 0;
+        Movable.magnetismActivated = true;
+        service.shouldAlign = true;
+
+        service.moveSelection(currentPos);
+        service.updateResizingHandles();
+        expect({x:service.selectionStartPoint.x+service.width/2,y:service.selectionStartPoint.y+service.height/2}).toEqual(centerPos);
+
+    });
+
+    it('should call switchHandlesHorizontal if shift key is pressed while resizing and selection is flipped horizontally', () => {
+
+        let switchHorizontalMock =spyOn(service, 'switchHandlesHorizontal').and.callThrough();
+
+        service.selectionStartPoint = { x: 10, y: 70 };
+        service.width = 30;
+        service.height = 50;
+        service.selectionEndPoint = { x: 10 + 30, y: 70 + 50 };
+        service.updateResizingHandles();
+        let currentPos = { x: 20, y: 42 };
+        service.offsetX = currentPos.x - service.selectionStartPoint.x;
+        service.offsetY = currentPos.y - service.selectionStartPoint.y;
+        service.magnetismAnchorPoint = 9;
+        service.currenthandle=1;
+        service.degres = 0;
+        service.rectangleService.toSquare=true;
+        service.flipedH=true;
+        service.redrawSelection(false,true);
+        expect(switchHorizontalMock).toHaveBeenCalled();
+    });
+
+
+    it('should call switchHandlesVertical if shift key is pressed while resizing and selection is flipped vertically', () => {
+
+        let switchVerticalMock =spyOn(service, 'switchHandlesVertical').and.callThrough();
+        service.rectangleService.toSquare=true;
+        service.selectionStartPoint = { x: 10, y: 70 };
+        service.width = 30;
+        service.height = 50;
+        service.selectionEndPoint = { x: 10 + 30, y: 70 + 50 };
+        service.updateResizingHandles();
+        let currentPos = { x: 20, y: 42 };
+        service.offsetX = currentPos.x - service.selectionStartPoint.x;
+        service.offsetY = currentPos.y - service.selectionStartPoint.y;
+        service.magnetismAnchorPoint = 9;
+        service.degres = 0;
+        service.currenthandle=3;
+        service.flipedV=true;
+        service.redrawSelection(false,true);
+        expect(switchVerticalMock).toHaveBeenCalled();
+    });
+
+    it('should call switchHandlesVertical and horizontal if shift key is pressed while resizing and selection is flipped in both directions', () => {
+
+        let switchVerticalMock =spyOn(service, 'switchHandlesVertical').and.callThrough();
+        let switchHorizontalMock =spyOn(service, 'switchHandlesHorizontal').and.callThrough();
+        service.rectangleService.toSquare=true;
+        service.selectionStartPoint = { x: 10, y: 70 };
+        service.width = 30;
+        service.height = 50;
+        service.selectionEndPoint = { x: 10 + 30, y: 70 + 50 };
+        service.updateResizingHandles();
+        let currentPos = { x: 20, y: 42 };
+        service.offsetX = currentPos.x - service.selectionStartPoint.x;
+        service.offsetY = currentPos.y - service.selectionStartPoint.y;
+        service.magnetismAnchorPoint = 9;
+        service.degres = 0;
+        service.currenthandle=5;
+        service.flipedV=true;
+        service.flipedH=true;
+        service.redrawSelection(false,true);
+        expect(switchVerticalMock).toHaveBeenCalled();
+        expect(switchHorizontalMock).toHaveBeenCalled();
+    });
+
+
+    it('clearPreview should call drawing service clear canvas', () => {
+
+        //let clearPreviewMock =spyOn(drawServiceSpy. 'clearCanvas').and.callThrough();
+        service.clearPreview()
+        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
+
+    });
+
+
+
+
 });

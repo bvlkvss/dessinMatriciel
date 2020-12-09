@@ -55,14 +55,7 @@ export class ExportComponent {
     }
 
     async sendImage(): Promise<boolean> {
-        this.exportService
-            .sendEmailDataToServer(this.image, this.name, this.filter, this.type, this.email)
-            .then(() => {
-                this.isError = false;
-            })
-            .catch((error: Error) => {
-                this.isError = true;
-            });
+        this.isError = !(await this.exportService.sendEmailDataToServer(this.image, this.name, this.filter, this.type, this.email));
         return this.isError;
     }
 

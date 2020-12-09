@@ -2,18 +2,21 @@ import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { EllipseService } from '@app/services/tools/ellipse/ellipse.service';
+import { GridService } from '@app/services/tools/grid/grid.service';
+import { MagicWandSelection } from '@app/services/tools/magic-wand/magic-wand-selection';
 import { RectangleService, RectangleStyle } from '@app/services/tools/rectangle/rectangle.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
-import { DEFAULT_HANDLE_INDEX, HANDLES, HANDLE_LENGTH, Resizable } from './resizable';
+import { DEFAULT_HANDLE_INDEX, HANDLES, HANDLE_OFFSET, Resizable } from './resizable';
 import { PI_DEGREE, Rotationable } from './rotationable';
 import { SelectionCommand } from './selection-command';
 
-const MOVEMENT_OFFSET = 3;
+const DEFAULT_MOVEMENT_OFFSET = 3;
 const INIT_MOVE_DELAY = 500;
 const CONTINUOUS_MOVE_DELAY = 100;
 
 // tslint:disable:no-empty cause it an abstract class
 export abstract class Movable extends Tool implements Rotationable, Resizable {
+    static magnetismActivated: boolean = false;
     ellipseService: EllipseService;
     rectangleService: RectangleService;
     currenthandle: number;
@@ -37,11 +40,16 @@ export abstract class Movable extends Tool implements Rotationable, Resizable {
     selectionStyle: number;
     selectionActivated: boolean;
     mouseDownInsideSelection: boolean;
+    magicSelectionObj: MagicWandSelection;
+    magnetismAnchorPoint: number;
+    deltaX: number;
+    deltaY: number;
+    tmpAlignmentPoint: Vec2;
+
     getRotatedGeniric: (point: Vec2, centre: Vec2, angle: number) => Vec2 = Rotationable.prototype.getRotatedGeniric;
     getUnrotatedPos: (element: Vec2) => Vec2 = Rotationable.prototype.getUnrotatedPos;
     getRotatedPos: (element: Vec2) => Vec2 = Rotationable.prototype.getRotatedPos;
     updateDegree: (event: WheelEvent) => void = Rotationable.prototype.updateDegree;
-
     checkFlip: () => number = Resizable.prototype.checkFlip;
     flipSelection: () => void = Resizable.prototype.flipSelection;
     flipData: (translateVec: Vec2, scale: Vec2) => void = Resizable.prototype.flipData;
@@ -49,6 +57,10 @@ export abstract class Movable extends Tool implements Rotationable, Resizable {
     resizeSelection: () => void = Resizable.prototype.resizeSelection;
     drawResizingHandles: () => void = Resizable.prototype.drawResizingHandles;
     handleNewPos: (handleToMove: Vec2, direction: Vec2) => Vec2 = Resizable.prototype.handleNewPos;
+    mouseDownOnHandle: (mousedownpos: Vec2) => number = Resizable.prototype.mouseDownOnHandle;
+
+    switchHandlesHorizontal: () => void = Resizable.prototype.switchHandlesHorizontal;
+    switchHandlesVertical: () => void = Resizable.prototype.switchHandlesVertical;
 
     constructor(drawingService: DrawingService, protected invoker: UndoRedoService) {
         super(drawingService);
@@ -57,6 +69,7 @@ export abstract class Movable extends Tool implements Rotationable, Resizable {
         this.moveDelayActive = false;
         this.continuousMove = false;
         this.firstSelectionMove = true;
+        this.magnetismAnchorPoint = 1;
         this.currenthandle = DEFAULT_HANDLE_INDEX;
         this.rectangleService = new RectangleService(drawingService, this.invoker);
         this.rectangleService.setStyle(RectangleStyle.Selection);
@@ -66,40 +79,50 @@ export abstract class Movable extends Tool implements Rotationable, Resizable {
         this.ellipseService.setStyle(0);
         this.ellipseService.secondaryColor = 'black';
         this.ellipseService.primaryColor = 'black';
+        this.ellipseService.lineDash = true;
         this.selectionActivated = false;
+        this.deltaY = 0;
+        this.deltaX = 0;
+        this.shouldAlign = true;
     }
 
-    eraseSelectionFromBase(endPos: Vec2): void { }
-    clipImageWithEllipse(): void { }
-    resetSelection(): void { }
+    eraseSelectionFromBase(endPos: Vec2): void {}
+    clipImageWithEllipse(): void {}
+    resetSelection(): void {}
+    eraseSelectionOnDelete(): void {}
 
-    protected drawSelectionOnBase(): void {
-        const centre = {
-            x: (this.selectionStartPoint.x + this.selectionEndPoint.x) / 2,
-            y: (this.selectionStartPoint.y + this.selectionEndPoint.y) / 2,
-        };
-        this.drawingService.baseCtx.save();
-        this.drawingService.baseCtx.translate(centre.x, centre.y);
-        this.drawingService.baseCtx.rotate((this.degres * Math.PI) / PI_DEGREE);
+    clearPreview(): void {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
-        if (this.selectionStyle === 1) {
-            this.clipImageWithEllipse();
-        } else {
-            this.drawingService.baseCtx.drawImage(this.selectionData, -this.width / 2, -this.height / 2, this.width, this.height);
+    }
+
+    drawSelectionOnBase(): void {
+        if (this.selectionActivated) {
+            const centre = {
+                x: (this.selectionStartPoint.x + this.selectionEndPoint.x) / 2,
+                y: (this.selectionStartPoint.y + this.selectionEndPoint.y) / 2,
+            };
+            this.drawingService.baseCtx.save();
+            this.drawingService.baseCtx.translate(centre.x, centre.y);
+            this.drawingService.baseCtx.rotate((this.degres * Math.PI) / PI_DEGREE);
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            if (this.selectionStyle === 1) {
+                this.clipImageWithEllipse();
+            } else {
+                this.drawingService.baseCtx.drawImage(this.selectionData, -this.width / 2, -this.height / 2, this.width, this.height);
+            }
+            if (this.selectionCommand) {
+                this.selectionCommand.setStartPos(this.selectionStartPoint);
+                this.selectionCommand.setEndPos(this.selectionEndPoint);
+                this.selectionCommand.setSelectionStyle(this.selectionStyle);
+                this.selectionCommand.setSize(this.width, this.height);
+                this.selectionCommand.setCanvas(this.selectionData);
+                this.invoker.addToUndo(this.selectionCommand);
+                this.invoker.setIsAllowed(true);
+            }
+            this.drawingService.baseCtx.restore();
+            this.resetSelection();
+            this.selectionActivated = false;
         }
-        if (this.selectionCommand) {
-            this.selectionCommand.setStartPos(this.selectionStartPoint);
-            this.selectionCommand.setEndPos(this.selectionEndPoint);
-            this.selectionCommand.setSelectionStyle(this.selectionStyle);
-            this.selectionCommand.setSize(this.width, this.height);
-            this.selectionCommand.setCanvas(this.selectionData);
-            this.selectionCommand.setDegres(this.degres);
-            this.invoker.addToUndo(this.selectionCommand);
-            this.invoker.setIsAllowed(true);
-        }
-        this.drawingService.baseCtx.restore();
-        this.resetSelection();
-        this.selectionActivated = false;
     }
 
     updateSelectionNodes(): number {
@@ -119,8 +142,78 @@ export abstract class Movable extends Tool implements Rotationable, Resizable {
 
     moveSelection(endpoint: Vec2): void {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
-
         this.selectionStartPoint = { x: endpoint.x - this.offsetX, y: endpoint.y - this.offsetY };
+
+        if (Movable.magnetismActivated) {
+            this.updateResizingHandles();
+            switch (this.magnetismAnchorPoint) {
+                case HANDLES.one:
+                    this.tmpAlignmentPoint = this.getRotatedPos(this.selectionStartPoint);
+                    break;
+                case HANDLES.two:
+                    this.tmpAlignmentPoint = {
+                        x: this.getRotatedPos(this.resizingHandles[HANDLES.two - 1]).x + HANDLE_OFFSET,
+                        y: this.getRotatedPos(this.resizingHandles[HANDLES.two - 1]).y + HANDLE_OFFSET,
+                    };
+                    break;
+                case HANDLES.three:
+                    this.tmpAlignmentPoint = {
+                        x: this.getRotatedPos(this.resizingHandles[HANDLES.three - 1]).x + HANDLE_OFFSET,
+                        y: this.getRotatedPos(this.resizingHandles[HANDLES.three - 1]).y + HANDLE_OFFSET,
+                    };
+                    break;
+                case HANDLES.four:
+                    this.tmpAlignmentPoint = {
+                        x: this.getRotatedPos(this.resizingHandles[HANDLES.four - 1]).x + HANDLE_OFFSET,
+                        y: this.getRotatedPos(this.resizingHandles[HANDLES.four - 1]).y + HANDLE_OFFSET,
+                    };
+                    break;
+                case HANDLES.five:
+                    this.tmpAlignmentPoint = {
+                        x: this.getRotatedPos(this.resizingHandles[HANDLES.five - 1]).x + HANDLE_OFFSET,
+                        y: this.getRotatedPos(this.resizingHandles[HANDLES.five - 1]).y + HANDLE_OFFSET,
+                    };
+                    break;
+                case HANDLES.six:
+                    this.tmpAlignmentPoint = {
+                        x: this.getRotatedPos(this.resizingHandles[HANDLES.six - 1]).x + HANDLE_OFFSET,
+                        y: this.getRotatedPos(this.resizingHandles[HANDLES.six - 1]).y + HANDLE_OFFSET,
+                    };
+                    break;
+                case HANDLES.seven:
+                    this.tmpAlignmentPoint = {
+                        x: this.getRotatedPos(this.resizingHandles[HANDLES.seven - 1]).x + HANDLE_OFFSET,
+                        y: this.getRotatedPos(this.resizingHandles[HANDLES.seven - 1]).y + HANDLE_OFFSET,
+                    };
+                    break;
+                case HANDLES.eight:
+                    this.tmpAlignmentPoint = {
+                        x: this.getRotatedPos(this.resizingHandles[HANDLES.eight - 1]).x + HANDLE_OFFSET,
+                        y: this.getRotatedPos(this.resizingHandles[HANDLES.eight - 1]).y + HANDLE_OFFSET,
+                    };
+                    break;
+                case HANDLES.center:
+                    this.tmpAlignmentPoint = {
+                        x: this.getRotatedPos(this.resizingHandles[HANDLES.two - 1]).x + HANDLE_OFFSET,
+                        y: this.getRotatedPos(this.resizingHandles[HANDLES.four - 1]).y + HANDLE_OFFSET,
+                    };
+                    break;
+            }
+            if (this.shouldAlign) {
+                this.deltaX = this.selectionStartPoint.x - this.tmpAlignmentPoint.x;
+                this.deltaY = this.selectionStartPoint.y - this.tmpAlignmentPoint.y;
+                this.shouldAlign = false;
+            }
+            if (this.tmpAlignmentPoint.x % GridService.squareSize === 0 && this.tmpAlignmentPoint.y % GridService.squareSize === 0) {
+                return;
+            }
+            this.tmpAlignmentPoint = {
+                x: Math.round(this.tmpAlignmentPoint.x / GridService.squareSize) * GridService.squareSize,
+                y: Math.round(this.tmpAlignmentPoint.y / GridService.squareSize) * GridService.squareSize,
+            };
+            this.selectionStartPoint.x = this.deltaX + this.tmpAlignmentPoint.x;
+            this.selectionStartPoint.y = this.deltaY + this.tmpAlignmentPoint.y;
+        }
         this.selectionEndPoint = {
             x: this.selectionStartPoint.x + this.width,
             y: this.selectionStartPoint.y + this.height,
@@ -134,24 +227,29 @@ export abstract class Movable extends Tool implements Rotationable, Resizable {
     async moveSelectionWithKeys(): Promise<void> {
         this.offsetX = 0;
         this.offsetY = 0;
+        const movementOffset = Movable.magnetismActivated ? GridService.squareSize : DEFAULT_MOVEMENT_OFFSET;
 
         if (!this.moveDelayActive) {
             this.moveDelayActive = true;
             if (this.keysDown.ArrowRight) {
-                this.selectionStartPoint.x += MOVEMENT_OFFSET;
+                this.selectionStartPoint.x += movementOffset;
+                this.selectionEndPoint.x += movementOffset;
             }
             if (this.keysDown.ArrowLeft) {
-                this.selectionStartPoint.x -= MOVEMENT_OFFSET;
+                this.selectionStartPoint.x -= movementOffset;
+                this.selectionEndPoint.x -= movementOffset;
             }
             if (this.keysDown.ArrowUp) {
-                this.selectionStartPoint.y -= MOVEMENT_OFFSET;
+                this.selectionStartPoint.y -= movementOffset;
+                this.selectionEndPoint.y -= movementOffset;
             }
-
             if (this.keysDown.ArrowDown) {
-                this.selectionStartPoint.y += MOVEMENT_OFFSET;
+                this.selectionStartPoint.y += movementOffset;
+                this.selectionEndPoint.y += movementOffset;
             }
 
             this.moveSelection(this.selectionStartPoint);
+
             if (!this.continuousMove) {
                 await this.delay(INIT_MOVE_DELAY);
                 this.continuousMove = true;
@@ -174,7 +272,7 @@ export abstract class Movable extends Tool implements Rotationable, Resizable {
         this.selectionEndPoint = newEnd;
     }
 
-    redrawSelection(redrawAfterRotate: boolean = false): void {
+    redrawSelection(redrawAfterRotate: boolean = false, toSquare: boolean = false): void {
         if (this.firstSelectionMove) {
             this.selectionCommand = new SelectionCommand(this.selectionStartPoint, this, this.drawingService);
             this.selectionCommand.setEndPosErase(this.selectionEndPoint);
@@ -182,66 +280,70 @@ export abstract class Movable extends Tool implements Rotationable, Resizable {
         }
         this.width = this.selectionEndPoint.x - this.selectionStartPoint.x;
         this.height = this.selectionEndPoint.y - this.selectionStartPoint.y;
-
         if (this.rectangleService.toSquare) {
+            if (this.flipedH) {
+                this.switchHandlesHorizontal();
+            }
+
+            if (this.flipedV) {
+                this.switchHandlesVertical();
+            }
+
             if (this.currenthandle === HANDLES.one || this.currenthandle === HANDLES.four || this.currenthandle === HANDLES.six) {
                 this.selectionStartPoint.x += this.width - Math.min(this.width, this.height);
             }
             if (this.currenthandle === HANDLES.one || this.currenthandle === HANDLES.two || this.currenthandle === HANDLES.three) {
                 this.selectionStartPoint.y += this.height - Math.min(this.width, this.height);
             }
-            this.width = Math.min(this.width, this.height);
-            this.height = this.width;
+            if (Math.abs(this.width) > Math.abs(this.height)) {
+                this.width = this.height * Math.sign(this.height) * Math.sign(this.width);
+            } else {
+                this.height = this.width * Math.sign(this.width) * Math.sign(this.height);
+            }
         }
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.drawingService.previewCtx.save();
         const posx = -this.width / 2;
         const posy = -this.height / 2;
-        this.drawingService.previewCtx.save();
         this.drawingService.previewCtx.translate(this.selectionStartPoint.x + this.width / 2, this.selectionStartPoint.y + this.height / 2);
         this.drawingService.previewCtx.rotate((this.degres * Math.PI) / PI_DEGREE);
+        this.drawingService.previewCtx.save();
         if (this.selectionStyle === 1) {
+            this.ellipseService.setStyle(0);
             this.ellipseService.drawEllipse(
                 this.drawingService.previewCtx,
                 {
-                    x: -this.width / 2,
-                    y: -this.height / 2,
+                    x: -posx,
+                    y: -posy,
                 } as Vec2,
                 {
-                    x: this.width / 2,
-                    y: this.height / 2,
+                    x: posx,
+                    y: posy,
                 } as Vec2,
-                false,
+                toSquare,
                 false,
             );
             this.drawingService.previewCtx.clip();
         }
-
         if (!redrawAfterRotate) {
             this.flipSelection();
         }
         this.drawingService.previewCtx.drawImage(this.selectionData, posx, posy, this.width, this.height);
-
         this.drawingService.previewCtx.restore();
+        this.rectangleService.drawRectangle(
+            this.drawingService.previewCtx,
+            {
+                x: -posx,
+                y: -posy,
+            } as Vec2,
+            {
+                x: posx,
+                y: posy,
+            } as Vec2,
+            false,
+        );
         this.drawingService.previewCtx.restore();
-        this.rectangleService.drawRectangle(this.drawingService.previewCtx, this.selectionStartPoint, this.selectionEndPoint, false);
         this.updateResizingHandles();
         this.drawResizingHandles();
-    }
-
-    mouseDownOnHandle(mousedownpos: Vec2): number {
-        for (let i = 0; i < this.resizingHandles.length; i++) {
-            if (
-                this.getUnrotatedPos(mousedownpos).x >= this.resizingHandles[i].x &&
-                this.getUnrotatedPos(mousedownpos).x <= this.resizingHandles[i].x + HANDLE_LENGTH &&
-                this.getUnrotatedPos(mousedownpos).y >= this.resizingHandles[i].y &&
-                this.getUnrotatedPos(mousedownpos).y <= this.resizingHandles[i].y + HANDLE_LENGTH
-            ) {
-                console.log('handle = ', i + 1);
-                return i + 1;
-            }
-        }
-        // mouse not on any handle
-        return DEFAULT_HANDLE_INDEX;
     }
 }

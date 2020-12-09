@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 
 @Component({
     selector: 'app-user-guide',
@@ -9,6 +9,13 @@ export class UserGuideComponent {
     static displayUserGuide(): void {
         const userGuide = document.getElementById('background') as HTMLElement;
         userGuide.style.display = 'block';
+    }
+
+    @HostListener('window:keydown', ['$event'])
+    onkeyDown(event: KeyboardEvent): void {
+        if (event.key === 'Escape') {
+            this.closeUserGuide();
+        }
     }
 
     openTab(id: string): void {

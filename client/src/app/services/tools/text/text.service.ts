@@ -1,54 +1,52 @@
 import { Injectable } from '@angular/core';
+import { Const } from '@app/classes/constants';
 import { TextCommand } from '@app/classes/text-command';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
-const DEFAULT_BOX_WIDTH = 200;
-const DEFAULT_FONT_SIZE = 30;
-const CURSOR_LENGHT = 8;
-const TIMER_MS = 500;
-const BIG_TEXT_SIZE = 60;
-const SMALL_TEXT_SIZE = 15;
-const NEGATIV_STEP = -1;
-const HEIGHT_TOLERANCE_BIG_TEXT = 0.25;
-const HEIGHT_TOLERANCE_SMALL_TEXT = 0.333;
-const TEXT_POSITION_TOLERANCE = 4;
-const CURSOR_POSITION_Y_TOLERANCE = 0.1;
-const HEIGHT_TOLERANCE = 10;
-const WIDTH_TOLERANCE = 12;
-const LINE_DASH_MAX = 5;
-const LINE_DASH_MIN = 4;
-
 @Injectable({
     providedIn: 'root',
 })
 export class TextService extends Tool {
-    isRighting: boolean = false;
-    lines: string[] = [];
-    cursor: string = '|';
+    isRighting: boolean;
+    lines: string[];
+    cursor: string;
     firstCursorPosition: Vec2;
-    currentLinePosition: number = 0;
+    currentLinePosition: number;
     textPosition: Vec2;
     intervalId: NodeJS.Timeout;
-    textAlignement: string = 'left';
-    firstClick: boolean = true;
-    fontText: string = 'Arial';
-    fontSize: number = DEFAULT_FONT_SIZE;
-    isBlank: boolean = true;
-    fontStyle: string = 'normal';
+    textAlignement: string;
+    firstClick: boolean;
+    fontText: string;
+    fontSize: number;
+    isBlank: boolean;
+    isCursorMoving: boolean;
+    fontStyle: string;
+    currentChar: number;
     rectStartPoint: Vec2;
     rectEndPoint: Vec2;
-    isCursorMoving: boolean = false;
-    currentChar: number = 0;
     rectHeight: number;
-    rectWidth: number = DEFAULT_BOX_WIDTH;
+    rectWidth: number = Const.DEFAULT_BOX_WIDTH;
     constructor(drawingService: DrawingService, private invoker: UndoRedoService) {
         super(drawingService);
-        this.lineWidth = DEFAULT_FONT_SIZE;
+        this.lineWidth = Const.DEFAULT_FONT_SIZE;
+        this.lines = [];
         this.lines.push('');
         this.toolAttributes = ['textPolice'];
+        this.isRighting = false;
+        this.cursor = '|';
+        this.currentLinePosition = 0;
+        this.textAlignement = 'left';
+        this.firstClick = true;
+        this.fontText = 'Arial';
+        this.fontSize = Const.DEFAULT_FONT_SIZE;
+        this.isBlank = true;
+        this.isCursorMoving = false;
+        this.fontStyle = 'normal';
+        this.currentChar = 0;
+        this.rectWidth = Const.DEFAULT_BOX_WIDTH;
     }
 
     setLineWidth(width: number): void {
@@ -76,7 +74,7 @@ export class TextService extends Tool {
             this.intervalId = setInterval(() => {
                 this.drawTextBox();
                 if (!this.isCursorMoving) this.drawCursor(this.drawingService.previewCtx, this.isBlank);
-            }, TIMER_MS);
+            }, Const.TIMER_MS);
         }
         this.drawConfirmedText(false);
     }
@@ -92,12 +90,12 @@ export class TextService extends Tool {
         }
     }
     private setToInitState(): void {
-        this.rectHeight = this.fontSize + HEIGHT_TOLERANCE;
+        this.rectHeight = this.fontSize + Const.HEIGHT_TOLERANCE;
         this.textPosition = { ...this.firstCursorPosition } = { ...this.mouseDownCoord };
-        this.rectWidth = DEFAULT_BOX_WIDTH;
+        this.rectWidth = Const.DEFAULT_BOX_WIDTH;
         this.isRighting = true;
         this.rectStartPoint = { x: this.mouseDownCoord.x, y: this.mouseDownCoord.y - this.fontSize };
-        this.rectEndPoint = { x: this.mouseDownCoord.x + this.rectWidth + CURSOR_LENGHT, y: this.mouseDownCoord.y + HEIGHT_TOLERANCE };
+        this.rectEndPoint = { x: this.mouseDownCoord.x + this.rectWidth + Const.CURSOR_LENGHT, y: this.mouseDownCoord.y + Const.HEIGHT_TOLERANCE };
         this.drawTextBox();
         this.firstClick = false;
     }
@@ -114,23 +112,18 @@ export class TextService extends Tool {
     }
     private drawBox(ctx: CanvasRenderingContext2D, position: Vec2): void {
         const textMeasure = this.findLongestLine();
-        ctx.setLineDash([LINE_DASH_MIN, LINE_DASH_MAX]);
-        let widthToAdd = this.fontSize / TEXT_POSITION_TOLERANCE;
-        if (widthToAdd <= CURSOR_LENGHT) widthToAdd = WIDTH_TOLERANCE;
+        ctx.setLineDash([Const.LINE_DASH_MIN, Const.LINE_DASH_MAX]);
+        let widthToAdd = this.fontSize / Const.TEXT_POSITION_TOLERANCE;
+        if (widthToAdd <= Const.CURSOR_LENGHT) widthToAdd = Const.WIDTH_TOLERANCE;
         this.rectHeight =
-            this.fontSize >= BIG_TEXT_SIZE
-                ? this.fontSize * this.lines.length + this.fontSize * HEIGHT_TOLERANCE_BIG_TEXT
-                : this.fontSize * this.lines.length + this.fontSize * HEIGHT_TOLERANCE_SMALL_TEXT;
+            this.fontSize >= Const.BIG_TEXT_SIZE
+                ? this.fontSize * this.lines.length + this.fontSize * Const.HEIGHT_TOLERANCE_BIG_TEXT
+                : this.fontSize * this.lines.length + this.fontSize * Const.HEIGHT_TOLERANCE_SMALL_TEXT;
         ctx.strokeStyle = 'blue';
-        if (textMeasure > DEFAULT_BOX_WIDTH) {
-            this.rectWidth = textMeasure;
-            this.rectEndPoint.x = this.rectStartPoint.x + this.rectWidth + CURSOR_LENGHT;
-            this.rectEndPoint.y = this.rectStartPoint.y + this.rectHeight;
-            ctx.strokeRect(position.x, position.y, this.rectWidth + widthToAdd, this.rectHeight);
-        } else {
-            this.rectWidth = DEFAULT_BOX_WIDTH;
-            ctx.strokeRect(position.x, position.y, this.rectWidth + widthToAdd + CURSOR_LENGHT, this.rectHeight);
-        }
+        this.rectWidth = textMeasure > Const.DEFAULT_BOX_WIDTH ? textMeasure : Const.DEFAULT_BOX_WIDTH;
+        ctx.strokeRect(position.x, position.y, this.rectWidth + widthToAdd + Const.CURSOR_LENGHT, this.rectHeight);
+        this.rectEndPoint.x = this.rectStartPoint.x + this.rectWidth + widthToAdd + Const.CURSOR_LENGHT;
+        this.rectEndPoint.y = this.rectStartPoint.y + this.rectHeight;
     }
 
     writeText(ctx: CanvasRenderingContext2D, position: Vec2): void {
@@ -140,7 +133,7 @@ export class TextService extends Tool {
             this.lines.forEach((line) => {
                 const tmpPosition = { ...position };
                 position = this.alignSingleLine(line, { ...position });
-                ctx.fillText(line, position.x + TEXT_POSITION_TOLERANCE, position.y);
+                ctx.fillText(line, position.x + Const.TEXT_POSITION_TOLERANCE, position.y);
                 position = { ...tmpPosition };
                 position.y += this.fontSize;
             });
@@ -194,12 +187,13 @@ export class TextService extends Tool {
         const position: Vec2 = { x: 0, y: 0 };
         const firstPart = this.lines[this.currentLinePosition].substr(0, this.currentChar);
         position.x = this.firstCursorPosition.x + this.measureText(firstPart);
-        position.y = this.textPosition.y + this.currentLinePosition * this.fontSize - CURSOR_POSITION_Y_TOLERANCE * this.fontSize;
-        if (this.fontSize <= SMALL_TEXT_SIZE) position.x += 2;
+        position.y = this.textPosition.y + this.currentLinePosition * this.fontSize - Const.CURSOR_POSITION_Y_TOLERANCE * this.fontSize;
+
+        if (this.fontSize <= Const.SMALL_TEXT_SIZE) position.x += 2;
         ctx.font = this.fontStyle + ' ' + this.fontText;
         ctx.fillStyle = 'black';
         ctx.globalAlpha = isBlank ? 0 : 1;
-        ctx.fillText(this.cursor, position.x - 1, position.y);
+        ctx.fillText(this.cursor, position.x, position.y);
         ctx.restore();
     }
     onKeyDown(event: KeyboardEvent): void {
@@ -224,10 +218,10 @@ export class TextService extends Tool {
                         this.shiftHorizontally(1, this.lines[this.currentLinePosition].length);
                         break;
                     case 'ArrowLeft':
-                        this.shiftHorizontally(NEGATIV_STEP, 0);
+                        this.shiftHorizontally(Const.NEGATIV_STEP, 0);
                         break;
                     case 'ArrowUp':
-                        this.shiftVertically(NEGATIV_STEP);
+                        this.shiftVertically(Const.NEGATIV_STEP);
                         break;
                     case 'ArrowDown':
                         this.shiftVertically(1);

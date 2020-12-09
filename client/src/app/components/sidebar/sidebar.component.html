@@ -1,6 +1,6 @@
 <div class="bodyMock">
     <div class="container2">
-        <div id="#icons" class="icon-bar">
+        <div #icons class="icon-bar">
             <div class="inlineclass">
                 <div class="drawingtoolscontainer">
                     <a id="pencil" class="active" (click)="displayPalette('pencil')" (click)="changeTools('pencil')">
@@ -17,7 +17,7 @@
                     </a>
 
                     <a id="plume" (click)="displayPalette('plume')" (click)="changeTools('plume')">
-                        <img class="material-icons" style="color: white;" src="../../../assets/feather.png" />
+                        <img class="material-icons" style="color: white" src="../../../assets/feather.png" />
                         <span class="slidingtxt2"> Plume</span>
                     </a>
                 </div>
@@ -35,10 +35,6 @@
                         <i class="material-icons">change_history</i>
                         <span class="slidingtxt"> Polygone (3)</span>
                     </a>
-                    <a id="text" (click)="displayPalette('text')" (click)="changeTools('text')">
-                        <i class="material-icons">title</i>
-                        <span class="slidingtxt"> Text (T)</span>
-                    </a>
                     <a id="aerosol" (click)="displayPalette('aerosol')" (click)="changeTools('aerosol')">
                         <i class="material-icons">grain</i>
                         <span class="slidingtxt"> Aérosol (A)</span>
@@ -54,6 +50,14 @@
                     <a id="pipette" (click)="displayPalette('pipette')" (click)="changeTools('pipette')">
                         <i class="material-icons">colorize</i>
                         <span class="slidingtxt2"> Pipette (I)</span>
+                    </a>
+                    <a id="text" (click)="displayPalette('text')" (click)="changeTools('text')">
+                        <i class="material-icons">title</i>
+                        <span class="slidingtxt2"> Text (T)</span>
+                    </a>
+                    <a id="stamp" (click)="displayPalette('stamp')" (click)="changeTools('stamp')">
+                        <i class="material-icons">insert_emoticon</i>
+                        <span class="slidingtxt2"> Stamp (T)</span>
                     </a>
                 </div>
 
@@ -73,8 +77,32 @@
                     </a>
                 </div>
             </div>
+            <div *ngIf="clipboardBarAllowed()" class="inlineclass">
+                <div class="drawingtoolscontainer">
+                    <a id="content_copy" (click)="onCopy()">
+                        <i class="material-icons">content_copy</i>
+                        <span class="slidingtxt2"> Copier (Ctrl+c) </span>
+                    </a>
+                    <a id="content_paste" (click)="onPaste()">
+                        <i class="material-icons">content_paste</i>
+                        <span class="slidingtxt2"> Coller (Ctrl+v)</span>
+                    </a>
+                </div>
 
-            <div class="drawingtoolscontainer2">
+                <div class="drawingtoolscontainer">
+                    <a id="content_cut" (click)="onCut()">
+                        <i class="material-icons">content_cut</i>
+                        <span class="slidingtxt"> Couper (Ctrl+x)</span>
+                    </a>
+
+                    <a id="delete" (click)="onDelete()">
+                        <i class="material-icons">delete</i>
+                        <span class="slidingtxt"> Supprimer (Delete)</span>
+                    </a>
+                </div>
+            </div>
+
+            <div *ngIf="undoRedoAllowed()" class="drawingtoolscontainer2">
                 <a (click)="undo()">
                     <i class="material-icons">undo</i>
                 </a>

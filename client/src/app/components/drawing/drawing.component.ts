@@ -1,23 +1,37 @@
-import { AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
-import { Tool } from '@app/classes/tool';
+import {
+    AfterViewInit,
+    Component,
+    DoCheck,
+    ElementRef,
+    HostListener,
+    IterableDiffer,
+    IterableDiffers,
+    OnDestroy,
+    OnInit,
+    ViewChild,
+} from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { Command } from '@app/classes/command';
+import { Const } from '@app/classes/constants';
+import { Movable } from '@app/classes/movable';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ResizingService } from '@app/services/resizing/resizing.service';
+import { SelectionClipboardService } from '@app/services/selection-clipboard/selection-clipboard.service';
+import { ToolsManagerService } from '@app/services/tools-manager/tools-manager.service';
 import { GridService } from '@app/services/tools/grid/grid.service';
 import { MagicWandService } from '@app/services/tools/magic-wand/magic-wand.service';
 import { PlumeService } from '@app/services/tools/plume/plume.service';
 import { SelectionService } from '@app/services/tools/selection/selection.service';
+import { StampService } from '@app/services/tools/stamp/stamp.service';
 import { TextService } from '@app/services/tools/text/text.service';
-import { ToolsManagerService } from '@app/services/toolsManger/tools-manager.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
-
-// TODO : Avoir un fichier séparé pour les constantes ?
 
 @Component({
     selector: 'app-drawing',
     templateUrl: './drawing.component.html',
     styleUrls: ['./drawing.component.scss'],
 })
-export class DrawingComponent implements AfterViewInit, OnInit {
+export class DrawingComponent implements AfterViewInit, OnInit, DoCheck, OnDestroy {
     @ViewChild('baseCanvas', { static: false }) baseCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('container') container: ElementRef<HTMLDivElement>;
     @ViewChild('resizeContainer') resizeContainer: ElementRef<HTMLDivElement>;
@@ -25,41 +39,54 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     // On utilise ce canvas pour dessiner sans affecter le dessin final
     @ViewChild('previewCanvas', { static: false }) previewCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('gridCanvas', { static: false }) gridCanvas: ElementRef<HTMLCanvasElement>;
-
-    private keyBindings: Map<string, Tool> = new Map();
+    private keyBindings: Map<string, string> = new Map();
     private baseCtx: CanvasRenderingContext2D;
     private previewCtx: CanvasRenderingContext2D;
     private gridCtx: CanvasRenderingContext2D;
     private mouseFired: boolean;
+    private iterableDiffer: IterableDiffer<Command>;
     constructor(
         private drawingService: DrawingService,
         private tools: ToolsManagerService,
         private resizer: ResizingService,
         private invoker: UndoRedoService,
-    ) {}
-
+        private dialog: MatDialog,
+        private clipboard: SelectionClipboardService,
+        iDiffers: IterableDiffers,
+    ) {
+        this.iterableDiffer = iDiffers.find([]).create();
+    }
+    ngDoCheck(): void {
+        const changesUndo = this.iterableDiffer.diff(this.invoker.undoStack);
+        if (changesUndo) {
+            localStorage.setItem('drawing', this.baseCtx.canvas.toDataURL());
+        }
+    }
+    ngOnDestroy(): void {
+        //    location.replace('main-page.component.html');
+    }
     ngOnInit(): void {
         this.drawingService.resizeCanvas();
     }
 
     ngAfterViewInit(): void {
         this.keyBindings
-            .set('c', this.tools.getTools().get('pencil') as Tool)
-            .set('w', this.tools.getTools().get('brush') as Tool)
-            .set('e', this.tools.getTools().get('eraser') as Tool)
-            .set('1', this.tools.getTools().get('rectangle') as Tool)
-            .set('2', this.tools.getTools().get('ellipse') as Tool)
-            .set('l', this.tools.getTools().get('line') as Tool)
-            .set('b', this.tools.getTools().get('paintBucket') as Tool)
-            .set('3', this.tools.getTools().get('polygon') as Tool)
-            .set('r', this.tools.getTools().get('selection') as Tool)
-            .set('s', this.tools.getTools().get('selection') as Tool)
-            .set('i', this.tools.getTools().get('pipette') as Tool)
-            .set('t', this.tools.getTools().get('text') as Tool)
-            .set('a', this.tools.getTools().get('aerosol') as Tool)
-            .set('p', this.tools.getTools().get('plume') as Tool)
-            .set('g', this.tools.getTools().get('grid') as Tool)
-            .set('v', this.tools.getTools().get('magic-wand') as Tool);
+            .set('c', 'pencil')
+            .set('w', 'brush')
+            .set('e', 'eraser')
+            .set('1', 'rectangle')
+            .set('2', 'ellipse')
+            .set('l', 'line')
+            .set('b', 'paintBucket')
+            .set('3', 'polygon')
+            .set('r', 'selection')
+            .set('s', 'selection')
+            .set('i', 'pipette')
+            .set('t', 'text')
+            .set('a', 'aerosol')
+            .set('p', 'plume')
+            .set('g', 'grid')
+            .set('v', 'magic-wand');
 
         this.baseCtx = this.baseCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.previewCtx = this.previewCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
@@ -81,6 +108,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         this.baseCtx.save();
         this.previewCtx.save();
         this.gridCtx.save();
+        this.drawingService.afterViewObservable.next();
     }
 
     initResizing(event: MouseEvent): void {
@@ -94,7 +122,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         if (this.resizer.resizing) {
             this.previewCanvas.nativeElement.style.borderBottom = 'dotted #000000 1px';
             this.previewCanvas.nativeElement.style.borderRight = 'dotted #000000 1px';
-            this.resizer.resize(event, this.previewCanvas.nativeElement);
+            this.resizer.resize(event, this.previewCanvas.nativeElement, this.gridCanvas.nativeElement);
         }
     }
 
@@ -102,7 +130,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     stopResize(event: MouseEvent): void {
         if (this.resizer.resizing) {
             this.resizer.stopResize(event, this.baseCanvas.nativeElement);
-            if (this.tools.currentTool instanceof GridService && this.tools.currentTool.isGridActive) this.tools.currentTool.displayGrid();
+            if (this.tools.currentTool instanceof GridService && GridService.isGridActive) this.tools.currentTool.displayGrid();
             this.previewCanvas.nativeElement.style.borderBottom = '2px solid #000000';
             this.previewCanvas.nativeElement.style.borderRight = '2px solid #000000';
         }
@@ -122,6 +150,12 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         } else if (this.tools.getTools().get('plume') === this.tools.currentTool) {
             const tool = this.tools.currentTool as PlumeService;
             tool.adjustAngle(event);
+        } else if (this.tools.getTools().get('stamp') === this.tools.currentTool) {
+            const tool = this.tools.currentTool as StampService;
+            const position = tool.getPositionFromMouse(event);
+            tool.updateDegree(event);
+            tool.degres %= Const.FULL_CIRCLE;
+            tool.rotateStamp(this.drawingService.previewCtx, position);
         }
     }
 
@@ -190,34 +224,43 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     @HostListener('document:keyup', ['$event'])
     onKeyUp(event: KeyboardEvent): void {
         this.tools.currentTool.onKeyUp(event);
+        if (this.dialog.openDialogs.length === 0) {
+            this.drawingService.sendMessage(this.tools.getByValue(this.tools.currentTool));
+        }
     }
 
+    // tslint:disable-next-line:cyclomatic-complexity
     @HostListener('window:keydown', ['$event'])
     onkeyDownWindow(event: KeyboardEvent): void {
         const element = event.target as HTMLElement;
         if (element.className === 'textInput') return;
-
         if (event.ctrlKey && event.key === 'o') {
             event.preventDefault();
             event.stopPropagation();
             this.drawingService.newDrawing();
             this.drawingService.resizeCanvas();
+        } else if ((event.ctrlKey && (event.key === 'x' || event.key === 'c' || event.key === 'v')) || event.key === 'Delete') {
+            if (this.tools.currentTool instanceof MagicWandService || this.tools.currentTool instanceof SelectionService) {
+                this.clipboard.onKeyDown(event, this.tools.currentTool);
+            }
         } else if (event.ctrlKey || (event.ctrlKey && event.shiftKey && (event.key === 'z' || event.key === 'Z'))) {
             this.invoker.onKeyDown(event);
         } else if (event.ctrlKey && event.key === 'a') {
-            this.tools.currentTool = this.keyBindings.get('r') as Tool;
+            this.tools.setTools(this.keyBindings.get('r') as string);
             this.tools.currentTool.onKeyDown(event);
         }
         this.onKeyDown(event);
     }
 
     onKeyDown(event: KeyboardEvent): void {
-        if (!(this.tools.currentTool instanceof TextService)) {
-            if (event.ctrlKey && event.key === 'o') {
+        if (!(this.tools.currentTool instanceof TextService && this.tools.currentTool.isRighting))
+            if (event.ctrlKey) {
                 return;
+            } else if (event.key === 'm') {
+                Movable.magnetismActivated = !Movable.magnetismActivated;
             } else if (this.keyBindings.has(event.key)) {
                 this.drawingService.restoreCanvasState();
-                this.tools.currentTool = this.keyBindings.get(event.key) as Tool;
+                this.tools.setTools(this.keyBindings.get(event.key) as string);
                 switch (event.key) {
                     case 'r': {
                         (this.tools.currentTool as SelectionService).selectionStyle = 0;
@@ -229,13 +272,9 @@ export class DrawingComponent implements AfterViewInit, OnInit {
                         (this.tools.currentTool as SelectionService).resetSelection();
                         break;
                     }
-                    case 'g': {
-                        this.tools.currentTool.onKeyDown(event);
-                        break;
-                    }
                 }
-            } else this.tools.currentTool.onKeyDown(event);
-        } else this.tools.currentTool.onKeyDown(event);
+            }
+        this.tools.currentTool.onKeyDown(event);
     }
 
     get width(): number {

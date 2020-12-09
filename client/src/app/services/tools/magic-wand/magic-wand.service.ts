@@ -1,22 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Color } from '@app/classes/color';
+import { Const } from '@app/classes/constants';
 import { DEFAULT_HANDLE_INDEX } from '@app/classes/resizable';
-import { Tool } from '@app/classes/tool';
+import { MouseButton, Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { MagicWandSelection } from './magic-wand-selection';
-
-export enum MouseButton {
-    Left = 0,
-    Middle = 1,
-    Right = 2,
-    Back = 3,
-    Forward = 4,
-}
-const RGBA_NUMBER_OF_COMPONENTS = 4;
-const OFFSET_FOR_SHADOW = 2;
-
 @Injectable({
     providedIn: 'root',
 })
@@ -85,12 +75,9 @@ export class MagicWandService extends Tool {
         if (this.mouseDown) {
             const obj = this.magicSelectionObj;
             obj.updateSelectionNodes();
-            // pour bien update les handles lors d'un flip
-            //////////////////////////////////////////
             obj.width = Math.abs(obj.width);
             obj.height = Math.abs(obj.height);
             obj.updateResizingHandles();
-            ////////////////////////////////////////
             obj.rectangleService.mouseDown = false;
             obj.rectangleService.toSquare = false;
             obj.mouseDownInsideSelection = false;
@@ -152,8 +139,8 @@ export class MagicWandService extends Tool {
     }
 
     onKeyUp(event: KeyboardEvent): void {
-        if (this.isMagicSelectionActivated) {
-            const obj = this.magicSelectionObj;
+        const obj = this.magicSelectionObj;
+        if (obj) {
             if (!event.shiftKey && obj.currenthandle !== DEFAULT_HANDLE_INDEX) {
                 obj.rectangleService.toSquare = false;
                 obj.resizeSelection();
@@ -186,11 +173,12 @@ export class MagicWandService extends Tool {
         }
     }
 
-    private clearSelection(): void {
+    clearSelection(): void {
         this.resetMagicWandCanvas();
         this.selectionPixels = [];
         this.magicSelectionObj.isActive = false;
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        this.shouldAlign = true;
     }
 
     private createSelectionObj(): MagicWandSelection {
@@ -219,8 +207,8 @@ export class MagicWandService extends Tool {
             ? (context.shadowColor = 'red')
             : (context.shadowColor = 'black');
 
-        for (let x = -OFFSET_FOR_SHADOW; x <= OFFSET_FOR_SHADOW; x++) {
-            for (let y = -OFFSET_FOR_SHADOW; y <= OFFSET_FOR_SHADOW; y++) {
+        for (let x = -Const.OFFSET_FOR_SHADOW; x <= Const.OFFSET_FOR_SHADOW; x++) {
+            for (let y = -Const.OFFSET_FOR_SHADOW; y <= Const.OFFSET_FOR_SHADOW; y++) {
                 context.shadowOffsetX = x;
                 context.shadowOffsetY = y;
                 context.drawImage(canvas, this.selectionStartPoint.x, this.selectionStartPoint.y, this.selectionMinWidth, this.selectionMinHeight);
@@ -290,7 +278,7 @@ export class MagicWandService extends Tool {
         const canvas = this.drawingService.baseCtx.canvas;
         const imageData = this.drawingService.baseCtx.getImageData(0, 0, canvas.width, canvas.height);
         const modifiedPixels = [];
-        for (let i = 0; i < imageData.data.length; i += RGBA_NUMBER_OF_COMPONENTS) {
+        for (let i = 0; i < imageData.data.length; i += Const.RGBA_NUMBER_OF_COMPONENTS) {
             if (this.areColorsMatching(this.startingColor, imageData, i)) {
                 this.selectionPixels.push(i);
                 modifiedPixels.push(this.getPositionFromPixel(i, canvas.width));
@@ -312,34 +300,33 @@ export class MagicWandService extends Tool {
         // so we do not have inifinite loop when primaryColor is the same as startingColor;
         const tempColor = this.primaryColor;
         this.primaryColor = '#000000';
-        const startingPixelPosition: number = (position.y * canvas.width + position.x) * RGBA_NUMBER_OF_COMPONENTS;
+        const startingPixelPosition: number = (position.y * canvas.width + position.x) * Const.RGBA_NUMBER_OF_COMPONENTS;
         const isColorTheSame: boolean = this.areColorsMatching(this.hexToColor(this.primaryColor), imageData, startingPixelPosition);
 
         if (isColorTheSame) this.primaryColor = '#ffffff';
 
         while (pixelStack.length) {
             newPosition = pixelStack.pop() as Vec2;
-            pixelPosition = (newPosition.y * canvas.width + newPosition.x) * RGBA_NUMBER_OF_COMPONENTS;
+            pixelPosition = (newPosition.y * canvas.width + newPosition.x) * Const.RGBA_NUMBER_OF_COMPONENTS;
 
             while (newPosition.y-- >= 0 && this.areColorsMatching(this.startingColor, imageData, pixelPosition)) {
-                pixelPosition -= canvas.width * RGBA_NUMBER_OF_COMPONENTS;
+                pixelPosition -= canvas.width * Const.RGBA_NUMBER_OF_COMPONENTS;
             }
-            pixelPosition += canvas.width * RGBA_NUMBER_OF_COMPONENTS;
+            pixelPosition += canvas.width * Const.RGBA_NUMBER_OF_COMPONENTS;
             ++newPosition.y;
             while (newPosition.y++ < canvas.height - 1 && this.areColorsMatching(this.startingColor, imageData, pixelPosition)) {
                 this.fillPixel(imageData, pixelPosition);
                 this.selectionPixels.push(pixelPosition);
                 modifiedPixels.push({ x: newPosition.x, y: newPosition.y });
-                if (newPosition.x > 0 && this.areColorsMatching(this.startingColor, imageData, pixelPosition - RGBA_NUMBER_OF_COMPONENTS))
+                if (newPosition.x > 0 && this.areColorsMatching(this.startingColor, imageData, pixelPosition - Const.RGBA_NUMBER_OF_COMPONENTS))
                     pixelStack.push({ x: newPosition.x - 1, y: newPosition.y });
 
                 if (
                     newPosition.x < canvas.width - 1 &&
-                    this.areColorsMatching(this.startingColor, imageData, pixelPosition + RGBA_NUMBER_OF_COMPONENTS)
+                    this.areColorsMatching(this.startingColor, imageData, pixelPosition + Const.RGBA_NUMBER_OF_COMPONENTS)
                 )
                     pixelStack.push({ x: newPosition.x + 1, y: newPosition.y });
-
-                pixelPosition += canvas.width * RGBA_NUMBER_OF_COMPONENTS;
+                pixelPosition += canvas.width * Const.RGBA_NUMBER_OF_COMPONENTS;
             }
         }
         this.primaryColor = tempColor;

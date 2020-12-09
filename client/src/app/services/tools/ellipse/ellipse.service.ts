@@ -1,19 +1,10 @@
 import { Injectable } from '@angular/core';
+import { Const } from '@app/classes/constants';
 import { EllipseCommand } from '@app/classes/ellipse-command';
-import { Tool } from '@app/classes/tool';
+import { MouseButton, Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
-
-const LINE_DASH_SEGMENT_START = 5;
-const LINE_DASH_SEGMENT_END = 15;
-export enum MouseButton {
-    Left = 0,
-    Middle = 1,
-    Right = 2,
-    Back = 3,
-    Forward = 4,
-}
 
 export enum EllipseStyle {
     Empty = 0,
@@ -24,15 +15,19 @@ export enum EllipseStyle {
     providedIn: 'root',
 })
 export class EllipseService extends Tool {
-    toSquare: boolean = false;
-    isOut: boolean = false;
+    toSquare: boolean;
+    isOut: boolean;
     currentPos: Vec2;
     ellipseStyle: EllipseStyle;
+    lineDash: boolean;
     constructor(drawingService: DrawingService, protected invoker: UndoRedoService) {
         super(drawingService);
+        this.toSquare = false;
+        this.isOut = false;
         this.lineWidth = 1;
         this.ellipseStyle = 2;
         this.toolAttributes = ['ellipseStyle', 'strokeWidth'];
+        this.lineDash = false;
     }
 
     onMouseDown(event: MouseEvent, isSelection: boolean = false): void {
@@ -90,8 +85,6 @@ export class EllipseService extends Tool {
     onMouseMove(event: MouseEvent): void {
         if (this.mouseDown) {
             this.currentPos = this.getPositionFromMouse(event);
-
-            // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.drawEllipse(this.drawingService.previewCtx, this.mouseDownCoord, this.currentPos, this.toSquare);
         }
@@ -153,7 +146,8 @@ export class EllipseService extends Tool {
             const radiusY = Math.abs(Math.abs(height / 2) - this.lineWidth / 2 - 1);
 
             ctx.beginPath();
-            ctx.setLineDash([0, 0]);
+            if (!this.lineDash) ctx.setLineDash([0, 0]);
+            else ctx.setLineDash([2, 2]);
             ctx.lineWidth = this.lineWidth;
             ctx.fillStyle = this.primaryColor;
             ctx.strokeStyle = this.secondaryColor;
@@ -177,7 +171,7 @@ export class EllipseService extends Tool {
 
             if (preview) {
                 ctx.beginPath();
-                ctx.setLineDash([LINE_DASH_SEGMENT_START, LINE_DASH_SEGMENT_END]);
+                ctx.setLineDash([Const.LINE_DASH_SEGMENT_START, Const.LINE_DASH_SEGMENT_END]);
                 ctx.lineWidth = 2;
                 ctx.strokeStyle = 'grey';
                 ctx.rect(startPos.x, startPos.y, width, height);

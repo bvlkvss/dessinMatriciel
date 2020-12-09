@@ -9,11 +9,12 @@ export class ResizeCommand implements Command {
     private newWidth: number;
     private newHeight: number;
     private oldCanvas: HTMLCanvasElement;
-    isResize: boolean = true;
+    isResize: boolean;
     preview: HTMLCanvasElement;
     canvasContainer: HTMLDivElement;
 
     constructor(oldW: number, oldH: number, protected tool: ResizingService, protected drawingService: DrawingService) {
+        this.isResize = true;
         this.oldWidth = oldW;
         this.oldHeight = oldH;
         this.canvasContainer = document.querySelector('#canvas-container') as HTMLDivElement;
@@ -46,16 +47,16 @@ export class ResizeCommand implements Command {
 
     execute(): void {
         const tmp = this.tool.saveCanvas();
-        this.drawingService.canvas.height = this.preview.height = this.newHeight;
-        this.drawingService.canvas.width = this.preview.width = this.newWidth;
+        this.drawingService.gridCanvas.height = this.drawingService.canvas.height = this.preview.height = this.newHeight;
+        this.drawingService.gridCanvas.width = this.drawingService.canvas.width = this.preview.width = this.newWidth;
         this.canvasContainer.style.width = this.newWidth + 'px';
         this.canvasContainer.style.height = this.newHeight + 'px';
         this.tool.drawCanvas(tmp);
     }
     // for resize unexecute is nessecary
     unexecute(): void {
-        this.drawingService.canvas.height = this.preview.height = this.oldHeight;
-        this.drawingService.canvas.width = this.preview.width = this.oldWidth;
+        this.drawingService.gridCanvas.height = this.drawingService.canvas.height = this.preview.height = this.oldHeight;
+        this.drawingService.gridCanvas.width = this.drawingService.canvas.width = this.preview.width = this.oldWidth;
         this.canvasContainer.style.width = this.oldWidth + 'px';
         this.canvasContainer.style.height = this.oldHeight + 'px';
         this.tool.drawCanvas(this.oldCanvas);
