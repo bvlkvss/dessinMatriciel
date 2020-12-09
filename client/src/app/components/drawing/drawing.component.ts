@@ -1,15 +1,4 @@
-import {
-    AfterViewInit,
-    Component,
-    DoCheck,
-    ElementRef,
-    HostListener,
-    IterableDiffer,
-    IterableDiffers,
-    OnDestroy,
-    OnInit,
-    ViewChild,
-} from '@angular/core';
+import { AfterViewInit, Component, DoCheck, ElementRef, HostListener, IterableDiffer, IterableDiffers, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Command } from '@app/classes/command';
 import { Const } from '@app/classes/constants';
@@ -31,7 +20,7 @@ import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
     templateUrl: './drawing.component.html',
     styleUrls: ['./drawing.component.scss'],
 })
-export class DrawingComponent implements AfterViewInit, OnInit, DoCheck, OnDestroy {
+export class DrawingComponent implements AfterViewInit, OnInit, DoCheck {
     @ViewChild('baseCanvas', { static: false }) baseCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('container') container: ElementRef<HTMLDivElement>;
     @ViewChild('resizeContainer') resizeContainer: ElementRef<HTMLDivElement>;
@@ -57,13 +46,10 @@ export class DrawingComponent implements AfterViewInit, OnInit, DoCheck, OnDestr
         this.iterableDiffer = iDiffers.find([]).create();
     }
     ngDoCheck(): void {
-        const changesUndo = this.iterableDiffer.diff(this.invoker.undoStack);
+        const changesUndo = this.iterableDiffer.diff(this.invoker.getUndo());
         if (changesUndo) {
             localStorage.setItem('drawing', this.baseCtx.canvas.toDataURL());
         }
-    }
-    ngOnDestroy(): void {
-        //    location.replace('main-page.component.html');
     }
     ngOnInit(): void {
         this.drawingService.resizeCanvas();
@@ -234,10 +220,12 @@ export class DrawingComponent implements AfterViewInit, OnInit, DoCheck, OnDestr
         if (event.ctrlKey) {
             switch (event.key) {
                 case 'o':
-                    event.preventDefault();
-                    event.stopPropagation();
-                    this.drawingService.newDrawing();
-                    this.drawingService.resizeCanvas();
+                    if (this.invoker.getUndo().length !== 0) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        this.drawingService.newDrawing();
+                        this.drawingService.resizeCanvas();
+                    }
                     break;
                 case 'a':
                     event.preventDefault();

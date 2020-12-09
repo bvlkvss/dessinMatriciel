@@ -2,6 +2,7 @@
 import { Target } from '@angular/compiler';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
+import { PencilCommand } from '@app/classes/pencil-command';
 import { Tool } from '@app/classes/tool';
 import { DrawingComponent } from '@app/components/drawing/drawing.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -12,7 +13,6 @@ import { EllipseService } from '@app/services/tools/ellipse/ellipse.service';
 import { EraserService } from '@app/services/tools/eraser/eraser-service';
 import { GridService } from '@app/services/tools/grid/grid.service';
 import { LineService } from '@app/services/tools/line/line.service';
-//import { MagicWandSelection } from '@app/services/tools/magic-wand/magic-wand-selection';
 import { MagicWandService } from '@app/services/tools/magic-wand/magic-wand.service';
 import { PaintBucketService } from '@app/services/tools/paint-bucket/paint-bucket.service';
 import { PencilService } from '@app/services/tools/pencil/pencil-service';
@@ -96,6 +96,7 @@ describe('DrawingComponent', () => {
                 { provide: MatDialog, useValue: matDialogSpy },
             ],
         }).compileComponents();
+        (matDialogSpy as any).openDialogs=[] as any;
     }));
 
     beforeEach(() => {
@@ -420,6 +421,7 @@ describe('DrawingComponent', () => {
     });
 
     it('should call newDrawing when ctrl-O is pressed', () => {
+        (component as any).invoker.addToUndo(new PencilCommand([],pencilStub,drawServiceMock));
         let event = {
             key: 'o',
             ctrlKey: true,

@@ -211,7 +211,7 @@ export class SidebarComponent implements OnChanges {
     }
 
     newDrawing(): void {
-        if (this.invoker.undoStack.length !== 0) {
+        if (this.invoker.getUndo().length !== 0) {
             this.drawingService.newDrawing();
         }
     }
