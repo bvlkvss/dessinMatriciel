@@ -45,6 +45,7 @@ export class Const {
     static readonly CORONA_STAMPS_LENGHT: number = 17;
     static readonly APPS_STAMPS_LENGHT: number = 13;
     static readonly FOOD_STAMPS_LENGHT: number = 23;
+    static readonly MAX_STAMP_FACTOR: number = 9;
 
     // Drawing's service constants
     static readonly DEFAULT_WIDTH_CANVAS: number = 1000;
@@ -145,6 +146,7 @@ export class Const {
     static readonly WIDTH_TOLERANCE: number = 12;
     static readonly LINE_DASH_MAX: number = 5;
     static readonly LINE_DASH_MIN: number = 4;
+    static readonly CHAR_WIDTH_TOLERANCE: number = 0.09;
 
     // comon constants
     static readonly FULL_CIRCLE: number = 360;

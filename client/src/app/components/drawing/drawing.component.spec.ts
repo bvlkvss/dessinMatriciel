@@ -29,7 +29,7 @@ import { MockUndoRedoService } from '../attribute-bar/attribute-bar.component.sp
 export class MockDrawingService extends DrawingService {
     resizeCanvas(): void {
     }
-    restoreCanvasState(){
+    restoreCanvasState() {
         console.log('restoreCanvas');
     }
 }
@@ -96,7 +96,7 @@ describe('DrawingComponent', () => {
                 { provide: MatDialog, useValue: matDialogSpy },
             ],
         }).compileComponents();
-        (matDialogSpy as any).openDialogs=[] as any;
+        (matDialogSpy as any).openDialogs = [] as any;
     }));
 
     beforeEach(() => {
@@ -421,7 +421,7 @@ describe('DrawingComponent', () => {
     });
 
     it('should call newDrawing when ctrl-O is pressed', () => {
-        (component as any).invoker.addToUndo(new PencilCommand([],pencilStub,drawServiceMock));
+        (component as any).invoker.addToUndo(new PencilCommand([], pencilStub, drawServiceMock));
         let event = {
             key: 'o',
             ctrlKey: true,
@@ -448,7 +448,7 @@ describe('DrawingComponent', () => {
         expect(onKeyDownSpy).not.toHaveBeenCalled();
     });
 
-    it('updateDegree should call selection updatedegree and redrawslection', () => {
+    it('updateDegree should call selection updatedegree and redrawselection', () => {
         (component as any).tools.currentTool = (component as any).tools.getTools().get('selection');
         (component as any).tools.currentTool.updateDegree = jasmine.createSpy().and.callThrough().and.callFake(() => { });
         (component as any).tools.currentTool.redrawSelection = jasmine.createSpy().and.callThrough().and.callFake(() => { });
@@ -458,7 +458,7 @@ describe('DrawingComponent', () => {
 
 
 
-    it('updateDegree should call selection updatedegree and redrawslection', () => {
+    it('updateDegree should call selection updatedegree and redrawselection', () => {
         (component as any).tools.currentTool = (component as any).tools.getTools().get('plume');
         (component as any).tools.currentTool.adjustAngle = jasmine.createSpy().and.callThrough().and.callFake(() => { });
         (component as any).tools.currentTool.redrawSelection = jasmine.createSpy().and.callThrough().and.callFake(() => { });
@@ -466,11 +466,13 @@ describe('DrawingComponent', () => {
         expect((component as any).tools.currentTool.adjustAngle).toHaveBeenCalled();
     });
 
-    it('updateDegree should call selection updatedegree and redrawslection', () => {
+    it('updateDegree should call selection updatedegree and redrawselection', () => {
         (component as any).tools.currentTool = (component as any).tools.getTools().get('stamp');
         (component as any).tools.currentTool.updateDegree = jasmine.createSpy().and.callThrough().and.callFake(() => { });
         (component as any).tools.currentTool.redrawSelection = jasmine.createSpy().and.callThrough().and.callFake(() => { });
-        component.updateDegree({ deltaY: 1, } as WheelEvent);
+        const targetElement: any = { tagName: 'CANVAS' };
+        const event: any = { deltaY: 1, target: targetElement };
+        component.updateDegree(event);
         expect((component as any).tools.currentTool.updateDegree).toHaveBeenCalled();
     });
 

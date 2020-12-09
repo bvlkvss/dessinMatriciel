@@ -137,6 +137,10 @@ export class DrawingComponent implements AfterViewInit, OnInit, DoCheck {
             const tool = this.tools.currentTool as PlumeService;
             tool.adjustAngle(event);
         } else if (this.tools.getTools().get('stamp') === this.tools.currentTool) {
+            if ((event.target as HTMLElement).tagName !== 'CANVAS') {
+                event.stopPropagation();
+                return;
+            }
             const tool = this.tools.currentTool as StampService;
             const position = tool.getPositionFromMouse(event);
             tool.updateDegree(event);

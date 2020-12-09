@@ -505,7 +505,6 @@
     }
 }
 
-
 .typeSelectionContainer {
     display: flex;
     align-items: center;
@@ -587,7 +586,7 @@
     display: flex;
     justify-content: center;
 }
-.selectAllButton{
+.selectAllButton {
     position: relative;
     top: 20px;
 }
@@ -620,12 +619,8 @@
     // color: rgb(64, 61, 85);
 }
 
-.selectWholeCanvas{
+.selectWholeCanvas {
     width: 100%;
-}
-
-.material-icons {
-    color: white;
 }
 
 #SelectionContainer {

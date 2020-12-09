@@ -188,12 +188,12 @@ export class TextService extends Tool {
         const firstPart = this.lines[this.currentLinePosition].substr(0, this.currentChar);
         position.x = this.firstCursorPosition.x + this.measureText(firstPart);
         position.y = this.textPosition.y + this.currentLinePosition * this.fontSize - Const.CURSOR_POSITION_Y_TOLERANCE * this.fontSize;
-
+        const charWidthToAdd = this.fontText.includes('Times') ? 0 : this.measureText('M') * Const.CHAR_WIDTH_TOLERANCE;
         if (this.fontSize <= Const.SMALL_TEXT_SIZE) position.x += 2;
         ctx.font = this.fontStyle + ' ' + this.fontText;
         ctx.fillStyle = 'black';
         ctx.globalAlpha = isBlank ? 0 : 1;
-        ctx.fillText(this.cursor, position.x, position.y);
+        ctx.fillText(this.cursor, position.x - charWidthToAdd, position.y);
         ctx.restore();
     }
     onKeyDown(event: KeyboardEvent): void {
