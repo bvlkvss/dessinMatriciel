@@ -63,7 +63,6 @@ export class StampService extends Tool implements Rotationable {
         ctx.save();
         ctx.translate(centerPosition.x, centerPosition.y);
         ctx.rotate((this.degres * Math.PI) / (Const.FULL_CIRCLE / 2));
-        ctx.canvas.style.cursor = 'none';
         ctx.drawImage(this.image, -this.image.width / 2, -this.image.width / 2, this.image.width, this.image.height);
         ctx.restore();
     }
@@ -77,6 +76,8 @@ export class StampService extends Tool implements Rotationable {
         this.degres = degree;
     }
     setStampSize(leftValue: number, rightValue: number): void {
+        leftValue = leftValue > Const.MAX_STAMP_FACTOR ? Const.MAX_STAMP_FACTOR : leftValue;
+        rightValue = rightValue > Const.MAX_STAMP_FACTOR ? Const.MAX_STAMP_FACTOR : rightValue;
         this.image.height = this.image.width = (this.lineWidth * leftValue) / rightValue;
     }
 }

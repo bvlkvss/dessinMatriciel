@@ -495,7 +495,7 @@ describe('TextService', () => {
     expect(service.isBlank).toEqual(false);
     expect(baseCtxStub.globalAlpha).toEqual(0);
     expect(baseCtxStub.fillStyle).toEqual("#000000");
-    expect(fillTextSpy).toHaveBeenCalledWith("|", 297, 124.5);
+    expect(fillTextSpy).toHaveBeenCalledWith("|", 292.5, 124.5);
     expect(measureTextSpy).toHaveBeenCalled();
   });
   it('alignSingleLine should return the right point when allignement is left', () => {

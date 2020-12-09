@@ -30,7 +30,6 @@ export class MockDrawingService extends DrawingService {
     resizeCanvas(): void {
     }
     restoreCanvasState() {
-        console.log('restoreCanvas');
     }
 }
 
@@ -448,7 +447,7 @@ describe('DrawingComponent', () => {
         expect(onKeyDownSpy).not.toHaveBeenCalled();
     });
 
-    it('updateDegree should call selection updatedegree and redrawslection', () => {
+    it('updateDegree should call selection updatedegree and redrawselection', () => {
         (component as any).tools.currentTool = (component as any).tools.getTools().get('selection');
         (component as any).tools.currentTool.updateDegree = jasmine.createSpy().and.callThrough().and.callFake(() => { });
         (component as any).tools.currentTool.redrawSelection = jasmine.createSpy().and.callThrough().and.callFake(() => { });
@@ -458,7 +457,7 @@ describe('DrawingComponent', () => {
 
 
 
-    it('updateDegree should call selection updatedegree and redrawslection', () => {
+    it('updateDegree should call selection updatedegree and redrawselection', () => {
         (component as any).tools.currentTool = (component as any).tools.getTools().get('plume');
         (component as any).tools.currentTool.adjustAngle = jasmine.createSpy().and.callThrough().and.callFake(() => { });
         (component as any).tools.currentTool.redrawSelection = jasmine.createSpy().and.callThrough().and.callFake(() => { });
@@ -466,11 +465,13 @@ describe('DrawingComponent', () => {
         expect((component as any).tools.currentTool.adjustAngle).toHaveBeenCalled();
     });
 
-    it('updateDegree should call selection updatedegree and redrawslection', () => {
+    it('updateDegree should call selection updatedegree and redrawselection', () => {
         (component as any).tools.currentTool = (component as any).tools.getTools().get('stamp');
         (component as any).tools.currentTool.updateDegree = jasmine.createSpy().and.callThrough().and.callFake(() => { });
         (component as any).tools.currentTool.redrawSelection = jasmine.createSpy().and.callThrough().and.callFake(() => { });
-        component.updateDegree({ deltaY: 1, } as WheelEvent);
+        const targetElement: any = { tagName: 'CANVAS' };
+        const event: any = { deltaY: 1, target: targetElement };
+        component.updateDegree(event);
         expect((component as any).tools.currentTool.updateDegree).toHaveBeenCalled();
     });
 

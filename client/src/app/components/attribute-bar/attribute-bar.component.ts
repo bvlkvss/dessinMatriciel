@@ -61,7 +61,7 @@ export class AttributeBarComponent implements OnInit, AfterViewChecked, AfterVie
         this.idStyleBrush = 1;
         this.tolerance = '0';
         this.squareSize = '25';
-        this.polices = ['Arial', 'Times New Roman', 'Courier New', 'Verdana', 'Comic Sans MS, cursive', 'monospace'];
+        this.polices = ['Arial', 'Times New Roman', 'Tahoma', 'Verdana', 'Comic Sans MS, cursive'];
         this.opacity = '50';
         this.leftStampFactorValue = 1;
         this.rightStampFactorValue = 1;

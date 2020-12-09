@@ -1,19 +1,31 @@
 /* tslint:disable */
 import { TestBed } from '@angular/core/testing';
 import { Tool } from '@app/classes/tool';
-//import { from } from 'rxjs';
+import { MockUndoRedoService } from '@app/components/attribute-bar/attribute-bar.component.spec';
+import { MockDrawingService } from '@app/components/drawing/drawing.component.spec';
 import { EllipseService } from '../tools/ellipse/ellipse.service';
 import { LineService } from '../tools/line/line.service';
+import { MagicWandService } from '../tools/magic-wand/magic-wand.service';
 import { PaintBucketService } from '../tools/paint-bucket/paint-bucket.service';
 import { PolygonService } from '../tools/polygon/polygon.service';
 import { RectangleService } from '../tools/rectangle/rectangle.service';
+import { SelectionService } from '../tools/selection/selection.service';
 import { ToolsManagerService } from './tools-manager.service';
 describe('ToolsManagerService', () => {
     let service: ToolsManagerService;
+    let drawServiceMock: MockDrawingService;
+    let selectionStub: SelectionService;
+    let undoRedoServiceMock: MockUndoRedoService;
+    let magicWandStub: MagicWandService;
+
 
     beforeEach(() => {
         TestBed.configureTestingModule({});
         service = TestBed.inject(ToolsManagerService);
+        drawServiceMock = new MockDrawingService();
+        selectionStub = new SelectionService(drawServiceMock, undoRedoServiceMock);
+        undoRedoServiceMock = new MockUndoRedoService(drawServiceMock);
+        magicWandStub = new MagicWandService(drawServiceMock, undoRedoServiceMock);
     });
 
     it('should be created', () => {
@@ -84,5 +96,28 @@ describe('ToolsManagerService', () => {
 
         service.setJunctionState(true);
         expect(setJunctionStateSpy).toHaveBeenCalled();
+    });
+
+    it('should call drawSelectionOnBase of selection when changing tool if current ool was selection', () => {
+        const drawOnBaseSpy = spyOn(selectionStub, 'drawSelectionOnBase').and.stub();
+        service.currentTool = selectionStub;
+
+        service.setTools('rectangle');
+        expect(drawOnBaseSpy);
+
+
+    });
+
+    it('should call drawSelectionOnBase of magicWand when changing tool if current ool was selection', () => {
+        magicWandStub.magicSelectionObj = (magicWandStub as any).createSelectionObj();
+
+        const drawOnBaseSpy = spyOn(magicWandStub.magicSelectionObj, 'drawSelectionOnBase').and.stub();
+
+        service.currentTool = magicWandStub;
+
+        service.setTools('rectangle');
+        expect(drawOnBaseSpy);
+
+
     });
 });
