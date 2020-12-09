@@ -11,7 +11,6 @@ export class ResizeCommand implements Command {
     private oldCanvas: HTMLCanvasElement;
     isResize: boolean;
     preview: HTMLCanvasElement;
-    grid: HTMLCanvasElement;
     canvasContainer: HTMLDivElement;
 
     constructor(oldW: number, oldH: number, protected tool: ResizingService, protected drawingService: DrawingService) {
@@ -28,10 +27,6 @@ export class ResizeCommand implements Command {
 
     setPreview(preview: HTMLCanvasElement): void {
         this.preview = preview;
-    }
-
-    setGrid(grid: HTMLCanvasElement): void {
-        this.grid = grid;
     }
 
     getnewSize(): Vec2 {
@@ -52,16 +47,16 @@ export class ResizeCommand implements Command {
 
     execute(): void {
         const tmp = this.tool.saveCanvas();
-        this.drawingService.canvas.height = this.preview.height = this.grid.height = this.newHeight;
-        this.drawingService.canvas.width = this.preview.width = this.grid.width = this.newWidth;
+        this.drawingService.gridCanvas.height = this.drawingService.canvas.height = this.preview.height = this.newHeight;
+        this.drawingService.gridCanvas.width = this.drawingService.canvas.width = this.preview.width = this.newWidth;
         this.canvasContainer.style.width = this.newWidth + 'px';
         this.canvasContainer.style.height = this.newHeight + 'px';
         this.tool.drawCanvas(tmp);
     }
     // for resize unexecute is nessecary
     unexecute(): void {
-        this.drawingService.canvas.height = this.preview.height = this.grid.height = this.oldHeight;
-        this.drawingService.canvas.width = this.preview.width = this.grid.width = this.oldWidth;
+        this.drawingService.gridCanvas.height = this.drawingService.canvas.height = this.preview.height = this.oldHeight;
+        this.drawingService.gridCanvas.width = this.drawingService.canvas.width = this.preview.width = this.oldWidth;
         this.canvasContainer.style.width = this.oldWidth + 'px';
         this.canvasContainer.style.height = this.oldHeight + 'px';
         this.tool.drawCanvas(this.oldCanvas);

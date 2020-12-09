@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Const } from '@app/classes/constants';
+import { SprayPaintCommand } from '@app/classes/spray-paint-command';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -23,6 +24,7 @@ export class SprayPaintService extends Tool {
     period: number = (1 / Const.DEFAULT_FREQUENCY) * Const.MULTIPLICATIONFACTOR;
     interval: NodeJS.Timeout;
     currentMousePos: Vec2;
+    sprayCommand: SprayPaintCommand;
     density: number = Const.DENSITY;
 
     constructor(drawingService: DrawingService, protected invoker: UndoRedoService) {
@@ -35,6 +37,9 @@ export class SprayPaintService extends Tool {
 
         if (this.mouseDown) {
             this.currentMousePos = this.mouseDownCoord = this.getPositionFromMouse(event);
+            this.invoker.ClearRedo();
+            this.invoker.setIsAllowed(false);
+            this.sprayCommand = new SprayPaintCommand(this, this.drawingService);
             this.interval = setInterval(() => {
                 this.spray(this.drawingService.baseCtx, this.currentMousePos);
             }, this.period);
@@ -43,6 +48,10 @@ export class SprayPaintService extends Tool {
 
     onMouseUp(event: MouseEvent): void {
         this.myClearInterval(this.interval);
+        if (this.mouseDown) {
+            this.invoker.addToUndo(this.sprayCommand);
+            this.invoker.setIsAllowed(true);
+        }
         this.mouseDown = false;
     }
 
@@ -74,6 +83,7 @@ export class SprayPaintService extends Tool {
             const offset = this.getRandomOffset();
             const x = position.x + offset.x;
             const y = position.y + offset.y;
+            if (this.sprayCommand) this.sprayCommand.pushData({ x, y });
             ctx.beginPath();
             ctx.arc(x, y, this.dropletRadius, 0, 2 * Math.PI, false);
             ctx.fill();

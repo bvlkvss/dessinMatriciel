@@ -85,9 +85,8 @@ export class ResizingService {
 
     resize(event: MouseEvent, preview: HTMLCanvasElement, grid: HTMLCanvasElement): void {
         const t = document.querySelector('#canvas-container') as HTMLDivElement;
-        if (this.cmd && (!this.cmd.preview || !this.cmd.grid)) {
+        if (this.cmd && !this.cmd.preview) {
             this.cmd.setPreview(preview);
-            this.cmd.setGrid(grid);
         }
         if (this.resizing && event.button === 0) {
             switch (this.currentResizer) {

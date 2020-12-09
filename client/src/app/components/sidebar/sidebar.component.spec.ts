@@ -68,7 +68,7 @@ describe('SidebarComponent', () => {
         plumeStub = new PlumeService(drawServiceMock, UndoRedoServiceMock);
         sprayPaintStub = new SprayPaintService(drawServiceMock, UndoRedoServiceMock);
         selectionStub = new SelectionService(drawServiceMock, UndoRedoServiceMock);
-        textStub = new TextService(drawServiceMock);
+        textStub = new TextService(drawServiceMock, UndoRedoServiceMock);
         gridStub = new GridService(drawServiceMock);
         stampStub = new StampService(drawServiceMock);
 

@@ -240,7 +240,6 @@ export class DrawingComponent implements AfterViewInit, OnInit, DoCheck, OnDestr
             this.drawingService.newDrawing();
             this.drawingService.resizeCanvas();
         } else if ((event.ctrlKey && (event.key === 'x' || event.key === 'c' || event.key === 'v')) || event.key === 'Delete') {
-            event.stopPropagation();
             if (this.tools.currentTool instanceof MagicWandService || this.tools.currentTool instanceof SelectionService) {
                 this.clipboard.onKeyDown(event, this.tools.currentTool);
             }

@@ -10,7 +10,8 @@ export class EllipseCommand extends Command {
     private primaryColor: string;
     private secondaryColor: string;
     private opacity: number;
-    isResize: boolean;
+    private toCircle: boolean;
+    isResize: boolean = false;
 
     constructor(startPos: Vec2, endPos: Vec2, style: number, protected tool: EllipseService, protected drawingService: DrawingService) {
         super();
@@ -21,12 +22,13 @@ export class EllipseCommand extends Command {
         this.primaryColor = this.tool.primaryColor;
         this.secondaryColor = this.tool.secondaryColor;
         this.opacity = this.tool.opacity;
+        this.toCircle = this.tool.toSquare;
     }
     execute(): void {
         this.tool.ellipseStyle = this.style;
         this.tool.primaryColor = this.primaryColor;
         this.tool.secondaryColor = this.secondaryColor;
         this.tool.opacity = this.opacity;
-        this.tool.drawEllipse(this.drawingService.baseCtx, this.startPos, this.endPos, false, false);
+        this.tool.drawEllipse(this.drawingService.baseCtx, this.startPos, this.endPos, this.toCircle, false);
     }
 }

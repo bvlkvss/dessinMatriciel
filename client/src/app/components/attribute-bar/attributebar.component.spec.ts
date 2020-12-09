@@ -27,10 +27,8 @@ import { AttributeBarComponent } from './attributebar.component';
 
 export class MockUndoRedoService extends UndoRedoService {
     executeAll(): void {
-        console.log('executeAll was Called');
     }
     ClearRedo(): void {
-        console.log('clearRedo was called');
     }
 }
 
@@ -78,7 +76,7 @@ describe('AttributebarComponent', () => {
         ellipseStub = new EllipseService(drawServiceMock, UndoRedoServiceMock);
         eraserStub = new EraserService(drawServiceMock, UndoRedoServiceMock);
         pipetteStub = new PipetteService(drawServiceMock);
-        textStub = new TextService(drawServiceMock);
+        textStub = new TextService(drawServiceMock, UndoRedoServiceMock);
         plumeStub = new PlumeService(drawServiceMock, UndoRedoServiceMock);
         sprayPaintStub = new SprayPaintService(drawServiceMock, UndoRedoServiceMock);
         gridStub = new GridService(drawServiceMock);

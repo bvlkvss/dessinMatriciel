@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Const } from '@app/classes/constants';
+import { TextCommand } from '@app/classes/text-command';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
 @Injectable({
     providedIn: 'root',
@@ -26,8 +28,8 @@ export class TextService extends Tool {
     rectStartPoint: Vec2;
     rectEndPoint: Vec2;
     rectHeight: number;
-    rectWidth: number;
-    constructor(drawingService: DrawingService) {
+    rectWidth: number = Const.DEFAULT_BOX_WIDTH;
+    constructor(drawingService: DrawingService, private invoker: UndoRedoService) {
         super(drawingService);
         this.lineWidth = Const.DEFAULT_FONT_SIZE;
         this.lines = [];
@@ -65,6 +67,8 @@ export class TextService extends Tool {
     }
     onClick(event: MouseEvent): void {
         this.mouseDownCoord = this.getPositionFromMouse(event);
+        this.invoker.setIsAllowed(false);
+        this.invoker.ClearRedo();
         if (this.firstClick) {
             this.setToInitState();
             this.intervalId = setInterval(() => {
@@ -77,6 +81,9 @@ export class TextService extends Tool {
 
     drawConfirmedText(toolChanged: boolean): void {
         if (!this.isInsideRect() || toolChanged) {
+            this.invoker.setIsAllowed(true);
+            const cmd = new TextCommand(this, this.drawingService);
+            this.invoker.addToUndo(cmd);
             this.writeText(this.drawingService.baseCtx, this.textPosition);
             clearInterval(this.intervalId);
             this.restoreToInitState();
@@ -119,7 +126,7 @@ export class TextService extends Tool {
         this.rectEndPoint.y = this.rectStartPoint.y + this.rectHeight;
     }
 
-    private writeText(ctx: CanvasRenderingContext2D, position: Vec2): void {
+    writeText(ctx: CanvasRenderingContext2D, position: Vec2): void {
         ctx.fillStyle = this.primaryColor;
         ctx.font = this.fontStyle + ' ' + this.fontSize + 'px ' + this.fontText;
         if (position) {
