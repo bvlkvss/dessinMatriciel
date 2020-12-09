@@ -224,7 +224,6 @@ export class DrawingComponent implements AfterViewInit, OnInit, DoCheck, OnDestr
     @HostListener('document:keyup', ['$event'])
     onKeyUp(event: KeyboardEvent): void {
         this.tools.currentTool.onKeyUp(event);
-        
     }
 
     // tslint:disable-next-line:cyclomatic-complexity
@@ -276,7 +275,6 @@ export class DrawingComponent implements AfterViewInit, OnInit, DoCheck, OnDestr
                 }
             }
         this.tools.currentTool.onKeyDown(event);
-       
     }
 
     get width(): number {

@@ -153,11 +153,8 @@ export class ToolsManagerService {
         spray.setRadius(value);
     }
 
-    setAnchorPoint(value:number): void{
+    setAnchorPoint(value: number): void {
         Movable.magnetismAnchorPoint = value;
         Tool.shouldAlign = true;
     }
-    
-
-
 }

@@ -15,7 +15,6 @@ import { StampService } from '@app/services/tools/stamp/stamp.service';
 import { TextService } from '@app/services/tools/text/text.service';
 import { Subscription } from 'rxjs';
 
-
 @Component({
     selector: 'app-attributebar',
     templateUrl: './attributebar.component.html',
@@ -45,8 +44,6 @@ export class AttributeBarComponent implements OnInit, AfterViewChecked, AfterVie
     @ViewChild('stampIcon') stampIcon: ElementRef<HTMLElement>;
     @ViewChild('a') a: ElementRef<HTMLElement>;
 
-
-
     pipetteCtx: CanvasRenderingContext2D;
     currentStamp: string = '../../../assets/Stamps/Poop Emoji.png';
     currentTexture: string = '../../../assets/b1.svg';
@@ -72,7 +69,6 @@ export class AttributeBarComponent implements OnInit, AfterViewChecked, AfterVie
     }
     private showContainer: boolean = false;
     private lastTool: Tool = this.tools.currentTool;
-
 
     ngOnInit(): void {
         this.widthValue = this.tools.currentTool.lineWidth.toString();
@@ -203,19 +199,18 @@ export class AttributeBarComponent implements OnInit, AfterViewChecked, AfterVie
         for (let i = 0; i < numberOfTools; i++) {
             document.querySelectorAll('#a')[i].classList.remove('active');
         }
-        if(this.tools.currentTool instanceof SelectionService){
-            if((this.tools.currentTool as SelectionService).selectionStyle == 0){
+        if (this.tools.currentTool instanceof SelectionService) {
+            if ((this.tools.currentTool as SelectionService).selectionStyle === 0) {
                 document.querySelector('#rectSelection')?.setAttribute('class', 'active');
                 document.querySelector('#ellipseSelection')?.setAttribute('class', 'inactive');
                 document.querySelector('#wandSelection')?.setAttribute('class', 'inactive');
-
-            } else if((this.tools.currentTool as SelectionService).selectionStyle == 1){
+            } else if ((this.tools.currentTool as SelectionService).selectionStyle === 1) {
                 document.querySelector('#ellipseSelection')?.setAttribute('class', 'active');
                 document.querySelector('#rectSelection')?.setAttribute('class', 'inactive');
                 document.querySelector('#wandSelection')?.setAttribute('class', 'inactive');
-            }  
+            }
         }
-        if(this.tools.currentTool instanceof MagicWandService){
+        if (this.tools.currentTool instanceof MagicWandService) {
             document.querySelector('#wandSelection')?.setAttribute('class', 'active');
             document.querySelector('#rectSelection')?.setAttribute('class', 'inactive');
             document.querySelector('#ellipseSelection')?.setAttribute('class', 'inactive');
@@ -321,14 +316,13 @@ export class AttributeBarComponent implements OnInit, AfterViewChecked, AfterVie
         this.tools.setLineWidth(Number(this.widthValue));
     }
 
-    setAnchorPoint(anchorPoint: number): void{
+    setAnchorPoint(anchorPoint: number): void {
         this.tools.setAnchorPoint(anchorPoint);
     }
 
-    checkIfMagnetismActivated(): boolean{
+    checkIfMagnetismActivated(): boolean {
         return Movable.magnetismActivated;
     }
-
 
     selectAll(): void {
         (this.tools.currentTool as SelectionService).selectionStyle = 0;

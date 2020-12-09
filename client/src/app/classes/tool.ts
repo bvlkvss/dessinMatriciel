@@ -13,6 +13,7 @@ export enum MouseButton {
 }
 // tslint:disable:no-empty
 export abstract class Tool {
+    static shouldAlign: boolean;
     toolAttributes: string[];
     mouseDownCoord: Vec2;
     mouseDown: boolean;
@@ -25,7 +26,6 @@ export abstract class Tool {
     opacity: number;
     primaryColor: string;
     secondaryColor: string;
-    static shouldAlign: boolean;
 
     constructor(protected drawingService: DrawingService) {
         this.isOut = false;

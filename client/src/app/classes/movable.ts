@@ -17,6 +17,7 @@ const CONTINUOUS_MOVE_DELAY = 100;
 // tslint:disable:no-empty cause it an abstract class
 export abstract class Movable extends Tool implements Rotationable, Resizable {
     static magnetismActivated: boolean = false;
+    static magnetismAnchorPoint: number;
     ellipseService: EllipseService;
     rectangleService: RectangleService;
     currenthandle: number;
@@ -41,7 +42,6 @@ export abstract class Movable extends Tool implements Rotationable, Resizable {
     selectionActivated: boolean;
     mouseDownInsideSelection: boolean;
     magicSelectionObj: MagicWandSelection;
-    static magnetismAnchorPoint: number;
     deltaX: number;
     deltaY: number;
     tmpAlignmentPoint: Vec2;
