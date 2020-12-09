@@ -29,6 +29,9 @@ import { MockUndoRedoService } from '../attribute-bar/attributebar.component.spe
 export class MockDrawingService extends DrawingService {
     resizeCanvas(): void {
     }
+    restoreCanvasState(){
+        console.log('restoreCanvas');
+    }
 }
 
 class MockResizingService extends ResizingService {
@@ -162,6 +165,7 @@ describe('DrawingComponent', () => {
     });
 
     it('on key w pressed current tool should change to brush ', () => {
+        (matDialogSpy.openDialogs as any) = { length: 0 };
         const event = new KeyboardEvent('document:keydown', {
             key: 'w',
         });
@@ -192,6 +196,7 @@ describe('DrawingComponent', () => {
     });
 
     it('on key e pressed current tool should change to eraser ', () => {
+        (matDialogSpy.openDialogs as any) = { length: 0 };
         const event = new KeyboardEvent('document:keydown', {
             key: 'e',
         });
@@ -200,6 +205,7 @@ describe('DrawingComponent', () => {
     });
 
     it('on key c pressed current tool should change to pencil ', () => {
+        (matDialogSpy.openDialogs as any) = { length: 0 };
         const event = new KeyboardEvent('document:keydown', {
             key: 'c',
         });
@@ -208,6 +214,7 @@ describe('DrawingComponent', () => {
     });
 
     it('on key 1 pressed current tool should change to rectangle ', () => {
+        (matDialogSpy.openDialogs as any) = { length: 0 };
         const event = new KeyboardEvent('document:keydown', {
             key: '1',
         });
@@ -216,6 +223,7 @@ describe('DrawingComponent', () => {
     });
 
     it('on key 2 pressed current tool should change to ellipse ', () => {
+        (matDialogSpy.openDialogs as any) = { length: 0 };
         const event = new KeyboardEvent('document:keydown', {
             key: '2',
         });
@@ -223,6 +231,7 @@ describe('DrawingComponent', () => {
         expect(toolManagerStub.currentTool).toEqual(toolManagerStub.getTools().get('ellipse') as Tool);
     });
     it('on key l pressed current tool should change to line ', () => {
+        (matDialogSpy.openDialogs as any) = { length: 0 };
         const event = new KeyboardEvent('document:keydown', {
             key: 'l',
         });
@@ -231,6 +240,7 @@ describe('DrawingComponent', () => {
     });
 
     it('on key 3 pressed current tool should change to polygon ', () => {
+        (matDialogSpy.openDialogs as any) = { length: 0 };
         const event = new KeyboardEvent('document:keydown', {
             key: '3',
         });
@@ -239,6 +249,7 @@ describe('DrawingComponent', () => {
     });
 
     it('on another key down, current tool should call tool on key down', () => {
+        (matDialogSpy.openDialogs as any) = { length: 0 };
         const event = new KeyboardEvent('document:keydown', {
             key: 'z',
         });

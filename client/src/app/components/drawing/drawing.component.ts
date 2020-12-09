@@ -251,7 +251,7 @@ export class DrawingComponent implements AfterViewInit, OnInit, DoCheck, OnDestr
     }
 
     onKeyDown(event: KeyboardEvent): void {
-        if (!(this.tools.currentTool instanceof TextService && this.tools.currentTool.isRighting))
+        if (!(this.tools.currentTool instanceof TextService && this.tools.currentTool.isWriting))
             if (event.ctrlKey) {
                 return;
             } else if (event.key === 'm') {
@@ -274,7 +274,6 @@ export class DrawingComponent implements AfterViewInit, OnInit, DoCheck, OnDestr
                 if (this.dialog.openDialogs.length === 0) {
                     this.drawingService.sendMessage(this.tools.getByValue(this.tools.currentTool));
                 }
-                console.log(this.tools.currentTool);
             }
         this.tools.currentTool.onKeyDown(event);
        
