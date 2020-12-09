@@ -475,28 +475,6 @@ describe('UndoRedoService', () => {
     expect((sprayStubCommand as any).pathData[0]).toEqual({ x: 1, y: 2 });
   });
 
-  it('should add something to map', () => {
-    sprayStub.sprayCommand = sprayStubCommand;
-    sprayStub.sprayCommand.pushData({ x: 1, y: 2 });
-    sprayStub.spray(DrawingServiceMock.baseCtx, { x: 1, y: 2 });
-    expect(sprayStubCommand.mapRandom.size).not.toEqual(0);
-  });
-
-  it('should not call spray if execute called and pathdata empty', () => {
-    sprayStubCommand.spray = jasmine.createSpy().and.callThrough().and.callFake(() => { });
-    (sprayStubCommand as any).pathData = [];
-    sprayStubCommand.execute()
-    expect(sprayStubCommand.spray).not.toHaveBeenCalled();
-  });
-
-
-  it('should call spray twice if execute called and pathdata.length = 2', () => {
-    sprayStubCommand.spray = jasmine.createSpy().and.callThrough().and.callFake(() => { });
-    (sprayStubCommand as any).pathData = [{ x: 1, y: 2 }, { x: 2, y: 3 }] as Vec2[];
-    sprayStubCommand.execute()
-    expect(sprayStubCommand.spray).toHaveBeenCalledTimes(2);
-  });
-
   it('should call drawellipse with to circle = true', () => {
     (ellipseCommandStub as any).toCircle = true;
     const spy = spyOn(ellipseStub, 'drawEllipse').and.callThrough();
@@ -520,13 +498,18 @@ describe('UndoRedoService', () => {
     ctx.arc = jasmine.createSpy().and.callThrough().and.callFake(() => { });
     ctx.fill = jasmine.createSpy().and.callThrough().and.callFake(() => { });
     ctx.stroke = jasmine.createSpy().and.callThrough().and.callFake(() => { });
-    (sprayStubCommand as any).density = 1;
-    sprayStubCommand.mapRandom.get = jasmine.createSpy().and.callFake(() => { return [{ x: 1, y: 2 }] });
-    sprayStubCommand.spray(ctx, { x: 1, y: 2 });
+    sprayStubCommand.spray(ctx, [{ x: 1, y: 2 }]);
     expect(ctx.beginPath).toHaveBeenCalled();
     expect(ctx.arc).toHaveBeenCalled();
     expect(ctx.fill).toHaveBeenCalled();
     expect(ctx.stroke).toHaveBeenCalled();
+  });
+
+
+  it('execute should call spray', () => {
+    sprayStubCommand.spray = jasmine.createSpy().and.callThrough().and.callFake(() => { });
+    sprayStubCommand.execute();
+    expect(sprayStubCommand.spray).toHaveBeenCalled();
   });
 
   it('should not call arc ,fill stroke of context if this.density == 0', () => {
@@ -536,9 +519,7 @@ describe('UndoRedoService', () => {
     ctx.arc = jasmine.createSpy().and.callThrough().and.callFake(() => { });
     ctx.fill = jasmine.createSpy().and.callThrough().and.callFake(() => { });
     ctx.stroke = jasmine.createSpy().and.callThrough().and.callFake(() => { });
-    (sprayStubCommand as any).density = 0;
-    sprayStubCommand.mapRandom.get = jasmine.createSpy().and.callFake(() => { return [{ x: 1, y: 2 }] });
-    sprayStubCommand.spray(ctx, { x: 1, y: 2 });
+    sprayStubCommand.spray(ctx, []);
     expect(ctx.beginPath).not.toHaveBeenCalled();
     expect(ctx.arc).not.toHaveBeenCalled();
     expect(ctx.fill).not.toHaveBeenCalled();
