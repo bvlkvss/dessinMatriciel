@@ -47,6 +47,7 @@ export class PlumeService extends Tool {
             this.plumeCommand = new PlumeCommand(this, this.drawingService);
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.pathData.push(this.mouseDownCoord);
+            this.plumeCommand.pushData(this.mouseDownCoord);
         }
     }
 

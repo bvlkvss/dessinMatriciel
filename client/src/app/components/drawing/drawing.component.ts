@@ -259,6 +259,8 @@ export class DrawingComponent implements AfterViewInit, OnInit, DoCheck {
             } else if (this.keyBindings.has(event.key)) {
                 this.drawingService.restoreCanvasState();
                 this.tools.setTools(this.keyBindings.get(event.key) as string);
+                this.invoker.setIsAllowed(true);
+                if (this.tools.currentTool instanceof StampService) this.invoker.setIsAllowed(false);
                 switch (event.key) {
                     case 'r': {
                         (this.tools.currentTool as SelectionService).selectionStyle = 0;

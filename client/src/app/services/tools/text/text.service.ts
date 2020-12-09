@@ -81,9 +81,11 @@ export class TextService extends Tool {
 
     drawConfirmedText(toolChanged: boolean): void {
         if (!this.isInsideRect() || toolChanged) {
-            this.invoker.setIsAllowed(true);
-            const cmd = new TextCommand(this, this.drawingService);
-            this.invoker.addToUndo(cmd);
+            if (this.lines.length >= 1 && this.lines[0] !== '') {
+                this.invoker.setIsAllowed(true);
+                const cmd = new TextCommand(this, this.drawingService);
+                this.invoker.addToUndo(cmd);
+            }
             this.writeText(this.drawingService.baseCtx, this.textPosition);
             clearInterval(this.intervalId);
             this.restoreToInitState();
