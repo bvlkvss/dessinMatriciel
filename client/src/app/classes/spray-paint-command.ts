@@ -5,7 +5,6 @@ import { Vec2 } from './vec2';
 
 export class SprayPaintCommand extends Command {
     private pathData: Vec2[] = [];
-    mapRandom: Map<Vec2, Vec2[]>;
     private primaryColor: string;
     private secondaryColor: string;
     private opacity: number;
@@ -18,7 +17,6 @@ export class SprayPaintCommand extends Command {
 
     constructor(protected tool: SprayPaintService, protected drawingService: DrawingService) {
         super();
-        this.mapRandom = new Map<Vec2, Vec2[]>();
         this.primaryColor = this.tool.primaryColor;
         this.secondaryColor = this.tool.secondaryColor;
         this.opacity = this.tool.opacity;
@@ -33,14 +31,10 @@ export class SprayPaintCommand extends Command {
         this.pathData.push(position);
     }
 
-    spray(ctx: CanvasRenderingContext2D, position: Vec2): void {
-        ctx.lineCap = 'round';
-        const tmp = this.mapRandom.get(position) as Vec2[];
-        for (let i = 0; i < this.density; i++) {
-            const x = position.x + tmp[i].x;
-            const y = position.y + tmp[i].y;
+    spray(ctx: CanvasRenderingContext2D, points: Vec2[]): void {
+        for (const point of points) {
             ctx.beginPath();
-            ctx.arc(x, y, this.dropletRadius, 0, 2 * Math.PI, false);
+            ctx.arc(point.x, point.y, this.dropletRadius, 0, 2 * Math.PI, false);
             ctx.fill();
             ctx.fillStyle = ctx.strokeStyle = this.primaryColor;
             ctx.fill();
@@ -57,8 +51,6 @@ export class SprayPaintCommand extends Command {
         this.tool.period = this.period;
         this.tool.density = this.density;
         this.tool.dropletRadius = this.dropletRadius;
-        for (const point of this.pathData) {
-            this.spray(this.drawingService.baseCtx, point);
-        }
+        this.spray(this.drawingService.baseCtx, this.pathData);
     }
 }

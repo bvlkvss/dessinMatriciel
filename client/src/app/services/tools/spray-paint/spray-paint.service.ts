@@ -44,7 +44,6 @@ export class SprayPaintService extends Tool {
             this.invoker.ClearRedo();
             this.invoker.setIsAllowed(false);
             this.sprayCommand = new SprayPaintCommand(this, this.drawingService);
-            this.sprayCommand.pushData({ ...this.currentMousePos });
             this.interval = setInterval(() => {
                 this.spray(this.drawingService.baseCtx, this.currentMousePos);
             }, this.period);
@@ -53,15 +52,16 @@ export class SprayPaintService extends Tool {
 
     onMouseUp(event: MouseEvent): void {
         this.myClearInterval(this.interval);
-        this.invoker.addToUndo(this.sprayCommand);
-        this.invoker.setIsAllowed(true);
+        if (this.mouseDown) {
+            this.invoker.addToUndo(this.sprayCommand);
+            this.invoker.setIsAllowed(true);
+        }
         this.mouseDown = false;
     }
 
     onMouseMove(event: MouseEvent): void {
         if (this.mouseDown) {
             this.currentMousePos = this.getPositionFromMouse(event);
-            if (this.sprayCommand) this.sprayCommand.pushData(this.currentMousePos);
         }
     }
 
@@ -83,12 +83,11 @@ export class SprayPaintService extends Tool {
 
     spray(ctx: CanvasRenderingContext2D, position: Vec2): void {
         ctx.lineCap = 'round';
-        const tmp: Vec2[] = [];
         for (let i = 0; i < this.density; i++) {
             const offset = this.getRandomOffset();
-            tmp.push({ ...offset });
             const x = position.x + offset.x;
             const y = position.y + offset.y;
+            if (this.sprayCommand) this.sprayCommand.pushData({ x, y });
             ctx.beginPath();
             ctx.arc(x, y, this.dropletRadius, 0, 2 * Math.PI, false);
             ctx.fill();
@@ -96,7 +95,6 @@ export class SprayPaintService extends Tool {
             ctx.fill();
             ctx.stroke();
         }
-        if (this.sprayCommand) this.sprayCommand.mapRandom.set(position, tmp);
     }
 
     setPrimaryColor(color: string): void {

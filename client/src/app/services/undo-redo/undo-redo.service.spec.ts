@@ -513,4 +513,133 @@ describe('UndoRedoService', () => {
 
   });
 
+  it('should call arc ,fill stroke of context if this.density > 0', () => {
+    const tmp = document.createElement('canvas');
+    const ctx = tmp.getContext('2d') as CanvasRenderingContext2D;
+    ctx.beginPath = jasmine.createSpy().and.callThrough().and.callFake(() => { });
+    ctx.arc = jasmine.createSpy().and.callThrough().and.callFake(() => { });
+    ctx.fill = jasmine.createSpy().and.callThrough().and.callFake(() => { });
+    ctx.stroke = jasmine.createSpy().and.callThrough().and.callFake(() => { });
+    (sprayStubCommand as any).density = 1;
+    sprayStubCommand.mapRandom.get = jasmine.createSpy().and.callFake(() => { return [{ x: 1, y: 2 }] });
+    sprayStubCommand.spray(ctx, { x: 1, y: 2 });
+    expect(ctx.beginPath).toHaveBeenCalled();
+    expect(ctx.arc).toHaveBeenCalled();
+    expect(ctx.fill).toHaveBeenCalled();
+    expect(ctx.stroke).toHaveBeenCalled();
+  });
+
+  it('should not call arc ,fill stroke of context if this.density == 0', () => {
+    const tmp = document.createElement('canvas');
+    const ctx = tmp.getContext('2d') as CanvasRenderingContext2D;
+    ctx.beginPath = jasmine.createSpy().and.callThrough().and.callFake(() => { });
+    ctx.arc = jasmine.createSpy().and.callThrough().and.callFake(() => { });
+    ctx.fill = jasmine.createSpy().and.callThrough().and.callFake(() => { });
+    ctx.stroke = jasmine.createSpy().and.callThrough().and.callFake(() => { });
+    (sprayStubCommand as any).density = 0;
+    sprayStubCommand.mapRandom.get = jasmine.createSpy().and.callFake(() => { return [{ x: 1, y: 2 }] });
+    sprayStubCommand.spray(ctx, { x: 1, y: 2 });
+    expect(ctx.beginPath).not.toHaveBeenCalled();
+    expect(ctx.arc).not.toHaveBeenCalled();
+    expect(ctx.fill).not.toHaveBeenCalled();
+    expect(ctx.stroke).not.toHaveBeenCalled();
+  });
+
+  it('execute of resize should call saveCanvas and drawCanvas', () => {
+    (ResizeCommandStub as any).tool.saveCanvas = jasmine.createSpy().and.callThrough().and.callFake(() => { });
+    (ResizeCommandStub as any).tool.drawCanvas = jasmine.createSpy().and.callThrough().and.callFake(() => { });
+    ResizeCommandStub.execute();
+    expect((ResizeCommandStub as any).tool.saveCanvas).toHaveBeenCalled();
+    expect((ResizeCommandStub as any).tool.drawCanvas).toHaveBeenCalled();
+  });
+
+  it('execute of polygoncommand should call drawpolygon ', () => {
+    (PolygonCommandStub as any).tool.drawPolygon = jasmine.createSpy().and.callThrough().and.callFake(() => { });
+    PolygonCommandStub.execute();
+    expect((PolygonCommandStub as any).tool.drawPolygon).toHaveBeenCalled();
+  });
+
+  it('execute of eraser should call clearLine', () => {
+    (eraserCommandStub as any).tool.clearLine = jasmine.createSpy().and.callThrough().and.callFake(() => { });
+    eraserCommandStub.execute();
+    expect((eraserCommandStub as any).tool.clearLine).toHaveBeenCalled();
+  });
+
+  it('execute of paint-bucker should call putImage', () => {
+    (PaintCommandStub as any).drawingService.baseCtx.putImageData = jasmine.createSpy().and.callThrough().and.callFake(() => { });
+    PaintCommandStub.execute();
+    expect((PaintCommandStub as any).drawingService.baseCtx.putImageData).toHaveBeenCalled();
+  });
+
+  it('execute of line should call drawJUnction if with junction is true', () => {
+    (lineCommandStub as any).tool.drawJunction = jasmine.createSpy().and.callThrough().and.callFake(() => { });
+    (lineCommandStub as any).tool.drawLine = jasmine.createSpy().and.callFake(() => { });
+    (lineCommandStub as any).withJunction = true;
+    lineCommandStub.execute();
+    expect((lineCommandStub as any).tool.drawJunction).toHaveBeenCalled();
+  });
+
+  it('execute of line should not call drawJUnction if with junction is false', () => {
+    (lineCommandStub as any).tool.drawJunction = jasmine.createSpy().and.callThrough().and.callFake(() => { });
+    (lineCommandStub as any).tool.drawLine = jasmine.createSpy().and.callFake(() => { });
+    (lineCommandStub as any).withJunction = false;
+    lineCommandStub.execute();
+    expect((lineCommandStub as any).tool.drawJunction).not.toHaveBeenCalled();
+  });
+
+  it('excute of selection should call save transalte rotate drawimage restore and should not call clipimagewithellipseif sleectionStyle != 1', () => {
+
+    (selectionCommandStub as any).startPosErase = { x: 1, y: 1 };
+    (selectionCommandStub as any).endPosErase = { x: 1, y: 1 };
+    (selectionCommandStub as any).startPos = { x: 1, y: 1 };
+    (selectionCommandStub as any).endPos = { x: 1, y: 1 };
+    (selectionCommandStub as any).height = 1;
+    (selectionCommandStub as any).width = 1;
+    (selectionCommandStub as any).degres = 0;
+    (selectionCommandStub as any).drawingService.baseCtx.save = jasmine.createSpy().and.callThrough().and.callFake(() => { });
+    (selectionCommandStub as any).drawingService.baseCtx.translate = jasmine.createSpy().and.callThrough().and.callFake(() => { });
+    (selectionCommandStub as any).drawingService.baseCtx.rotate = jasmine.createSpy().and.callThrough().and.callFake(() => { });
+    (selectionCommandStub as any).drawingService.baseCtx.restore = jasmine.createSpy().and.callThrough().and.callFake(() => { });
+    (selectionCommandStub as any).tool.clipImageWithEllipse = jasmine.createSpy().and.callThrough().and.callFake(() => { });
+    (selectionCommandStub as any).tool.eraseSelectionFromBase = jasmine.createSpy().and.callThrough().and.callFake(() => { });
+    (selectionCommandStub as any).selectionStyle = 0;
+    selectionCommandStub.execute();
+    expect((selectionCommandStub as any).drawingService.baseCtx.save).toHaveBeenCalledTimes(2);
+    expect((selectionCommandStub as any).drawingService.baseCtx.translate).toHaveBeenCalled();
+    expect((selectionCommandStub as any).drawingService.baseCtx.rotate).toHaveBeenCalled();
+    expect((selectionCommandStub as any).drawingService.baseCtx.restore).toHaveBeenCalledTimes(2);
+    expect((selectionCommandStub as any).tool.clipImageWithEllipse).not.toHaveBeenCalled();
+
+  });
+
+
+  it('excute of selection should not call transalte rotate drawimage and should call clipimagewithellipse if sleectionStyle != 1', () => {
+
+    (selectionCommandStub as any).startPosErase = { x: 1, y: 1 };
+    (selectionCommandStub as any).endPosErase = { x: 1, y: 1 };
+    (selectionCommandStub as any).startPos = { x: 1, y: 1 };
+    (selectionCommandStub as any).endPos = { x: 1, y: 1 };
+    (selectionCommandStub as any).height = 1;
+    (selectionCommandStub as any).width = 1;
+    (selectionCommandStub as any).degres = 0;
+    (selectionCommandStub as any).drawingService.baseCtx.save = jasmine.createSpy().and.callThrough().and.callFake(() => { });
+    (selectionCommandStub as any).drawingService.baseCtx.translate = jasmine.createSpy().and.callThrough().and.callFake(() => { });
+    (selectionCommandStub as any).drawingService.baseCtx.rotate = jasmine.createSpy().and.callThrough().and.callFake(() => { });
+    (selectionCommandStub as any).drawingService.baseCtx.restore = jasmine.createSpy().and.callThrough().and.callFake(() => { });
+    (selectionCommandStub as any).tool.clipImageWithEllipse = jasmine.createSpy().and.callThrough().and.callFake(() => { });
+    (selectionCommandStub as any).tool.eraseSelectionFromBase = jasmine.createSpy().and.callThrough().and.callFake(() => { });
+    (selectionCommandStub as any).selectionStyle = 1;
+    selectionCommandStub.execute();
+    expect((selectionCommandStub as any).drawingService.baseCtx.save).toHaveBeenCalledTimes(1);
+    expect((selectionCommandStub as any).drawingService.baseCtx.restore).toHaveBeenCalledTimes(1);
+    expect((selectionCommandStub as any).drawingService.baseCtx.translate).not.toHaveBeenCalled();
+    expect((selectionCommandStub as any).drawingService.baseCtx.rotate).not.toHaveBeenCalled();
+    expect((selectionCommandStub as any).tool.clipImageWithEllipse).toHaveBeenCalled();
+
+  });
+
+
+
+
+
 });
