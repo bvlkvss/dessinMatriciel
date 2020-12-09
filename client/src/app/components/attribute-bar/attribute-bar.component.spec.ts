@@ -3,6 +3,7 @@ import { ElementRef } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatButtonToggleChange, MatButtonToggleGroup, MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatSelectChange } from '@angular/material/select';
+import { Movable } from '@app/classes/movable';
 import { MockDrawingService } from '@app/components/drawing/drawing.component.spec';
 import { ToolsManagerService } from '@app/services/tools-manager/tools-manager.service';
 import { BrushService } from '@app/services/tools/brush/brush.service';
@@ -443,6 +444,38 @@ describe('AttributebarComponent', () => {
         event.preventDefault = jasmine.createSpy().and.callFake(() => { });
         component.validate(event);
         expect(target.maxLength).toEqual(1);
+
+    });
+
+    it('setAnchorPoint should call tools manager setAnchorPoint function',() => {
+        const setAnchorPointSpy = spyOn<any>(toolManagerStub, 'setAnchorPoint');
+        component.setAnchorPoint(5);
+        expect(setAnchorPointSpy).toHaveBeenCalled();
+    });
+
+    it('checkIfMagnetismActivated should return magnetismActivated',() => {
+        component.checkIfMagnetismActivated();
+        expect(Movable.magnetismActivated).toBe(false);
+    });
+
+
+    it('checkIfContainAttribute should change classname', () => {
+        (component as any).tools.currentTool = (component as any).tools.getTools().get('selection');
+    
+        selectionStub.selectionStyle = 0;
+
+        // var dummyElement = document.createElement('a');
+        // dummyElement.id = 'rectSelection';
+        // dummyElement.setAttribute('style', 'class:inactive');
+        // document.querySelector = jasmine.createSpy('HTML Element').and.returnValue(dummyElement);
+
+        component.checkIfContainAttribute('typeSelection');
+        // expect(dummyElement.className).toEqual('active');
+
+        let x = document.getElementById('rectSelection') as HTMLElement;
+
+        // expect(x.style.display).toEqual('block');
+        expect(x.classList).toContain('active');
 
     });
 
