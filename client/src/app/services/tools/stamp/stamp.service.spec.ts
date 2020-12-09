@@ -38,12 +38,20 @@ describe('StampService', () => {
     service.setDegree(50);
     expect(service.degres).toEqual(50);
   });
-  it('setDegree should set image width/height to correct value', () => {
+  it('setStampSize should set image width/height to correct value', () => {
     service.image = new Image();
     service.lineWidth = 100;
     service.setStampSize(5, 2);
     expect(service.image.width).toEqual(250);
     expect(service.image.height).toEqual(250);
+
+  });
+  it('setDegree should set image width/height to 9 if value is greater then 9', () => {
+    service.image = new Image();
+    service.lineWidth = 100;
+    service.setStampSize(20, 20);
+    expect(service.image.width).toEqual(100); //9/9
+    expect(service.image.height).toEqual(100);
 
   });
   it('onMouseMove should call rotateStamp with correct arguments', () => {

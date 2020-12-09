@@ -30,7 +30,6 @@ export class MockDrawingService extends DrawingService {
     resizeCanvas(): void {
     }
     restoreCanvasState() {
-        console.log('restoreCanvas');
     }
 }
 
