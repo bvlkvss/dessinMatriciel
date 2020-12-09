@@ -533,6 +533,8 @@ describe('UndoRedoService', () => {
   });
 
   it('execute of resize should call saveCanvas and drawCanvas', () => {
+    let div = document.createElement('div') as HTMLDivElement;
+    ResizeCommandStub.canvasContainer = div;
     (ResizeCommandStub as any).drawingService.gridCanvas = document.createElement('canvas');
     (ResizeCommandStub as any).tool.saveCanvas = jasmine.createSpy().and.callThrough().and.callFake(() => { });
     (ResizeCommandStub as any).tool.drawCanvas = jasmine.createSpy().and.callThrough().and.callFake(() => { });
@@ -542,6 +544,8 @@ describe('UndoRedoService', () => {
   });
 
   it('unexecute of resize should call drawCanvas', () => {
+    let div = document.createElement('div') as HTMLDivElement;
+    ResizeCommandStub.canvasContainer = div;
     (ResizeCommandStub as any).drawingService.gridCanvas = document.createElement('canvas');
     (ResizeCommandStub as any).tool.saveCanvas = jasmine.createSpy().and.callThrough().and.callFake(() => { });
     (ResizeCommandStub as any).tool.drawCanvas = jasmine.createSpy().and.callThrough().and.callFake(() => { });
@@ -639,6 +643,12 @@ describe('UndoRedoService', () => {
     (StampCommandStub as any).tool.rotateStamp = jasmine.createSpy().and.callThrough().and.callFake(() => { })
     StampCommandStub.execute();
     expect((StampCommandStub as any).tool.rotateStamp).toHaveBeenCalled();
+  });
+
+  it('should set degres ', () => {
+    (selectionCommandStub as any).degres = 0;
+    selectionCommandStub.setDegres(5);
+    expect((selectionCommandStub as any).degres).toEqual(5);
   });
 
 
