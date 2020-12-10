@@ -2,7 +2,6 @@ import { Color } from '@app/classes/color';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { Const } from './constants';
-const DEFAULT_COLOR = '#000000';
 // Ceci est justifié vu qu'on a des fonctions qui seront gérés par les classes enfant
 export enum MouseButton {
     Left = 0,
@@ -30,8 +29,8 @@ export abstract class Tool {
     constructor(protected drawingService: DrawingService) {
         this.isOut = false;
         this.mouseDown = false;
-        this.primaryColor = DEFAULT_COLOR;
-        this.secondaryColor = DEFAULT_COLOR;
+        this.primaryColor = Const.DEFAULT_COLOR;
+        this.secondaryColor = Const.DEFAULT_COLOR;
     }
 
     setMouseDown(bool: boolean): void {
@@ -66,7 +65,6 @@ export abstract class Tool {
         const color: Color = { red: redNum, green: greenNum, blue: blueNum, opacity: opacityNum };
         return color;
     }
-
     getLineWidth(): number {
         return this.lineWidth;
     }
@@ -74,7 +72,6 @@ export abstract class Tool {
     protected getMax(arr: number[]): number {
         let len = arr.length;
         let max = -Infinity;
-
         while (len--) {
             max = arr[len] > max ? arr[len] : max;
         }
