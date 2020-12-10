@@ -165,11 +165,9 @@ export class AttributeBarComponent implements OnInit, AfterViewChecked, AfterVie
             currentStyle.style.borderWidth = window.getComputedStyle(shapeStyle).borderWidth;
         }
     }
-
     restoreValues(): void {
         if (this.tools.currentTool.lineWidth) this.widthValue = this.tools.currentTool.lineWidth.toString();
     }
-
     validate(event: KeyboardEvent): void {
         if (event.ctrlKey) {
             event.preventDefault();
@@ -177,7 +175,7 @@ export class AttributeBarComponent implements OnInit, AfterViewChecked, AfterVie
         }
         const WIDTH_ALLOWED_CHARS_REGEXP = /\b[0-9]+\b/;
         const target = event.target as HTMLInputElement;
-        if (target.selectionStart === 0 && this.checkIfContainAttribute('stamp') && target.id !== 'LeftSideInput' && target.id !== 'RightSideInput') {
+        if (target.selectionStart === 0 && this.onToolChange('stamp') && target.id !== 'LeftSideInput' && target.id !== 'RightSideInput') {
             target.maxLength = event.key === '-' ? Const.MAX_INPUT_NEGATIVE_LENGTH : Const.MAX_INPUT_POSITIVE_LENGTH;
             return;
         }
@@ -185,8 +183,7 @@ export class AttributeBarComponent implements OnInit, AfterViewChecked, AfterVie
             event.preventDefault();
         }
     }
-
-    checkIfContainAttribute(attribute: string): boolean {
+    onToolChange(attribute: string): boolean {
         if (this.tools.currentTool instanceof GridService)
             (this.tools.currentTool as GridService).getSizeObservable().subscribe((squareSize: string) => {
                 this.squareSize = squareSize;
@@ -204,24 +201,32 @@ export class AttributeBarComponent implements OnInit, AfterViewChecked, AfterVie
             document.querySelectorAll('#a')[i].classList.remove('active');
         }
         if (this.tools.currentTool instanceof SelectionService) {
-            if ((this.tools.currentTool as SelectionService).selectionStyle === 0) {
-                document.querySelector('#rectSelection')?.setAttribute('class', 'active');
-                document.querySelector('#ellipseSelection')?.setAttribute('class', 'inactive');
-                document.querySelector('#wandSelection')?.setAttribute('class', 'inactive');
-            } else if ((this.tools.currentTool as SelectionService).selectionStyle === 1) {
-                document.querySelector('#ellipseSelection')?.setAttribute('class', 'active');
-                document.querySelector('#rectSelection')?.setAttribute('class', 'inactive');
-                document.querySelector('#wandSelection')?.setAttribute('class', 'inactive');
-            }
+            this.setSelectionClassName(this.tools.currentTool.selectionStyle === 0 ? '#rectSelection' : '#ellipseSelection');
         }
         if (this.tools.currentTool instanceof MagicWandService) {
-            document.querySelector('#wandSelection')?.setAttribute('class', 'active');
-            document.querySelector('#rectSelection')?.setAttribute('class', 'inactive');
-            document.querySelector('#ellipseSelection')?.setAttribute('class', 'inactive');
+            this.setSelectionClassName('#wandSelection');
         }
         return this.tools.currentTool.toolAttributes.includes(attribute);
     }
-
+    private setSelectionClassName(selectionId: string): void {
+        switch (selectionId) {
+            case '#rectSelection':
+                document.querySelector('#rectSelection')?.setAttribute('class', 'active');
+                document.querySelector('#ellipseSelection')?.setAttribute('class', 'inactive');
+                document.querySelector('#wandSelection')?.setAttribute('class', 'inactive');
+                break;
+            case '#ellipseSelection':
+                document.querySelector('#ellipseSelection')?.setAttribute('class', 'active');
+                document.querySelector('#wandSelection')?.setAttribute('class', 'inactive');
+                document.querySelector('#rectSelection')?.setAttribute('class', 'inactive');
+                break;
+            case '#wandSelection':
+                document.querySelector('#wandSelection')?.setAttribute('class', 'active');
+                document.querySelector('#ellipseSelection')?.setAttribute('class', 'inactive');
+                document.querySelector('#rectSelection')?.setAttribute('class', 'inactive');
+                break;
+        }
+    }
     setJunctionWidth(input: string): void {
         this.junctionWidth = input;
         this.tools.setJunctionWidth(Number(this.junctionWidth));
@@ -261,13 +266,11 @@ export class AttributeBarComponent implements OnInit, AfterViewChecked, AfterVie
             icon.innerHTML = 'expand_more';
         }
     }
-
     setTexture(id: number): void {
         const brush = this.tools.currentTool as BrushService;
         brush.setTexture(id);
         this.currentTexture = '../../../assets/b' + id + '.svg';
     }
-
     setShapeStyle(idStyle: number, isEllipse: boolean): void {
         this.idStyleRectangle = idStyle;
         if (isEllipse) {
@@ -278,7 +281,6 @@ export class AttributeBarComponent implements OnInit, AfterViewChecked, AfterVie
             this.tools.setRectangleStyle(this.idStyleRectangle);
         }
     }
-
     setNumberSides(newNumberSides: number): void {
         this.tools.setPolygonNumberSides(newNumberSides);
     }
@@ -331,5 +333,17 @@ export class AttributeBarComponent implements OnInit, AfterViewChecked, AfterVie
     selectAll(): void {
         (this.tools.currentTool as SelectionService).selectionStyle = 0;
         (this.tools.currentTool as SelectionService).selectAllCanvas();
+    }
+
+    selectionRectangle(): void {
+        (this.tools.currentTool as SelectionService).selectionStyle = 0;
+    }
+
+    selectionEllipse(): void {
+        (this.tools.currentTool as SelectionService).selectionStyle = 1;
+    }
+
+    selectionMagicWand(): void {
+        this.tools.setTools('magic-wand');
     }
 }
