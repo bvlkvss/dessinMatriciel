@@ -99,25 +99,25 @@ describe('ToolsManagerService', () => {
     });
 
     it('should call drawSelectionOnBase of selection when changing tool if current ool was selection', () => {
+        selectionStub.selectionActivated = true;
+        service.currentTool = selectionStub;
         const drawOnBaseSpy = spyOn(selectionStub, 'drawSelectionOnBase').and.stub();
         service.currentTool = selectionStub;
 
         service.setTools('rectangle');
-        expect(drawOnBaseSpy);
+        expect(drawOnBaseSpy).toHaveBeenCalled();
 
 
     });
 
     it('should call drawSelectionOnBase of magicWand when changing tool if current ool was selection', () => {
+        magicWandStub.isMagicSelectionActivated = true;
         magicWandStub.magicSelectionObj = (magicWandStub as any).createSelectionObj();
-
-        const drawOnBaseSpy = spyOn(magicWandStub.magicSelectionObj, 'drawSelectionOnBase').and.stub();
-
         service.currentTool = magicWandStub;
-
+        const drawOnBaseSpy = spyOn(magicWandStub.magicSelectionObj, 'drawSelectionOnBase').and.stub();
+        magicWandStub.clearSelection = jasmine.createSpy();
+        service.currentTool = magicWandStub;
         service.setTools('rectangle');
-        expect(drawOnBaseSpy);
-
-
+        expect(drawOnBaseSpy).toHaveBeenCalled();
     });
 });

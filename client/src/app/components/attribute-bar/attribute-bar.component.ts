@@ -177,7 +177,7 @@ export class AttributeBarComponent implements OnInit, AfterViewChecked, AfterVie
         }
         const WIDTH_ALLOWED_CHARS_REGEXP = /\b[0-9]+\b/;
         const target = event.target as HTMLInputElement;
-        if (target.selectionStart === 0 && this.checkIfContainAttribute('stamp') && target.id !== 'LeftSideInput' && target.id !== 'RightSideInput') {
+        if (target.selectionStart === 0 && this.onToolChange('stamp') && target.id !== 'LeftSideInput' && target.id !== 'RightSideInput') {
             target.maxLength = event.key === '-' ? Const.MAX_INPUT_NEGATIVE_LENGTH : Const.MAX_INPUT_POSITIVE_LENGTH;
             return;
         }
@@ -186,7 +186,7 @@ export class AttributeBarComponent implements OnInit, AfterViewChecked, AfterVie
         }
     }
 
-    checkIfContainAttribute(attribute: string): boolean {
+    onToolChange(attribute: string): boolean {
         if (this.tools.currentTool instanceof GridService)
             (this.tools.currentTool as GridService).getSizeObservable().subscribe((squareSize: string) => {
                 this.squareSize = squareSize;
@@ -204,22 +204,32 @@ export class AttributeBarComponent implements OnInit, AfterViewChecked, AfterVie
             document.querySelectorAll('#a')[i].classList.remove('active');
         }
         if (this.tools.currentTool instanceof SelectionService) {
-            if ((this.tools.currentTool as SelectionService).selectionStyle === 0) {
+            this.setSelectionClassName(this.tools.currentTool.selectionStyle === 0 ? '#rectSelection' : '#ellipseSelection');
+        }
+        if (this.tools.currentTool instanceof MagicWandService) {
+            this.setSelectionClassName('#wandSelection');
+        }
+        return this.tools.currentTool.toolAttributes.includes(attribute);
+    }
+
+    private setSelectionClassName(selectionId: string): void {
+        switch (selectionId) {
+            case '#rectSelection':
                 document.querySelector('#rectSelection')?.setAttribute('class', 'active');
                 document.querySelector('#ellipseSelection')?.setAttribute('class', 'inactive');
                 document.querySelector('#wandSelection')?.setAttribute('class', 'inactive');
-            } else if ((this.tools.currentTool as SelectionService).selectionStyle === 1) {
+                break;
+            case '#ellipseSelection':
                 document.querySelector('#ellipseSelection')?.setAttribute('class', 'active');
-                document.querySelector('#rectSelection')?.setAttribute('class', 'inactive');
                 document.querySelector('#wandSelection')?.setAttribute('class', 'inactive');
-            }
+                document.querySelector('#rectSelection')?.setAttribute('class', 'inactive');
+                break;
+            case '#wandSelection':
+                document.querySelector('#wandSelection')?.setAttribute('class', 'active');
+                document.querySelector('#ellipseSelection')?.setAttribute('class', 'inactive');
+                document.querySelector('#rectSelection')?.setAttribute('class', 'inactive');
+                break;
         }
-        if (this.tools.currentTool instanceof MagicWandService) {
-            document.querySelector('#wandSelection')?.setAttribute('class', 'active');
-            document.querySelector('#rectSelection')?.setAttribute('class', 'inactive');
-            document.querySelector('#ellipseSelection')?.setAttribute('class', 'inactive');
-        }
-        return this.tools.currentTool.toolAttributes.includes(attribute);
     }
 
     setJunctionWidth(input: string): void {
