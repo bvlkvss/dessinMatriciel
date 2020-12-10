@@ -1,8 +1,8 @@
 import { Color } from '@app/classes/color';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { Const } from './constants';
 const DEFAULT_COLOR = '#000000';
-const RGBA_NUMBER_OF_COMPONENTS = 4;
 // Ceci est justifié vu qu'on a des fonctions qui seront gérés par les classes enfant
 export enum MouseButton {
     Left = 0,
@@ -59,13 +59,11 @@ export abstract class Tool {
     }
 
     hexToColor(hex: string): Color {
-        // tslint:disable:no-magic-numbers
-        const redNum = parseInt(hex.slice(1, 3), 16);
-        const greenNum = parseInt(hex.slice(3, 5), 16);
-        const blueNum = parseInt(hex.slice(5, 7), 16);
-        const opacityNum = parseInt(hex.slice(7, 9), 16);
+        const redNum = parseInt(hex.slice(1, Const.RED_END_RANGE), Const.RADIX_HEX);
+        const greenNum = parseInt(hex.slice(Const.RED_END_RANGE, Const.GREEN_END_RANGE), Const.RADIX_HEX);
+        const blueNum = parseInt(hex.slice(Const.GREEN_END_RANGE, Const.BLUE_END_RANGE), Const.RADIX_HEX);
+        const opacityNum = parseInt(hex.slice(Const.BLUE_END_RANGE, Const.OPACITY_END_RANGE), Const.RADIX_HEX);
         const color: Color = { red: redNum, green: greenNum, blue: blueNum, opacity: opacityNum };
-
         return color;
     }
 
@@ -99,16 +97,15 @@ export abstract class Tool {
     }
 
     protected getColorFromData(imageData: ImageData): Color {
-        // tslint:disable:no-magic-numbers
         let redData = 0;
         let greenData = 0;
         let blueData = 0;
         let opacityData = 0;
-        for (let j = 0; j < imageData.data.length; j += RGBA_NUMBER_OF_COMPONENTS) {
+        for (let j = 0; j < imageData.data.length; j += Const.RGBA_NUMBER_OF_COMPONENTS) {
             redData = imageData.data[j];
             greenData = imageData.data[j + 1];
             blueData = imageData.data[j + 2];
-            opacityData = imageData.data[j + 3];
+            opacityData = imageData.data[j + Const.OPACITY_INDEX];
         }
         return { red: redData, green: greenData, blue: blueData, opacity: opacityData };
     }
@@ -118,7 +115,6 @@ export abstract class Tool {
         const pixelRed = imageData.data[position];
         const pixelGreen = imageData.data[position + 1];
         const pixelBlue = imageData.data[position + 2];
-
         areColorsMatching = areColorsMatching && pixelRed >= color.red - tolerance && pixelRed <= color.red + tolerance;
         areColorsMatching = areColorsMatching && pixelGreen >= color.green - tolerance && pixelGreen <= color.green + tolerance;
         areColorsMatching = areColorsMatching && pixelBlue >= color.blue - tolerance && pixelBlue <= color.blue + tolerance;
@@ -133,8 +129,8 @@ export abstract class Tool {
     }
 
     protected getPositionFromPixel(pixel: number, width: number): Vec2 {
-        const x = (pixel / RGBA_NUMBER_OF_COMPONENTS) % width;
-        const y = Math.floor(pixel / RGBA_NUMBER_OF_COMPONENTS / width);
+        const x = (pixel / Const.RGBA_NUMBER_OF_COMPONENTS) % width;
+        const y = Math.floor(pixel / Const.RGBA_NUMBER_OF_COMPONENTS / width);
         return { x, y };
     }
 }

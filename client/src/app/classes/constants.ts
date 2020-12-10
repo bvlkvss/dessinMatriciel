@@ -147,7 +147,12 @@ export class Const {
     static readonly LINE_DASH_MAX: number = 5;
     static readonly LINE_DASH_MIN: number = 4;
     static readonly CHAR_WIDTH_TOLERANCE: number = 0.09;
-
+    // tool class constants
+    static readonly RADIX_HEX: number = 16;
+    static readonly RED_END_RANGE: number = 3;
+    static readonly GREEN_END_RANGE: number = 5;
+    static readonly BLUE_END_RANGE: number = 7;
+    static readonly OPACITY_END_RANGE: number = 9;
     // comon constants
     static readonly FULL_CIRCLE: number = 360;
     static readonly PI_ANGLE: number = 180;

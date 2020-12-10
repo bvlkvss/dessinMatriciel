@@ -74,8 +74,6 @@ export class DrawingComponent implements AfterViewInit, OnInit, DoCheck {
             .set('g', 'grid')
             .set('v', 'magic-wand')
             .set('d', 'stamp');
-
-
         this.baseCtx = this.baseCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.previewCtx = this.previewCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.gridCtx = this.gridCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
@@ -219,7 +217,7 @@ export class DrawingComponent implements AfterViewInit, OnInit, DoCheck {
     }
 
     @HostListener('window:popstate', ['$event'])
-    onPopState() {
+    onPopState(): void {
         if (window.location.pathname === '/home') {
             location.replace('main-page.component.html');
         }
