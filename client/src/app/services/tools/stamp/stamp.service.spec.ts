@@ -77,12 +77,4 @@ describe('StampService', () => {
     expect(translateSpy).toHaveBeenCalledWith(200, 122);
 
   });
-  /**    this.drawingService.clearCanvas(this.drawingService.previewCtx);
-      ctx.save();
-      ctx.translate(centerPosition.x, centerPosition.y);
-      ctx.rotate((this.degres * Math.PI) / 180);
-      ctx.canvas.style.cursor = "none";
-      ctx.drawImage(this.image, -this.image.width / 2, -this.image.width / 2, this.image.width, this.image.height);
-      ctx.restore(); */
-
 });

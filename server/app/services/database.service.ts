@@ -55,7 +55,6 @@ export class DatabaseService {
     }
 
     async getDrawingWithId(id: string): Promise<Drawings> {
-        // NB: This can return null if the drawing does not exist, you need to handle it
         return this.collection
             .findOne({ _id: new ObjectId(id) })
             .then((drawing: Drawings) => {
