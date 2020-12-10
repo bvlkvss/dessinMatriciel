@@ -168,7 +168,6 @@ export class AttributeBarComponent implements OnInit, AfterViewChecked, AfterVie
     restoreValues(): void {
         if (this.tools.currentTool.lineWidth) this.widthValue = this.tools.currentTool.lineWidth.toString();
     }
-
     validate(event: KeyboardEvent): void {
         if (event.ctrlKey) {
             event.preventDefault();
@@ -267,13 +266,11 @@ export class AttributeBarComponent implements OnInit, AfterViewChecked, AfterVie
             icon.innerHTML = 'expand_more';
         }
     }
-
     setTexture(id: number): void {
         const brush = this.tools.currentTool as BrushService;
         brush.setTexture(id);
         this.currentTexture = '../../../assets/b' + id + '.svg';
     }
-
     setShapeStyle(idStyle: number, isEllipse: boolean): void {
         this.idStyleRectangle = idStyle;
         if (isEllipse) {
@@ -284,7 +281,6 @@ export class AttributeBarComponent implements OnInit, AfterViewChecked, AfterVie
             this.tools.setRectangleStyle(this.idStyleRectangle);
         }
     }
-
     setNumberSides(newNumberSides: number): void {
         this.tools.setPolygonNumberSides(newNumberSides);
     }
