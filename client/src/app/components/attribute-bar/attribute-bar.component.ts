@@ -165,7 +165,6 @@ export class AttributeBarComponent implements OnInit, AfterViewChecked, AfterVie
             currentStyle.style.borderWidth = window.getComputedStyle(shapeStyle).borderWidth;
         }
     }
-
     restoreValues(): void {
         if (this.tools.currentTool.lineWidth) this.widthValue = this.tools.currentTool.lineWidth.toString();
     }
@@ -185,7 +184,6 @@ export class AttributeBarComponent implements OnInit, AfterViewChecked, AfterVie
             event.preventDefault();
         }
     }
-
     onToolChange(attribute: string): boolean {
         if (this.tools.currentTool instanceof GridService)
             (this.tools.currentTool as GridService).getSizeObservable().subscribe((squareSize: string) => {
@@ -211,7 +209,6 @@ export class AttributeBarComponent implements OnInit, AfterViewChecked, AfterVie
         }
         return this.tools.currentTool.toolAttributes.includes(attribute);
     }
-
     private setSelectionClassName(selectionId: string): void {
         switch (selectionId) {
             case '#rectSelection':
@@ -231,7 +228,6 @@ export class AttributeBarComponent implements OnInit, AfterViewChecked, AfterVie
                 break;
         }
     }
-
     setJunctionWidth(input: string): void {
         this.junctionWidth = input;
         this.tools.setJunctionWidth(Number(this.junctionWidth));
