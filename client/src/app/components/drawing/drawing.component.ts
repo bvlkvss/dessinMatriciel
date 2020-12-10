@@ -240,6 +240,8 @@ export class DrawingComponent implements AfterViewInit, OnInit, DoCheck {
 
                 default:
                     if (event.key === 'z' || event.key === 'Z') {
+                        event.preventDefault();
+                        event.stopPropagation();
                         this.invoker.onKeyDown(event);
                     } else if (this.tools.currentTool instanceof MagicWandService || this.tools.currentTool instanceof SelectionService) {
                         this.clipboard.onKeyDown(event, this.tools.currentTool);
@@ -259,8 +261,6 @@ export class DrawingComponent implements AfterViewInit, OnInit, DoCheck {
             } else if (this.keyBindings.has(event.key)) {
                 this.drawingService.restoreCanvasState();
                 this.tools.setTools(this.keyBindings.get(event.key) as string);
-                this.invoker.setIsAllowed(true);
-                if (this.tools.currentTool instanceof StampService) this.invoker.setIsAllowed(false);
                 switch (event.key) {
                     case 'r': {
                         (this.tools.currentTool as SelectionService).selectionStyle = 0;

@@ -59,7 +59,7 @@ export class SelectionClipboardService {
         tool.selectionEndPoint = { x: this.currentClipboardData.width, y: this.currentClipboardData.height };
         const tmp = this.currentClipboardData;
         tool.selectionData = tmp;
-        tool.firstSelectionMove = false;
+        tool.firstSelectionMove = true;
         tool.redrawSelection();
         tool.selectionActivated = true;
     }

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Const } from '@app/classes/constants';
 import { Rotationable } from '@app/classes/rotationable';
 import { StampCommand } from '@app/classes/stamp-command';
-import { Tool } from '@app/classes/tool';
+import { MouseButton, Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
@@ -15,6 +15,7 @@ export class StampService extends Tool implements Rotationable {
     image: HTMLImageElement;
     degres: number;
     stampObs: Subject<boolean>;
+    center: Vec2;
     constructor(drawingService: DrawingService, private invoker: UndoRedoService) {
         super(drawingService);
         this.stampObs = new Subject<boolean>();
@@ -29,11 +30,29 @@ export class StampService extends Tool implements Rotationable {
     getRotatedPos: (element: Vec2) => Vec2 = Rotationable.prototype.getRotatedPos;
     updateDegree: (event: WheelEvent) => void = Rotationable.prototype.updateDegree;
     onClick(event: MouseEvent): void {
+        console.log('click');
         const centerPos = this.getPositionFromMouse(event);
         this.rotateStamp(this.drawingService.baseCtx, centerPos);
-        const cmd = new StampCommand(centerPos, this, this.drawingService);
-        this.invoker.addToUndo(cmd);
-        this.invoker.ClearRedo();
+    }
+
+    onMouseDown(event: MouseEvent): void {
+        this.mouseDown = event.button === MouseButton.Left;
+        if (this.mouseDown) {
+            this.center = this.getPositionFromMouse(event);
+            this.invoker.ClearRedo();
+            this.invoker.setIsAllowed(false);
+        }
+    }
+
+    onMouseUp(event: MouseEvent): void {
+        if (this.mouseDown) {
+            this.center = this.getPositionFromMouse(event);
+            const centerPos = this.getPositionFromMouse(event);
+            const cmd = new StampCommand(centerPos, this, this.drawingService);
+            this.invoker.addToUndo(cmd);
+            this.invoker.setIsAllowed(true);
+        }
+        this.mouseDown = false;
     }
 
     getStampObs(): Subject<boolean> {
@@ -49,6 +68,7 @@ export class StampService extends Tool implements Rotationable {
     }
     onMouseMove(event: MouseEvent): void {
         const centerPos = this.getPositionFromMouse(event);
+        this.center = this.getPositionFromMouse(event);
         this.rotateStamp(this.drawingService.previewCtx, centerPos);
     }
 

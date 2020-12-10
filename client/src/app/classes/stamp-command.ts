@@ -27,5 +27,6 @@ export class StampCommand extends Command {
         this.tool.image.height = this.stampImage.height;
         this.tool.rotateStamp(this.drawingService.baseCtx, this.position);
         this.tool.degres = tmp;
+        this.tool.rotateStamp(this.drawingService.previewCtx, this.tool.center);
     }
 }
