@@ -1,6 +1,5 @@
 import { AfterViewInit, Component, DoCheck, ElementRef, HostListener, IterableDiffer, IterableDiffers, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { NavigationStart, Router } from '@angular/router';
 import { Command } from '@app/classes/command';
 import { Const } from '@app/classes/constants';
 import { Movable } from '@app/classes/movable';
@@ -73,7 +72,9 @@ export class DrawingComponent implements AfterViewInit, OnInit, DoCheck {
             .set('a', 'aerosol')
             .set('p', 'plume')
             .set('g', 'grid')
-            .set('v', 'magic-wand');
+            .set('v', 'magic-wand')
+            .set('d', 'stamp');
+
 
         this.baseCtx = this.baseCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.previewCtx = this.previewCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;

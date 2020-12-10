@@ -53,7 +53,7 @@
     </div>
     <div *ngIf="checkIfContainAttribute('stamp')" id="currentImageContainer">
         <img id="currentStamp" [src]="currentStamp" (click)="toggleStampsList()" />
-        <p class="header" id="headerStamp">Current stamp</p>
+        <p class="header" id="headerStamp">Étampe actuelle</p>
         <i #stampIcon class="material-icons" (click)="toggleStampsList()" id="stampicon">expand_more</i>
     </div>
     <div id="lineWidthcontainer" *ngIf="checkIfContainAttribute('lineWidth')">

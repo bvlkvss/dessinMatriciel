@@ -85,7 +85,8 @@ export class BrushService extends Tool {
             ctx.globalAlpha = this.color.opacity / Const.MAX_EIGHT_BIT_NB;
             ctx.save();
             ctx.translate(x, y);
-            ctx.drawImage(image, 0, 0, -this.lineWidth / 2, -this.lineWidth / 2);
+            console.log()
+            ctx.drawImage(image, 0, 0, -this.lineWidth, -this.lineWidth);
             ctx.restore();
             i += Const.IMAGES_PER_POINT;
         } while (i < dist);
