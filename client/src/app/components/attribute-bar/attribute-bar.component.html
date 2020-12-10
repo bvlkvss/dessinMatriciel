@@ -243,17 +243,16 @@
                     Tout Selectionner
                 </button>
                 <div class="buttonContainer">
-                    <a id="rectSelection" class="inactive">
+                    <a id="rectSelection" class="inactive" (click)="selectionRectangle()" style='cursor: pointer;'>
                         <i class="material-icons">highlight_alt</i>
                     </a>
-                    <a id="ellipseSelection" class="inactive">
+                    <a id="ellipseSelection" class="inactive" (click)="selectionEllipse()" style='cursor: pointer;'>
                         <i class="material-icons">panorama_fish_eye</i>
                     </a>
-                    <a id="wandSelection" class="inactive">
+                    <a id="wandSelection" class="inactive" (click)="selectionMagicWand()" style='cursor: pointer;'>
                         <i class="material-icons">gesture</i>
                     </a>
                 </div>
-                <!-- <div class="selectAllButton"><button style="height: 30px; width: 90%;">Tout Selectionner</button></div> -->
             </div>
 
             <div class="selectWholeCanvas" style="background-color: rgb(248, 56, 56)"></div>

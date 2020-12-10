@@ -342,4 +342,16 @@ export class AttributeBarComponent implements OnInit, AfterViewChecked, AfterVie
         (this.tools.currentTool as SelectionService).selectionStyle = 0;
         (this.tools.currentTool as SelectionService).selectAllCanvas();
     }
+
+    selectionRectangle(): void {
+        (this.tools.currentTool as SelectionService).selectionStyle = 0;
+    }
+
+    selectionEllipse(): void {
+        (this.tools.currentTool as SelectionService).selectionStyle = 1;
+    }
+
+    selectionMagicWand(): void {
+        this.tools.setTools('magic-wand');
+    }
 }

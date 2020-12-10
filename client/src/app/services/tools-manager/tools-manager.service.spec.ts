@@ -103,11 +103,9 @@ describe('ToolsManagerService', () => {
         service.currentTool = selectionStub;
         const drawOnBaseSpy = spyOn(selectionStub, 'drawSelectionOnBase').and.stub();
         service.currentTool = selectionStub;
-
+        selectionStub.selectionActivated = true;
         service.setTools('rectangle');
         expect(drawOnBaseSpy).toHaveBeenCalled();
-
-
     });
 
     it('should call drawSelectionOnBase of magicWand when changing tool if current ool was selection', () => {

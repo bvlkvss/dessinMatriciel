@@ -84,6 +84,7 @@ describe('AttributebarComponent', () => {
         magicWandStub = new MagicWandService(drawServiceMock, UndoRedoServiceMock);
         gridStub = new GridService(drawServiceMock);
         stampStub = new StampService(drawServiceMock, UndoRedoServiceMock);
+        selectionStub = new SelectionService(drawServiceMock, UndoRedoServiceMock);
         toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub, selectionStub, paintBucketStub, polygonStub, pipetteStub, textStub, sprayPaintStub, plumeStub, gridStub, magicWandStub, stampStub);
         toolManagerStub.currentTool = pencilStub;
         TestBed.configureTestingModule({
@@ -510,4 +511,22 @@ describe('AttributebarComponent', () => {
         (component as any).setSelectionClassName('#wandSelection');
         expect(qsSpy).toHaveBeenCalledTimes(3);
     });
+    it('should set selectionstyle to 0 when function is called',() =>{
+        toolManagerStub.currentTool = selectionStub;
+        component.selectionRectangle();
+        expect(selectionStub.selectionStyle).toEqual(0);
+    });
+
+    it('should set selectionstyle to 1 when function is called',() =>{
+        toolManagerStub.currentTool = selectionStub;
+        component.selectionEllipse();
+        expect(selectionStub.selectionStyle).toEqual(1);
+    });
+
+    it('should set magicwand as currenttool called',() =>{
+        component.selectionMagicWand();
+        expect(toolManagerStub.currentTool).toBe(magicWandStub);
+    });
+
+
 });
