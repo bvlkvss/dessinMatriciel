@@ -496,56 +496,22 @@ describe('DrawingComponent', () => {
 
     it('should call onkeydown of invoker', () => {
         const element = { className: "dds" };
-        const event = { key: 'z', ctrlKey: true, target: element } as unknown as KeyboardEvent;
+        let event = { key: 'z', ctrlKey: true, target: element } as unknown as KeyboardEvent;
+        event.preventDefault = jasmine.createSpy().and.callFake(() => { });
+        event.stopPropagation = jasmine.createSpy().and.callFake(() => { });
         (component as any).tools.currentTool = (component as any).tools.getTools().get('stamp');
         (component as any).invoker.onKeyDown = jasmine.createSpy().and.callThrough().and.callFake(() => { });
-        component.onkeyDownWindow(event);
+        component.onkeyDownWindow(event as any);
         expect((component as any).invoker.onKeyDown).toHaveBeenCalled();
     });
 
-    it('should set invoker.isAllowed to true when changing tool', () => {
-        (component as any).invoker.setIsAllowed = jasmine.createSpy().and.callThrough().and.callFake((bool) => { (component as any).invoker.isAllowed = bool });
-        (component as any).invoker.getIsAllowed = jasmine.createSpy().and.callThrough().and.callFake(() => { return (component as any).invoker.isAllowed });
-        (component as any).keyBindings.has = jasmine.createSpy().and.callFake(() => {
-            return true;
-        });
-        (component as any).tools.setTools = jasmine.createSpy().and.callFake(() => {
-        });
-        (component as any).tools.currentTool = pencilStub;
-        component.onKeyDown({ key: 'test', } as KeyboardEvent);
-        expect((component as any).invoker.getIsAllowed()).toEqual(true);
-    });
-
-    it('should set invoker.isAllowed to false when changing tool and tool = stamp', () => {
-        (component as any).invoker.setIsAllowed = jasmine.createSpy().and.callThrough().and.callFake((bool) => { (component as any).invoker.isAllowed = bool });
-        (component as any).invoker.getIsAllowed = jasmine.createSpy().and.callFake(() => { return (component as any).invoker.isAllowed });
-
-        (component as any).keyBindings.has = jasmine.createSpy().and.callFake(() => {
-            return true;
-        });
-        (component as any).tools.setTools = jasmine.createSpy().and.callFake(() => {
-        });
-        (component as any).drawingService.restoreCanvasState = jasmine.createSpy().and.callFake(() => {
-        });
-        (component as any).tools.currentTool = stampStub;
-        component.onKeyDown({ key: 'test', ctrlKey: false } as KeyboardEvent);
-        expect((component as any).invoker.getIsAllowed()).toEqual(false);
-
-    });
-
-
-    it('should call selection service select all canvas when pressing ctrl+a and change tool to ', () => {
-        const selectAllSpy = spyOn(selectionStub, 'selectAllCanvas').and.stub();
-        let event = {
-            key: 'a',
-            ctrlKey: true,
-            target: { className: 'no' } as Target,
-            preventDefault: jasmine.createSpy() as any,
-            stopPropagation: jasmine.createSpy() as any,
-        } as KeyboardEvent;
-
-        component.onkeyDownWindow(event);
-
-        expect(selectAllSpy).toHaveBeenCalled();
-    });
+    /*it('should call updateDegree of magicselectionObj', () => {
+        (component as any).tools.getTools().get = jasmine.createSpy().and.callFake(() => { return {} as MagicWandService });
+        (component as any).tools.currentTool = (component as any).tools.getTools().get('magic-wand');
+        (component as any).tools.currentTool.magicSelectionObj = {} as MagicWandSelection;
+        (component as any).tools.currentTool.magicSelectionObj.isActive = true;
+        (component as any).tools.currentTool.magicSelectionObj.updateDegree = jasmine.createSpy().and.callThrough().and.callFake(() => { });
+        component.updateDegree({ deltaY: 1, } as WheelEvent);
+        expect((component as any).tools.currentTool.magicSelectionObj.updateDegree).toHaveBeenCalled();
+    });*/
 });

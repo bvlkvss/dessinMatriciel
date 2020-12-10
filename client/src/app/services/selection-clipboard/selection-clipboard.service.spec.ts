@@ -201,7 +201,7 @@ describe('SelectionClipboardService', () => {
     expect(tmp.magicSelectionObj.selectionStartPoint).toEqual({ x: 0, y: 0 });
     expect(tmp.magicSelectionObj.degres).toEqual(0);
     expect(tmp.magicSelectionObj.selectionData).toEqual((service as any).currentClipboardData);
-    expect(tmp.magicSelectionObj.firstSelectionMove).toEqual(false);
+    expect(tmp.magicSelectionObj.firstSelectionMove).toEqual(true);
     expect(tmp.magicSelectionObj.selectionActivated).toEqual(true);
   });
 

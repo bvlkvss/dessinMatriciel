@@ -80,10 +80,13 @@ export class BrushService extends Tool {
         const image = this.makeBaseImage();
 
         do {
-            const x = this.mouseDownCoord.x + Math.sin(angle) * i - this.image.width / Const.MOUSE_POSITION_OFFSET_DIVIDER;
-            const y = this.mouseDownCoord.y + Math.cos(angle) * i - this.image.height / Const.MOUSE_POSITION_OFFSET_DIVIDER;
+            const x = this.mouseDownCoord.x + Math.sin(angle) * i;
+            const y = this.mouseDownCoord.y + Math.cos(angle) * i;
             ctx.globalAlpha = this.color.opacity / Const.MAX_EIGHT_BIT_NB;
-            ctx.drawImage(image, x, y, this.lineWidth, this.lineWidth);
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.drawImage(image, 0, 0, -this.lineWidth / 2, -this.lineWidth / 2);
+            ctx.restore();
             i += Const.IMAGES_PER_POINT;
         } while (i < dist);
         this.mouseDownCoord = this.currentPos;

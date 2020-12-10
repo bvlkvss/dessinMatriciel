@@ -262,6 +262,7 @@ export abstract class Movable extends Tool implements Rotationable, Resizable {
             this.selectionCommand = new SelectionCommand(this.selectionStartPoint, this, this.drawingService);
             this.selectionCommand.setEndPosErase(this.selectionEndPoint);
             this.eraseSelectionFromBase(this.selectionEndPoint);
+            this.invoker.setIsAllowed(false);
         }
         this.width = this.selectionEndPoint.x - this.selectionStartPoint.x;
         this.height = this.selectionEndPoint.y - this.selectionStartPoint.y;
