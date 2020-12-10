@@ -3,126 +3,55 @@
 </head>
 
 <div id="attribute">
-    <div id="canvasContainer" *ngIf="checkIfContainAttribute('pipette')">
+    <div id="canvasContainer" *ngIf="onToolChange('pipette')">
         <div id="lineWidthcontainer">
             <p id="header" for="volume">Pipette de couleur</p>
         </div>
         <canvas *ngIf="circleIsShown" width="50px" height="50px" #pipette id="pipetteCircle"></canvas>
     </div>
-    <div id="lineWidthcontainer" *ngIf="checkIfContainAttribute('stamp')">
+    <div id="lineWidthcontainer" *ngIf="onToolChange('stamp')">
         <p id="header" for="volume">Degré de rotation</p>
-        <input
-            class="textInput"
-            type="text"
-            pattern="([0-9]|[1-9][0-9]|100)"
-            minlength="1"
-            maxlength="3"
-            (keydown)="validate($event)"
-            (change)="setDegree($event.target.value)"
-            [value]="degreeValue"
-        />
+        <input class="textInput" type="text" pattern="([0-9]|[1-9][0-9]|100)" minlength="1" maxlength="3" (keydown)="validate($event)" (change)="setDegree($event.target.value)" [value]="degreeValue" />
         <input class="size-slider" type="range" (change)="setDegree($event.target.value)" [value]="degreeValue" min="-360" max="360" />
         <label id="label">°</label>
     </div>
-    <div id="lineWidthcontainer" *ngIf="checkIfContainAttribute('stamp')">
+    <div id="lineWidthcontainer" *ngIf="onToolChange('stamp')">
         <p id="headerStampInput" for="volume">Facteur de <br />grandeur</p>
-        <input
-            class="textInput"
-            id="LeftSideInput"
-            type="text"
-            pattern="([0-9]|[1-9][0-9]|100)"
-            minlength="1"
-            maxlength="1"
-            (keydown)="validate($event)"
-            (change)="setStampSize($event.target.value, false)"
-            [value]="1"
-        />
+        <input class="textInput" id="LeftSideInput" type="text" pattern="([0-9]|[1-9][0-9]|100)" minlength="1" maxlength="1" (keydown)="validate($event)" (change)="setStampSize($event.target.value, false)" [value]="1" />
         <label id="stampLabel">:</label>
 
-        <input
-            class="textInput"
-            id="RightSideInput"
-            type="text"
-            pattern="([1-9]|[1-9][1-9]|100)"
-            minlength="1"
-            maxlength="1"
-            (keydown)="validate($event)"
-            (change)="setStampSize($event.target.value, true)"
-            [value]="1"
-        />
+        <input class="textInput" id="RightSideInput" type="text" pattern="([1-9]|[1-9][1-9]|100)" minlength="1" maxlength="1" (keydown)="validate($event)" (change)="setStampSize($event.target.value, true)" [value]="1" />
     </div>
-    <div *ngIf="checkIfContainAttribute('stamp')" id="currentImageContainer">
+    <div *ngIf="onToolChange('stamp')" id="currentImageContainer">
         <img id="currentStamp" [src]="currentStamp" (click)="toggleStampsList()" />
         <p class="header" id="headerStamp">Étampe actuelle</p>
         <i #stampIcon class="material-icons" (click)="toggleStampsList()" id="stampicon">expand_more</i>
     </div>
-    <div id="lineWidthcontainer" *ngIf="checkIfContainAttribute('lineWidth')">
+    <div id="lineWidthcontainer" *ngIf="onToolChange('lineWidth')">
         <p id="header" for="volume">Epaisseur</p>
-        <input
-            class="textInput"
-            type="text"
-            pattern="([0-9]|[1-9][0-9]|100)"
-            minlength="1"
-            maxlength="3"
-            (keydown)="validate($event)"
-            (change)="setLineWidth($event.target.value)"
-            [value]="widthValue"
-        />
+        <input class="textInput" type="text" pattern="([0-9]|[1-9][0-9]|100)" minlength="1" maxlength="3" (keydown)="validate($event)" (change)="setLineWidth($event.target.value)" [value]="widthValue" />
         <input class="size-slider" type="range" (change)="setLineWidth($event.target.value)" [value]="widthValue" min="1" max="100" />
         <label id="label">px</label>
     </div>
-    <div id="lineWidthcontainer" *ngIf="checkIfContainAttribute('squareSize')">
+    <div id="lineWidthcontainer" *ngIf="onToolChange('squareSize')">
         <p id="header" for="volume">Taille des carrés</p>
-        <input
-            class="textInput"
-            type="text"
-            pattern="([0-9]|[1-9][0-9]|100)"
-            minlength="1"
-            maxlength="3"
-            (keydown)="validate($event)"
-            (change)="setSquareSize($event.target.value)"
-            [value]="squareSize"
-        />
+        <input class="textInput" type="text" pattern="([0-9]|[1-9][0-9]|100)" minlength="1" maxlength="3" (keydown)="validate($event)" (change)="setSquareSize($event.target.value)" [value]="squareSize" />
         <input class="size-slider" type="range" (change)="setSquareSize($event.target.value)" [value]="widthValue" min="1" max="100" />
         <label id="label">px</label>
     </div>
-    <div id="lineWidthcontainer" *ngIf="checkIfContainAttribute('opacity')">
+    <div id="lineWidthcontainer" *ngIf="onToolChange('opacity')">
         <p id="header" for="volume">Opacité</p>
-        <input
-            class="textInput"
-            type="text"
-            pattern="([0-9]|[1-9][0-9]|100)"
-            minlength="1"
-            maxlength="3"
-            (keydown)="validate($event)"
-            (change)="setOpacity($event.target.value)"
-            [value]="opacity"
-        />
+        <input class="textInput" type="text" pattern="([0-9]|[1-9][0-9]|100)" minlength="1" maxlength="3" (keydown)="validate($event)" (change)="setOpacity($event.target.value)" [value]="opacity" />
         <input class="size-slider" type="range" (change)="setOpacity($event.target.value)" [value]="widthValue" min="1" max="100" />
         <label id="label">px</label>
     </div>
-    <div id="policeContainer" *ngIf="checkIfContainAttribute('textPolice')">
+    <div id="policeContainer" *ngIf="onToolChange('textPolice')">
         <p id="header" for="volume">Police</p>
-        <input
-            class="textInput"
-            type="text"
-            pattern="([0-9]|[1-9][0-9]|100)"
-            minlength="1"
-            maxlength="3"
-            (keydown)="validate($event)"
-            (change)="setLineWidth($event.target.value)"
-            [value]="widthValue"
-        />
+        <input class="textInput" type="text" pattern="([0-9]|[1-9][0-9]|100)" minlength="1" maxlength="3" (keydown)="validate($event)" (change)="setLineWidth($event.target.value)" [value]="widthValue" />
         <label id="label">px</label>
         <mat-form-field appearance="fill">
             <mat-label>Font family</mat-label>
-            <mat-select
-                [(ngModel)]="selectedValue"
-                (selectionChange)="setFontFamily($event)"
-                [value]="polices[0]"
-                [ngStyle]="{ 'font-family': selectedValue }"
-                name="police"
-            >
+            <mat-select [(ngModel)]="selectedValue" (selectionChange)="setFontFamily($event)" [value]="polices[0]" [ngStyle]="{ 'font-family': selectedValue }" name="police">
                 <mat-option *ngFor="let police of polices" [value]="police">
                     <p [ngStyle]="{ 'font-family': police }" id="currentPolice">
                         {{ police }}
@@ -131,8 +60,12 @@
             </mat-select>
         </mat-form-field>
         <mat-button-toggle-group [multiple]="true" (change)="setFontStyle($event)" #groupPolice="matButtonToggleGroup">
-            <mat-button-toggle value="bold"> <mat-icon class="MatIcon">format_bold</mat-icon> </mat-button-toggle>
-            <mat-button-toggle value="italic"> <mat-icon class="MatIcon">format_italic</mat-icon> </mat-button-toggle>
+            <mat-button-toggle value="bold">
+                <mat-icon class="MatIcon">format_bold</mat-icon>
+            </mat-button-toggle>
+            <mat-button-toggle value="italic">
+                <mat-icon class="MatIcon">format_italic</mat-icon>
+            </mat-button-toggle>
         </mat-button-toggle-group>
         <mat-button-toggle-group id="allignement" #group="matButtonToggleGroup" value="left" (change)="setAllignement($event)">
             <mat-button-toggle value="left" aria-label="Text align left">
@@ -146,38 +79,20 @@
             </mat-button-toggle>
         </mat-button-toggle-group>
     </div>
-    <div id="lineWidthcontainer" *ngIf="checkIfContainAttribute('eraserWidth')">
+    <div id="lineWidthcontainer" *ngIf="onToolChange('eraserWidth')">
         <p id="header" for="volume">Epaisseur Efface</p>
-        <input
-            class="textInput"
-            type="text"
-            (change)="setLineWidth($event.target.value)"
-            [value]="widthValue"
-            pattern="([0-9]|[1-9][0-9]|100)"
-            minlength="1"
-            maxlength="3"
-            (keydown)="validate($event)"
-        />
+        <input class="textInput" type="text" (change)="setLineWidth($event.target.value)" [value]="widthValue" pattern="([0-9]|[1-9][0-9]|100)" minlength="1" maxlength="3" (keydown)="validate($event)" />
         <input class="size-slider" type="range" (change)="setLineWidth($event.target.value)" [value]="widthValue" min="5" max="100" />
         <label id="label">px</label>
     </div>
-    <div id="lineWidthcontainer" *ngIf="checkIfContainAttribute('tolerance')">
+    <div id="lineWidthcontainer" *ngIf="onToolChange('tolerance')">
         <p id="header" for="volume">Tolérance de couleur</p>
-        <input
-            class="textInput"
-            type="text"
-            (change)="setTolerance($event.target.value)"
-            [value]="tolerance"
-            pattern="([0-9]|[1-9][0-9]|100)"
-            minlength="1"
-            maxlength="3"
-            (keydown)="validate($event)"
-        />
+        <input class="textInput" type="text" (change)="setTolerance($event.target.value)" [value]="tolerance" pattern="([0-9]|[1-9][0-9]|100)" minlength="1" maxlength="3" (keydown)="validate($event)" />
         <input class="size-slider" type="range" (change)="setTolerance($event.target.value)" [value]="tolerance" min="0" max="100" />
         <label id="label">%</label>
     </div>
 
-    <div *ngIf="checkIfContainAttribute('texture')">
+    <div *ngIf="onToolChange('texture')">
         <div id="currentImageContainer">
             <img id="currentImage" [src]="currentTexture" />
             <p class="header" id="headerImage">Texture</p>
@@ -195,77 +110,41 @@
         </div>
     </div>
 
-    <div id="lineWidthcontainer" *ngIf="checkIfContainAttribute('junctionWidth')">
+    <div id="lineWidthcontainer" *ngIf="onToolChange('junctionWidth')">
         <p id="header" for="volume">Taille Jonction</p>
-        <input
-            class="textInput"
-            type="text"
-            (change)="setJunctionWidth($event.target.value)"
-            [value]="junctionWidth"
-            pattern="([0-9]|[1-9][0-9]|100)"
-            minlength="1"
-            maxlength="3"
-            (keydown)="validate($event)"
-        />
+        <input class="textInput" type="text" (change)="setJunctionWidth($event.target.value)" [value]="junctionWidth" pattern="([0-9]|[1-9][0-9]|100)" minlength="1" maxlength="3" (keydown)="validate($event)" />
         <input class="size-slider" type="range" (change)="setJunctionWidth($event.target.value)" [value]="junctionWidth" min="1" max="100" />
         <label id="label">px</label>
     </div>
-    <div id="lineWidthcontainer" *ngIf="checkIfContainAttribute('strokeWidth')">
+    <div id="lineWidthcontainer" *ngIf="onToolChange('strokeWidth')">
         <p id="header" for="volume">Epaisseur Contour</p>
-        <input
-            class="textInput"
-            type="text"
-            (change)="setLineWidth($event.target.value)"
-            [value]="widthValue"
-            pattern="([0-9]|[1-9][0-9]|100)"
-            minlength="1"
-            maxlength="3"
-            (keydown)="validate($event)"
-        />
+        <input class="textInput" type="text" (change)="setLineWidth($event.target.value)" [value]="widthValue" pattern="([0-9]|[1-9][0-9]|100)" minlength="1" maxlength="3" (keydown)="validate($event)" />
         <input class="size-slider" type="range" (change)="setLineWidth($event.target.value)" [value]="widthValue" min="1" max="100" />
         <label id="label">px</label>
     </div>
 
-    <div id="lineWidthcontainer" *ngIf="checkIfContainAttribute('lineLenght')">
+    <div id="lineWidthcontainer" *ngIf="onToolChange('lineLenght')">
         <p id="header" for="volume">Taille Ligne</p>
-        <input
-            class="textInput"
-            type="text"
-            (change)="setLineLength($event.target.value)"
-            [value]="lenghtValue"
-            pattern="([0-9]|[1-9][0-9]|100)"
-            minlength="1"
-            maxlength="3"
-            (keydown)="validate($event)"
-        />
+        <input class="textInput" type="text" (change)="setLineLength($event.target.value)" [value]="lenghtValue" pattern="([0-9]|[1-9][0-9]|100)" minlength="1" maxlength="3" (keydown)="validate($event)" />
         <input class="size-slider" type="range" (change)="setLineLength($event.target.value)" [value]="lenghtValue" min="5" max="100" />
         <label id="label">px</label>
     </div>
 
-    <div id="lineWidthcontainer" *ngIf="checkIfContainAttribute('angle')">
+    <div id="lineWidthcontainer" *ngIf="onToolChange('angle')">
         <p id="header" for="volume">Angle</p>
-        <input
-            class="textInput"
-            type="text"
-            (change)="setAngle($event.target.value)"
-            [value]="angleValue"
-            pattern="([0-9]|[1-9][0-9]|100)"
-            minlength="1"
-            maxlength="3"
-            (keydown)="validate($event)"
-        />
+        <input class="textInput" type="text" (change)="setAngle($event.target.value)" [value]="angleValue" pattern="([0-9]|[1-9][0-9]|100)" minlength="1" maxlength="3" (keydown)="validate($event)" />
         <input class="size-slider" type="range" (change)="setAngle($event.target.value)" [value]="angleValue" min="0" max="360" />
         <label id="label">°</label>
     </div>
 
-    <div id="lineWidthcontainer" *ngIf="checkIfContainAttribute('junction')">
+    <div id="lineWidthcontainer" *ngIf="onToolChange('junction')">
         <p id="junctionHeader" class="header">Point De Jonction</p>
         <div class="sliderJunction">
             <input type="checkbox" id="sliderJunction" (change)="setJunctionState($event.target.checked)" name="check" checked />
             <label for="sliderJunction"></label>
         </div>
     </div>
-    <div *ngIf="checkIfContainAttribute('rectangleStyle')">
+    <div *ngIf="onToolChange('rectangleStyle')">
         <div id="currentImageContainer">
             <p class="header" id="headerStyle">Style</p>
             <div class="shapeStyle" id="currentRectangleStyle"></div>
@@ -278,7 +157,7 @@
         </div>
     </div>
 
-    <div *ngIf="checkIfContainAttribute('ellipseStyle')">
+    <div *ngIf="onToolChange('ellipseStyle')">
         <div id="currentImageContainer">
             <p class="header" id="headerStyle">Style</p>
             <div class="shapeStyle" id="currentEllipseStyle"></div>
@@ -290,7 +169,7 @@
             <div (click)="setShapeStyle(1, true)" class="shapeStyle" style="border-radius: 50%" id="style1"></div>
         </div>
     </div>
-    <div *ngIf="checkIfContainAttribute('polygonStyle')">
+    <div *ngIf="onToolChange('polygonStyle')">
         <div id="currentImageContainer">
             <p class="header" id="headerStyle">Style</p>
             <div id="triangleStyle1"></div>
@@ -324,61 +203,33 @@
         </div>
     </div>
 
-    <div id="dropletsWidthContainer" *ngIf="checkIfContainAttribute('dropletsWidth')">
+    <div id="dropletsWidthContainer" *ngIf="onToolChange('dropletsWidth')">
         <p id="header" for="volume">Diamètre goutelettes</p>
-        <input
-            class="textInput"
-            type="text"
-            pattern="([0-9]|[1-9][0-9]|100)"
-            minlength="1"
-            maxlength="3"
-            (keydown)="validate($event)"
-            (change)="setDropletsWidth($event.target.value)"
-            [value]="dropletsWidthValue"
-        />
+        <input class="textInput" type="text" pattern="([0-9]|[1-9][0-9]|100)" minlength="1" maxlength="3" (keydown)="validate($event)" (change)="setDropletsWidth($event.target.value)" [value]="dropletsWidthValue" />
         <input class="size-slider" type="range" (change)="setDropletsWidth($event.target.value)" [value]="dropletsWidthValue" min="1" max="10" />
         <label id="label">px</label>
     </div>
 
-    <div id="sprayIntervalContainer" *ngIf="checkIfContainAttribute('sprayInterval')">
+    <div id="sprayIntervalContainer" *ngIf="onToolChange('sprayInterval')">
         <p id="header" for="volume">Fréquence</p>
-        <input
-            class="textInput"
-            type="text"
-            pattern="([0-9]|[1-9][0-9]|100)"
-            minlength="1"
-            maxlength="3"
-            (keydown)="validate($event)"
-            (change)="setFrequency($event.target.value)"
-            [value]="frequency"
-        />
+        <input class="textInput" type="text" pattern="([0-9]|[1-9][0-9]|100)" minlength="1" maxlength="3" (keydown)="validate($event)" (change)="setFrequency($event.target.value)" [value]="frequency" />
         <input class="size-slider" type="range" (change)="setFrequency($event.target.value)" [value]="frequency" min="4" max="1000" />
         <label id="label">Hz</label>
     </div>
 
-    <div id="sprayWidthContainer" *ngIf="checkIfContainAttribute('sprayWidth')">
+    <div id="sprayWidthContainer" *ngIf="onToolChange('sprayWidth')">
         <p id="header" for="volume">Diamètre Aérosol</p>
-        <input
-            class="textInput"
-            type="text"
-            pattern="([0-9]|[1-9][0-9]|100)"
-            minlength="1"
-            maxlength="3"
-            (keydown)="validate($event)"
-            (change)="setRadius($event.target.value)"
-            [value]="radius"
-        />
+        <input class="textInput" type="text" pattern="([0-9]|[1-9][0-9]|100)" minlength="1" maxlength="3" (keydown)="validate($event)" (change)="setRadius($event.target.value)" [value]="radius" />
         <input class="size-slider" type="range" (change)="setRadius($event.target.value)" [value]="radius" min="20" max="70" />
         <label id="label">Px</label>
     </div>
 
-    <div #selectionIcons id="SelectionContainer" *ngIf="checkIfContainAttribute('typeSelection')">
+    <div #selectionIcons id="SelectionContainer" *ngIf="onToolChange('typeSelection')">
         <div>
             <p id="header" for="volume">Selection</p>
             <p id="header" for="volume">Type De Selection:</p>
             <div class="selectionOptionButtonContainer">
-                <button
-                    style="
+                <button style="
                         width: 90%;
                         cursor: pointer;
                         position: relative;
@@ -388,23 +239,20 @@
                         border-radius: 6px;
                         color: white;
                         background-color: red;
-                    "
-                    (click)="selectAll()"
-                >
+                    " (click)="selectAll()">
                     Tout Selectionner
                 </button>
                 <div class="buttonContainer">
-                    <a #a id="rectSelection" class="inactive">
+                    <a id="rectSelection" class="inactive" (click)="selectionRectangle()" style='cursor: pointer;'>
                         <i class="material-icons">highlight_alt</i>
                     </a>
-                    <a id="ellipseSelection" class="inactive">
+                    <a id="ellipseSelection" class="inactive" (click)="selectionEllipse()" style='cursor: pointer;'>
                         <i class="material-icons">panorama_fish_eye</i>
                     </a>
-                    <a id="wandSelection" class="inactive">
+                    <a id="wandSelection" class="inactive" (click)="selectionMagicWand()" style='cursor: pointer;'>
                         <i class="material-icons">gesture</i>
                     </a>
                 </div>
-                <!-- <div class="selectAllButton"><button style="height: 30px; width: 90%;">Tout Selectionner</button></div> -->
             </div>
 
             <div class="selectWholeCanvas" style="background-color: rgb(248, 56, 56)"></div>

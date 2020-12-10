@@ -156,7 +156,7 @@ export class MagicWandService extends Tool {
         if (event.key === 'Escape') {
             obj.drawSelectionOnBase();
             this.clearSelection();
-        } else {
+        } else if (obj) {
             if (obj.currenthandle !== DEFAULT_HANDLE_INDEX && event.shiftKey && this.mouseDown) {
                 obj.rectangleService.toSquare = true;
                 obj.resizeSelection();

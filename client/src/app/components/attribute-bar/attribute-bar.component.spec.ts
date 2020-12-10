@@ -3,6 +3,7 @@ import { ElementRef } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatButtonToggleChange, MatButtonToggleGroup, MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatSelectChange } from '@angular/material/select';
+import { Movable } from '@app/classes/movable';
 import { MockDrawingService } from '@app/components/drawing/drawing.component.spec';
 import { ToolsManagerService } from '@app/services/tools-manager/tools-manager.service';
 import { BrushService } from '@app/services/tools/brush/brush.service';
@@ -76,11 +77,14 @@ describe('AttributebarComponent', () => {
         ellipseStub = new EllipseService(drawServiceMock, UndoRedoServiceMock);
         eraserStub = new EraserService(drawServiceMock, UndoRedoServiceMock);
         pipetteStub = new PipetteService(drawServiceMock);
+        selectionStub = new SelectionService(drawServiceMock, UndoRedoServiceMock);
         textStub = new TextService(drawServiceMock, UndoRedoServiceMock);
         plumeStub = new PlumeService(drawServiceMock, UndoRedoServiceMock);
         sprayPaintStub = new SprayPaintService(drawServiceMock, UndoRedoServiceMock);
+        magicWandStub = new MagicWandService(drawServiceMock, UndoRedoServiceMock);
         gridStub = new GridService(drawServiceMock);
         stampStub = new StampService(drawServiceMock, UndoRedoServiceMock);
+        selectionStub = new SelectionService(drawServiceMock, UndoRedoServiceMock);
         toolManagerStub = new ToolsManagerService(pencilStub, brushStub, rectangleStub, eraserStub, ellipseStub, lineStub, selectionStub, paintBucketStub, polygonStub, pipetteStub, textStub, sprayPaintStub, plumeStub, gridStub, magicWandStub, stampStub);
         toolManagerStub.currentTool = pencilStub;
         TestBed.configureTestingModule({
@@ -175,26 +179,61 @@ describe('AttributebarComponent', () => {
     });
 
 
-    it('should call restoreValues when calling checkIfContainAttributes if lastTool is not the same as currentTool', () => {
+    it('should call restoreValues when calling onToolChanges if lastTool is not the same as currentTool', () => {
         (component as any).tools.currentTool = (component as any).tools.getTools().get('brush');
         (component as any).lastTool = (component as any).tools.getTools().get('ellipse');
 
         let restoreValuesSpy = spyOn(component, 'restoreValues');
 
-        component.checkIfContainAttribute('lineWidth');
+        component.onToolChange('lineWidth');
 
         expect(restoreValuesSpy).toHaveBeenCalled();
     });
 
-    it('should not call restoreValues when calling checkIfContainAttributes if lastTool is the same as currentTool', () => {
+    it('should not call restoreValues when calling onToolChanges if lastTool is the same as currentTool', () => {
         (component as any).tools.currentTool = (component as any).tools.getTools().get('brush');
         (component as any).lastTool = (component as any).tools.getTools().get('brush');
 
         let restoreValuesSpy = spyOn(component, 'restoreValues');
 
-        component.checkIfContainAttribute('lineWidth');
+        component.onToolChange('lineWidth');
 
         expect(restoreValuesSpy).not.toHaveBeenCalled();
+    });
+
+    it('should call setSelectionClassName if its rect selection' ,() =>{
+        (component as any).tools.currentTool = (component as any).tools.getTools().get('selection');
+        let tool = (component as any).tools.currentTool as SelectionService
+        tool.selectionStyle = 0;
+        (component as any).setSelectionClassName = jasmine.createSpy().and.callThrough();
+        component.onToolChange('typeSelection');
+        expect((component as any).setSelectionClassName).toHaveBeenCalledWith("#rectSelection"); 
+        (component as any).setSelectionClassName("#rectSelection");
+    });
+    
+    it('should call setSelectionClassName if its ellipse selection',() =>{
+        selectionStub.selectionStyle = 1
+        toolManagerStub.currentTool = selectionStub;
+        (component as any).setSelectionClassName = jasmine.createSpy().and.callThrough();
+        component.onToolChange('typeSelection');
+        expect((component as any).setSelectionClassName).toHaveBeenCalledWith("#ellipseSelection"); 
+        (component as any).setSelectionClassName("#ellipseSelection");
+    });
+
+    it('should call setSelectionClassName if its wand selection',() =>{
+        (component as any).tools.currentTool = (component as any).tools.getTools().get('magic-wand') as MagicWandService;
+        component.restoreValues = jasmine.createSpy();
+        (component as any).setSelectionClassName = jasmine.createSpy().and.callThrough();
+        component.onToolChange('typeSelection');
+        expect((component as any).setSelectionClassName).toHaveBeenCalledWith("#wandSelection"); 
+        (component as any).setSelectionClassName("#wandSelection");
+    });
+
+    it('should call getSizeObservable if its grid service',() =>{
+        toolManagerStub.currentTool = gridStub;
+        gridStub.getSizeObservable = jasmine.createSpy().and.returnValue({subscribe:jasmine.createSpy()});
+        component.onToolChange('typeSelection');
+        expect(gridStub.getSizeObservable).toHaveBeenCalled(); 
     });
 
     it('should set widthValue when calling setLineWidth', () => {
@@ -224,7 +263,7 @@ describe('AttributebarComponent', () => {
     it('should call prevent if an not accepted key is pressed', () => {
 
         let mockEvent = new EventMock();
-        spyOn<any>(component, "checkIfContainAttribute").and.callFake(() => { return false; })
+        spyOn<any>(component, "onToolChange").and.callFake(() => { return false; })
         let eventSpy = spyOn<any>(mockEvent, 'preventDefault').and.callThrough();
         component.validate(mockEvent as any);
         expect(eventSpy).toHaveBeenCalled();
@@ -296,7 +335,7 @@ describe('AttributebarComponent', () => {
 
         let mockEvent = new EventMock();
         mockEvent.target.key = 3;
-        spyOn<any>(component, "checkIfContainAttribute").and.callFake(() => { return true; })
+        spyOn<any>(component, "onToolChange").and.callFake(() => { return true; })
         let eventSpy = spyOn<any>(mockEvent, 'preventDefault').and.callThrough();
         component.validate(mockEvent as any);
         expect(eventSpy).not.toHaveBeenCalled();
@@ -400,7 +439,7 @@ describe('AttributebarComponent', () => {
     });
 
     it('should make maxlength equal 4 if negative number', () => {
-        component.checkIfContainAttribute = jasmine.createSpy().and.callFake(() => true);
+        component.onToolChange = jasmine.createSpy().and.callFake(() => true);
         let target = { id: 'test', selectionStart: 0, maxLength: 1 };
         const event = { key: '-', target: target } as unknown as KeyboardEvent;
         component.validate(event);
@@ -409,7 +448,7 @@ describe('AttributebarComponent', () => {
     });
 
     it('should make maxlength equal 3 if positive number', () => {
-        component.checkIfContainAttribute = jasmine.createSpy().and.callFake(() => true);
+        component.onToolChange = jasmine.createSpy().and.callFake(() => true);
         let target = { id: 'test', selectionStart: 0, maxLength: 1 };
         const event = { key: '+', target: target } as unknown as KeyboardEvent;
         component.validate(event);
@@ -418,7 +457,7 @@ describe('AttributebarComponent', () => {
     });
 
     it('should make maxlength equal 4 if negative number', () => {
-        component.checkIfContainAttribute = jasmine.createSpy().and.callFake(() => true);
+        component.onToolChange = jasmine.createSpy().and.callFake(() => true);
         let target = { id: 'test', selectionStart: 0, maxLength: 1 };
         const event = { key: '-', target: target } as unknown as KeyboardEvent;
         component.validate(event);
@@ -427,7 +466,7 @@ describe('AttributebarComponent', () => {
     });
 
     it('should not change maxlength if stamp Rightinput or leftInput', () => {
-        component.checkIfContainAttribute = jasmine.createSpy().and.callFake(() => true);
+        component.onToolChange = jasmine.createSpy().and.callFake(() => true);
         let target = { selectionStart: 0, maxLength: 1, id: 'LeftSideInput' };
         const event = { key: '-', target: target } as unknown as KeyboardEvent;
         event.preventDefault = jasmine.createSpy().and.callFake(() => { });
@@ -437,7 +476,7 @@ describe('AttributebarComponent', () => {
     });
 
     it('should not change maxlength if stamp Rightinput or leftInput', () => {
-        component.checkIfContainAttribute = jasmine.createSpy().and.callFake(() => true);
+        component.onToolChange = jasmine.createSpy().and.callFake(() => true);
         let target = { selectionStart: 0, maxLength: 1, id: 'RightSideInput' };
         const event = { key: '-', target: target } as unknown as KeyboardEvent;
         event.preventDefault = jasmine.createSpy().and.callFake(() => { });
@@ -445,5 +484,49 @@ describe('AttributebarComponent', () => {
         expect(target.maxLength).toEqual(1);
 
     });
+
+    it('setAnchorPoint should call tools manager setAnchorPoint function',() => {
+        const setAnchorPointSpy = spyOn<any>(toolManagerStub, 'setAnchorPoint');
+        component.setAnchorPoint(5);
+        expect(setAnchorPointSpy).toHaveBeenCalled();
+    });
+
+    it('checkIfMagnetismActivated should return magnetismActivated',() => {
+        component.checkIfMagnetismActivated();
+        expect(Movable.magnetismActivated).toBe(false);
+    });
+
+    it('setclassname should call querySelector 3 times ',()=>{
+        let qsSpy = spyOn(document, 'querySelector');
+        (component as any).setSelectionClassName('#rectSelection');
+        expect(qsSpy).toHaveBeenCalledTimes(3);
+    });
+    it('setclassname should call querySelector',()=>{
+        let qsSpy = spyOn(document, 'querySelector');
+        (component as any).setSelectionClassName('#ellipseSelection');
+        expect(qsSpy).toHaveBeenCalledTimes(3);
+    });
+    it('setclassname should call querySelector',()=>{
+        let qsSpy = spyOn(document, 'querySelector');
+        (component as any).setSelectionClassName('#wandSelection');
+        expect(qsSpy).toHaveBeenCalledTimes(3);
+    });
+    it('should set selectionstyle to 0 when function is called',() =>{
+        toolManagerStub.currentTool = selectionStub;
+        component.selectionRectangle();
+        expect(selectionStub.selectionStyle).toEqual(0);
+    });
+
+    it('should set selectionstyle to 1 when function is called',() =>{
+        toolManagerStub.currentTool = selectionStub;
+        component.selectionEllipse();
+        expect(selectionStub.selectionStyle).toEqual(1);
+    });
+
+    it('should set magicwand as currenttool called',() =>{
+        component.selectionMagicWand();
+        expect(toolManagerStub.currentTool).toBe(magicWandStub);
+    });
+
 
 });
