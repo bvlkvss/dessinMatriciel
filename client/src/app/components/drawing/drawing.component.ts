@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, DoCheck, ElementRef, HostListener, IterableDiffer, IterableDiffers, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { NavigationStart, Router } from '@angular/router';
 import { Command } from '@app/classes/command';
 import { Const } from '@app/classes/constants';
 import { Movable } from '@app/classes/movable';
@@ -214,6 +215,13 @@ export class DrawingComponent implements AfterViewInit, OnInit, DoCheck {
     @HostListener('document:keyup', ['$event'])
     onKeyUp(event: KeyboardEvent): void {
         this.tools.currentTool.onKeyUp(event);
+    }
+
+    @HostListener('window:popstate', ['$event'])
+    onPopState() {
+        if (window.location.pathname === '/home') {
+            location.replace('main-page.component.html');
+        }
     }
 
     @HostListener('window:keydown', ['$event'])
